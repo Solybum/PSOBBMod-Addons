@@ -45,10 +45,8 @@ local readItemList = function(index)
     
     if index == -1 then
         index = -1
-    elseif index == -0 then
-        index = pso.read_u32(_PlayerMyIndex)
     else
-        index = index - 1
+        index = pso.read_u32(_PlayerMyIndex)
     end
     
     if index ~= 0 then
@@ -139,7 +137,7 @@ local present = function()
     
     -- refresh every 60 frames or when selection changes
     if frames >= 60 or status then
-        local ltext
+        local ltext = ""
         frames = 0
         text = "";
         
@@ -149,8 +147,6 @@ local present = function()
             ltext = readBank()
         elseif selection == 3 then
             ltext = readItemList(-1)
-        else
-            ltext = readItemList(selection - 3)
         end
         
         text = text .. ltext
