@@ -144,20 +144,15 @@ local _GetItemID = function(type, group, index)
 end
 
 local formatItemName = function(data, name)
-    local str
+    local str = ""
     
     if data[1] == 0 then
-        str = "Weapon "
     elseif data[1] == 1 then
         if data[2] == 1 or data[2] == 2 then
-            str = "Armor  "
         elseif data[2] == 3 then
-            str = "Unit   "
         end
     elseif data[1] == 2 then
-        str = "Mag    "
     elseif data[1] == 3 then
-        str = "Tool   "
     end
     
     str = str .. string.format("[%02X%02X%02X] %s", 

@@ -1,15 +1,32 @@
 local itemReader = require("Character Reader/ItemReader")
+
+-- remove
 local _MesetaAddress    = 0x00AA70F0
 -- count is somewher else, but if data[0] == 0, item is empty
 local _InvPointer = 0x00A95DE0 + 0x1C
+-- end remove
 -- count, meseta, data
 local _BankPointer      = 0x00A95DE0 + 0x18
 
-local function tableMerge(t1, t2)
+local _PlayerArray = 0x00A94254
+local _PlayerMyIndex = 0x00A9C4F4
+local _PlayerNameOff = 0x428
+
+local _ItemArray = 0x00A8D81C
+local _ItemArrayCount = 0x00A8D820
+local _ItemOwner = 0xE4
+local _ItemCode = 0xF2
+
+function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
+
+function tableMerge(t1, t2)
    for i,v in ipairs(t2) do
       table.insert(t1, v)
-   end 
- 
+   end
    return t1
 end
 
@@ -22,33 +39,47 @@ local init = function()
     }
 end
 
-local readInventory = function()
+local readItemList = function(index)
     local invString = ""
-    local meseta
-    local count
-    local address
+    local myAddress
     
-    meseta = pso.read_i32(_MesetaAddress)
-    address = pso.read_i32(_InvPointer)
-    count = pso.read_u8(address)
-    address = address + 4
-    
-    invString = invString .. string.format("Count: % 3i\t Meseta: % 6i\n\n", count, meseta)
-    for i=1,count,1
-    do
-        data1 = {}
-        data2 = {}
-        item = {}
-        pso.read_mem(data1, address + 8 , 12)
-        pso.read_mem(data2, address + 8 + 16, 4)
-        address = address + 28
-        
-        item = tableMerge(data1, data2)
-        itemNameRes = itemReader.getItemName(item, true)
-        
-        invString = invString .. 
-            string.format("%02i: %s\n", i, itemNameRes)
+    if index == -1 then
+        index = -1
+    elseif index == -0 then
+        index = pso.read_u32(_PlayerMyIndex)
+    else
+        index = index - 1
     end
+    
+    if index ~= 0 then
+        myAddress = pso.read_u32(_PlayerArray) + 4 * index
+        if myAddress == 0 then
+            return "Could not find data, if not in a lobby, get to one"
+        end
+    end
+    
+    iCount = pso.read_u32(_ItemArrayCount)
+    ilAddress = pso.read_u32(_ItemArray)
+    
+    localCount = 0;
+    for i=1,iCount,1 do
+        iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
+        if iAddr ~= 0 then
+            owner = pso.read_i8(iAddr + _ItemOwner)
+            if owner == index then
+                item = {}
+                pso.read_mem(item, iAddr + _ItemCode, 3)
+                
+                itemNameRes = itemReader.getItemName(item, false)
+                
+                invString = invString .. string.format("%03i: %s\n", localCount + 1, itemNameRes)
+                
+                localCount = localCount + 1
+            end
+        end
+    end
+    
+    invString = string.format("Count: %i\n\n%s", localCount, invString)
     
     return invString
 end
@@ -67,12 +98,12 @@ local readBank = function()
     address = address + 0x021C
     count = pso.read_u8(address)
     address = address + 4
-    meseta = pso.read_i32(address)
+    -- meseta = pso.read_i32(address)
     address = address + 4
     
-    invString = invString .. string.format("Count: % 3i\t Meseta: % 6i\n\n", count, meseta)
-    for i=1,count,1
-    do
+    invString = string.format("Count: %i\n\n", count)
+    
+    for i=1,count,1 do
         data1 = {}
         data2 = {}
         item = {}
@@ -96,34 +127,30 @@ local readBank = function()
 end
 
 local frames = 0
-local text = ""
-local inv = true
+local selection = 1
 local force = true
+local text = ""
 
 local present = function()
     imgui.Begin("Character Reader")
-    if inv then
-        if imgui.Button("Inventory") then
-            inv = false
-            force = true
-        end
-    else
-        if imgui.Button("Bank") then
-            inv = true
-            force = true
-        end
-    end
     
-    -- refresh every 60 frames
-    if frames >= 60 or force == 1 then
+    local list = { "Me", "Bank", "Floor"}
+    status, selection = imgui.Combo("Inventory", selection, list, tablelength(list))
+    
+    -- refresh every 60 frames or when selection changes
+    if frames >= 60 or status then
         local ltext
         frames = 0
         text = "";
         
-        if inv then
-            ltext = readInventory()
-        else
+        if selection == 1 then
+            ltext = readItemList(0)
+        elseif selection == 2 then
             ltext = readBank()
+        elseif selection == 3 then
+            ltext = readItemList(-1)
+        else
+            ltext = readItemList(selection - 3)
         end
         
         text = text .. ltext
