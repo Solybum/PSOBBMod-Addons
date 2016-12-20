@@ -1,4 +1,4 @@
-local itemReader = require("Inventory-Bank Reader/ItemReader")
+local itemReader = require("Character Reader/ItemReader")
 local _MesetaAddress    = 0x00AA70F0
 -- count is somewher else, but if data[0] == 0, item is empty
 local _InvPointer = 0x00A95DE0 + 0x1C
@@ -16,8 +16,8 @@ end
 local init = function()
     return 
     {
-        name = "Inventory-Bank Reader",
-        version = "1.0",
+        name = "Character Reader",
+        version = "1.1",
         author = "Solybum"
     }
 end
@@ -101,7 +101,7 @@ local inv = true
 local force = true
 
 local present = function()
-    imgui.Begin("Inventory-Bank Reader")
+    imgui.Begin("Character Reader")
     if inv then
         if imgui.Button("Inventory") then
             inv = false
