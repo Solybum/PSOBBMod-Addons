@@ -193,9 +193,7 @@ local formatWeaponName = function(data, name)
         
         srankName = ""
         temp = 0
-        print("--------------------------------------")
         for i=1,6,2 do
-            print("-----")
             n = bit.lshift(data[7 + i - 1], 8) + data[8 + i - 1]
             n = n - 0x8000
             
