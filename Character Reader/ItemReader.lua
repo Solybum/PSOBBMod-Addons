@@ -102,7 +102,6 @@ local _GetItemNameString = function(id)
     str = pso.read_wstr(address, 128)
     return str
 end
-
 local _GetItemID = function(type, group, index)
     local id = -1
     
@@ -182,6 +181,33 @@ local _GetItemID = function(type, group, index)
     end
     
     return id
+end
+function getItemName(data)
+    local str = ""
+    
+    -- check if its cached
+    if false then
+        str = "C " .. str
+    else
+        -- get item id
+        if data[1] == 3 and data[2] == 2 then
+            id = _GetItemID(data[1], data[2], data[5])
+        else
+            id = _GetItemID(data[1], data[2], data[3])
+        end
+        
+        if id == -1 then
+            str = nil
+        else
+            str = _GetItemNameString(id)
+        end
+    end
+    
+    if str ~= nil and format then
+        str = formatItemName(data, str)
+    end
+    
+    return str
 end
 
 local formatWeaponName = function(data, name)
@@ -346,21 +372,21 @@ local formatMagName = function(data, name)
     
     str = str .. string.format(" [%.2f/%.2f/%.2f/%.2f]", atts[1], atts[2], atts[3], atts[4])
     
-    if bit.band(data[15], 4) == 4 then
-    str = str .. " [" .. photonBlast[leftPhotonBlast[data[4] + 1] + 1]
-    else
-        str = str .. "[Empty"
-    end
-    if bit.band(data[15], 2) == 2 then
-        str = str .. " | " .. photonBlast[bit.band(data[4], 7) + 1]
-    else
-        str = str .. " | Empty"
-    end
-    if bit.band(data[15], 1) == 1 then
-        str = str .. " | " .. photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1] .. "]"
-    else
-        str = str .. " | Empty]"
-    end
+    --if bit.band(data[15], 4) == 4 then
+    --str = str .. " [" .. photonBlast[leftPhotonBlast[data[4] + 1] + 1]
+    --else
+    --    str = str .. "[Empty"
+    --end
+    --if bit.band(data[15], 2) == 2 then
+    --    str = str .. " | " .. photonBlast[bit.band(data[4], 7) + 1]
+    --else
+    --    str = str .. " | Empty"
+    --end
+    --if bit.band(data[15], 1) == 1 then
+    --    str = str .. " | " .. photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1] .. "]"
+    --else
+    --    str = str .. " | Empty]"
+    --end
     
     return str
 end
@@ -381,8 +407,7 @@ local formatToolName = function(data, name)
     end
     return str
 end
-
-local formatItemName = function(data, name)
+function formatItemName(data, name)
     local str = ""
     
     if data[1] == 0 then
@@ -402,34 +427,6 @@ local formatItemName = function(data, name)
     return str
 end
 
-function getItemName(data, format)
-    local str = ""
-    
-    -- check if its cached
-    if false then
-        str = "C " .. str
-    else
-        -- get item id
-        if data[1] == 3 and data[2] == 2 then
-            id = _GetItemID(data[1], data[2], data[5])
-        else
-            id = _GetItemID(data[1], data[2], data[3])
-        end
-        
-        if id == -1 then
-            str = nil
-        else
-            str = _GetItemNameString(id)
-        end
-    end
-    
-    if str ~= nil and format then
-        str = formatItemName(data, str)
-    end
-    
-    return str
-end
-
 function refreshItemNames()
     print("Items refreshed")
 end
@@ -437,6 +434,7 @@ end
 return {
     refresh = refresh,
     getItemName = getItemName,
+    formatItemName = formatItemName,
     getSpecialName = nil,
     getTechName = nil,
 }

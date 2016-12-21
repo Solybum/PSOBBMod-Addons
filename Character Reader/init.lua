@@ -16,13 +16,30 @@ local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820
 local _ItemOwner = 0xE4
 local _ItemCode = 0xF2
+---- For the item pool
+local _ItemKills = 0xE8
+local _ItemWepGrind = 0x1F5
+local _ItemWepSpecial = 0x1F6
+local _ItemWepStats = 0x1C8
+local _ItemArmSlots = 0x1B8
+local _ItemFrameDef = 0x1B9
+local _ItemFrameEvp = 0x1BA
+local _ItemBarrierDef = 0x1E4
+local _ItemBarrierEvp = 0x1E5
+local _ItemMagStats = 0x1C0
+local _ItemMagPBHas = 0x1C8
+local _ItemMagPB = 0x1C9
+local _ItemMagColor = 0x1D0
+local _ItemMagSync = 0x1BE
+local _ItemMagIQ = 0x1BC
+local _ItemMagTimer = 0x1B4
+
 
 function tablelength(T)
   local count = 0
   for _ in pairs(T) do count = count + 1 end
   return count
 end
-
 function tableMerge(t1, t2)
    for i,v in ipairs(t2) do
       table.insert(t1, v)
@@ -65,10 +82,66 @@ local readItemList = function(index)
         if iAddr ~= 0 then
             owner = pso.read_i8(iAddr + _ItemOwner)
             if owner == index then
-                item = {}
-                pso.read_mem(item, iAddr + _ItemCode, 3)
+                item = {0,0,0,0,0,0,0,0,0,0,0,0}
+                item[1] = pso.read_u8(iAddr + _ItemCode + 0)
+                item[2] = pso.read_u8(iAddr + _ItemCode + 1)
+                item[3] = pso.read_u8(iAddr + _ItemCode + 2)
                 
-                itemNameRes = itemReader.getItemName(item, false)
+                itemNameRes = itemReader.getItemName(item)
+                
+                if item[1] == 0 then
+                    item[4] = pso.read_u8(iAddr + _ItemWepGrind)
+                    item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
+                    item[7] = pso.read_u8(iAddr + _ItemWepStats + 0)
+                    item[8] = pso.read_u8(iAddr + _ItemWepStats + 1)
+                    item[9] = pso.read_u8(iAddr + _ItemWepStats + 2)
+                    item[10] = pso.read_u8(iAddr + _ItemWepStats + 3)
+                    item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
+                    item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
+                    
+                    itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                elseif item[1] == 1 then
+                    if item[2] == 1 then
+                        item[5] = pso.read_u8(iAddr + _ItemArmSlots)
+                        item[7] = pso.read_u8(iAddr + _ItemFrameDef)
+                        item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
+                        
+                        itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                    elseif item[2] == 2 then
+                        item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
+                        item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
+                        
+                        itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                    elseif item[2] == 3 then
+                        -- nothing for now
+                    end
+                elseif item[1] == 2 then
+                    item[4] = pso.read_u8(iAddr + _ItemMagPB)
+                    item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
+                    item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
+                    item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
+                    item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
+                    item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
+                    item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
+                    item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
+                    item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
+                    item[13] = pso.read_u8(iAddr + _ItemMagSync)
+                    item[14] = pso.read_u8(iAddr + _ItemMagIQ)
+                    item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
+                    item[16] = pso.read_u8(iAddr + _ItemMagColor)
+                    
+                    itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                    
+                    time = pso.read_f32(iAddr + _ItemMagTimer) / 30
+                    
+                    itemNameRes = itemNameRes .. string.format(" [Feed in: %is]", time)
+                elseif item[1] == 3 then
+                end
+                
+                -- kills = pso.read_u16(iAddr + _ItemKills)
+                -- if kills ~= 0 then
+                --     itemNameRes = itemNameRes .. string.format(" [%ik]", kills)
+                -- end
                 
                 invString = invString .. string.format("%03i: %s\n", localCount + 1, itemNameRes)
                 
@@ -81,7 +154,6 @@ local readItemList = function(index)
     
     return invString
 end
-
 local readBank = function()
     local invString = ""
     local meseta
@@ -117,7 +189,9 @@ local readBank = function()
         end
         address = address + 24
         
-        itemNameRes = itemReader.getItemName(item, true)
+        itemNameRes = itemReader.getItemName(item)
+        itemNameRes = itemReader.formatItemName(item, itemNameRes)
+        -- get item data
         
         invString = invString .. string.format("%03i: %s\n", i, itemNameRes)
     end
@@ -126,7 +200,7 @@ local readBank = function()
 end
 
 local frames = 0
-local selection = 2
+local selection = 1
 local status = true
 local text = ""
 
