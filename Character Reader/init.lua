@@ -34,7 +34,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.1",
+        version = "1.2",
         author = "Solybum"
     }
 end
@@ -96,37 +96,38 @@ local readBank = function()
     address = address + 0x021C
     count = pso.read_u8(address)
     address = address + 4
-    -- meseta = pso.read_i32(address)
+    meseta = pso.read_i32(address)
     address = address + 4
     
-    invString = string.format("Count: %i\n\n", count)
-    
+    invString = string.format("Count: %i\tMeseta: %i\n\n", count, meseta)
     for i=1,count,1 do
-        data1 = {}
-        data2 = {}
         item = {}
-        pso.read_mem(data1, address, 12)
-        pso.read_mem(data2, address + 16, 4)
+        for i=1,12,1 do
+            byte = pso.read_u8(address + i - 1)
+            table.insert(item, byte)
+        end
+        for i=1,4,1 do
+            byte = pso.read_u8(address + 16 + i - 1)
+            table.insert(item, byte)
+        end
         itemCount = pso.read_u8(address + 20)
         
-        if data1[1] == 3 then
-            data1[6] = itemCount
+        if item[1] == 3 then
+            item[6] = itemCount
         end
         address = address + 24
         
-        item = tableMerge(data1, data2)
         itemNameRes = itemReader.getItemName(item, true)
         
-        invString = invString .. 
-            string.format("%03i: %s\n", i, itemNameRes)
+        invString = invString .. string.format("%03i: %s\n", i, itemNameRes)
     end
     
     return invString
 end
 
 local frames = 0
-local selection = 1
-local force = true
+local selection = 2
+local status = true
 local text = ""
 
 local present = function()
@@ -136,9 +137,9 @@ local present = function()
     status, selection = imgui.Combo("Inventory", selection, list, tablelength(list))
     
     -- refresh every 60 frames or when selection changes
-    if frames >= 60 or status then
+    if frames == 0 or status then
         local ltext = ""
-        frames = 0
+        frames = 60
         text = "";
         
         if selection == 1 then
@@ -151,7 +152,7 @@ local present = function()
         
         text = text .. ltext
     else
-        frames = frames + 1
+        frames = frames - 1
     end
     
     imgui.Text(text)
