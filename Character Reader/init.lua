@@ -33,6 +33,7 @@ local _ItemMagColor = 0x1D0
 local _ItemMagSync = 0x1BE
 local _ItemMagIQ = 0x1BC
 local _ItemMagTimer = 0x1B4
+local _ItemMesetaAmount = 0x100
 
 
 function tablelength(T)
@@ -60,9 +61,7 @@ local readItemList = function(index)
     local invString = ""
     local myAddress
     
-    if index == -1 then
-        index = -1
-    else
+    if index ~= -1 then
         index = pso.read_u32(_PlayerMyIndex)
     end
     
@@ -87,8 +86,12 @@ local readItemList = function(index)
                 item[2] = pso.read_u8(iAddr + _ItemCode + 1)
                 item[3] = pso.read_u8(iAddr + _ItemCode + 2)
                 
-                itemNameRes = itemReader.getItemName(item)
+                -- There is no name for meseta, we'll just skip naming it here
+                if item[1] ~= 4 then
+                    itemNameRes = itemReader.getItemName(item)
+                end
                 
+                -- Where the magic happens
                 if item[1] == 0 then
                     item[4] = pso.read_u8(iAddr + _ItemWepGrind)
                     item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
@@ -136,16 +139,27 @@ local readItemList = function(index)
                     
                     itemNameRes = itemNameRes .. string.format(" [Feed in: %is]", time)
                 elseif item[1] == 3 then
+                
+                elseif item[1] == 4 then
+                    itemNameRes = string.format("Meseta: %i", pso.read_u32(iAddr + _ItemMesetaAmount))
                 end
                 
+                -- I'm not sure yet, I guess I can just read the ones that can have kills
                 -- kills = pso.read_u16(iAddr + _ItemKills)
                 -- if kills ~= 0 then
                 --     itemNameRes = itemNameRes .. string.format(" [%ik]", kills)
                 -- end
                 
-                invString = invString .. string.format("%03i: %s\n", localCount + 1, itemNameRes)
-                
-                localCount = localCount + 1
+                -- Invert the list if its floor items, note that the indexing is inverted too
+                -- but that's not a big deal, even better you know how many things have dropped
+                -- Remove the comments if you want meseta to appear on the floor item list
+                if index == -1 and item[1] ~= 4 then
+                    invString = string.format("%03i: %s\n", localCount + 1, itemNameRes) .. invString
+                    localCount = localCount + 1
+                elseif item[1] ~= 4 then
+                    invString = invString .. string.format("%03i: %s\n", localCount + 1, itemNameRes)
+                    localCount = localCount + 1
+                end
             end
         end
     end
