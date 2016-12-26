@@ -34,6 +34,7 @@ local _ItemMagSync = 0x1BE
 local _ItemMagIQ = 0x1BC
 local _ItemMagTimer = 0x1B4
 local _ItemToolCount = 0x104
+local _ItemTechType = 0x108
 local _ItemMesetaAmount = 0x100
 
 
@@ -140,7 +141,12 @@ local readItemList = function(index)
                     
                     itemNameRes = itemNameRes .. string.format(" [Feed in: %is]", time)
                 elseif item[1] == 3 then
-                    itemNameRes = itemNameRes .. string.format(" x%i", bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount)))
+                    if item[2] == 2 then
+                        item[5] = pso.read_u8(iAddr + _ItemTechType)
+                        itemNameRes = itemReader.formatItemName(item, "")
+                    else
+                        itemNameRes = itemNameRes .. string.format(" x%i", bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount)))
+                    end
                 elseif item[1] == 4 then
                     itemNameRes = string.format("Meseta: %i", pso.read_u32(iAddr + _ItemMesetaAmount))
                 end

@@ -191,7 +191,7 @@ function getItemName(data)
     else
         -- get item id
         if data[1] == 3 and data[2] == 2 then
-            id = _GetItemID(data[1], data[2], data[5])
+            id = _GetItemID(data[1], data[2], 0)
         else
             id = _GetItemID(data[1], data[2], data[3])
         end
