@@ -51,7 +51,7 @@ local magColor =
 }
 local photonBlast = 
 {
-    "Farlla", "Estilla", "Golla", "Pilla", "Leilla", "Twins", "Invalid_1", "Invalid_2"
+    "Farlla", "Estlla", "Golla", "Pilla", "Leilla", "Twins", "Invalid_1", "Invalid_2"
 }
 local leftPhotonBlast = 
 {
