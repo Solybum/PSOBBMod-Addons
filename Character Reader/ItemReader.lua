@@ -197,7 +197,7 @@ function getItemName(data)
         end
         
         if id == -1 then
-            str = nil
+            str = "Unknown"
         else
             str = _GetItemNameString(id)
         end
