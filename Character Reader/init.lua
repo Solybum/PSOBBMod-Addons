@@ -228,14 +228,17 @@ local formatPrintWeapon = function(name, data)
             end
         end
 
+        statsStr = string.format(" [%i/%i/%i/%i/", stats[2], stats[3], stats[4], stats[5])
         imgui.SameLine(0, 0)
-        imgui.Text(string.format(" [%i/%i/%i/%i/",
-            stats[2],
-            stats[3],
-            stats[4],
-            stats[5]))
+        imgui.Text(statsStr)
+
+        hitStr = string.format("%i", stats[6])
         imgui.SameLine(0, 0)
-        imgui.TextColored(1, 0, 0, 1, string.format("%i", stats[6]))
+        if stats[6] ~= 0 then
+            imgui.TextColored(1, 0, 0, 1, hitStr)
+        else
+            imgui.Text(hitStr)
+        end
         imgui.SameLine(0, 0)
         imgui.Text("]")
 
