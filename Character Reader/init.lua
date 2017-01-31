@@ -4,7 +4,6 @@ local itemReader = require("Character Reader/ItemReader")
 local _MesetaAddress    = 0x00AA70F0
 -- count is somewher else, but if data[0] == 0, item is empty
 local _InvPointer = 0x00A95DE0 + 0x1C
--- end remove
 -- count, meseta, data
 local _BankPointer      = 0x00A95DE0 + 0x18
 
@@ -37,6 +36,67 @@ local _ItemToolCount = 0x104
 local _ItemTechType = 0x108
 local _ItemMesetaAmount = 0x100
 
+local techNames = 
+{
+    "Foie", "Gifoie", "Rafoie",
+    "Barta", "Gibarta", "Rabarta",
+    "Zonde", "Gizonde", "Razonde",
+    "Grants", "Deband",
+    "Jellen", "Zalure",
+    "Shifta", "Ryuker",
+    "Resta", "Anti",
+    "Reverser", "Megid",
+}
+local specialNames = 
+{
+    "None", 
+    "Draw", "Drain", "Fill", "Gush",
+    "Heart", "Mind", "Soul", "Geist", 
+    "Master's", "Lord's", "King's",
+    "Charge", "Spirit", "Berserk",
+    "Ice", "Frost", "Freeze", "Blizzard",
+    "Bind", "Hold", "Seize", "Arrest",
+    "Heat", "Fire", "Flame", "Burning",
+    "Shock", "Thunder", "Storm", "Tempest",
+    "Dim", "Shadow", "Dark", "Hell",
+    "Panic", "Riot", "Havoc", "Chaos",
+    "Devil's", "Demon's",
+}
+local srankSpecial = 
+{
+    "", "Jellen", "Zalure", "HP Regeneration", "TP Regeneration",
+    "Burning", "Tempest", "Blizzard", "Arrest", "Chaos", "Hell",
+    "Spirit", "Berserk", "Demon's", "Gush", "Geist", "King's",
+}
+local magColor = 
+{
+    "Red", "Blue", "Yellow", "Green", "Purple", "Black", "White",
+    "Cyan", "Brown", "Orange", "Slate Blue", "Olive", "Turquoise",
+    "Fuschia", "Grey", "Cream", "Pink", "Dark Green",
+}
+local photonBlast = 
+{
+    "Farlla", "Estlla", "Golla", "Pilla", "Leilla", "Twins", "Invalid_1", "Invalid_2"
+}
+local leftPhotonBlast = 
+{
+    1,2,1,1,1,1,1,1,2,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+    2,3,3,2,2,2,2,2,3,2,3,2,2,2,2,2,
+    3,3,2,2,2,2,2,2,2,2,1,1,1,1,1,1,
+    2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,
+    2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,
+    3,4,4,4,3,3,3,3,4,3,4,4,3,3,3,3,
+    4,4,3,4,3,3,3,3,4,4,4,2,2,2,2,2,
+    3,3,3,2,2,2,2,2,3,3,3,2,2,2,2,2,
+    3,3,3,2,2,2,2,2,3,3,3,2,2,2,2,2,
+    4,5,5,5,5,4,4,4,5,4,5,5,5,4,4,4,
+    5,5,4,5,5,4,4,4,5,5,5,4,5,4,4,4,
+    5,5,5,5,5,3,3,3,4,4,4,4,3,3,3,3,
+    4,4,4,4,3,3,3,3,4,4,4,4,3,3,3,3,
+}
 
 function tablelength(T)
   local count = 0
@@ -59,9 +119,272 @@ local init = function()
     }
 end
 
+-- Some helpers
+local getSrankName = function(data)
+    srankName = ""
+    temp = 0
+    for i=1,6,2 do
+        n = bit.lshift(data[7 + i - 1], 8) + data[8 + i - 1]
+        n = n - 0x8000
+        
+        temp = math.floor(n / 0x400) + 0x40
+        if temp > 0x40 and temp < 0x60 and i ~= 1 then
+            srankName = srankName .. string.char(temp)
+        end
+        n = n % 0x400
+        
+        temp = math.floor(n / 0x20) + 0x40
+        if temp > 0x40 and temp < 0x60 then
+            srankName = srankName .. string.char(temp)
+        end
+        n = n % 0x20
+        
+        temp = n + 0x40
+        if temp > 0x40 and temp < 0x60 then
+            srankName = srankName .. string.char(temp)
+        end
+    end
+    return srankName
+end
+local getLeftPBValue = function(pb)
+    pbs = { 0,0,0,0,0,0,0,0, }
+
+    pbs[bit.band(pb, 7) + 1] = 1
+    pbs[bit.rshift(bit.band(pb, 56), 3) + 1] = 1
+    
+    pb = bit.band(pb, 0xC0)
+    pb = bit.rshift(pb, 6)
+    
+    for i=1,6,1 do
+        if pbs[i] == 1 then
+            -- continue
+        else
+            if pb == 0 then
+                return i;
+            else
+                pb = pb - 1
+            end
+        end
+    end
+    return -1;
+end
+
+-- format and print each item type
+local formatPrintWeapon = function(name, data)
+    wrapStr = ""
+    if data[5] > 0xBF then
+        wrapStr = " [U|W]"
+    elseif data[5] > 0x7F then
+        wrapStr = " [U]"
+    elseif data[5] > 0x3F then
+        wrapStr " [W]"
+    end
+    imgui.Text(wrapStr)
+
+    -- SRANK
+    if (data[2] > 0x6F and data[2] < 0x89) or (data[2] > 0xA4 and data[2] < 0xAA) then
+        srankName = getSrankName(data)
+        imgui.SameLine(0, 0)
+        imgui.Text("S-RANK")
+        imgui.SameLine(0, 0)
+        imgui.Text(" " .. name)
+        imgui.SameLine(0, 0)
+        imgui.Text(" " .. srankName)
+
+        if data[4] > 0 then
+            imgui.SameLine(0, 0)
+            imgui.Text(string.format(" +%i", data[4]))
+        end
+
+        if data[3] ~= 0 then
+            if data[3] < tablelength(srankSpecial) then
+                imgui.SameLine(0, 0)
+                imgui.Text(string.format(" [%s]", srankSpecial[data[3] + 1]))
+            else
+                imgui.SameLine(0, 0)
+                imgui.Text(" <special>")
+            end
+        end
+    -- NON SRANK
+    else
+        imgui.SameLine(0, 0)
+        imgui.Text(name)
+
+        if data[4] > 0 then
+            imgui.SameLine(0, 0)
+            imgui.Text(string.format(" +%i", data[4]))
+        end
+
+        spec = data[5] % 64
+        if spec ~= 0 then
+        
+            if spec < tablelength(specialNames) then
+                imgui.SameLine(0, 0)
+                imgui.Text(string.format(" [%s]", specialNames[spec + 1]))
+            else
+                imgui.SameLine(0, 0)
+                imgui.Text(" <special>")
+            end
+        end
+
+        stats = {0,0,0,0,0,0}
+        if data[7] < 6 then
+            stats[data[7] + 1] = data[8]
+            if stats[data[7] + 1] > 127 then
+                stats[data[7] + 1] = stats[data[7] + 1] - 256
+            end
+        end
+        if data[9] < 6 then
+            stats[data[9] + 1] = data[10]
+            if stats[data[9] + 1] > 127 then
+                stats[data[9] + 1] = stats[data[9] + 1] - 256
+            end
+        end
+        if data[11] < 6 then
+            stats[data[11] + 1] = data[12]
+            if stats[data[11] + 1] > 127 then
+                stats[data[11] + 1] = stats[data[11] + 1] - 256
+            end
+        end
+
+        imgui.SameLine(0, 0)
+        imgui.Text(string.format(" [%i/%i/%i/%i/",
+            stats[2],
+            stats[3],
+            stats[4],
+            stats[5]))
+        imgui.SameLine(0, 0)
+        imgui.TextColored(1, 0, 0, 1, string.format("%i", stats[6]))
+        imgui.SameLine(0, 0)
+        imgui.Text("]")
+
+        if data[11] >= 0x80 then
+            kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
+            imgui.SameLine(0, 0)
+            imgui.Text(string.format(" [%i k]", kills))
+        end
+    end
+end
+local formatPrintArmor = function (name, data)
+    imgui.Text(name)
+    
+    statStr = string.format(" [DEF: %i/EVP: %i]",
+        bit.lshift(data[8], 8) + data[7],
+        bit.lshift(data[10], 8) + data[9])
+    
+    imgui.SameLine(0, 0)
+    imgui.Text(statStr)
+    
+    if data[2] == 1 then 
+        imgui.SameLine(0, 0)
+        slotStr = string.format(" [%is]", data[6])
+        imgui.Text(slotStr)
+    end
+end
+local formatPrintUnit = function (name, data)
+    imgui.Text(name)
+
+    mod = data[7]
+    modstr = ""
+    if mod > 127 then
+        mod = mod - 128
+    end
+    
+    if mod == 0 then
+    elseif mod == 1 then
+        modstr "+"
+    elseif mod > 1 then
+        modstr "++"
+    elseif mod == -1 then
+        modstr "-"
+    elseif mod < -1 then
+        modstr "--"
+    end
+    imgui.SameLine(0, 0)
+    imgui.Text(modstr)
+
+    if data[11] >= 0x80 then
+        kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
+        imgui.SameLine(0, 0)
+        imgui.Text(string.format(" [%i k]", kills))
+    end
+end
+local formatPrintMag = function (name, data, feedtimer)
+    imgui.Text(name)
+    
+    colorStr = ""
+    if data[16] < tablelength(magColor) then
+        imgui.SameLine(0, 0)
+        colorStr  = " [" .. magColor[data[16] + 1] .. "]"
+    end
+    imgui.SameLine(0, 0)
+    imgui.Text(colorStr)
+
+    atts = {}
+    for i=1,4,1 do
+        val = bit.lshift(data[6 + (i - 1) * 2],  8) + data[5 + (i - 1) * 2]
+        table.insert(atts, val/100)
+    end
+
+    imgui.SameLine(0, 0)
+    imgui.Text(string.format(" [%.2f/%.2f/%.2f/%.2f]", atts[1], atts[2], atts[3], atts[4]))
+
+    pbStr = ""
+    if bit.band(data[15], 4) == 4 then
+        leftPBVal = getLeftPBValue(data[4])
+        if leftPBVal == 1 then
+            pbStr = pbStr .. " [Error"
+        else
+            pbStr = pbStr .. " [" .. photonBlast[leftPBVal]
+        end
+    else
+        pbStr = pbStr .. " [Empty"
+    end
+    if bit.band(data[15], 2) == 2 then
+        pbStr = pbStr .. "|" .. photonBlast[bit.band(data[4], 7) + 1]
+    else
+        pbStr = pbStr .. "|Empty"
+    end
+    if bit.band(data[15], 1) == 1 then
+        pbStr = pbStr .. "|" .. photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1] .. "]"
+    else
+        pbStr = pbStr .. "|Empty]"
+    end
+    imgui.SameLine(0, 0)
+    imgui.Text(pbStr)
+
+    imgui.SameLine(0, 0)
+    imgui.Text(string.format(" [Feed in: %is]", feedtimer))
+end
+local formatPrintTool = function (name, data)
+    if data[2] == 2 then
+        if data[5] < tablelength(techNames) then
+            techStr = string.format("%s Lv%i", techNames[data[5] + 1], data[3] + 1)
+            imgui.Text(techStr)
+        else
+            imgui.Text("Invalid technique")
+        end
+    else
+        imgui.Text(name)
+        if data[6] > 1 then
+            imgui.SameLine(0, 0)
+            imgui.Text(string.format(" x%i", data[6]))
+        end
+    end
+end
+local formatPrintMeseta = function (name, count)
+    imgui.Text(name)
+    imgui.SameLine(0, 0)
+    imgui.Text(string.format(" x%i", 
+        bit.lshift(item[13],  0) + 
+        bit.lshift(item[14],  8) + 
+        bit.lshift(item[15], 16) + 
+        bit.lshift(item[16], 24)))
+end
+
 local readItemList = function(index)
     local invString = ""
-    local myAddress
+    local myAddress = 0
     
     if index ~= -1 then
         index = pso.read_u32(_PlayerMyIndex)
@@ -80,8 +403,10 @@ local readItemList = function(index)
     localCount = 0;
     for i=1,iCount,1 do
         iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
+
         if iAddr ~= 0 then
             owner = pso.read_i8(iAddr + _ItemOwner)
+
             if owner == index then
                 item = {0,0,0,0,0,0,0,0,0,0,0,0}
                 item[1] = pso.read_u8(iAddr + _ItemCode + 0)
@@ -89,11 +414,14 @@ local readItemList = function(index)
                 item[3] = pso.read_u8(iAddr + _ItemCode + 2)
                 
                 -- There is no name for meseta, we'll just skip naming it here
-                if item[1] ~= 4 then
-                    itemNameRes = itemReader.getItemName(item)
+                if item[1] == 4 then
+                    itemName = "Meseta"
+                else
+                    itemName = itemReader.getItemName(item)
                 end
                 
                 -- Where the magic happens
+                -- WEAPON
                 if item[1] == 0 then
                     item[4] = pso.read_u8(iAddr + _ItemWepGrind)
                     item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
@@ -104,22 +432,38 @@ local readItemList = function(index)
                     item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
                     item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
                     
-                    itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                    if item[2] == 0x33 or item[2] == 0xAB then
+                        kills = pso.read_u16(iAddr + _ItemKills)
+                        item[11] = (bit.rshift(kills, 8) + 0x80)
+                        item[12] = bit.band(kills, 0xFF)
+                    end
+
+                    formatPrintWeapon(itemName, item)
+                -- ARMOR
                 elseif item[1] == 1 then
-                    if item[2] == 1 then
-                        item[5] = pso.read_u8(iAddr + _ItemArmSlots)
+                    -- FRAME
+                    if item[2] == 1 or item[2] == 2 then
+                        item[6] = pso.read_u8(iAddr + _ItemArmSlots)
                         item[7] = pso.read_u8(iAddr + _ItemFrameDef)
                         item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
                         
-                        itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                        formatPrintArmor(itemName, item)
+                    -- BARRIER
                     elseif item[2] == 2 then
                         item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
                         item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
                         
-                        itemNameRes = itemReader.formatItemName(item, itemNameRes)
+                        formatPrintArmor(itemName, item)
+                    -- UNIT
                     elseif item[2] == 3 then
-                        -- nothing for now
+                        if item[3] == 0x4D or item[2] == 0x4E then
+                            kills = pso.read_u16(iAddr + _ItemKills)
+                            item[11] = (bit.rshift(kills, 8) + 0x80)
+                            item[12] = bit.band(kills, 0xFF)
+                        end
+                        formatPrintUnit(itemName, item)
                     end
+                -- MAG
                 elseif item[1] == 2 then
                     item[4] = pso.read_u8(iAddr + _ItemMagPB)
                     item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
@@ -135,48 +479,40 @@ local readItemList = function(index)
                     item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
                     item[16] = pso.read_u8(iAddr + _ItemMagColor)
                     
-                    itemNameRes = itemReader.formatItemName(item, itemNameRes)
-                    
-                    time = pso.read_f32(iAddr + _ItemMagTimer) / 30
-                    
-                    itemNameRes = itemNameRes .. string.format(" [Feed in: %is]", time)
+                    feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
+                    formatPrintMag(itemName, item, feedtimer)
+                -- TOOL
                 elseif item[1] == 3 then
                     if item[2] == 2 then
                         item[5] = pso.read_u8(iAddr + _ItemTechType)
-                        itemNameRes = itemReader.formatItemName(item, "")
                     else
-                        itemNameRes = itemNameRes .. string.format(" x%i", bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount)))
+                        item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
                     end
+                    formatPrintTool(itemName, item)
+                -- MESETA
                 elseif item[1] == 4 then
-                    itemNameRes = string.format("Meseta: %i", pso.read_u32(iAddr + _ItemMesetaAmount))
+                    meseta = pso.read_u32(iAddr + _ItemMesetaAmount)
+
+                    item[13] = bit.rshift(meseta,  0) % 0x100
+                    item[14] = bit.rshift(meseta,  8) % 0x100
+                    item[15] = bit.rshift(meseta, 16) % 0x100
+                    item[16] = bit.rshift(meseta, 24) % 0x100
+
+                    formatPrintMeseta(itemName, item)
                 end
                 
-                -- I'm not sure yet, I guess I can just read the ones that can have kills
-                -- kills = pso.read_u16(iAddr + _ItemKills)
-                -- if kills ~= 0 then
-                --     itemNameRes = itemNameRes .. string.format(" [%ik]", kills)
-                -- end
-                
-                -- Invert the list if its floor items, note that the indexing is inverted too
-                -- but that's not a big deal, even better you know how many things have dropped
-                -- Remove the comments if you want meseta to appear on the floor item list
-                if index == -1 and item[1] ~= 4 then
-                    invString = string.format("%03i: %s\n", localCount + 1, itemNameRes) .. invString
-                    localCount = localCount + 1
-                elseif item[1] ~= 4 then
-                    invString = invString .. string.format("%03i: %s\n", localCount + 1, itemNameRes)
-                    localCount = localCount + 1
-                end
+                -- TODO invert the floor items
+                -- TODO Add item index
+                -- TODO Somehow print the count at the top
+                localCount = localCount + 1
             end
         end
     end
     
-    invString = string.format("Count: %i\n\n%s", localCount, invString)
-    
-    return invString
+    -- Can't do this last :/.. well see how to do it later
+    -- invString = string.format("Count: %i\n\n%s", localCount, invString)
 end
 local readBank = function()
-    local invString = ""
     local meseta
     local count
     local address
@@ -192,7 +528,7 @@ local readBank = function()
     meseta = pso.read_i32(address)
     address = address + 4
     
-    invString = string.format("Count: %i\tMeseta: %i\n\n", count, meseta)
+    imgui.Text(string.format("Count: %i\tMeseta: %i\n", count, meseta))
     for i=1,count,1 do
         item = {}
         for i=1,12,1 do
@@ -203,21 +539,40 @@ local readBank = function()
             byte = pso.read_u8(address + 16 + i - 1)
             table.insert(item, byte)
         end
-        itemCount = pso.read_u8(address + 20)
-        
+
         if item[1] == 3 then
-            item[6] = itemCount
+            item[6] = pso.read_u8(address + 20)
         end
         address = address + 24
         
-        itemNameRes = itemReader.getItemName(item)
-        itemNameRes = itemReader.formatItemName(item, itemNameRes)
-        -- get item data
-        
-        invString = invString .. string.format("%03i: %s\n", i, itemNameRes)
+        itemName = itemReader.getItemName(item)
+
+        -- WEAPON
+        if item[1] == 0 then
+            formatPrintWeapon(itemName, item)
+        -- ARMOR
+        elseif item[1] == 1 then
+            -- FRAME
+            if item[2] == 1 or item[2] == 2 then
+                formatPrintArmor(itemName, item)
+            -- BARRIER
+            elseif item[2] == 2 then
+                formatPrintArmor(itemName, item)
+            -- UNIT
+            elseif item[2] == 3 then
+                formatPrintUnit(itemName, item)
+            end
+        -- MAG
+        elseif item[1] == 2 then
+            formatPrintMag(itemName, item, 0)
+        -- TOOL
+        elseif item[1] == 3 then
+            formatPrintTool(itemName, item)
+        -- MESETA
+        elseif item[1] == 4 then
+            formatPrintMeseta(itemName, item)
+        end
     end
-    
-    return invString
 end
 
 local frames = 0
@@ -231,26 +586,13 @@ local present = function()
     local list = { "Me", "Bank", "Floor"}
     status, selection = imgui.Combo("Inventory", selection, list, tablelength(list))
     
-    -- refresh every 60 frames or when selection changes
-    if frames == 0 or status then
-        local ltext = ""
-        frames = 60
-        text = "";
-        
-        if selection == 1 then
-            ltext = readItemList(0)
-        elseif selection == 2 then
-            ltext = readBank()
-        elseif selection == 3 then
-            ltext = readItemList(-1)
-        end
-        
-        text = text .. ltext
-    else
-        frames = frames - 1
+    if selection == 1 then
+        readItemList(0)
+    elseif selection == 2 then
+        ltext = readBank()
+    elseif selection == 3 then
+        ltext = readItemList(-1)
     end
-    
-    imgui.Text(text)
     
     imgui.End()
 end
