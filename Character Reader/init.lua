@@ -650,9 +650,9 @@ local present = function()
     if selection == 1 then
         readItemList(0, save)
     elseif selection == 2 then
-        ltext = readBank(save)
+        readBank(save)
     elseif selection == 3 then
-        ltext = readItemList(-1, save)
+        readItemList(-1, save)
     end
     
     imgui.End()
