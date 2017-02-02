@@ -409,9 +409,103 @@ local formatPrintMeseta = function (name, count)
         bit.lshift(item[14],  8) + 
         bit.lshift(item[15], 16) + 
         bit.lshift(item[16], 24))
-    imgui.Text()
+    imgui.Text(amounrStr)
 
     return name .. amounrStr
+end
+
+local readItemFromPool = function (iAddr)
+    itemStr = ""
+    item = {0,0,0,0,0,0,0,0,0,0,0,0}
+    item[1] = pso.read_u8(iAddr + _ItemCode + 0)
+    item[2] = pso.read_u8(iAddr + _ItemCode + 1)
+    item[3] = pso.read_u8(iAddr + _ItemCode + 2)
+    
+    -- There is no name for meseta, we'll just skip naming it here
+    if item[1] == 4 then
+        itemName = "Meseta"
+    else
+        itemName = itemReader.getItemName(item)
+    end
+    
+    -- Where the magic happens
+    -- WEAPON
+    if item[1] == 0 then
+        item[4] = pso.read_u8(iAddr + _ItemWepGrind)
+        item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
+        item[7] = pso.read_u8(iAddr + _ItemWepStats + 0)
+        item[8] = pso.read_u8(iAddr + _ItemWepStats + 1)
+        item[9] = pso.read_u8(iAddr + _ItemWepStats + 2)
+        item[10] = pso.read_u8(iAddr + _ItemWepStats + 3)
+        item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
+        item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
+        
+        if item[2] == 0x33 or item[2] == 0xAB then
+            kills = pso.read_u16(iAddr + _ItemKills)
+            item[11] = (bit.rshift(kills, 8) + 0x80)
+            item[12] = bit.band(kills, 0xFF)
+        end
+
+        itemStr = formatPrintWeapon(itemName, item)
+    -- ARMOR
+    elseif item[1] == 1 then
+        -- FRAME
+        if item[2] == 1 or item[2] == 2 then
+            item[6] = pso.read_u8(iAddr + _ItemArmSlots)
+            item[7] = pso.read_u8(iAddr + _ItemFrameDef)
+            item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
+            
+            itemStr = formatPrintArmor(itemName, item)
+        -- BARRIER
+        elseif item[2] == 2 then
+            item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
+            item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
+            
+            itemStr = formatPrintArmor(itemName, item)
+        -- UNIT
+        elseif item[2] == 3 then
+            if item[3] == 0x4D or item[2] == 0x4E then
+                kills = pso.read_u16(iAddr + _ItemKills)
+                item[11] = (bit.rshift(kills, 8) + 0x80)
+                item[12] = bit.band(kills, 0xFF)
+            end
+            itemStr = formatPrintUnit(itemName, item)
+        end
+    -- MAG
+    elseif item[1] == 2 then
+        item[4] = pso.read_u8(iAddr + _ItemMagPB)
+        item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
+        item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
+        item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
+        item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
+        item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
+        item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
+        item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
+        item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
+        item[13] = pso.read_u8(iAddr + _ItemMagSync)
+        item[14] = pso.read_u8(iAddr + _ItemMagIQ)
+        item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
+        item[16] = pso.read_u8(iAddr + _ItemMagColor)
+        
+        feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
+        itemStr = formatPrintMag(itemName, item, feedtimer)
+    -- TOOL
+    elseif item[1] == 3 then
+        if item[2] == 2 then
+            item[5] = pso.read_u8(iAddr + _ItemTechType)
+        else
+            item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
+        end
+        itemStr = formatPrintTool(itemName, item)
+    -- MESETA
+    elseif item[1] == 4 then
+        item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
+        item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
+        item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
+        item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
+
+        itemStr = formatPrintMeseta(itemName, item)
+    end
 end
 
 local readItemList = function(index, save)
@@ -431,126 +525,61 @@ local readItemList = function(index, save)
     
     iCount = pso.read_u32(_ItemArrayCount)
     ilAddress = pso.read_u32(_ItemArray)
-    
+
     localCount = 0;
-    for i=1,iCount,1 do
-        iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
+    if index == -1 then
+        for i=iCount,1,-1 do
+            iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
 
-        if iAddr ~= 0 then
-            owner = pso.read_i8(iAddr + _ItemOwner)
+            if iAddr ~= 0 then
+                owner = pso.read_i8(iAddr + _ItemOwner)
 
-            if owner == index then
-                -- Write this here so the item appears in a new line
-                imgui.Text("")
-                itemStr = ""
-                item = {0,0,0,0,0,0,0,0,0,0,0,0}
-                item[1] = pso.read_u8(iAddr + _ItemCode + 0)
-                item[2] = pso.read_u8(iAddr + _ItemCode + 1)
-                item[3] = pso.read_u8(iAddr + _ItemCode + 2)
-                
-                -- There is no name for meseta, we'll just skip naming it here
-                if item[1] == 4 then
-                    itemName = "Meseta"
-                else
-                    itemName = itemReader.getItemName(item)
+                if owner == index then
+                    -- Write this here so the item appears in a new line
+                    localCount = localCount + 1
+                    localCountStr = string.format("%03i ", localCount)
+
+                    imgui.Text(localCountStr)
+
+                    readItemFromPool(iAddr)
+
+                    if save then
+                        file = io.open(invFileName, "a")
+                        io.output(file)
+                        io.write(localCountStr)
+                        io.write(itemStr .. "\n")
+                        io.close(file)
+                    end
                 end
-                
-                -- Where the magic happens
-                -- WEAPON
-                if item[1] == 0 then
-                    item[4] = pso.read_u8(iAddr + _ItemWepGrind)
-                    item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
-                    item[7] = pso.read_u8(iAddr + _ItemWepStats + 0)
-                    item[8] = pso.read_u8(iAddr + _ItemWepStats + 1)
-                    item[9] = pso.read_u8(iAddr + _ItemWepStats + 2)
-                    item[10] = pso.read_u8(iAddr + _ItemWepStats + 3)
-                    item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
-                    item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
-                    
-                    if item[2] == 0x33 or item[2] == 0xAB then
-                        kills = pso.read_u16(iAddr + _ItemKills)
-                        item[11] = (bit.rshift(kills, 8) + 0x80)
-                        item[12] = bit.band(kills, 0xFF)
-                    end
+            end
+        end
+    else
+        for i=1,iCount,1 do
+            iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
 
-                    itemStr = formatPrintWeapon(itemName, item)
-                -- ARMOR
-                elseif item[1] == 1 then
-                    -- FRAME
-                    if item[2] == 1 or item[2] == 2 then
-                        item[6] = pso.read_u8(iAddr + _ItemArmSlots)
-                        item[7] = pso.read_u8(iAddr + _ItemFrameDef)
-                        item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
-                        
-                        itemStr = formatPrintArmor(itemName, item)
-                    -- BARRIER
-                    elseif item[2] == 2 then
-                        item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
-                        item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
-                        
-                        itemStr = formatPrintArmor(itemName, item)
-                    -- UNIT
-                    elseif item[2] == 3 then
-                        if item[3] == 0x4D or item[2] == 0x4E then
-                            kills = pso.read_u16(iAddr + _ItemKills)
-                            item[11] = (bit.rshift(kills, 8) + 0x80)
-                            item[12] = bit.band(kills, 0xFF)
-                        end
-                        itemStr = formatPrintUnit(itemName, item)
-                    end
-                -- MAG
-                elseif item[1] == 2 then
-                    item[4] = pso.read_u8(iAddr + _ItemMagPB)
-                    item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
-                    item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
-                    item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
-                    item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
-                    item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
-                    item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
-                    item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
-                    item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
-                    item[13] = pso.read_u8(iAddr + _ItemMagSync)
-                    item[14] = pso.read_u8(iAddr + _ItemMagIQ)
-                    item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
-                    item[16] = pso.read_u8(iAddr + _ItemMagColor)
-                    
-                    feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-                    itemStr = formatPrintMag(itemName, item, feedtimer)
-                -- TOOL
-                elseif item[1] == 3 then
-                    if item[2] == 2 then
-                        item[5] = pso.read_u8(iAddr + _ItemTechType)
-                    else
-                        item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
-                    end
-                    itemStr = formatPrintTool(itemName, item)
-                -- MESETA
-                elseif item[1] == 4 then
-                    item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
-                    item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
-                    item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
-                    item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
+            if iAddr ~= 0 then
+                owner = pso.read_i8(iAddr + _ItemOwner)
 
-                    itemStr = formatPrintMeseta(itemName, item)
-                end
-                
-                -- TODO invert the floor items
-                -- TODO Add item index
-                -- TODO Somehow print the count at the top
-                localCount = localCount + 1
+                if owner == index then
+                    -- Write this here so the item appears in a new line
+                    localCount = localCount + 1
+                    localCountStr = string.format("%03i ", localCount)
 
-                if save then
-                    file = io.open(invFileName, "a")
-                    io.output(file)
-                    io.write(itemStr .. "\n")
-                    io.close(file)
+                    imgui.Text(localCountStr)
+
+                    readItemFromPool(iAddr)
+
+                    if save then
+                        file = io.open(invFileName, "a")
+                        io.output(file)
+                        io.write(localCountStr)
+                        io.write(itemStr .. "\n")
+                        io.close(file)
+                    end
                 end
             end
         end
     end
-    
-    -- Can't do this last :/.. well see how to do it later
-    -- invString = string.format("Count: %i\n\n%s", localCount, invString)
 end
 local readBank = function(save)
     local meseta
@@ -568,10 +597,13 @@ local readBank = function(save)
     meseta = pso.read_i32(address)
     address = address + 4
     
+    localCount = 0
     imgui.Text(string.format("Count: %i\tMeseta: %i\n", count, meseta))
     for i=1,count,1 do
-        -- Write this here so the item appears in a new line
-        imgui.Text("")
+        localCount = localCount + 1
+        localCountStr = string.format("%03i ", localCount)
+        imgui.Text(localCountStr)
+
         item = {}
         for i=1,12,1 do
             byte = pso.read_u8(address + i - 1)
