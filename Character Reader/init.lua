@@ -1,5 +1,6 @@
 local itemReader = require("Character Reader/ItemReader")
 
+local invFileName = "imgui/inv.txt"
 -- remove
 local _MesetaAddress    = 0x00AA70F0
 -- count is somewher else, but if data[0] == 0, item is empty
@@ -152,6 +153,7 @@ end
 
 -- format and print each item type
 local formatPrintWeapon = function(name, data)
+    retStr = ""
     wrapStr = ""
     if data[5] > 0xBF then
         wrapStr = " [U|W]"
@@ -160,52 +162,61 @@ local formatPrintWeapon = function(name, data)
     elseif data[5] > 0x3F then
         wrapStr " [W]"
     end
+    retStr = retStr .. wrapStr
+    imgui.SameLine(0, 0)
     imgui.Text(wrapStr)
 
     -- SRANK
     if (data[2] > 0x6F and data[2] < 0x89) or (data[2] > 0xA4 and data[2] < 0xAA) then
         srankName = getSrankName(data)
+        retStr = retStr .. "S-RANK"
         imgui.SameLine(0, 0)
         imgui.Text("S-RANK")
+        retStr = retStr .. " " .. name
         imgui.SameLine(0, 0)
         imgui.Text(" " .. name)
+        retStr = retStr .. " " .. srankName
         imgui.SameLine(0, 0)
         imgui.Text(" " .. srankName)
 
         if data[4] > 0 then
+            grindStr = string.format(" +%i", data[4])
+            retStr = retStr .. grindStr
             imgui.SameLine(0, 0)
-            imgui.Text(string.format(" +%i", data[4]))
+            imgui.Text(grindStr)
         end
 
         if data[3] ~= 0 then
+            specialStr = " <special>"
             if data[3] < tablelength(srankSpecial) then
-                imgui.SameLine(0, 0)
-                imgui.Text(string.format(" [%s]", srankSpecial[data[3] + 1]))
-            else
-                imgui.SameLine(0, 0)
-                imgui.Text(" <special>")
+                specialStr = string.format(" [%s]", srankSpecial[data[3] + 1])
             end
+            retStr = retStr .. specialStr
+            imgui.SameLine(0, 0)
+            imgui.Text(specialStr)
         end
     -- NON SRANK
     else
+        retStr = retStr .. name
         imgui.SameLine(0, 0)
         imgui.Text(name)
 
         if data[4] > 0 then
+            grindStr = string.format(" +%i", data[4])
+            retStr = retStr .. grindStr
             imgui.SameLine(0, 0)
             imgui.Text(string.format(" +%i", data[4]))
         end
 
         spec = data[5] % 64
         if spec ~= 0 then
-        
+            sepecialStr = " <special>"
             if spec < tablelength(specialNames) then
+                sepecialStr = string.format(" [%s]", specialNames[spec + 1])
                 imgui.SameLine(0, 0)
-                imgui.Text(string.format(" [%s]", specialNames[spec + 1]))
-            else
-                imgui.SameLine(0, 0)
-                imgui.Text(" <special>")
+                imgui.Text(sepecialStr)
             end
+            retStr = retStr .. sepecialStr
         end
 
         stats = {0,0,0,0,0,0}
@@ -229,71 +240,90 @@ local formatPrintWeapon = function(name, data)
         end
 
         statsStr = string.format(" [%i/%i/%i/%i/", stats[2], stats[3], stats[4], stats[5])
+        retStr = retStr .. statsStr
         imgui.SameLine(0, 0)
         imgui.Text(statsStr)
 
         hitStr = string.format("%i", stats[6])
+        retStr = retStr .. hitStr
         imgui.SameLine(0, 0)
         if stats[6] ~= 0 then
             imgui.TextColored(1, 0, 0, 1, hitStr)
         else
             imgui.Text(hitStr)
         end
+        retStr = retStr .. "]"
         imgui.SameLine(0, 0)
         imgui.Text("]")
 
         if data[11] >= 0x80 then
             kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
+            killsStr = string.format(" [%i k]", kills)
+            retStr = retStr .. killsStr
             imgui.SameLine(0, 0)
             imgui.Text(string.format(" [%i k]", kills))
         end
     end
+
+    return retStr
 end
 local formatPrintArmor = function (name, data)
+    retStr = name
+    imgui.SameLine(0, 0)
     imgui.Text(name)
     
     statStr = string.format(" [DEF: %i/EVP: %i]",
         bit.lshift(data[8], 8) + data[7],
         bit.lshift(data[10], 8) + data[9])
-    
+    retStr = retStr .. statStr
     imgui.SameLine(0, 0)
     imgui.Text(statStr)
     
     if data[2] == 1 then 
         imgui.SameLine(0, 0)
         slotStr = string.format(" [%is]", data[6])
+        retStr = retStr .. slotStr
         imgui.Text(slotStr)
     end
+    return retStr
 end
 local formatPrintUnit = function (name, data)
+    retStr = name
+    imgui.SameLine(0, 0)
     imgui.Text(name)
 
     mod = data[7]
-    modstr = ""
+    modStr = ""
     if mod > 127 then
         mod = mod - 128
     end
     
     if mod == 0 then
     elseif mod == 1 then
-        modstr "+"
+        modStr "+"
     elseif mod > 1 then
-        modstr "++"
+        modStr "++"
     elseif mod == -1 then
-        modstr "-"
+        modStr "-"
     elseif mod < -1 then
-        modstr "--"
+        modStr "--"
     end
+    retStr = retStr .. modStr
     imgui.SameLine(0, 0)
-    imgui.Text(modstr)
+    imgui.Text(modStr)
 
     if data[11] >= 0x80 then
         kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
+        killsStr = string.format(" [%i k]", kills)
+        retStr = retStr .. killsStr
         imgui.SameLine(0, 0)
         imgui.Text(string.format(" [%i k]", kills))
     end
+    return retStr
 end
 local formatPrintMag = function (name, data, feedtimer)
+    retStr = name
+    imgui.SameLine(0, 0)
     imgui.Text(name)
     
     colorStr = ""
@@ -301,6 +331,7 @@ local formatPrintMag = function (name, data, feedtimer)
         imgui.SameLine(0, 0)
         colorStr  = " [" .. magColor[data[16] + 1] .. "]"
     end
+    retStr = retStr .. colorStr
     imgui.SameLine(0, 0)
     imgui.Text(colorStr)
 
@@ -310,8 +341,10 @@ local formatPrintMag = function (name, data, feedtimer)
         table.insert(atts, val/100)
     end
 
+    statsStr = string.format(" [%.2f/%.2f/%.2f/%.2f]", atts[1], atts[2], atts[3], atts[4])
+    retStr = retStr .. statsStr
     imgui.SameLine(0, 0)
-    imgui.Text(string.format(" [%.2f/%.2f/%.2f/%.2f]", atts[1], atts[2], atts[3], atts[4]))
+    imgui.Text(statsStr)
 
     pbStr = ""
     if bit.band(data[15], 4) == 4 then
@@ -334,39 +367,54 @@ local formatPrintMag = function (name, data, feedtimer)
     else
         pbStr = pbStr .. "|Empty]"
     end
+    retStr = retStr .. pbStr
     imgui.SameLine(0, 0)
     imgui.Text(pbStr)
 
     imgui.SameLine(0, 0)
     imgui.Text(string.format(" [Feed in: %is]", feedtimer))
+    return retStr
 end
 local formatPrintTool = function (name, data)
     if data[2] == 2 then
         if data[5] < tablelength(techNames) then
             techStr = string.format("%s Lv%i", techNames[data[5] + 1], data[3] + 1)
+            imgui.SameLine(0, 0)
             imgui.Text(techStr)
+            return techStr
         else
             imgui.Text("Invalid technique")
+            return techStr
         end
     else
+        retStr = name
+        imgui.SameLine(0, 0)
         imgui.Text(name)
         if data[6] > 1 then
             imgui.SameLine(0, 0)
-            imgui.Text(string.format(" x%i", data[6]))
+            amountStr = string.format(" x%i", data[6])
+            imgui.SameLine(0, 0)
+            imgui.Text(amountStr)
+            retStr = retStr .. amountStr
         end
+        return retStr
     end
 end
 local formatPrintMeseta = function (name, count)
+    imgui.SameLine(0, 0)
     imgui.Text(name)
     imgui.SameLine(0, 0)
-    imgui.Text(string.format(" x%i", 
+    amounrStr = string.format(" x%i", 
         bit.lshift(item[13],  0) + 
         bit.lshift(item[14],  8) + 
         bit.lshift(item[15], 16) + 
-        bit.lshift(item[16], 24)))
+        bit.lshift(item[16], 24))
+    imgui.Text()
+
+    return name .. amounrStr
 end
 
-local readItemList = function(index)
+local readItemList = function(index, save)
     local invString = ""
     local myAddress = 0
     
@@ -392,6 +440,9 @@ local readItemList = function(index)
             owner = pso.read_i8(iAddr + _ItemOwner)
 
             if owner == index then
+                -- Write this here so the item appears in a new line
+                imgui.Text("")
+                itemStr = ""
                 item = {0,0,0,0,0,0,0,0,0,0,0,0}
                 item[1] = pso.read_u8(iAddr + _ItemCode + 0)
                 item[2] = pso.read_u8(iAddr + _ItemCode + 1)
@@ -422,7 +473,7 @@ local readItemList = function(index)
                         item[12] = bit.band(kills, 0xFF)
                     end
 
-                    formatPrintWeapon(itemName, item)
+                    itemStr = formatPrintWeapon(itemName, item)
                 -- ARMOR
                 elseif item[1] == 1 then
                     -- FRAME
@@ -431,13 +482,13 @@ local readItemList = function(index)
                         item[7] = pso.read_u8(iAddr + _ItemFrameDef)
                         item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
                         
-                        formatPrintArmor(itemName, item)
+                        itemStr = formatPrintArmor(itemName, item)
                     -- BARRIER
                     elseif item[2] == 2 then
                         item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
                         item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
                         
-                        formatPrintArmor(itemName, item)
+                        itemStr = formatPrintArmor(itemName, item)
                     -- UNIT
                     elseif item[2] == 3 then
                         if item[3] == 0x4D or item[2] == 0x4E then
@@ -445,7 +496,7 @@ local readItemList = function(index)
                             item[11] = (bit.rshift(kills, 8) + 0x80)
                             item[12] = bit.band(kills, 0xFF)
                         end
-                        formatPrintUnit(itemName, item)
+                        itemStr = formatPrintUnit(itemName, item)
                     end
                 -- MAG
                 elseif item[1] == 2 then
@@ -464,7 +515,7 @@ local readItemList = function(index)
                     item[16] = pso.read_u8(iAddr + _ItemMagColor)
                     
                     feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-                    formatPrintMag(itemName, item, feedtimer)
+                    itemStr = formatPrintMag(itemName, item, feedtimer)
                 -- TOOL
                 elseif item[1] == 3 then
                     if item[2] == 2 then
@@ -472,23 +523,28 @@ local readItemList = function(index)
                     else
                         item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
                     end
-                    formatPrintTool(itemName, item)
+                    itemStr = formatPrintTool(itemName, item)
                 -- MESETA
                 elseif item[1] == 4 then
-                    meseta = pso.read_u32(iAddr + _ItemMesetaAmount)
+                    item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
+                    item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
+                    item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
+                    item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
 
-                    item[13] = bit.rshift(meseta,  0) % 0x100
-                    item[14] = bit.rshift(meseta,  8) % 0x100
-                    item[15] = bit.rshift(meseta, 16) % 0x100
-                    item[16] = bit.rshift(meseta, 24) % 0x100
-
-                    formatPrintMeseta(itemName, item)
+                    itemStr = formatPrintMeseta(itemName, item)
                 end
                 
                 -- TODO invert the floor items
                 -- TODO Add item index
                 -- TODO Somehow print the count at the top
                 localCount = localCount + 1
+
+                if save then
+                    file = io.open(invFileName, "a")
+                    io.output(file)
+                    io.write(itemStr .. "\n")
+                    io.close(file)
+                end
             end
         end
     end
@@ -496,7 +552,7 @@ local readItemList = function(index)
     -- Can't do this last :/.. well see how to do it later
     -- invString = string.format("Count: %i\n\n%s", localCount, invString)
 end
-local readBank = function()
+local readBank = function(save)
     local meseta
     local count
     local address
@@ -514,6 +570,8 @@ local readBank = function()
     
     imgui.Text(string.format("Count: %i\tMeseta: %i\n", count, meseta))
     for i=1,count,1 do
+        -- Write this here so the item appears in a new line
+        imgui.Text("")
         item = {}
         for i=1,12,1 do
             byte = pso.read_u8(address + i - 1)
@@ -530,31 +588,38 @@ local readBank = function()
         address = address + 24
         
         itemName = itemReader.getItemName(item)
-
+        itemStr = ""
         -- WEAPON
         if item[1] == 0 then
-            formatPrintWeapon(itemName, item)
+            itemStr = formatPrintWeapon(itemName, item)
         -- ARMOR
         elseif item[1] == 1 then
             -- FRAME
             if item[2] == 1 or item[2] == 2 then
-                formatPrintArmor(itemName, item)
+                itemStr = formatPrintArmor(itemName, item)
             -- BARRIER
             elseif item[2] == 2 then
-                formatPrintArmor(itemName, item)
+                itemStr = formatPrintArmor(itemName, item)
             -- UNIT
             elseif item[2] == 3 then
-                formatPrintUnit(itemName, item)
+                itemStr = formatPrintUnit(itemName, item)
             end
         -- MAG
         elseif item[1] == 2 then
-            formatPrintMag(itemName, item, 0)
+            itemStr = formatPrintMag(itemName, item, 0)
         -- TOOL
         elseif item[1] == 3 then
-            formatPrintTool(itemName, item)
+            itemStr = formatPrintTool(itemName, item)
         -- MESETA
         elseif item[1] == 4 then
-            formatPrintMeseta(itemName, item)
+            itemStr = formatPrintMeseta(itemName, item)
+        end
+
+        if save then
+            file = io.open(invFileName, "a")
+            io.output(file)
+            io.write(itemStr .. "\n")
+            io.close(file)
         end
     end
 end
@@ -567,15 +632,27 @@ local text = ""
 local present = function()
     imgui.Begin("Character Reader")
     
+
     local list = { "Me", "Bank", "Floor"}
-    status, selection = imgui.Combo("Inventory", selection, list, tablelength(list))
+    status, selection = imgui.Combo(" ", selection, list, tablelength(list))
+    imgui.SameLine(0, 0)
+
+    save = false
+    if imgui.Button("Save to file") then
+        save = true
+        -- Write nothing to it so its cleared works for appending
+        file = io.open(invFileName, "w")
+        io.output(file)
+        io.write("")
+        io.close(file)
+    end
     
     if selection == 1 then
-        readItemList(0)
+        readItemList(0, save)
     elseif selection == 2 then
-        ltext = readBank()
+        ltext = readBank(save)
     elseif selection == 3 then
-        ltext = readItemList(-1)
+        ltext = readItemList(-1, save)
     end
     
     imgui.End()
