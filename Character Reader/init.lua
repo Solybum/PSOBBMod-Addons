@@ -29,7 +29,7 @@ local _ItemBarrierEvp = 0x1E5
 local _ItemMagStats = 0x1C0
 local _ItemMagPBHas = 0x1C8
 local _ItemMagPB = 0x1C9
-local _ItemMagColor = 0x1D0
+local _ItemMagColor = 0x1CA
 local _ItemMagSync = 0x1BE
 local _ItemMagIQ = 0x1BC
 local _ItemMagTimer = 0x1B4
@@ -328,7 +328,6 @@ local formatPrintMag = function (name, data, feedtimer)
     
     colorStr = ""
     if data[16] < tablelength(magColor) then
-        imgui.SameLine(0, 0)
         colorStr  = " [" .. magColor[data[16] + 1] .. "]"
     end
     retStr = retStr .. colorStr
@@ -507,7 +506,6 @@ local readItemFromPool = function (iAddr)
         itemStr = formatPrintMeseta(itemName, item)
     end
 end
-
 local readItemList = function(index, save)
     local invString = ""
     local myAddress = 0
