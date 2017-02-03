@@ -96,7 +96,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.0",
+        version = "1.3.1",
         author = "Solybum"
     }
 end
@@ -648,6 +648,7 @@ local readBank = function(save)
         if save then
             file = io.open(invFileName, "a")
             io.output(file)
+            io.output(localCountStr)
             io.write(itemStr .. "\n")
             io.close(file)
         end
