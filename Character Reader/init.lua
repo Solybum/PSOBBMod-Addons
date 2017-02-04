@@ -26,6 +26,7 @@ local _ItemFrameDef = 0x1B9
 local _ItemFrameEvp = 0x1BA
 local _ItemBarrierDef = 0x1E4
 local _ItemBarrierEvp = 0x1E5
+local _ItemUnitMod = 0x1DC
 local _ItemMagStats = 0x1C0
 local _ItemMagPBHas = 0x1C8
 local _ItemMagPB = 0x1C9
@@ -96,7 +97,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.3",
+        version = "1.3.4",
         author = "Solybum"
     }
 end
@@ -295,18 +296,18 @@ local formatPrintUnit = function (name, data)
     mod = data[7]
     modStr = ""
     if mod > 127 then
-        mod = mod - 128
+        mod = mod - 256
     end
-    
+
     if mod == 0 then
     elseif mod == 1 then
-        modStr "+"
+        modStr = "+"
     elseif mod > 1 then
-        modStr "++"
+        modStr = "++"
     elseif mod == -1 then
-        modStr "-"
+        modStr = "-"
     elseif mod < -1 then
-        modStr "--"
+        modStr = "--"
     end
     retStr = retStr .. modStr
     imgui.SameLine(0, 0)
@@ -463,11 +464,15 @@ local readItemFromPool = function (iAddr)
             itemStr = formatPrintArmor(itemName, item)
         -- UNIT
         elseif item[2] == 3 then
+            item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
+            item[8] = pso.read_u8(iAddr + _ItemUnitMod + 1)
+
             if item[3] == 0x4D or item[2] == 0x4E then
                 kills = pso.read_u16(iAddr + _ItemKills)
                 item[11] = (bit.rshift(kills, 8) + 0x80)
                 item[12] = bit.band(kills, 0xFF)
             end
+            
             itemStr = formatPrintUnit(itemName, item)
         end
     -- MAG
