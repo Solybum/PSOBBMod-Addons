@@ -24,8 +24,8 @@ local _ItemWepStats = 0x1C8
 local _ItemArmSlots = 0x1B8
 local _ItemFrameDef = 0x1B9
 local _ItemFrameEvp = 0x1BA
-local _ItemBarrierDef = 0x1E6
-local _ItemBarrierEvp = 0x1E7
+local _ItemBarrierDef = 0x1E4
+local _ItemBarrierEvp = 0x1E5
 local _ItemMagStats = 0x1C0
 local _ItemMagPBHas = 0x1C8
 local _ItemMagPB = 0x1C9
@@ -96,7 +96,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.2",
+        version = "1.3.3",
         author = "Solybum"
     }
 end
