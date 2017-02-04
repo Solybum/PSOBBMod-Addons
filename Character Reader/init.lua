@@ -97,7 +97,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.4",
+        version = "1.3.5",
         author = "Solybum"
     }
 end
@@ -349,7 +349,7 @@ local formatPrintMag = function (name, data, feedtimer)
     pbStr = ""
     if bit.band(data[15], 4) == 4 then
         leftPBVal = getLeftPBValue(data[4])
-        if leftPBVal == 1 then
+        if leftPBVal == -1 then
             pbStr = pbStr .. " [Error"
         else
             pbStr = pbStr .. " [" .. photonBlast[leftPBVal]
