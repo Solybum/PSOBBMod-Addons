@@ -1,11 +1,14 @@
 local itemReader = require("Character Reader/ItemReader")
 
+-- User options
 local invFileName = "imgui/inv.txt"
--- remove
+local _printItemIndex = true
+local _printItemIndexToFile = true
+local _ignoreMeseta = false
+-- End of user options
+
 local _MesetaAddress    = 0x00AA70F0
--- count is somewher else, but if data[0] == 0, item is empty
 local _InvPointer = 0x00A95DE0 + 0x1C
--- count, meseta, data
 local _BankPointer      = 0x00A95DE0 + 0x18
 
 local _PlayerArray = 0x00A94254
@@ -97,7 +100,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.5",
+        version = "1.3.6",
         author = "Solybum"
     }
 end
@@ -153,8 +156,20 @@ local getLeftPBValue = function(pb)
 end
 
 -- format and print each item type
-local formatPrintWeapon = function(name, data)
+local formatPrintWeapon = function(itemIndex, name, data)
+    -- new line
+    imgui.Text("")
+
     retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+    
     wrapStr = ""
     if data[5] > 0xBF then
         wrapStr = " [U|W]"
@@ -268,8 +283,21 @@ local formatPrintWeapon = function(name, data)
 
     return retStr
 end
-local formatPrintArmor = function (name, data)
-    retStr = name
+local formatPrintArmor = function(itemIndex, name, data)
+    -- new line
+    imgui.Text("")
+
+    retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+    
+    retStr = retStr .. name
     imgui.SameLine(0, 0)
     imgui.Text(name)
     
@@ -288,8 +316,22 @@ local formatPrintArmor = function (name, data)
     end
     return retStr
 end
-local formatPrintUnit = function (name, data)
-    retStr = name
+local formatPrintUnit = function(itemIndex, name, data)
+    -- new line
+    imgui.Text("")
+
+    
+    retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+
+    retStr = retStr .. name
     imgui.SameLine(0, 0)
     imgui.Text(name)
 
@@ -322,8 +364,21 @@ local formatPrintUnit = function (name, data)
     end
     return retStr
 end
-local formatPrintMag = function (name, data, feedtimer)
-    retStr = name
+local formatPrintMag = function(itemIndex, name, data)
+    -- new line
+    imgui.Text("")
+
+    retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+
+    retStr = retStr .. name
     imgui.SameLine(0, 0)
     imgui.Text(name)
     
@@ -375,19 +430,32 @@ local formatPrintMag = function (name, data, feedtimer)
     imgui.Text(string.format(" [Feed in: %is]", feedtimer))
     return retStr
 end
-local formatPrintTool = function (name, data)
+local formatPrintTool = function(itemIndex, name, data)
+    -- new line
+    imgui.Text("")
+
+    retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+
     if data[2] == 2 then
         if data[5] < tablelength(techNames) then
             techStr = string.format("%s Lv%i", techNames[data[5] + 1], data[3] + 1)
             imgui.SameLine(0, 0)
             imgui.Text(techStr)
-            return techStr
+            retStr = retStr .. techStr
         else
             imgui.Text("Invalid technique")
-            return techStr
+            retStr = retStr .. "Invalid technique"
         end
     else
-        retStr = name
+        retStr = retStr .. name
         imgui.SameLine(0, 0)
         imgui.Text(name)
         if data[6] > 1 then
@@ -397,10 +465,28 @@ local formatPrintTool = function (name, data)
             imgui.Text(amountStr)
             retStr = retStr .. amountStr
         end
-        return retStr
     end
+    return retStr
 end
-local formatPrintMeseta = function (name, count)
+local formatPrintMeseta = function(itemIndex, name, data)
+    if _ignoreMeseta then 
+        return nil
+    end
+    
+    -- new line
+    imgui.Text("")
+
+    retStr = ""
+    itemIndexStr = string.format("%03i ", itemIndex)
+    if _printItemIndex then 
+        imgui.SameLine(0, 0)
+        imgui.Text(itemIndexStr)
+    end
+    if _printItemIndexToFile then 
+        retStr = retStr .. itemIndexStr
+    end
+
+    retStr = retStr .. name
     imgui.SameLine(0, 0)
     imgui.Text(name)
     imgui.SameLine(0, 0)
@@ -411,10 +497,11 @@ local formatPrintMeseta = function (name, count)
         bit.lshift(item[16], 24))
     imgui.Text(amounrStr)
 
-    return name .. amounrStr
+    retStr = retStr .. amounrStr
+    return retStr
 end
 
-local readItemFromPool = function (iAddr)
+local readItemFromPool = function (index, iAddr)
     itemStr = ""
     item = {0,0,0,0,0,0,0,0,0,0,0,0}
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
@@ -446,7 +533,7 @@ local readItemFromPool = function (iAddr)
             item[12] = bit.band(kills, 0xFF)
         end
 
-        itemStr = formatPrintWeapon(itemName, item)
+        itemStr = formatPrintWeapon(index, itemName, item)
     -- ARMOR
     elseif item[1] == 1 then
         -- FRAME
@@ -455,13 +542,13 @@ local readItemFromPool = function (iAddr)
             item[7] = pso.read_u8(iAddr + _ItemFrameDef)
             item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
             
-            itemStr = formatPrintArmor(itemName, item)
+            itemStr = formatPrintArmor(index, itemName, item)
         -- BARRIER
         elseif item[2] == 2 then
             item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
             item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
             
-            itemStr = formatPrintArmor(itemName, item)
+            itemStr = formatPrintArmor(index, itemName, item)
         -- UNIT
         elseif item[2] == 3 then
             item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
@@ -473,7 +560,7 @@ local readItemFromPool = function (iAddr)
                 item[12] = bit.band(kills, 0xFF)
             end
             
-            itemStr = formatPrintUnit(itemName, item)
+            itemStr = formatPrintUnit(index, itemName, item)
         end
     -- MAG
     elseif item[1] == 2 then
@@ -492,7 +579,7 @@ local readItemFromPool = function (iAddr)
         item[16] = pso.read_u8(iAddr + _ItemMagColor)
         
         feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-        itemStr = formatPrintMag(itemName, item, feedtimer)
+        itemStr = formatPrintMag(index, itemName, item, feedtimer)
     -- TOOL
     elseif item[1] == 3 then
         if item[2] == 2 then
@@ -500,7 +587,7 @@ local readItemFromPool = function (iAddr)
         else
             item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
         end
-        itemStr = formatPrintTool(itemName, item)
+        itemStr = formatPrintTool(index, itemName, item)
     -- MESETA
     elseif item[1] == 4 then
         item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
@@ -508,8 +595,10 @@ local readItemFromPool = function (iAddr)
         item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
         item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
 
-        itemStr = formatPrintMeseta(itemName, item)
+        itemStr = formatPrintMeseta(index, itemName, item)
     end
+
+    return itemStr
 end
 local readItemList = function(index, save)
     local invString = ""
@@ -538,18 +627,13 @@ local readItemList = function(index, save)
                 owner = pso.read_i8(iAddr + _ItemOwner)
 
                 if owner == index then
-                    -- Write this here so the item appears in a new line
                     localCount = localCount + 1
-                    localCountStr = string.format("%03i ", localCount)
 
-                    imgui.Text(localCountStr)
+                    itemStr = readItemFromPool(localCount, iAddr)
 
-                    readItemFromPool(iAddr)
-
-                    if save then
+                    if save and itemStr ~= nil then
                         file = io.open(invFileName, "a")
                         io.output(file)
-                        io.write(localCountStr)
                         io.write(itemStr .. "\n")
                         io.close(file)
                     end
@@ -564,18 +648,13 @@ local readItemList = function(index, save)
                 owner = pso.read_i8(iAddr + _ItemOwner)
 
                 if owner == index then
-                    -- Write this here so the item appears in a new line
                     localCount = localCount + 1
-                    localCountStr = string.format("%03i ", localCount)
 
-                    imgui.Text(localCountStr)
+                    itemStr = readItemFromPool(localCount, iAddr)
 
-                    readItemFromPool(iAddr)
-
-                    if save then
+                    if save and itemStr ~= nil then
                         file = io.open(invFileName, "a")
                         io.output(file)
-                        io.write(localCountStr)
                         io.write(itemStr .. "\n")
                         io.close(file)
                     end
@@ -604,9 +683,7 @@ local readBank = function(save)
     imgui.Text(string.format("Count: %i\tMeseta: %i\n", count, meseta))
     for i=1,count,1 do
         localCount = localCount + 1
-        localCountStr = string.format("%03i ", localCount)
-        imgui.Text(localCountStr)
-
+        
         item = {}
         for i=1,12,1 do
             byte = pso.read_u8(address + i - 1)
@@ -626,34 +703,33 @@ local readBank = function(save)
         itemStr = ""
         -- WEAPON
         if item[1] == 0 then
-            itemStr = formatPrintWeapon(itemName, item)
+            itemStr = formatPrintWeapon(localCount, itemName, item)
         -- ARMOR
         elseif item[1] == 1 then
             -- FRAME
             if item[2] == 1 or item[2] == 2 then
-                itemStr = formatPrintArmor(itemName, item)
+                itemStr = formatPrintArmor(localCount, itemName, item)
             -- BARRIER
             elseif item[2] == 2 then
-                itemStr = formatPrintArmor(itemName, item)
+                itemStr = formatPrintArmor(localCount, itemName, item)
             -- UNIT
             elseif item[2] == 3 then
-                itemStr = formatPrintUnit(itemName, item)
+                itemStr = formatPrintUnit(localCount, itemName, item)
             end
         -- MAG
         elseif item[1] == 2 then
-            itemStr = formatPrintMag(itemName, item, 0)
+            itemStr = formatPrintMag(localCount, itemName, item, 0)
         -- TOOL
         elseif item[1] == 3 then
-            itemStr = formatPrintTool(itemName, item)
+            itemStr = formatPrintTool(localCount, itemName, item)
         -- MESETA
         elseif item[1] == 4 then
-            itemStr = formatPrintMeseta(itemName, item)
+            itemStr = formatPrintMeseta(localCount, itemName, item)
         end
 
         if save then
             file = io.open(invFileName, "a")
             io.output(file)
-            io.output(localCountStr)
             io.write(itemStr .. "\n")
             io.close(file)
         end
