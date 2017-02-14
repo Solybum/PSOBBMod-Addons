@@ -402,7 +402,7 @@ local formatPrintMag = function(itemIndex, name, data)
     imgui.Text(statsStr)
 
     pbStr = ""
-    if bit.band(data[15], 4) == 4 then
+    if bit.band(data[15], 4) ~= 0 then
         leftPBVal = getLeftPBValue(data[4])
         if leftPBVal == -1 then
             pbStr = pbStr .. " [Error"
@@ -412,12 +412,12 @@ local formatPrintMag = function(itemIndex, name, data)
     else
         pbStr = pbStr .. " [Empty"
     end
-    if bit.band(data[15], 2) == 2 then
+    if bit.band(data[15], 1) ~= 0 then
         pbStr = pbStr .. "|" .. photonBlast[bit.band(data[4], 7) + 1]
     else
         pbStr = pbStr .. "|Empty"
     end
-    if bit.band(data[15], 1) == 1 then
+    if bit.band(data[15], 2) ~= 0 then
         pbStr = pbStr .. "|" .. photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1] .. "]"
     else
         pbStr = pbStr .. "|Empty]"
