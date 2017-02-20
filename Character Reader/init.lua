@@ -100,7 +100,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.7",
+        version = "1.3.8",
         author = "Solybum"
     }
 end
@@ -426,8 +426,6 @@ local formatPrintMag = function(itemIndex, name, data)
     imgui.SameLine(0, 0)
     imgui.Text(pbStr)
 
-    imgui.SameLine(0, 0)
-    imgui.Text(string.format(" [Feed in: %is]", feedtimer))
     return retStr
 end
 local formatPrintTool = function(itemIndex, name, data)
@@ -579,7 +577,9 @@ local readItemFromPool = function (index, iAddr)
         item[16] = pso.read_u8(iAddr + _ItemMagColor)
         
         feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-        itemStr = formatPrintMag(index, itemName, item, feedtimer)
+        itemStr = formatPrintMag(index, itemName, item)
+        imgui.SameLine(0, 0)
+        imgui.Text(string.format(" [Feed in: %is]", feedtimer))
     -- TOOL
     elseif item[1] == 3 then
         if item[2] == 2 then
@@ -718,7 +718,7 @@ local readBank = function(save)
             end
         -- MAG
         elseif item[1] == 2 then
-            itemStr = formatPrintMag(localCount, itemName, item, 0)
+            itemStr = formatPrintMag(localCount, itemName, item)
         -- TOOL
         elseif item[1] == 3 then
             itemStr = formatPrintTool(localCount, itemName, item)
