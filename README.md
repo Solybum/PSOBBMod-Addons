@@ -7,6 +7,7 @@ Note: I modified the location of the addons in the built dinput8.dll provided he
 
 At the end your psobb folder should look something like this
 
+```
 PSOBB
  |
  +-- bmp
@@ -24,5 +25,6 @@ PSOBB
  +-- dinput8.dll
  |
  +-- psobb.exe
+ ```
 
 Otherwise you can go to the link above, and compile it yourself.
