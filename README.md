@@ -1,9 +1,9 @@
 # PSOBBMod-Addons
 Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
-For easy installation, download the the files and folders inside PSOBBMod and copy them to your PSOBB directory.
-Then download the addons you want (the whole directory, not just the files inside) and place them inside PSOBB/imgui/
-Note: I modified the location of the addons in the built dinput8.dll provided here, to search for them in ./imgui/Addon-Name-Directory
+For easy installation, download the the files and folders inside PSOBBMod and copy them to your PSOBB directory.  
+Then download the addons you want (the whole directory, not just the files inside) and place them inside PSOBB/imgui/  
+Note: I modified the location of the addons to search for them in ./imgui/*  
 
 At the end your psobb folder should look something like this
 
