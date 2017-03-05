@@ -1,6 +1,15 @@
 itemReader = require("Character Reader/ItemReader")
 cfg = require("Character Reader/Configuration")
 
+local init = function()
+    return 
+    {
+        name = "Character Reader",
+        version = "1.4.0",
+        author = "Solybum"
+    }
+end
+
 _MesetaAddress    = 0x00AA70F0
 _InvPointer = 0x00A95DE0 + 0x1C
 _BankPointer      = 0x00A95DE0 + 0x18
@@ -105,15 +114,6 @@ function tableMerge(t1, t2)
       table.insert(t1, v)
    end
    return t1
-end
-
-local init = function()
-    return 
-    {
-        name = "Character Reader",
-        version = "1.3.9",
-        author = "Solybum"
-    }
 end
 
 -- Some helpers
