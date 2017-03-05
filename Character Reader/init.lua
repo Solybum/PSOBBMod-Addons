@@ -1,5 +1,6 @@
 itemReader = require("Character Reader/ItemReader")
 cfg = require("Character Reader/Configuration")
+itc = require("Character Reader/ItemColor")
 
 local init = function()
     return 
@@ -254,7 +255,15 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
     -- NON SRANK
     else
         retStr = retStr .. name
-        imguiPrint(name, cfg.wna)
+        hexCode = item[3] + 
+            bit.lshift(item[2],  8) + 
+            bit.lshift(item[1], 16)
+        nameColor = itc.t[hexCode]
+        if nameColor ~= nil and nameColor ~= 0 then
+            imguiPrint(name, nameColor)
+        else
+            imguiPrint(name, cfg.wna)
+        end
 
         if data[4] > 0 then
             grindStr = string.format(" +%i", data[4])
@@ -383,7 +392,15 @@ local formatPrintArmor = function(itemIndex, name, data)
     end
     
     retStr = retStr .. name
-    imguiPrint(name, cfg.ana)
+    hexCode = item[3] + 
+        bit.lshift(item[2],  8) + 
+        bit.lshift(item[1], 16)
+    nameColor = itc.t[hexCode]
+    if nameColor ~= nil and nameColor ~= 0 then
+        imguiPrint(name, nameColor)
+    else
+        imguiPrint(name, cfg.ana)
+    end
     
     dfp = bit.lshift(data[8], 8) + data[7]
     evp = bit.lshift(data[10], 8) + data[9]
@@ -436,7 +453,15 @@ local formatPrintUnit = function(itemIndex, name, data)
     end
 
     retStr = retStr .. name
-    imguiPrint(name, cfg.una)
+    hexCode = item[3] + 
+        bit.lshift(item[2],  8) + 
+        bit.lshift(item[1], 16)
+    nameColor = itc.t[hexCode]
+    if nameColor ~= nil and nameColor ~= 0 then
+        imguiPrint(name, nameColor)
+    else
+        imguiPrint(name, cfg.una)
+    end
 
     mod = data[7]
     modStr = ""
@@ -484,7 +509,15 @@ local formatPrintMag = function(itemIndex, name, data)
     end
 
     retStr = retStr .. name
-    imguiPrint(name, cfg.mna)
+    hexCode = item[3] + 
+        bit.lshift(item[2],  8) + 
+        bit.lshift(item[1], 16)
+    nameColor = itc.t[hexCode]
+    if nameColor ~= nil and nameColor ~= 0 then
+        imguiPrint(name, nameColor)
+    else
+        imguiPrint(name, cfg.mna)
+    end
     
     colorStr  = "Not Set"
     if data[16] < tablelength(magColor) then
@@ -577,19 +610,35 @@ local formatPrintTool = function(itemIndex, name, data)
     end
 
     if data[2] == 2 then
-        techStr = "Invalid technique"
+        name = "Invalid technique"
         techLvStr = string.format(" Lv%i", data[3] + 1)
 
         if data[5] < tablelength(techNames) then
-            techStr = string.format("%s", techNames[data[5] + 1])
+            name = string.format("%s", techNames[data[5] + 1])
         end
 
-        retStr = techStr .. techLvStr
-        imguiPrint(techStr, cfg.tch)
+        retStr = name .. techLvStr
+        hexCode = item[3] + 
+            bit.lshift(item[5],  8) + 
+            bit.lshift(5, 16)
+        nameColor = itc.t[hexCode]
+        if nameColor ~= nil and nameColor ~= 0 then
+            imguiPrint(name, nameColor)
+        else
+            imguiPrint(name, cfg.ana)
+        end
         imguiPrint(techLvStr, cfg.tlv)
     else
         retStr = retStr .. name
-        imguiPrint(name, cfg.tna)
+        hexCode = item[3] + 
+            bit.lshift(item[2],  8) + 
+            bit.lshift(item[1], 16)
+        nameColor = itc.t[hexCode]
+        if nameColor ~= nil and nameColor ~= 0 then
+            imguiPrint(name, nameColor)
+        else
+            imguiPrint(name, cfg.tna)
+        end
         if data[6] > 1 then
             amountStr = string.format(" x%i", data[6])
             retStr = retStr .. amountStr

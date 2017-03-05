@@ -8,7 +8,7 @@ local startingInventory = 1;
 
 -- All colors are 0xAARRGGBB
 
-local white = 0xFF000000
+local white = 0xFFFFFFFF
 local grey = 0xFFA0A0A0
 
 -- Index (number before each item)
