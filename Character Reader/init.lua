@@ -241,14 +241,14 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
 
         if data[3] ~= 0 then
             specialStr = "special"
-            if spec < tablelength(specialNames) then
-                specialStr = string.format("%s", specialNames[spec + 1])
+            if spec < tablelength(srankSpecial) then
+                specialStr = string.format("%s", srankSpecial[spec + 1])
             end
 
             retStr = retStr .. " ["
             imguiPrint(" [", cfg.white)
             retStr = retStr .. specialStr
-            imguiPrint(specialStr, cfg.wsp)
+            imguiPrint(specialStr, cfg.wss)
             retStr = retStr .. "]"
             imguiPrint("]", cfg.white)
         end
@@ -281,7 +281,7 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
             retStr = retStr .. " ["
             imguiPrint(" [", cfg.white)
             retStr = retStr .. specialStr
-            imguiPrint(specialStr, cfg.wsp)
+            imguiPrint(specialStr, cfg.wsp[spec + 1])
             retStr = retStr .. "]"
             imguiPrint("]", cfg.white)
         end

@@ -28,7 +28,52 @@ local wsc = 0xFFB060B0
 -- Grind
 local wgn = 0xFF28CC66
 -- Special
-local wsp = 0xFF2D98B7
+local wsp =
+{
+    0xFF2D98B7, -- None
+    0xFF2D98B7, -- Draw
+    0xFF2D98B7, -- Drain
+    0xFF2D98B7, -- Fill
+    0xFF2D98B7, -- Gush
+    0xFF2D98B7, -- Heart
+    0xFF2D98B7, -- Mind
+    0xFF2D98B7, -- Soul
+    0xFF2D98B7, -- Geist
+    0xFF2D98B7, -- Master's
+    0xFF2D98B7, -- Lord's
+    0xFF2D98B7, -- King's
+    0xFF2D98B7, -- Charge
+    0xFF2D98B7, -- Spirit
+    0xFF2D98B7, -- Berserk
+    0xFF2D98B7, -- Ice
+    0xFF2D98B7, -- Frost
+    0xFF2D98B7, -- Freeze
+    0xFF2D98B7, -- Blizzard
+    0xFF2D98B7, -- Bind
+    0xFF2D98B7, -- Hold
+    0xFF2D98B7, -- Seize
+    0xFF2D98B7, -- Arrest
+    0xFF2D98B7, -- Heat
+    0xFF2D98B7, -- Fire
+    0xFF2D98B7, -- Flame
+    0xFF2D98B7, -- Burning
+    0xFF2D98B7, -- Shock
+    0xFF2D98B7, -- Thunder
+    0xFF2D98B7, -- Storm
+    0xFF2D98B7, -- Tempest
+    0xFF2D98B7, -- Dim
+    0xFF2D98B7, -- Shadow
+    0xFF2D98B7, -- Dark
+    0xFF2D98B7, -- Hell
+    0xFF2D98B7, -- Panic
+    0xFF2D98B7, -- Riot
+    0xFF2D98B7, -- Havoc
+    0xFF2D98B7, -- Chaos
+    0xFF2D98B7, -- Devil's
+    0xFF2D98B7, -- Demon's
+}
+-- S-Rank Special
+local wss = 0xFF2D98B7
 -- Kills
 local wkl = 0xFFFFFF00
 -- Color attributes when weapon is in inventory or bank
@@ -142,6 +187,7 @@ return
     wsc = wsc,
     wgn = wgn,
     wsp = wsp,
+    wss = wss,
     wkl = wkl,
     wap = wap,
     wat = wat,
