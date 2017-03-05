@@ -39,22 +39,32 @@ local wat =
 {
      -1, 0xFFA0A0A0,
       0, 0xFFA0A0A0,
+     10, 0xFFFFFFFF,
      20, 0xFFFFFFFF,
+     30, 0xFFFFFFFF,
      40, 0xFFFFFFFF,
+     50, 0xFFFFFFFF,
      60, 0xFFFFFFFF,
+     70, 0xFFFFFFFF,
      80, 0xFFFFFFFF,
-    128, 0xFFFFFFFF,
+     90, 0xFFFFFFFF,
+    100, 0xFFFFFFFF,
 }
 -- Hit
 local wht =
 {
      -1, 0xFFA0A0A0,
-      0, 0xFFA0A0A0,
-     20, 0xFFFFFFFF,
-     40, 0xFF28CC66,
-     60, 0xFFF1C40F,
-     80, 0xFFFF8C00,
-    128, 0xFFFF0000,
+      0, 0xFFFFFFFF,
+     10, 0xFF00FF00,
+     20, 0xFF38FF00,
+     30, 0xFF71FF00,
+     40, 0xFFAAFF00,
+     50, 0xFFE2FF00,
+     60, 0xFFFFE200,
+     70, 0xFFFFAA00,
+     80, 0xFFFF7100,
+     90, 0xFFFF3800,
+    100, 0xFFFF0000,
 }
 
 -- ARMOR (Frame and Barrier)
