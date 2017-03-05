@@ -1,11 +1,13 @@
 # PSOBBMod-Addons
 Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
-For easy installation, download the the files and folders inside PSOBBMod and copy them to your PSOBB directory.  
-Then download the addons you want (the whole directory, not just the files inside) and place them inside PSOBB/imgui/  
-Note: I modified the location of the addons to search for them in ./imgui/*  
+[Character Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Character%20Reader) notes
+Personalize the general colors in [configuration.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Character%20Reader/configuration.lua)
+Override item name colors in [itemcolor.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Character%20Reader/itemcolor.lua)
 
-At the end your psobb folder should look something like this
+Note:
+If you use the [modified DLL](https://github.com/Solybum/PSOBBMod-Addons/blob/master/PSOBBMod/dinput8.dll) from this repository you have to place the addons in ./imgui/*
+Your psobb directory should look something like this
 
 ```
 PSOBB
@@ -26,5 +28,3 @@ PSOBB
  |
  +-- psobb.exe
  ```
-
-Otherwise you can go to the link above, and compile it yourself.
