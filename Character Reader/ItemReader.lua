@@ -1,12 +1,11 @@
-local _uniPtr = 0x00A9CD50
-local _uniItemOffset = 0x04
-
-local _pmtPtr = 0x00A8DC94
-local _pmtWeaponOff = 0x00
-local _pmtArmorOff = 0x04
-local _pmtUnitOff = 0x08
-local _pmtMagOff = 0x10
-local _pmtToolOff = 0x0C
+_uniPtr = 0x00A9CD50
+_uniItemOffset = 0x04
+_pmtPtr = 0x00A8DC94
+_pmtWeaponOff = 0x00
+_pmtArmorOff = 0x04
+_pmtUnitOff = 0x08
+_pmtMagOff = 0x10
+_pmtToolOff = 0x0C
 
 local _GetItemNameString = function(id)
     local str
@@ -125,6 +124,7 @@ function getItemName(data)
     return str
 end
 
-return {
-    getItemName = getItemName
+return
+{
+    getItemName = getItemName,
 }

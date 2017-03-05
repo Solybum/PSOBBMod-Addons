@@ -1,47 +1,42 @@
-local itemReader = require("Character Reader/ItemReader")
+itemReader = require("Character Reader/ItemReader")
+options = require("Character Reader/Options")
 
--- User options
-local invFileName = "imgui/inv.txt"
-local _printItemIndex = true
-local _printItemIndexToFile = true
-local _ignoreMeseta = false
--- End of user options
+_MesetaAddress    = 0x00AA70F0
+_InvPointer = 0x00A95DE0 + 0x1C
+_BankPointer      = 0x00A95DE0 + 0x18
 
-local _MesetaAddress    = 0x00AA70F0
-local _InvPointer = 0x00A95DE0 + 0x1C
-local _BankPointer      = 0x00A95DE0 + 0x18
+_PlayerArray = 0x00A94254
+_PlayerMyIndex = 0x00A9C4F4
+_PlayerNameOff = 0x428
 
-local _PlayerArray = 0x00A94254
-local _PlayerMyIndex = 0x00A9C4F4
-local _PlayerNameOff = 0x428
-
-local _ItemArray = 0x00A8D81C
-local _ItemArrayCount = 0x00A8D820
-local _ItemOwner = 0xE4
-local _ItemCode = 0xF2
+_ItemArray = 0x00A8D81C
+_ItemArrayCount = 0x00A8D820
+_ItemOwner = 0xE4
+_ItemCode = 0xF2
 ---- For the item pool
-local _ItemKills = 0xE8
-local _ItemWepGrind = 0x1F5
-local _ItemWepSpecial = 0x1F6
-local _ItemWepStats = 0x1C8
-local _ItemArmSlots = 0x1B8
-local _ItemFrameDef = 0x1B9
-local _ItemFrameEvp = 0x1BA
-local _ItemBarrierDef = 0x1E4
-local _ItemBarrierEvp = 0x1E5
-local _ItemUnitMod = 0x1DC
-local _ItemMagStats = 0x1C0
-local _ItemMagPBHas = 0x1C8
-local _ItemMagPB = 0x1C9
-local _ItemMagColor = 0x1CA
-local _ItemMagSync = 0x1BE
-local _ItemMagIQ = 0x1BC
-local _ItemMagTimer = 0x1B4
-local _ItemToolCount = 0x104
-local _ItemTechType = 0x108
-local _ItemMesetaAmount = 0x100
+_ItemKills = 0xE8
+_ItemWepGrind = 0x1F5
+_ItemWepSpecial = 0x1F6
+_ItemWepStats = 0x1C8
+_ItemArmSlots = 0x1B8
+_ItemFrameDef = 0x1B9
+_ItemFrameEvp = 0x1BA
+_ItemBarrierDef = 0x1E4
+_ItemBarrierEvp = 0x1E5
+_ItemUnitMod = 0x1DC
+_ItemMagStats = 0x1C0
+_ItemMagPBHas = 0x1C8
+_ItemMagPB = 0x1C9
+_ItemMagColor = 0x1CA
+_ItemMagSync = 0x1BE
+_ItemMagIQ = 0x1BC
+_ItemMagTimer = 0x1B4
+_ItemToolCount = 0x104
+_ItemTechType = 0x108
+_ItemMesetaAmount = 0x100
 
-local techNames = 
+-- Arrays
+techNames = 
 {
     "Foie", "Gifoie", "Rafoie",
     "Barta", "Gibarta", "Rabarta",
@@ -52,7 +47,7 @@ local techNames =
     "Resta", "Anti",
     "Reverser", "Megid",
 }
-local specialNames = 
+specialNames = 
 {
     "None", 
     "Draw", "Drain", "Fill", "Gush",
@@ -67,19 +62,19 @@ local specialNames =
     "Panic", "Riot", "Havoc", "Chaos",
     "Devil's", "Demon's",
 }
-local srankSpecial = 
+srankSpecial = 
 {
     "", "Jellen", "Zalure", "HP Regeneration", "TP Regeneration",
     "Burning", "Tempest", "Blizzard", "Arrest", "Chaos", "Hell",
     "Spirit", "Berserk", "Demon's", "Gush", "Geist", "King's",
 }
-local magColor = 
+magColor = 
 {
     "Red", "Blue", "Yellow", "Green", "Purple", "Black", "White",
     "Cyan", "Brown", "Orange", "Slate Blue", "Olive", "Turquoise",
     "Fuschia", "Grey", "Cream", "Pink", "Dark Green",
 }
-local magNewColor = 
+magNewColor = 
 {
     0x09, 0x01, 0x02, 0x11, 0x0A, 0x05, 0x06, 0x0B, 0x05, 0x00, 0x07, 0x0B, 0x0C, 0x04, 0x05, 0x06, 0x0E, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x01, 0x02, 0x11, 0x04, 0x05, 0x06, 0x08, 0x11, 0x0D, 0x01, 0x02, 0x0C, 0x04, 0x05, 0x06, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -94,10 +89,11 @@ local magNewColor =
     0x00, 0x01, 0x0B, 0x0C, 0x04, 0x05, 0x06, 0x08, 0x0A, 0x0D, 0x07, 0x02, 0x11, 0x0A, 0x05, 0x06, 0x01, 0x0B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x07, 0x02, 0x11, 0x04, 0x05, 0x06, 0x09, 0x0C, 0x00, 0x01, 0x02, 0x11, 0x0D, 0x05, 0x10, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 }
-local photonBlast = 
+photonBlast = 
 {
     "Farlla", "Estlla", "Golla", "Pilla", "Leilla", "Twins", "Invalid_1", "Invalid_2"
 }
+-- End of Arrays
 
 function tablelength(T)
   local count = 0
@@ -115,7 +111,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.3.8",
+        version = "1.3.9",
         author = "Solybum"
     }
 end
@@ -177,11 +173,11 @@ local formatPrintWeapon = function(itemIndex, name, data)
 
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
     
@@ -304,11 +300,11 @@ local formatPrintArmor = function(itemIndex, name, data)
 
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
     
@@ -338,11 +334,11 @@ local formatPrintUnit = function(itemIndex, name, data)
     
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
@@ -385,11 +381,11 @@ local formatPrintMag = function(itemIndex, name, data)
 
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
@@ -451,11 +447,11 @@ local formatPrintTool = function(itemIndex, name, data)
 
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
@@ -484,7 +480,7 @@ local formatPrintTool = function(itemIndex, name, data)
     return retStr
 end
 local formatPrintMeseta = function(itemIndex, name, data)
-    if _ignoreMeseta then 
+    if options.ignoreMeseta then 
         return nil
     end
     
@@ -493,11 +489,11 @@ local formatPrintMeseta = function(itemIndex, name, data)
 
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
-    if _printItemIndex then 
+    if options.printItemIndex then 
         imgui.SameLine(0, 0)
         imgui.Text(itemIndexStr)
     end
-    if _printItemIndexToFile then 
+    if options.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
@@ -569,7 +565,7 @@ local readItemFromPool = function (index, iAddr)
             item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
             item[8] = pso.read_u8(iAddr + _ItemUnitMod + 1)
 
-            if item[3] == 0x4D or item[2] == 0x4E then
+            if item[3] == 0x4D or item[3] == 0x4F then
                 kills = pso.read_u16(iAddr + _ItemKills)
                 item[11] = (bit.rshift(kills, 8) + 0x80)
                 item[12] = bit.band(kills, 0xFF)
@@ -649,7 +645,7 @@ local readItemList = function(index, save)
                     itemStr = readItemFromPool(localCount, iAddr)
 
                     if save and itemStr ~= nil then
-                        file = io.open(invFileName, "a")
+                        file = io.open(options.invFileName, "a")
                         io.output(file)
                         io.write(itemStr .. "\n")
                         io.close(file)
@@ -670,7 +666,7 @@ local readItemList = function(index, save)
                     itemStr = readItemFromPool(localCount, iAddr)
 
                     if save and itemStr ~= nil then
-                        file = io.open(invFileName, "a")
+                        file = io.open(options.invFileName, "a")
                         io.output(file)
                         io.write(itemStr .. "\n")
                         io.close(file)
@@ -745,7 +741,7 @@ local readBank = function(save)
         end
 
         if save then
-            file = io.open(invFileName, "a")
+            file = io.open(options.invFileName, "a")
             io.output(file)
             io.write(itemStr .. "\n")
             io.close(file)
@@ -754,7 +750,7 @@ local readBank = function(save)
 end
 
 local frames = 0
-local selection = 1
+local selection = options.startingInventory
 local status = true
 local text = ""
 
@@ -770,7 +766,7 @@ local present = function()
     if imgui.Button("Save to file") then
         save = true
         -- Write nothing to it so its cleared works for appending
-        file = io.open(invFileName, "w")
+        file = io.open(options.invFileName, "w")
         io.output(file)
         io.write("")
         io.close(file)
