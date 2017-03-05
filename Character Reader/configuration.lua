@@ -2,53 +2,113 @@ local invFileName = "imgui/inv.txt"
 local printItemIndex = true
 local printItemIndexToFile = true
 local ignoreMeseta = false
+local magShowPBs = true;
+local magShowFeedTimer = true;
 local startingInventory = 1;
 
--- All colors are r, g, b, a
--- Values are floats [0, 1]
+-- All colors are 0xAARRGGBB
+
+local white = 0xFF000000
+local grey = 0xFFA0A0A0
 
 -- Index (number before each item)
-local idx = { 1, 1, 1, 1 }
--- Weapon Colors
--- Wrapped and Untekked
-local wuw = { 1, 1, 1, 1 }
+local idx = 0xFFFFFFFF
+
+-- WEAPON
+-- Untekked
+local wuw = 0xFFFF0000
 -- Name
-local wna = { 1, 1, 1, 1 }
+local wna = 0xFFB060B0
 -- S-Rank title: "S-RANK"
-local wst = { 1, 1, 1, 1 }
+local wst = 0xFFFF0000
 -- S-Rank weapon name: "SABER"
-local wsn = { 1, 1, 1, 1 }
+local wsn = 0xFF2D98B7
 -- S-Rank custom name
-local wsc = { 1, 1, 1, 1 }
+local wsc = 0xFFB060B0
 -- Grind
-local wgn = { 1, 1, 1, 1 }
+local wgn = 0xFF28CC66
 -- Special
-local wsp = { 1, 1, 1, 1 }
+local wsp = 0xFF2D98B7
 -- Kills
-local wkl = { 1, 1, 1, 1 }
+local wkl = 0xFFFFFF00
+-- Color attributes when weapon is in inventory or bank
+local wap = true
 -- Attributes
-local wat = 
+-- Max attribute value to select the color
+local wat =
 {
-    { 1, 1, 1, 1 }, -- Below 0
-    { 1, 1, 1, 1 }, -- 0
-    { 1, 1, 1, 1 }, -- Up to 20
-    { 1, 1, 1, 1 }, -- Up to 40
-    { 1, 1, 1, 1 }, -- Up to 60
-    { 1, 1, 1, 1 }, -- Up to 80
-    { 1, 1, 1, 1 }, -- Above 80
+     -1, 0xFFA0A0A0,
+      0, 0xFFA0A0A0,
+     20, 0xFFFFFFFF,
+     40, 0xFFFFFFFF,
+     60, 0xFFFFFFFF,
+     80, 0xFFFFFFFF,
+    128, 0xFFFFFFFF,
 }
 -- Hit
-local wht = 
+local wht =
 {
-    { 1, 1, 1, 1 }, -- Below 0
-    { 1, 1, 1, 1 }, -- 0
-    { 1, 1, 1, 1 }, -- Up to 20
-    { 1, 1, 1, 1 }, -- Up to 40
-    { 1, 1, 1, 1 }, -- Up to 60
-    { 1, 1, 1, 1 }, -- Up to 80
-    { 1, 1, 1, 1 }, -- Above 80
+     -1, 0xFFA0A0A0,
+      0, 0xFFA0A0A0,
+     20, 0xFFFFFFFF,
+     40, 0xFF28CC66,
+     60, 0xFFF1C40F,
+     80, 0xFFFF8C00,
+    128, 0xFFFF0000,
 }
 
+-- ARMOR (Frame and Barrier)
+-- Name
+local ana = 0xFFB060B0
+-- Stats
+local ast = 0xFF28CC66
+-- Slots (Frame only)
+local asl = 0xFFFFFF00
+
+-- ARMOR (Unit)
+-- Name
+local una = 0xFFB060B0
+-- Mod (++/--)
+local umo = 0xFFB060B0
+-- Kills
+local ukl = 0xFFFFFF00
+
+-- MAG
+-- Name
+local mna = 0xFFB060B0
+-- Color
+local mcl = 0xFF2D98B7
+-- Stats
+local msc = 0xFF28CC66
+-- Photon Blast
+local mpb = 0xFFFFFF00
+-- Feed timer
+-- Below the seconds amount, will use the color
+local mft = 
+{
+       1, 0xFF28CC66,
+      16, 0xFFF1C40F,
+      30, 0xFFFF8C00,
+    9001, 0xFFFF0000, -- over 9000, really just needs 210 at most
+}
+
+-- TOOL
+-- Name
+local tna = 0xFFB060B0
+-- Amount
+local tcc = 0xFF28CC66
+
+-- TECHNIQUE
+-- Name
+local tch = 0xFFB060B0
+-- Amount
+local tlv = 0xFF28CC66
+
+-- MESETA
+-- Name
+local nna = 0xFFB060B0
+-- Color
+local nac = 0xFFFFFF00
 
 return 
 {
@@ -57,9 +117,13 @@ return
     printItemIndex = printItemIndex,
     printItemIndexToFile = printItemIndexToFile,
     ignoreMeseta = ignoreMeseta,
+    magShowPBs = magShowPBs,
+    magShowFeedTimer = magShowFeedTimer,
     startingInventory = startingInventory,
 
     -- Colors
+    white = white,
+    grey = grey,
     idx = idx,
     wuw = wuw,
     wna = wna,
@@ -69,6 +133,24 @@ return
     wgn = wgn,
     wsp = wsp,
     wkl = wkl,
+    wap = wap,
     wat = wat,
     wht = wht,
+    ana = ana,
+    ast = ast,
+    asl = asl,
+    una = una,
+    umo = umo,
+    ukl = ukl,
+    mna = mna,
+    mcl = mcl,
+    msc = msc,
+    mpb = mpb,
+    mft = mft,
+    tna = tna,
+    tcc = tcc,
+    tch = tch,
+    tlv = tlv,
+    nna = nna,
+    nac = nac,
 }

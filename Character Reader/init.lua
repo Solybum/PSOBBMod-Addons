@@ -24,6 +24,7 @@ _ItemOwner = 0xE4
 _ItemCode = 0xF2
 ---- For the item pool
 _ItemKills = 0xE8
+_ItemWrapped = 0xDC -- value & 0x00000400
 _ItemWepGrind = 0x1F5
 _ItemWepSpecial = 0x1F6
 _ItemWepStats = 0x1C8
@@ -167,25 +168,31 @@ local getLeftPBValue = function(pb)
 end
 
 -- Helper function to print on the widget's window
--- By default it will print with a new line
+-- By default it will print on the same line
 local function imguiPrint(text, color, newline)
-    color = color or { 1, 1, 1, 1}
-    newline = newline or true
+    color = color or cfg.white
+    newline = newline or false
 
-    if newline then
+    if newline == false then
         imgui.SameLine(0, 0)
     end
     
-    imgui.TextColored(color[1], color[2], color[3], color[4], text)
+    a = bit.band(bit.rshift(color, 24), 0xFF) / 255;
+    r = bit.band(bit.rshift(color, 16), 0xFF) / 255;
+    g = bit.band(bit.rshift(color, 8), 0xFF) / 255;
+    b = bit.band(color, 0xFF) / 255;
+
+    imgui.TextColored(r, g, b, a, text)
 end
 
 -- format and print each item type
-local formatPrintWeapon = function(itemIndex, name, data)
+local formatPrintWeapon = function(itemIndex, name, data, floor)
+    floor = floor or false
     -- new line
     imgui.Text("")
 
     retStr = ""
-    itemIndexStr = string.format("%03i", itemIndex)
+    itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
         imguiPrint(itemIndexStr, cfg.idx)
     end
@@ -195,29 +202,28 @@ local formatPrintWeapon = function(itemIndex, name, data)
     
     wrapStr = nil
     if data[5] > 0xBF then
-        wrapStr = "U|W"
+        wrapStr = "W|U"
     elseif data[5] > 0x7F then
         wrapStr = "U"
     elseif data[5] > 0x3F then
-        wrapStr "W"
+        wrapStr = "W"
     end
 
     if wrapStr ~= nil then
-        retStr = retStr .. " ["
-        imguiPrint(" [")
+        retStr = retStr .. "["
+        imguiPrint("[", cfg.white)
         retStr = retStr .. wrapStr
         imguiPrint(wrapStr, cfg.wuw)
-        retStr = retStr .. "]"
-        imguiPrint("]")
+        retStr = retStr .. "] "
+        imguiPrint("] ", cfg.white)
     end
     
     -- SRANK
     if (data[2] > 0x6F and data[2] < 0x89) or (data[2] > 0xA4 and data[2] < 0xAA) then
         srankName = getSrankName(data)
 
-        srankTitle = " S-RANK"
-        name = " " .. name
-        srankName = " " .. srankName
+        srankTitle = "S-RANK "
+        name = name .. " "
 
         retStr = retStr .. srankTitle
         imguiPrint(srankTitle, cfg.wst)
@@ -239,15 +245,14 @@ local formatPrintWeapon = function(itemIndex, name, data)
             end
 
             retStr = retStr .. " ["
-            imguiPrint(" [")
+            imguiPrint(" [", cfg.white)
             retStr = retStr .. specialStr
             imguiPrint(specialStr, cfg.wsp)
             retStr = retStr .. "]"
-            imguiPrint("]")
+            imguiPrint("]", cfg.white)
         end
     -- NON SRANK
     else
-        name = " " .. name
         retStr = retStr .. name
         imguiPrint(name, cfg.wna)
 
@@ -265,11 +270,11 @@ local formatPrintWeapon = function(itemIndex, name, data)
             end
 
             retStr = retStr .. " ["
-            imguiPrint(" [")
+            imguiPrint(" [", cfg.white)
             retStr = retStr .. specialStr
             imguiPrint(specialStr, cfg.wsp)
             retStr = retStr .. "]"
-            imguiPrint("]")
+            imguiPrint("]", cfg.white)
         end
 
         stats = {0,0,0,0,0,0}
@@ -293,72 +298,72 @@ local formatPrintWeapon = function(itemIndex, name, data)
         end
 
         retStr = retStr .. " ["
-        imguiPrint(" [")
+        imguiPrint(" [", cfg.white)
 
         for i=2,5,1 do
             stat = stats[i]
             statStr = string.format("%i", stat)
             retStr = retStr .. statStr
 
-            statColor = 1
-            if stat < 0 then
-                statColor = 1
-            elseif stat == 0 then
-                statColor = 2
-            elseif stat <= 20 then
-                statColor = 3
-            elseif stat <= 40 then
-                statColor = 4
-            elseif stat <= 60 then
-                statColor = 5
-            elseif stat <= 80 then
-                statColor = 6
-            else
-                statColor = 7 
+            statColor = 0
+            for i2=1,tablelength(cfg.wat),2 do
+                if statColor == 0 then
+                    if stat <= cfg.wat[i2] then
+                        statColor = i2 + 1
+                    end
+                end
             end
 
-            imguiPrint(statStr, cfg.wat[statColor])
+            if floor or cfg.wap then
+                imguiPrint(statStr, cfg.wat[statColor])
+            else
+                if stat == 0 then
+                    imguiPrint(statStr, cfg.grey)
+                else
+                    imguiPrint(statStr, cfg.white)
+                end
+            end
 
             retStr = retStr .. "/"
-            imgui.SameLine(0, 0)
-            imgui.Text("/")
+            imguiPrint("/", cfg.white)
         end
 
         stat = stats[6]
         statStr = string.format("%i", stat)
         retStr = retStr .. statStr
 
-        statColor = 1
-        if stat < 0 then
-            statColor = 1
-        elseif stat == 0 then
-            statColor = 2
-        elseif stat <= 20 then
-            statColor = 3
-        elseif stat <= 40 then
-            statColor = 4
-        elseif stat <= 60 then
-            statColor = 5
-        elseif stat <= 80 then
-            statColor = 6
-        else
-            statColor = 7 
+        statColor = 0
+        for i2=1,tablelength(cfg.wht),2 do
+            if statColor == 0 then
+                if stat <= cfg.wht[i2] then
+                    statColor = i2 + 1
+                end
+            end
         end
-        imguiPrint(statStr, cfg.wht[statColor])
+
+        if floor or cfg.wap then
+            imguiPrint(statStr, cfg.wht[statColor])
+        else
+            if stat == 0 then
+                imguiPrint(statStr, cfg.grey)
+            else
+                imguiPrint(statStr, cfg.white)
+            end
+        end
 
         retStr = retStr .. "]"
-        imguiPrint("]")
+        imguiPrint("]", cfg.white)
 
         if data[11] >= 0x80 then
             kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
             killsStr = string.format("%iK", kills)
 
             retStr = retStr .. " ["
-            imguiPrint(" [")
+            imguiPrint(" [", cfg.white)
             retStr = retStr .. killsStr
             imguiPrint(killsStr, cfg.wkl)
             retStr = retStr .. "]"
-            imguiPrint("]")
+            imguiPrint("]", cfg.white)
         end
     end
 
@@ -371,29 +376,49 @@ local formatPrintArmor = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        imgui.SameLine(0, 0)
-        imgui.Text(itemIndexStr)
+        imguiPrint(itemIndexStr, cfg.idx)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
     
     retStr = retStr .. name
-    imgui.SameLine(0, 0)
-    imgui.Text(name)
+    imguiPrint(name, cfg.ana)
     
-    statStr = string.format(" [DEF: %i/EVP: %i]",
-        bit.lshift(data[8], 8) + data[7],
-        bit.lshift(data[10], 8) + data[9])
-    retStr = retStr .. statStr
-    imgui.SameLine(0, 0)
-    imgui.Text(statStr)
+    dfp = bit.lshift(data[8], 8) + data[7]
+    evp = bit.lshift(data[10], 8) + data[9]
+    dfpStr = string.format("%i", dfp)
+    evpStr = string.format("%i", evp)
+
+    retStr = retStr .. " ["
+    imguiPrint(" [", cfg.white)
+    retStr = retStr .. dfpStr
+    if dfp == 0 then
+        imguiPrint(dfpStr, cfg.grey)
+    else
+        imguiPrint(dfpStr, cfg.ast)
+    end
+    retStr = retStr .. "/"
+    imguiPrint("/", cfg.white)
+    retStr = retStr .. evpStr
+    if evp == 0 then
+        imguiPrint(evpStr, cfg.grey)
+    else
+        imguiPrint(evpStr, cfg.ast)
+    end
+    retStr = retStr .. "]"
+    imguiPrint("]", cfg.white)
     
     if data[2] == 1 then 
-        imgui.SameLine(0, 0)
-        slotStr = string.format(" [%is]", data[6])
+        retStr = retStr .. " ["
+        imguiPrint(" [", cfg.white)
+
+        slotStr = string.format("%iS", data[6])
         retStr = retStr .. slotStr
-        imgui.Text(slotStr)
+        imguiPrint(slotStr, cfg.asl)
+
+        retStr = retStr .. "]"
+        imguiPrint("]", cfg.white)
     end
     return retStr
 end
@@ -401,20 +426,17 @@ local formatPrintUnit = function(itemIndex, name, data)
     -- new line
     imgui.Text("")
 
-    
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        imgui.SameLine(0, 0)
-        imgui.Text(itemIndexStr)
+        imguiPrint(itemIndexStr, cfg.idx)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     retStr = retStr .. name
-    imgui.SameLine(0, 0)
-    imgui.Text(name)
+    imguiPrint(name, cfg.una)
 
     mod = data[7]
     modStr = ""
@@ -424,24 +446,27 @@ local formatPrintUnit = function(itemIndex, name, data)
 
     if mod == 0 then
     elseif mod == 1 then
-        modStr = "+"
+        modStr = " +"
     elseif mod > 1 then
-        modStr = "++"
+        modStr = " ++"
     elseif mod == -1 then
-        modStr = "-"
+        modStr = " -"
     elseif mod < -1 then
-        modStr = "--"
+        modStr = " --"
     end
     retStr = retStr .. modStr
-    imgui.SameLine(0, 0)
-    imgui.Text(modStr)
-
+    imguiPrint(modStr, cfg.umo)
+    
     if data[11] >= 0x80 then
         kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
-        killsStr = string.format(" [%i k]", kills)
-        retStr = retStr .. killsStr
-        imgui.SameLine(0, 0)
-        imgui.Text(string.format(" [%i k]", kills))
+            killsStr = string.format("%iK", kills)
+
+            retStr = retStr .. " ["
+            imguiPrint(" [", cfg.white)
+            retStr = retStr .. killsStr
+            imguiPrint(killsStr, cfg.ukl)
+            retStr = retStr .. "]"
+            imguiPrint("]", cfg.white)
     end
     return retStr
 end
@@ -452,62 +477,89 @@ local formatPrintMag = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        imgui.SameLine(0, 0)
-        imgui.Text(itemIndexStr)
+        imguiPrint(itemIndexStr, cfg.idx)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     retStr = retStr .. name
-    imgui.SameLine(0, 0)
-    imgui.Text(name)
+    imguiPrint(name, cfg.mna)
     
-    colorStr = ""
+    colorStr  = "Not Set"
     if data[16] < tablelength(magColor) then
-        colorStr  = " [" .. magColor[data[16] + 1] .. "]"
-    else
-        colorStr  = " [Not Set]"
+        colorStr  = magColor[data[16] + 1]
     end
-    retStr = retStr .. colorStr
-    imgui.SameLine(0, 0)
-    imgui.Text(colorStr)
 
-    atts = {}
+    retStr = retStr .. " ["
+    imguiPrint(" [", cfg.white)
+    retStr = retStr .. colorStr
+    imguiPrint(colorStr, cfg.mcl)
+    retStr = retStr .. "]"
+    imguiPrint("]", cfg.white)
+
+    retStr = retStr .. " ["
+    imguiPrint(" [", cfg.white)
+
     for i=1,4,1 do
         val = bit.lshift(data[6 + (i - 1) * 2],  8) + data[5 + (i - 1) * 2]
-        table.insert(atts, val/100)
-    end
 
-    statsStr = string.format(" [%.2f/%.2f/%.2f/%.2f]", atts[1], atts[2], atts[3], atts[4])
-    retStr = retStr .. statsStr
-    imgui.SameLine(0, 0)
-    imgui.Text(statsStr)
+        statStr = string.format("%.2f", val/100)
+        retStr = retStr .. statStr
+        imguiPrint(statStr, cfg.msc)
 
-    pbStr = ""
-    if bit.band(data[15], 4) ~= 0 then
-        leftPBVal = getLeftPBValue(data[4])
-        if leftPBVal == -1 then
-            pbStr = pbStr .. " [Error"
-        else
-            pbStr = pbStr .. " [" .. photonBlast[leftPBVal]
+        if i < 4 then
+            retStr = retStr .. "/"
+            imguiPrint("/", cfg.white)
         end
-    else
-        pbStr = pbStr .. " [Empty"
     end
-    if bit.band(data[15], 1) ~= 0 then
-        pbStr = pbStr .. "|" .. photonBlast[bit.band(data[4], 7) + 1]
-    else
-        pbStr = pbStr .. "|Empty"
+
+    retStr = retStr .. "]"
+    imguiPrint("]", cfg.white)
+
+    if cfg.magShowPBs then
+        retStr = retStr .. " ["
+        imguiPrint(" [", cfg.white)
+
+        pbStr = ""
+        if bit.band(data[15], 4) ~= 0 then
+            leftPBVal = getLeftPBValue(data[4])
+            if leftPBVal == -1 then
+                pbStr = "Error"
+            else
+                pbStr = photonBlast[leftPBVal]
+            end
+        else
+            pbStr = "Empty"
+        end
+        retStr = retStr .. pbStr
+        imguiPrint(pbStr, cfg.mpb)
+
+        retStr = retStr .. "|"
+        imguiPrint("|", cfg.white)
+
+        if bit.band(data[15], 1) ~= 0 then
+            pbStr = photonBlast[bit.band(data[4], 7) + 1]
+        else
+            pbStr = "Empty"
+        end
+        retStr = retStr .. pbStr
+        imguiPrint(pbStr, cfg.mpb)
+
+        retStr = retStr .. "|"
+        imguiPrint("|", cfg.white)
+
+        if bit.band(data[15], 2) ~= 0 then
+            pbStr = photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1]
+        else
+            pbStr = "Empty"
+        end
+        retStr = retStr .. pbStr
+        imguiPrint(pbStr, cfg.mpb)
+        
+        retStr = retStr .. "]"
+        imguiPrint("]", cfg.white)
     end
-    if bit.band(data[15], 2) ~= 0 then
-        pbStr = pbStr .. "|" .. photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1] .. "]"
-    else
-        pbStr = pbStr .. "|Empty]"
-    end
-    retStr = retStr .. pbStr
-    imgui.SameLine(0, 0)
-    imgui.Text(pbStr)
 
     return retStr
 end
@@ -518,33 +570,30 @@ local formatPrintTool = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        imgui.SameLine(0, 0)
-        imgui.Text(itemIndexStr)
+        imguiPrint(itemIndexStr, cfg.idx)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     if data[2] == 2 then
+        techStr = "Invalid technique"
+        techLvStr = string.format(" Lv%i", data[3] + 1)
+
         if data[5] < tablelength(techNames) then
-            techStr = string.format("%s Lv%i", techNames[data[5] + 1], data[3] + 1)
-            imgui.SameLine(0, 0)
-            imgui.Text(techStr)
-            retStr = retStr .. techStr
-        else
-            imgui.Text("Invalid technique")
-            retStr = retStr .. "Invalid technique"
+            techStr = string.format("%s", techNames[data[5] + 1])
         end
+
+        retStr = techStr .. techLvStr
+        imguiPrint(techStr, cfg.tch)
+        imguiPrint(techLvStr, cfg.tlv)
     else
         retStr = retStr .. name
-        imgui.SameLine(0, 0)
-        imgui.Text(name)
+        imguiPrint(name, cfg.tna)
         if data[6] > 1 then
-            imgui.SameLine(0, 0)
             amountStr = string.format(" x%i", data[6])
-            imgui.SameLine(0, 0)
-            imgui.Text(amountStr)
             retStr = retStr .. amountStr
+            imguiPrint(amountStr, cfg.tcc)
         end
     end
     return retStr
@@ -560,29 +609,30 @@ local formatPrintMeseta = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        imgui.SameLine(0, 0)
-        imgui.Text(itemIndexStr)
+        imguiPrint(itemIndexStr, cfg.idx)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
-    retStr = retStr .. name
-    imgui.SameLine(0, 0)
-    imgui.Text(name)
-    imgui.SameLine(0, 0)
-    amounrStr = string.format(" x%i", 
-        bit.lshift(item[13],  0) + 
+    meseta = bit.lshift(item[13],  0) + 
         bit.lshift(item[14],  8) + 
         bit.lshift(item[15], 16) + 
-        bit.lshift(item[16], 24))
-    imgui.Text(amounrStr)
+        bit.lshift(item[16], 24)
 
-    retStr = retStr .. amounrStr
+    name = name
+    retStr = retStr .. name
+    imguiPrint(name, cfg.nna)
+
+    mesetaStr = string.format(" x%i", meseta)
+    imguiPrint(mesetaStr, cfg.nac)
+
+    retStr = retStr .. mesetaStr
     return retStr
 end
 
-local readItemFromPool = function (index, iAddr)
+local readItemFromPool = function (index, iAddr, floor)
+    floor = floor or false
     itemStr = ""
     item = {0,0,0,0,0,0,0,0,0,0,0,0}
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
@@ -614,7 +664,7 @@ local readItemFromPool = function (index, iAddr)
             item[12] = bit.band(kills, 0xFF)
         end
 
-        itemStr = formatPrintWeapon(index, itemName, item)
+        itemStr = formatPrintWeapon(index, itemName, item, floor)
     -- ARMOR
     elseif item[1] == 1 then
         -- FRAME
@@ -661,8 +711,25 @@ local readItemFromPool = function (index, iAddr)
         
         feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
         itemStr = formatPrintMag(index, itemName, item)
-        imgui.SameLine(0, 0)
-        imgui.Text(string.format(" [Feed in: %is]", feedtimer))
+
+        imguiPrint(" [", cfg.white)
+        feedtimerStr = string.format("%is", feedtimer)
+
+        ftColor = 0
+        for i=1,tablelength(cfg.mft),2 do
+            if ftColor == 0 then
+                if feedtimer < cfg.mft[i] then
+                    ftColor = i + 1
+                end
+            end
+        end
+
+        if feedtimer <= 0 then
+            imguiPrint("Feed Me!!!", cfg.mft[ftColor])
+        else
+            imguiPrint(feedtimerStr, cfg.mft[ftColor])
+        end
+        imguiPrint("]", cfg.white)
     -- TOOL
     elseif item[1] == 3 then
         if item[2] == 2 then
@@ -712,7 +779,7 @@ local readItemList = function(index, save)
                 if owner == index then
                     localCount = localCount + 1
 
-                    itemStr = readItemFromPool(localCount, iAddr)
+                    itemStr = readItemFromPool(localCount, iAddr, true)
 
                     if save and itemStr ~= nil then
                         file = io.open(cfg.invFileName, "a")
@@ -819,14 +886,11 @@ local readBank = function(save)
     end
 end
 
-local frames = 0
 local selection = cfg.startingInventory
 local status = true
-local text = ""
 
 local present = function()
     imgui.Begin("Character Reader")
-
 
     local list = { "Me", "Bank", "Floor"}
     status, selection = imgui.Combo(" ", selection, list, tablelength(list))
@@ -841,7 +905,7 @@ local present = function()
         io.write("")
         io.close(file)
     end
-    
+
     if selection == 1 then
         readItemList(0, save)
     elseif selection == 2 then
@@ -849,7 +913,7 @@ local present = function()
     elseif selection == 3 then
         readItemList(-1, save)
     end
-    
+
     imgui.End()
 end
 
