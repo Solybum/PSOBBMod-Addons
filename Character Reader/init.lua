@@ -239,7 +239,8 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
             imguiPrint(grindStr, cfg.wgn)
         end
 
-        if data[3] ~= 0 then
+        spec = data[3]
+        if spec ~= 0 then
             specialStr = "special"
             if spec < tablelength(srankSpecial) then
                 specialStr = string.format("%s", srankSpecial[spec + 1])
