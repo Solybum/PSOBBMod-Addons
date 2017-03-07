@@ -510,9 +510,7 @@ local formatPrintMag = function(itemIndex, name, data)
     end
 
     retStr = retStr .. name
-    hexCode = item[3] + 
-        bit.lshift(item[2],  8) + 
-        bit.lshift(item[1], 16)
+    hexCode = bit.lshift(item[2],  8) + bit.lshift(item[1], 16)
     nameColor = itc.t[hexCode]
     if nameColor ~= nil and nameColor ~= 0 then
         imguiPrint(name, nameColor)
