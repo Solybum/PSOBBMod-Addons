@@ -189,7 +189,7 @@ end
 
 -- format and print each item type
 local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
-    equipped = equipped or 0
+    equipped = equipped or false
     floor = floor or false
     -- new line
     imgui.Text("")
@@ -203,7 +203,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         retStr = retStr .. itemIndexStr
     end
 
-    if cfg.itemsShowEquipped and equipped ~= 0 then
+    if cfg.itemsShowEquipped and equipped then
         imguiPrint("[", cfg.white)
         imguiPrint("E", cfg.ieq)
         imguiPrint("] ", cfg.white)
@@ -388,7 +388,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
     return retStr
 end
 local formatPrintArmor = function(itemIndex, name, data, equipped)
-    equipped = equipped or 0
+    equipped = equipped or false
     -- new line
     imgui.Text("")
 
@@ -401,7 +401,7 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
         retStr = retStr .. itemIndexStr
     end
     
-    if cfg.itemsShowEquipped and equipped ~= 0 then
+    if cfg.itemsShowEquipped and equipped then
         imguiPrint("[", cfg.white)
         imguiPrint("E", cfg.ieq)
         imguiPrint("] ", cfg.white)
@@ -456,7 +456,7 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     return retStr
 end
 local formatPrintUnit = function(itemIndex, name, data, equipped)
-    equipped = equipped or 0
+    equipped = equipped or false
     -- new line
     imgui.Text("")
 
@@ -469,7 +469,7 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
         retStr = retStr .. itemIndexStr
     end
 
-    if cfg.itemsShowEquipped and equipped ~= 0 then
+    if cfg.itemsShowEquipped and equipped then
         imguiPrint("[", cfg.white)
         imguiPrint("E", cfg.ieq)
         imguiPrint("] ", cfg.white)
@@ -519,7 +519,7 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
     return retStr
 end
 local formatPrintMag = function(itemIndex, name, data, equipped)
-    equipped = equipped or 0
+    equipped = equipped or false
     -- new line
     imgui.Text("")
 
@@ -532,7 +532,7 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
         retStr = retStr .. itemIndexStr
     end
 
-    if cfg.itemsShowEquipped and equipped ~= 0 then
+    if cfg.itemsShowEquipped and equipped then
         imguiPrint("[", cfg.white)
         imguiPrint("E", cfg.ieq)
         imguiPrint("] ", cfg.white)
@@ -715,7 +715,7 @@ local readItemFromPool = function (index, iAddr, floor)
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
     item[2] = pso.read_u8(iAddr + _ItemCode + 1)
     item[3] = pso.read_u8(iAddr + _ItemCode + 2)
-    equipped = pso.read_u8(iAddr +  _ItemEquipped)
+    equipped = bit.band(pso.read_u8(iAddr +  _ItemEquipped), 1) == 1
     
     -- There is no name for meseta, we'll just skip naming it here
     if item[1] == 4 then
