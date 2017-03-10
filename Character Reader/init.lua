@@ -715,7 +715,7 @@ local readItemFromPool = function (index, iAddr, floor)
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
     item[2] = pso.read_u8(iAddr + _ItemCode + 1)
     item[3] = pso.read_u8(iAddr + _ItemCode + 2)
-    equipped = pso.read_u32(iAddr +  _ItemEquipped)
+    equipped = pso.read_u8(iAddr +  _ItemEquipped)
     
     -- There is no name for meseta, we'll just skip naming it here
     if item[1] == 4 then
