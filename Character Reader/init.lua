@@ -23,6 +23,7 @@ _ItemArray = 0x00A8D81C
 _ItemArrayCount = 0x00A8D820
 _ItemOwner = 0xE4
 _ItemCode = 0xF2
+_ItemEquipped = 0x190
 ---- For the item pool
 _ItemKills = 0xE8
 _ItemWrapped = 0xDC -- value & 0x00000400
@@ -187,7 +188,8 @@ local function imguiPrint(text, color, newline)
 end
 
 -- format and print each item type
-local formatPrintWeapon = function(itemIndex, name, data, floor)
+local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
+    equipped = equipped or 0
     floor = floor or false
     -- new line
     imgui.Text("")
@@ -200,7 +202,13 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
-    
+
+    if cfg.itemsShowEquipped and equipped ~= 0 then
+        imguiPrint("[", cfg.white)
+        imguiPrint("E", cfg.ieq)
+        imguiPrint("] ", cfg.white)
+    end
+
     wrapStr = nil
     if data[5] > 0xBF then
         wrapStr = "W|U"
@@ -379,7 +387,8 @@ local formatPrintWeapon = function(itemIndex, name, data, floor)
 
     return retStr
 end
-local formatPrintArmor = function(itemIndex, name, data)
+local formatPrintArmor = function(itemIndex, name, data, equipped)
+    equipped = equipped or 0
     -- new line
     imgui.Text("")
 
@@ -392,6 +401,12 @@ local formatPrintArmor = function(itemIndex, name, data)
         retStr = retStr .. itemIndexStr
     end
     
+    if cfg.itemsShowEquipped and equipped ~= 0 then
+        imguiPrint("[", cfg.white)
+        imguiPrint("E", cfg.ieq)
+        imguiPrint("] ", cfg.white)
+    end
+
     retStr = retStr .. name
     hexCode = item[3] + 
         bit.lshift(item[2],  8) + 
@@ -440,7 +455,8 @@ local formatPrintArmor = function(itemIndex, name, data)
     end
     return retStr
 end
-local formatPrintUnit = function(itemIndex, name, data)
+local formatPrintUnit = function(itemIndex, name, data, equipped)
+    equipped = equipped or 0
     -- new line
     imgui.Text("")
 
@@ -451,6 +467,12 @@ local formatPrintUnit = function(itemIndex, name, data)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
+    end
+
+    if cfg.itemsShowEquipped and equipped ~= 0 then
+        imguiPrint("[", cfg.white)
+        imguiPrint("E", cfg.ieq)
+        imguiPrint("] ", cfg.white)
     end
 
     retStr = retStr .. name
@@ -496,7 +518,8 @@ local formatPrintUnit = function(itemIndex, name, data)
     end
     return retStr
 end
-local formatPrintMag = function(itemIndex, name, data)
+local formatPrintMag = function(itemIndex, name, data, equipped)
+    equipped = equipped or 0
     -- new line
     imgui.Text("")
 
@@ -507,6 +530,12 @@ local formatPrintMag = function(itemIndex, name, data)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
+    end
+
+    if cfg.itemsShowEquipped and equipped ~= 0 then
+        imguiPrint("[", cfg.white)
+        imguiPrint("E", cfg.ieq)
+        imguiPrint("] ", cfg.white)
     end
 
     retStr = retStr .. name
@@ -686,6 +715,7 @@ local readItemFromPool = function (index, iAddr, floor)
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
     item[2] = pso.read_u8(iAddr + _ItemCode + 1)
     item[3] = pso.read_u8(iAddr + _ItemCode + 2)
+    equipped = pso.read_u32(iAddr +  _ItemEquipped)
     
     -- There is no name for meseta, we'll just skip naming it here
     if item[1] == 4 then
@@ -712,7 +742,7 @@ local readItemFromPool = function (index, iAddr, floor)
             item[12] = bit.band(kills, 0xFF)
         end
 
-        itemStr = formatPrintWeapon(index, itemName, item, floor)
+        itemStr = formatPrintWeapon(index, itemName, item, equipped, floor)
     -- ARMOR
     elseif item[1] == 1 then
         -- FRAME
@@ -721,13 +751,13 @@ local readItemFromPool = function (index, iAddr, floor)
             item[7] = pso.read_u8(iAddr + _ItemFrameDef)
             item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
             
-            itemStr = formatPrintArmor(index, itemName, item)
+            itemStr = formatPrintArmor(index, itemName, item, equipped)
         -- BARRIER
         elseif item[2] == 2 then
             item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
             item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
             
-            itemStr = formatPrintArmor(index, itemName, item)
+            itemStr = formatPrintArmor(index, itemName, item, equipped)
         -- UNIT
         elseif item[2] == 3 then
             item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
@@ -739,7 +769,7 @@ local readItemFromPool = function (index, iAddr, floor)
                 item[12] = bit.band(kills, 0xFF)
             end
             
-            itemStr = formatPrintUnit(index, itemName, item)
+            itemStr = formatPrintUnit(index, itemName, item, equipped)
         end
     -- MAG
     elseif item[1] == 2 then
@@ -758,7 +788,7 @@ local readItemFromPool = function (index, iAddr, floor)
         item[16] = pso.read_u8(iAddr + _ItemMagColor)
         
         feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-        itemStr = formatPrintMag(index, itemName, item)
+        itemStr = formatPrintMag(index, itemName, item, equipped)
 
         imguiPrint(" [", cfg.white)
         feedtimerStr = string.format("%is", feedtimer)

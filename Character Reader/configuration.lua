@@ -4,6 +4,7 @@ local printItemIndexToFile = true
 local ignoreMeseta = false
 local magShowPBs = true;
 local magShowFeedTimer = true;
+local itemsShowEquipped = true;
 local startingInventory = 1;
 
 -- All colors are 0xAARRGGBB
@@ -13,6 +14,9 @@ local grey = 0xFFA0A0A0
 
 -- Index (number before each item)
 local idx = 0xFFFFFFFF
+
+-- Equipped
+local ieq = 0xFFFFFFFF
 
 -- WEAPON
 -- Untekked
@@ -174,12 +178,14 @@ return
     ignoreMeseta = ignoreMeseta,
     magShowPBs = magShowPBs,
     magShowFeedTimer = magShowFeedTimer,
+    itemsShowEquipped = itemsShowEquipped,
     startingInventory = startingInventory,
 
     -- Colors
     white = white,
     grey = grey,
     idx = idx,
+    ieq = ieq,
     wuw = wuw,
     wna = wna,
     wst = wst,
