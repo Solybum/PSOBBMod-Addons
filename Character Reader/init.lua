@@ -6,7 +6,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.4.0",
+        version = "1.4.1",
         author = "Solybum"
     }
 end
