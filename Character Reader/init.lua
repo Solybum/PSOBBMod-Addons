@@ -6,7 +6,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.4.1",
+        version = "1.4.2",
         author = "Solybum"
     }
 end
@@ -708,8 +708,9 @@ local formatPrintMeseta = function(itemIndex, name, data)
     return retStr
 end
 
-local readItemFromPool = function (index, iAddr, floor)
+local readItemFromPool = function (index, iAddr, floor, magOnly)
     floor = floor or false
+    magOnly = magOnly or false
     itemStr = ""
     item = {0,0,0,0,0,0,0,0,0,0,0,0}
     item[1] = pso.read_u8(iAddr + _ItemCode + 0)
@@ -725,110 +726,154 @@ local readItemFromPool = function (index, iAddr, floor)
     end
     
     -- Where the magic happens
-    -- WEAPON
-    if item[1] == 0 then
-        item[4] = pso.read_u8(iAddr + _ItemWepGrind)
-        item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
-        item[7] = pso.read_u8(iAddr + _ItemWepStats + 0)
-        item[8] = pso.read_u8(iAddr + _ItemWepStats + 1)
-        item[9] = pso.read_u8(iAddr + _ItemWepStats + 2)
-        item[10] = pso.read_u8(iAddr + _ItemWepStats + 3)
-        item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
-        item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
-        
-        if item[2] == 0x33 or item[2] == 0xAB then
-            kills = pso.read_u16(iAddr + _ItemKills)
-            item[11] = (bit.rshift(kills, 8) + 0x80)
-            item[12] = bit.band(kills, 0xFF)
+
+    if magOnly then
+        if item[1] == 2 then
+            item[4] = pso.read_u8(iAddr + _ItemMagPB)
+            item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
+            item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
+            item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
+            item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
+            item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
+            item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
+            item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
+            item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
+            item[13] = pso.read_u8(iAddr + _ItemMagSync)
+            item[14] = pso.read_u8(iAddr + _ItemMagIQ)
+            item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
+            item[16] = pso.read_u8(iAddr + _ItemMagColor)
+
+            feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
+            itemStr = formatPrintMag(index, itemName, item, equipped)
+
+            imguiPrint(" [", cfg.white)
+            feedtimerStr = string.format("%is", feedtimer)
+
+            ftColor = 0
+            for i=1,tablelength(cfg.mft),2 do
+                if ftColor == 0 then
+                    if feedtimer < cfg.mft[i] then
+                        ftColor = i + 1
+                    end
+                end
+            end
+
+            if feedtimer <= 0 then
+                imguiPrint("Feed Me!!!", cfg.mft[ftColor])
+            else
+                imguiPrint(feedtimerStr, cfg.mft[ftColor])
+            end
+            imguiPrint("]", cfg.white)
         end
+    else 
+        -- WEAPON
+        if item[1] == 0 then
+            item[4] = pso.read_u8(iAddr + _ItemWepGrind)
+            item[5] = pso.read_u8(iAddr + _ItemWepSpecial)
+            item[7] = pso.read_u8(iAddr + _ItemWepStats + 0)
+            item[8] = pso.read_u8(iAddr + _ItemWepStats + 1)
+            item[9] = pso.read_u8(iAddr + _ItemWepStats + 2)
+            item[10] = pso.read_u8(iAddr + _ItemWepStats + 3)
+            item[11] = pso.read_u8(iAddr + _ItemWepStats + 4)
+            item[12] = pso.read_u8(iAddr + _ItemWepStats + 5)
 
-        itemStr = formatPrintWeapon(index, itemName, item, equipped, floor)
-    -- ARMOR
-    elseif item[1] == 1 then
-        -- FRAME
-        if item[2] == 1 then
-            item[6] = pso.read_u8(iAddr + _ItemArmSlots)
-            item[7] = pso.read_u8(iAddr + _ItemFrameDef)
-            item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
-            
-            itemStr = formatPrintArmor(index, itemName, item, equipped)
-        -- BARRIER
-        elseif item[2] == 2 then
-            item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
-            item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
-            
-            itemStr = formatPrintArmor(index, itemName, item, equipped)
-        -- UNIT
-        elseif item[2] == 3 then
-            item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
-            item[8] = pso.read_u8(iAddr + _ItemUnitMod + 1)
-
-            if item[3] == 0x4D or item[3] == 0x4F then
+            if item[2] == 0x33 or item[2] == 0xAB then
                 kills = pso.read_u16(iAddr + _ItemKills)
                 item[11] = (bit.rshift(kills, 8) + 0x80)
                 item[12] = bit.band(kills, 0xFF)
             end
-            
-            itemStr = formatPrintUnit(index, itemName, item, equipped)
-        end
-    -- MAG
-    elseif item[1] == 2 then
-        item[4] = pso.read_u8(iAddr + _ItemMagPB)
-        item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
-        item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
-        item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
-        item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
-        item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
-        item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
-        item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
-        item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
-        item[13] = pso.read_u8(iAddr + _ItemMagSync)
-        item[14] = pso.read_u8(iAddr + _ItemMagIQ)
-        item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
-        item[16] = pso.read_u8(iAddr + _ItemMagColor)
-        
-        feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
-        itemStr = formatPrintMag(index, itemName, item, equipped)
 
-        imguiPrint(" [", cfg.white)
-        feedtimerStr = string.format("%is", feedtimer)
+            itemStr = formatPrintWeapon(index, itemName, item, equipped, floor)
+        -- ARMOR
+        elseif item[1] == 1 then
+            -- FRAME
+            if item[2] == 1 then
+                item[6] = pso.read_u8(iAddr + _ItemArmSlots)
+                item[7] = pso.read_u8(iAddr + _ItemFrameDef)
+                item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
 
-        ftColor = 0
-        for i=1,tablelength(cfg.mft),2 do
-            if ftColor == 0 then
-                if feedtimer < cfg.mft[i] then
-                    ftColor = i + 1
+                itemStr = formatPrintArmor(index, itemName, item, equipped)
+            -- BARRIER
+            elseif item[2] == 2 then
+                item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
+                item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
+
+                itemStr = formatPrintArmor(index, itemName, item, equipped)
+            -- UNIT
+            elseif item[2] == 3 then
+                item[7] = pso.read_u8(iAddr + _ItemUnitMod + 0)
+                item[8] = pso.read_u8(iAddr + _ItemUnitMod + 1)
+
+                if item[3] == 0x4D or item[3] == 0x4F then
+                    kills = pso.read_u16(iAddr + _ItemKills)
+                    item[11] = (bit.rshift(kills, 8) + 0x80)
+                    item[12] = bit.band(kills, 0xFF)
+                end
+
+                itemStr = formatPrintUnit(index, itemName, item, equipped)
+            end
+        -- MAG
+        elseif item[1] == 2 then
+            item[4] = pso.read_u8(iAddr + _ItemMagPB)
+            item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
+            item[6] = pso.read_u8(iAddr + _ItemMagStats + 1)
+            item[7] = pso.read_u8(iAddr + _ItemMagStats + 2)
+            item[8] = pso.read_u8(iAddr + _ItemMagStats + 3)
+            item[9] = pso.read_u8(iAddr + _ItemMagStats + 4)
+            item[10] = pso.read_u8(iAddr + _ItemMagStats + 5)
+            item[11] = pso.read_u8(iAddr + _ItemMagStats + 6)
+            item[12] = pso.read_u8(iAddr + _ItemMagStats + 7)
+            item[13] = pso.read_u8(iAddr + _ItemMagSync)
+            item[14] = pso.read_u8(iAddr + _ItemMagIQ)
+            item[15] = pso.read_u8(iAddr + _ItemMagPBHas)
+            item[16] = pso.read_u8(iAddr + _ItemMagColor)
+
+            feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
+            itemStr = formatPrintMag(index, itemName, item, equipped)
+
+            imguiPrint(" [", cfg.white)
+            feedtimerStr = string.format("%is", feedtimer)
+
+            ftColor = 0
+            for i=1,tablelength(cfg.mft),2 do
+                if ftColor == 0 then
+                    if feedtimer < cfg.mft[i] then
+                        ftColor = i + 1
+                    end
                 end
             end
-        end
 
-        if feedtimer <= 0 then
-            imguiPrint("Feed Me!!!", cfg.mft[ftColor])
-        else
-            imguiPrint(feedtimerStr, cfg.mft[ftColor])
-        end
-        imguiPrint("]", cfg.white)
-    -- TOOL
-    elseif item[1] == 3 then
-        if item[2] == 2 then
-            item[5] = pso.read_u8(iAddr + _ItemTechType)
-        else
-            item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
-        end
-        itemStr = formatPrintTool(index, itemName, item)
-    -- MESETA
-    elseif item[1] == 4 then
-        item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
-        item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
-        item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
-        item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
+            if feedtimer <= 0 then
+                imguiPrint("Feed Me!!!", cfg.mft[ftColor])
+            else
+                imguiPrint(feedtimerStr, cfg.mft[ftColor])
+            end
+            imguiPrint("]", cfg.white)
+        -- TOOL
+        elseif item[1] == 3 then
+            if item[2] == 2 then
+                item[5] = pso.read_u8(iAddr + _ItemTechType)
+            else
+                item[6] = bit.bxor(pso.read_u32(iAddr + _ItemToolCount), (iAddr + _ItemToolCount))
+            end
+            itemStr = formatPrintTool(index, itemName, item)
+        -- MESETA
+        elseif item[1] == 4 then
+            item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
+            item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
+            item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
+            item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
 
-        itemStr = formatPrintMeseta(index, itemName, item)
+            itemStr = formatPrintMeseta(index, itemName, item)
+        end
     end
 
     return itemStr
 end
-local readItemList = function(index, save)
+local readItemList = function(index, save, magOnly)
+    save = save or false
+    magOnly = magOnly or false
+
     local invString = ""
     local myAddress = 0
     
@@ -878,7 +923,7 @@ local readItemList = function(index, save)
                 if owner == index then
                     localCount = localCount + 1
 
-                    itemStr = readItemFromPool(localCount, iAddr)
+                    itemStr = readItemFromPool(localCount, iAddr, false, magOnly)
 
                     if save and itemStr ~= nil then
                         file = io.open(cfg.invFileName, "a")
@@ -993,6 +1038,14 @@ local present = function()
     end
 
     imgui.End()
+
+    if cfg.dedicatedMagWindow then
+        imgui.Begin("Mag Feeder")
+
+        readItemList(0, false, true)
+
+        imgui.End()
+    end
 end
 
 pso.on_init(init)

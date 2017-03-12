@@ -5,6 +5,7 @@ local ignoreMeseta = false
 local magShowPBs = true;
 local magShowFeedTimer = true;
 local itemsShowEquipped = true;
+local dedicatedMagWindow = false;
 local startingInventory = 1;
 
 -- All colors are 0xAARRGGBB
@@ -179,6 +180,7 @@ return
     magShowPBs = magShowPBs,
     magShowFeedTimer = magShowFeedTimer,
     itemsShowEquipped = itemsShowEquipped,
+    dedicatedMagWindow = dedicatedMagWindow,
     startingInventory = startingInventory,
 
     -- Colors
