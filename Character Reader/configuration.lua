@@ -7,6 +7,7 @@ local magShowFeedTimer = true;
 local itemsShowEquipped = true;
 local dedicatedMagWindow = false;
 local startingInventory = 1;
+local fontSize = 1.0;
 
 -- All colors are 0xAARRGGBB
 
@@ -182,6 +183,7 @@ return
     itemsShowEquipped = itemsShowEquipped,
     dedicatedMagWindow = dedicatedMagWindow,
     startingInventory = startingInventory,
+    fontSize = fontSize,
 
     -- Colors
     white = white,

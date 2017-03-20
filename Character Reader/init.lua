@@ -1014,6 +1014,7 @@ local status = true
 
 local present = function()
     imgui.Begin("Character Reader")
+    imgui.SetWindowFontScale(cfg.fontSize)
 
     local list = { "Me", "Bank", "Floor"}
     status, selection = imgui.Combo(" ", selection, list, tablelength(list))
