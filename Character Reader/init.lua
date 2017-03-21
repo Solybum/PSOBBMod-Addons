@@ -1009,42 +1009,49 @@ local readBank = function(save)
     end
 end
 
-local selection = cfg.startingInventory
+local selection = 1
 local status = true
 
 local present = function()
-    imgui.Begin("Character Reader")
-    imgui.SetWindowFontScale(cfg.fontSize)
 
-    local list = { "Me", "Bank", "Floor"}
-    status, selection = imgui.Combo(" ", selection, list, tablelength(list))
-    imgui.SameLine(0, 0)
+    if cfg.mainWindow then
+        imgui.Begin("Character Reader")
+        imgui.SetWindowFontScale(cfg.fontSize)
 
-    save = false
-    if imgui.Button("Save to file") then
-        save = true
-        -- Write nothing to it so its cleared works for appending
-        file = io.open(cfg.invFileName, "w")
-        io.output(file)
-        io.write("")
-        io.close(file)
+        local list = { "Me", "Bank" }
+        status, selection = imgui.Combo(" ", selection, list, tablelength(list))
+        imgui.SameLine(0, 0)
+
+        save = false
+        if imgui.Button("Save to file") then
+            save = true
+            -- Write nothing to it so its cleared works for appending
+            file = io.open(cfg.invFileName, "w")
+            io.output(file)
+            io.write("")
+            io.close(file)
+        end
+
+        if selection == 1 then
+            readItemList(0, save)
+        elseif selection == 2 then
+            readBank(save)
+        end
+
+        imgui.End()
     end
 
-    if selection == 1 then
-        readItemList(0, save)
-    elseif selection == 2 then
-        readBank(save)
-    elseif selection == 3 then
+    if cfg.floorItemsWindow then
+        imgui.Begin("Floor Items")
+        imgui.SetWindowFontScale(cfg.fontSize)
         readItemList(-1, save)
+        imgui.End()
     end
-
-    imgui.End()
 
     if cfg.dedicatedMagWindow then
-        imgui.Begin("Mag Feeder")
-
+        imgui.Begin("Mags")
+        imgui.SetWindowFontScale(cfg.fontSize)
         readItemList(0, false, true)
-
         imgui.End()
     end
 end
