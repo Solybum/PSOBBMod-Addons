@@ -264,9 +264,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
     -- NON SRANK
     else
         retStr = retStr .. name
-        hexCode = item[3] + 
-            bit.lshift(item[2],  8) + 
-            bit.lshift(item[1], 16)
+        hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
         nameColor = itc.t[hexCode]
         if nameColor ~= nil and nameColor ~= 0 then
             imguiPrint(name, nameColor)
@@ -408,9 +406,7 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. name
-    hexCode = item[3] + 
-        bit.lshift(item[2],  8) + 
-        bit.lshift(item[1], 16)
+    hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
     nameColor = itc.t[hexCode]
     if nameColor ~= nil and nameColor ~= 0 then
         imguiPrint(name, nameColor)
@@ -476,9 +472,7 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. name
-    hexCode = item[3] + 
-        bit.lshift(item[2],  8) + 
-        bit.lshift(item[1], 16)
+    hexCode = bit.lshift(item[1], 16) +bit.lshift(item[2],  8) +  item[3]
     nameColor = itc.t[hexCode]
     if nameColor ~= nil and nameColor ~= 0 then
         imguiPrint(name, nameColor)
@@ -646,9 +640,7 @@ local formatPrintTool = function(itemIndex, name, data)
         end
 
         retStr = name .. techLvStr
-        hexCode = item[3] + 
-            bit.lshift(item[5],  8) + 
-            bit.lshift(5, 16)
+        hexCode = bit.lshift(5, 16) + bit.lshift(item[5],  8) + item[3]
         nameColor = itc.t[hexCode]
         if nameColor ~= nil and nameColor ~= 0 then
             imguiPrint(name, nameColor)
@@ -658,9 +650,7 @@ local formatPrintTool = function(itemIndex, name, data)
         imguiPrint(techLvStr, cfg.tlv)
     else
         retStr = retStr .. name
-        hexCode = item[3] + 
-            bit.lshift(item[2],  8) + 
-            bit.lshift(item[1], 16)
+        hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
         nameColor = itc.t[hexCode]
         if nameColor ~= nil and nameColor ~= 0 then
             imguiPrint(name, nameColor)
@@ -699,7 +689,14 @@ local formatPrintMeseta = function(itemIndex, name, data)
 
     name = name
     retStr = retStr .. name
-    imguiPrint(name, cfg.nna)
+
+    hexCode = 0x040000
+    nameColor = itc.t[hexCode]
+    if nameColor ~= nil and nameColor ~= 0 then
+        imguiPrint(name, nameColor)
+    else
+        imguiPrint(name, cfg.nna)
+    end
 
     mesetaStr = string.format(" x%i", meseta)
     imguiPrint(mesetaStr, cfg.nac)
@@ -766,6 +763,19 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             imguiPrint("]", cfg.white)
         end
     else 
+        -- Code to disable items based on their color (if it's nil)
+        if floor then
+            hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) +  item[3]
+            if item[1] == 2 then
+                hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8)
+            elseif item[1] == 3 and item[2] == 2 then
+                hexCode = bit.lshift(5, 16) + bit.lshift(item[5],  8) +  item[3]
+            end
+            nameColor = itc.t[hexCode]
+            if nameColor == nil then
+                return nil
+            end
+        end
         -- WEAPON
         if item[1] == 0 then
             item[4] = pso.read_u8(iAddr + _ItemWepGrind)

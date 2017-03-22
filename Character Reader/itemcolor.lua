@@ -1,5 +1,7 @@
 local t = {}
 
+-- Set the color to nil to NOT display the item in the floor items window
+
 ---------------- Weapon
 t[0x000000] = 0x00000000 -- Saber
 t[0x000100] = 0x00000000 -- Saber
@@ -1016,6 +1018,8 @@ t[0x031901] = 0x00000000 -- Team Points 1000
 t[0x031902] = 0x00000000 -- Team Points 5000
 t[0x031903] = 0x00000000 -- Team Points 10000
 t[0x031A00] = 0x00000000 -- ????
+-- MESETA
+t[0x040000] = 0x00000000 -- ????
 -- TECHNIQUES
 t[0x050000] = 0x00000000 -- Foie Lv1
 t[0x050001] = 0x00000000 -- Foie Lv2
