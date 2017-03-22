@@ -6,7 +6,7 @@ local magShowPBs = true;
 local magShowFeedTimer = true;
 local itemsShowEquipped = true;
 local mainWindow = true;
-local floorItemsWindow = true;
+local floorItemsWindow = false;
 local dedicatedMagWindow = false;
 local fontSize = 1.0;
 

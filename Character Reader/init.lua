@@ -6,7 +6,7 @@ local init = function()
     return 
     {
         name = "Character Reader",
-        version = "1.4.5",
+        version = "1.4.6",
         author = "Solybum"
     }
 end
@@ -1028,7 +1028,7 @@ local present = function()
         imgui.Begin("Character Reader")
         imgui.SetWindowFontScale(cfg.fontSize)
 
-        local list = { "Inventory", "Bank" }
+        local list = { "Inventory", "Bank", "Floor" }
         status, selection = imgui.Combo(" ", selection, list, tablelength(list))
         imgui.SameLine(0, 0)
 
@@ -1046,6 +1046,8 @@ local present = function()
             readItemList(0, save)
         elseif selection == 2 then
             readBank(save)
+        elseif selection == 3 then
+            readItemList(-1)
         end
 
         imgui.End()
@@ -1054,7 +1056,7 @@ local present = function()
     if cfg.floorItemsWindow then
         imgui.Begin("Floor Items")
         imgui.SetWindowFontScale(cfg.fontSize)
-        readItemList(-1, save)
+        readItemList(-1)
         imgui.End()
     end
 
