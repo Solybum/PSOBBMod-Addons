@@ -1,6 +1,7 @@
-itemReader = require("Character Reader/ItemReader")
+monsters = require("Character Reader/Monsters")
+ir = require("Character Reader/ItemReader")
 cfg = require("Character Reader/Configuration")
-itc = require("Character Reader/ItemColor")
+items = require("Character Reader/Items")
 
 local init = function()
     return 
@@ -264,10 +265,10 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
     -- NON SRANK
     else
         retStr = retStr .. name
-        hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
-        nameColor = itc.t[hexCode]
-        if nameColor ~= nil and nameColor ~= 0 then
-            imguiPrint(name, nameColor)
+        hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
+        itemCfg = items.t[hexCode]
+        if itemCfg ~= nil and itemCfg[1] ~= 0 then
+            imguiPrint(name, itemCfg[1])
         else
             imguiPrint(name, cfg.wna)
         end
@@ -406,10 +407,10 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. name
-    hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
-    nameColor = itc.t[hexCode]
-    if nameColor ~= nil and nameColor ~= 0 then
-        imguiPrint(name, nameColor)
+    hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
+    itemCfg = items.t[hexCode]
+    if itemCfg ~= nil and itemCfg[1] ~= 0 then
+        imguiPrint(name, itemCfg[1])
     else
         imguiPrint(name, cfg.ana)
     end
@@ -472,10 +473,10 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. name
-    hexCode = bit.lshift(item[1], 16) +bit.lshift(item[2],  8) +  item[3]
-    nameColor = itc.t[hexCode]
-    if nameColor ~= nil and nameColor ~= 0 then
-        imguiPrint(name, nameColor)
+    hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
+    itemCfg = items.t[hexCode]
+    if itemCfg ~= nil and itemCfg[1] ~= 0 then
+        imguiPrint(name, itemCfg[1])
     else
         imguiPrint(name, cfg.una)
     end
@@ -533,10 +534,10 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. name
-    hexCode = bit.lshift(item[2],  8) + bit.lshift(item[1], 16)
-    nameColor = itc.t[hexCode]
-    if nameColor ~= nil and nameColor ~= 0 then
-        imguiPrint(name, nameColor)
+    hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8)
+    itemCfg = items.t[hexCode]
+    if itemCfg ~= nil and itemCfg[1] ~= 0 then
+        imguiPrint(name, itemCfg[1])
     else
         imguiPrint(name, cfg.mna)
     end
@@ -640,20 +641,20 @@ local formatPrintTool = function(itemIndex, name, data)
         end
 
         retStr = name .. techLvStr
-        hexCode = bit.lshift(5, 16) + bit.lshift(item[5],  8) + item[3]
-        nameColor = itc.t[hexCode]
-        if nameColor ~= nil and nameColor ~= 0 then
-            imguiPrint(name, nameColor)
+        hexCode = bit.lshift(5, 16) + bit.lshift(data[5],  8) + data[3]
+        itemCfg = items.t[hexCode]
+        if itemCfg ~= nil and itemCfg[1] ~= 0 then
+            imguiPrint(name, itemCfg[1])
         else
             imguiPrint(name, cfg.ana)
         end
         imguiPrint(techLvStr, cfg.tlv)
     else
         retStr = retStr .. name
-        hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) + item[3]
-        nameColor = itc.t[hexCode]
-        if nameColor ~= nil and nameColor ~= 0 then
-            imguiPrint(name, nameColor)
+        hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
+        itemCfg = items.t[hexCode]
+        if itemCfg ~= nil and itemCfg[1] ~= 0 then
+            imguiPrint(name, itemCfg[1])
         else
             imguiPrint(name, cfg.tna)
         end
@@ -691,9 +692,9 @@ local formatPrintMeseta = function(itemIndex, name, data)
     retStr = retStr .. name
 
     hexCode = 0x040000
-    nameColor = itc.t[hexCode]
-    if nameColor ~= nil and nameColor ~= 0 then
-        imguiPrint(name, nameColor)
+    itemCfg = items.t[hexCode]
+    if itemCfg ~= nil and itemCfg[1] ~= 0 then
+        imguiPrint(name, itemCfg[1])
     else
         imguiPrint(name, cfg.nna)
     end
@@ -719,7 +720,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
     if item[1] == 4 then
         itemName = "Meseta"
     else
-        itemName = itemReader.getItemName(item)
+        itemName = ir.getItemName(item) or "Unknown"
     end
     
     -- Where the magic happens
@@ -763,7 +764,6 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             imguiPrint("]", cfg.white)
         end
     else 
-        -- Code to disable items based on their color (if it's nil)
         if floor then
             hexCode = bit.lshift(item[1], 16) + bit.lshift(item[2],  8) +  item[3]
             if item[1] == 2 then
@@ -771,8 +771,8 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             elseif item[1] == 3 and item[2] == 2 then
                 hexCode = bit.lshift(5, 16) + bit.lshift(item[5],  8) +  item[3]
             end
-            nameColor = itc.t[hexCode]
-            if nameColor == nil then
+            itemCfg = items.t[hexCode]
+            if itemCfg ~= nil and itemCfg[2] == false then
                 return nil
             end
         end
@@ -982,7 +982,7 @@ local readBank = function(save)
         end
         address = address + 24
         
-        itemName = itemReader.getItemName(item)
+        itemName = ir.getItemName(item) or "Unknown"
         itemStr = ""
         -- WEAPON
         if item[1] == 0 then
@@ -1023,7 +1023,6 @@ local selection = 1
 local status = true
 
 local present = function()
-
     if cfg.mainWindow then
         imgui.Begin("Character Reader")
         imgui.SetWindowFontScale(cfg.fontSize)

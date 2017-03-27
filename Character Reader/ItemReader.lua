@@ -1,45 +1,25 @@
-_uniPtr = 0x00A9CD50
-_uniItemOffset = 0x04
-_pmtPtr = 0x00A8DC94
-_pmtWeaponOff = 0x00
-_pmtArmorOff = 0x04
-_pmtUnitOff = 0x08
-_pmtMagOff = 0x10
-_pmtToolOff = 0x0C
+unitxt = require("Character Reader/Unitxt")
+
+pmtPoitner = 0x00A8DC94
+pmtWeaponOffset = 0x00
+pmtArmorOffset = 0x04
+pmtUnitOffset = 0x08
+pmtMagOffset = 0x10
+pmtToolOffset = 0x0C
 
 local _GetItemNameString = function(id)
-    local str
-    
-    address = pso.read_u32(_uniPtr)
-    if address == 0 then
-        return nil
-    end
-    
-    address = address + _uniItemOffset
-    address = pso.read_u32(address)
-    if address == 0 then
-        return nil
-    end
-    
-    address = address + 4 * id
-    address = pso.read_u32(address)
-    if address == 0 then
-        return nil
-    end
-    
-    str = pso.read_wstr(address, 128)
-    return str
+    return unitxt.ReadItemName(id)
 end
 local _GetItemID = function(type, group, index)
     local id = -1
     
-    address = pso.read_u32(_pmtPtr)
+    address = pso.read_u32(pmtPoitner)
     if address == 0 then
         return -1
     end
     
     if type == 0 then
-        address = pso.read_u32(address + _pmtWeaponOff)
+        address = pso.read_u32(address + pmtWeaponOffset)
         if address == 0 then
             return -1
         end
@@ -55,7 +35,7 @@ local _GetItemID = function(type, group, index)
         id = pso.read_i32(address + 44 * index)
     elseif type == 1 then
         if group == 1 or group == 2 then
-            address = pso.read_u32(address + _pmtArmorOff)
+            address = pso.read_u32(address + pmtArmorOffset)
             if address == 0 then
                 return -1
             end
@@ -71,7 +51,7 @@ local _GetItemID = function(type, group, index)
             
             id = pso.read_i32(address + 32 * index)
         elseif group == 3 then
-            address = pso.read_u32(address + _pmtUnitOff)
+            address = pso.read_u32(address + pmtUnitOffset)
             
             count = pso.read_u32(address)
             address = pso.read_u32(address + 4)
@@ -82,7 +62,7 @@ local _GetItemID = function(type, group, index)
             id = pso.read_i32(address + 20 * index)
         end
     elseif type == 2 then
-        address = pso.read_u32(address + _pmtMagOff)
+        address = pso.read_u32(address + pmtMagOffset)
         
         count = pso.read_u32(address)
         address = pso.read_u32(address + 4)
@@ -92,7 +72,7 @@ local _GetItemID = function(type, group, index)
         
         id = pso.read_i32(address + 28 * group)
     elseif type == 3 then
-        address = pso.read_u32(address + _pmtToolOff)
+        address = pso.read_u32(address + pmtToolOffset)
         if address == 0 then
             return -1
         end
