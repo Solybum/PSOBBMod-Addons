@@ -186,6 +186,7 @@ return
     mainWindow = mainWindow,
     floorItemsWindow = floorItemsWindow,
     dedicatedMagWindow = dedicatedMagWindow,
+    monstersWindow = monstersWindow,
     fontSize = fontSize,
 
     -- Colors

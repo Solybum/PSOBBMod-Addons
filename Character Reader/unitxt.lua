@@ -38,9 +38,9 @@ end
 function ReadItemDescription(index)
     return ReadInternal(unitxtItemDesc, index)
 end
-function ReadMonsterName(index, ultimate)
-    ultimate = ultimate or false
-    if ultimate then
+function ReadMonsterName(index, difficulty)
+    difficulty = difficulty or 0
+    if difficulty == 3 then
         return ReadInternal(unitxtMonsterNameUlt, index)
     else
         return ReadInternal(unitxtMonsterName, index)
