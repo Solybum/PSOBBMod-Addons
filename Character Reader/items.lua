@@ -1,6 +1,8 @@
 local t = {}
 
--- Set the color to nil to NOT display the item in the floor items window
+-- Settings the color to something different than 0 will make the addon use the selected
+-- color for the item.
+-- Setting the flag to false, will make the addon NOT print the item when its on the floor
 
 ---------------- Weapon
 t[ 0x000000 ] = { 0x00000000, true } -- Saber
