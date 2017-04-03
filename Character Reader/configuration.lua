@@ -8,7 +8,7 @@ local itemsShowEquipped = true;
 local mainWindow = true;
 local floorItemsWindow = false;
 local dedicatedMagWindow = false;
-local monstersWindow = false;
+local monstersWindow = true;
 local fontSize = 1.0;
 
 -- All colors are 0xAARRGGBB
