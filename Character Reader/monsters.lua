@@ -37,8 +37,20 @@ local function readMonsters()
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
     
-    dataStr = string.format("%-20s % 5s/% 5s % 8s % 8s % 8s", "Monster", "HP", "MHP", "X", "Y", "Z")
-    imguiPrint(dataStr, 0xFFFFFFFF, true)
+    -- dataStr = string.format("%-20s %-11s % 8s % 8s % 8s", "Monster", "HP", "X", "Y", "Z")
+    -- imguiPrint(dataStr, 0xFFFFFFFF, true)
+    imgui.Columns(5)
+    imguiPrint("Monster", 0xFFFFFFFF, true)
+    imgui.NextColumn()
+    imguiPrint("HP", 0xFFFFFFFF, true)
+    imgui.NextColumn()
+    imguiPrint("X", 0xFFFFFFFF, true)
+    imgui.NextColumn()
+    imguiPrint("Y", 0xFFFFFFFF, true)
+    imgui.NextColumn()
+    imguiPrint("Z", 0xFFFFFFFF, true)
+    imgui.NextColumn()
+
     for i=1,monsterCount,1 do
         mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
 
@@ -54,8 +66,19 @@ local function readMonsters()
                 
                 mName = unitxt.ReadMonsterName(mID, difficulty)
 
-                dataStr = string.format("%-20s % 5i/% 5i % 8.2f % 8.2f % 8.2f", mName, mHP, mHPMax, mPosX, mPosY, mPosZ)
-                imguiPrint(dataStr, 0xFFFFFFFF, true)
+                -- dataStr = string.format("%-20s % 5i/% 5i % 8.2f % 8.2f % 8.2f", mName, mHP, mHPMax, mPosX, mPosY, mPosZ)
+                -- imguiPrint(dataStr, 0xFFFFFFFF, true)
+
+                imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
+                imgui.NextColumn()
+                imguiPrint(string.format("% 5i/% 5i", mHP, mHPMax), 0xFFFFFFFF, true)
+                imgui.NextColumn()
+                imguiPrint(string.format("%.2f", mPosX), 0xFFFFFFFF, true)
+                imgui.NextColumn()
+                imguiPrint(string.format("%.2f", mPosY), 0xFFFFFFFF, true)
+                imgui.NextColumn()
+                imguiPrint(string.format("%.2f", mPosZ), 0xFFFFFFFF, true)
+                imgui.NextColumn()
             end
         end
      end
