@@ -851,6 +851,9 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
 
     return itemStr
 end
+local readItemFromPoolForFloor = function()
+end
+
 local readItemList = function(index, save, magOnly)
     save = save or false
     magOnly = magOnly or false
@@ -874,7 +877,17 @@ local readItemList = function(index, save, magOnly)
 
     localCount = 0;
     if index == -1 then
-        for i=iCount,1,-1 do
+        startIndex = iCount
+        endIndex = 1
+        step = -1
+
+        if cfg.invertFloorItemsFlow then
+            startIndex = 1
+            endIndex = iCount
+            step = 1
+        end
+
+        for i=startIndex,endIndex,step do
             iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
 
             if iAddr ~= 0 then

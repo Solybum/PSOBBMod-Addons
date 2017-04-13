@@ -1,15 +1,29 @@
+-- Files to save to, when using the Save to file button
 local invFileName = "imgui/inv.txt"
+-- Includes the item index in the items window
 local printItemIndex = true
+-- Includes the item index when saving to a file
 local printItemIndexToFile = true
+-- Ignores meseta in the floor items
 local ignoreMeseta = false
-local magShowPBs = true;
-local magShowFeedTimer = true;
-local itemsShowEquipped = true;
-local mainWindow = true;
-local floorItemsWindow = false;
-local dedicatedMagWindow = false;
-local monstersWindow = true;
-local fontSize = 1.0;
+-- Shows PBs of mags
+local magShowPBs = true
+-- Shows the feed timer mags
+local magShowFeedTimer = true
+-- Shows an [E] besides equipped items in the inventory
+local itemsShowEquipped = true
+-- new floor items are added by default on the top of the list, use this setting to add new items at the bottom
+local invertFloorItemsFlow = false
+-- Shows the main window with inventory, bank and Floor combo box selection as well as save to file button
+local mainWindow = true
+-- Shows a dedicated floor items window, this one doesn't have a selection neither a save to file button
+local floorItemsWindow = false
+-- Shows a dedicated mag window, this one only shows mags in the character inventory
+local dedicatedMagWindow = false
+-- Shows a monsters window with some data about monsters (name, HP and position)
+local monstersWindow = true
+-- Font size for all windows
+local fontSize = 1.0
 
 -- All colors are 0xAARRGGBB
 
@@ -183,6 +197,7 @@ return
     magShowPBs = magShowPBs,
     magShowFeedTimer = magShowFeedTimer,
     itemsShowEquipped = itemsShowEquipped,
+    invertFloorItemsFlow = invertFloorItemsFlow,
     mainWindow = mainWindow,
     floorItemsWindow = floorItemsWindow,
     dedicatedMagWindow = dedicatedMagWindow,
