@@ -27,9 +27,30 @@ local function imguiPrint(text, color, newline)
     imgui.TextColored(r, g, b, a, text)
 end
 
+local imguiProgressBar = function(progress, x, y, overlay, color)
+    x = x or -1.0
+    y = y or 0.0
+    color = color or 0xFFFFFFFF
+    
+    a = bit.band(bit.rshift(color, 24), 0xFF) / 255;
+    r = bit.band(bit.rshift(color, 16), 0xFF) / 255;
+    g = bit.band(bit.rshift(color, 8), 0xFF) / 255;
+    b = bit.band(color, 0xFF) / 255;
+
+    if progress == nil then
+        imgui.Text("imguiProgressBar() Invalid progress")
+        return
+    end
+
+    imgui.PushStyleColor("PlotHistogram", r, g, b, a)
+    imgui.ProgressBar(progress, x, y, overlay)
+    imgui.PopStyleColor()
+end
+
 return
 {
     tablelength = tablelength,
     tableMerge = tableMerge,
     imguiPrint = imguiPrint,
+    imguiProgressBar = imguiProgressBar,
 }

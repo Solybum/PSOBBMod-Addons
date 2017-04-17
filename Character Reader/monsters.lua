@@ -37,8 +37,6 @@ local function readMonsters()
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
     
-    -- dataStr = string.format("%-20s %-11s % 8s % 8s % 8s", "Monster", "HP", "X", "Y", "Z")
-    -- imguiPrint(dataStr, 0xFFFFFFFF, true)
     imgui.Columns(5)
     imguiPrint("Monster", 0xFFFFFFFF, true)
     imgui.NextColumn()
@@ -66,12 +64,9 @@ local function readMonsters()
                 
                 mName = unitxt.ReadMonsterName(mID, difficulty)
 
-                -- dataStr = string.format("%-20s % 5i/% 5i % 8.2f % 8.2f % 8.2f", mName, mHP, mHPMax, mPosX, mPosY, mPosZ)
-                -- imguiPrint(dataStr, 0xFFFFFFFF, true)
-
                 imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
                 imgui.NextColumn()
-                imguiPrint(string.format("% 5i/% 5i", mHP, mHPMax), 0xFFFFFFFF, true)
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 0.0, string.format("% 5i/% 5i", mHP, mHPMax), 0xFF00B3FF)
                 imgui.NextColumn()
                 imguiPrint(string.format("%.2f", mPosX), 0xFFFFFFFF, true)
                 imgui.NextColumn()
