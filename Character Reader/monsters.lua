@@ -63,7 +63,7 @@ local function readMonsters()
         if mAddr ~= 0 then
             mID = pso.read_u32(mAddr + _MonsterID)
 
-            if mID > 0 and mID < 100 then
+            if mID ~= 0 then
                 --mPosX = pso.read_f32(mAddr + _MonsterPosX)
                 --mPosY = pso.read_f32(mAddr + _MonsterPosY)
                 --mPosZ = pso.read_f32(mAddr + _MonsterPosZ)
