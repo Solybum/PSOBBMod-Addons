@@ -33,7 +33,7 @@ local function imguiPrint(text, color, newline)
 end
 
 local function GetHPColorGradient(percent)
-    a = 0xFF000000
+    a = 0xC0000000
     r = 1 - (percent * 255)
     g = (percent * 255)
     b = 0
@@ -79,7 +79,7 @@ local function readMonsters()
 
                 imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
                 imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 0.0, string.format("% 5i/% 5i", mHP, mHPMax), GetHPColorGradient(mHP/mHPMax))
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 0.0, mHP, GetHPColorGradient(mHP/mHPMax))
                 imgui.NextColumn()
                 imguiPrint(string.format("%.2f", mPosX), 0xFFFFFFFF, true)
                 imgui.NextColumn()
