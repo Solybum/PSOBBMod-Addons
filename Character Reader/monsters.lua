@@ -79,7 +79,7 @@ local function readMonsters()
 
                 imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
                 imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 0.0, mHP, GetHPColorGradient(mHP/mHPMax))
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 15.0, mHP, GetHPColorGradient(mHP/mHPMax))
                 imgui.NextColumn()
                 imguiPrint(string.format("%.2f", mPosX), 0xFFFFFFFF, true)
                 imgui.NextColumn()
