@@ -2,7 +2,6 @@ helpers = require("Character Reader/Helpers")
 cfg = require("Character Reader/Configuration")
 ir = require("Character Reader/ItemReader")
 items = require("Character Reader/Items")
-monsters = require("Character Reader/Monsters")
 
 local init = function()
     return 
@@ -1049,10 +1048,6 @@ local present = function()
 
         readItemList(0, false, true)
         imgui.End()
-    end
-
-    if cfg.monstersWindow then
-        monsters.present()
     end
 end
 

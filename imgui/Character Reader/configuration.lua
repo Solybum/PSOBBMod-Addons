@@ -20,8 +20,6 @@ local mainWindow = true
 local floorItemsWindow = false
 -- Shows a dedicated mag window, this one only shows mags in the character inventory
 local dedicatedMagWindow = false
--- Shows a monsters window with some data about monsters (name, HP and position)
-local monstersWindow = true
 -- Font size for all windows
 local fontSize = 1.0
 

@@ -1,5 +1,17 @@
-helpers = require("Character Reader/Helpers")
-unitxt = require("Character Reader/Unitxt")
+local init = function()
+    return 
+    {
+        name = "Monster HP",
+        version = "1.0.0",
+        author = "Solybum"
+    }
+end
+
+helpers = require("lib/helpers")
+unitxt = require("lib/Unitxt")
+
+cfgFontColor = 0xFFFFFFFF
+cfgFontSize = 1.0
 
 _PlayerCount = 0x00AAE168
 _Difficulty = 0x00A9CD68
@@ -14,34 +26,21 @@ _MonsterID = 0x378
 _MonsterHP = 0x334
 _MonsterHPMax = 0x2BC
 
--- Helper function to print on the widget's window
--- By default it will print on the same line
-local function imguiPrint(text, color, newline)
-    color = color or cfg.white
-    newline = newline or false
-
-    if newline == false then
-        imgui.SameLine(0, 0)
-    end
-    
-    a = bit.band(bit.rshift(color, 24), 0xFF) / 255;
-    r = bit.band(bit.rshift(color, 16), 0xFF) / 255;
-    g = bit.band(bit.rshift(color, 8), 0xFF) / 255;
-    b = bit.band(color, 0xFF) / 255;
-
-    imgui.TextColored(r, g, b, a, text)
-end
-
 local function GetHPColorGradient(percent)
-    a = 0xC0000000
-    r = 1 - (percent * 255)
-    g = (percent * 255)
+    a = 1 - percent + 0.4
+    r = 1 - percent
+    g = percent
     b = 0
 
-    color = a + 
-    bit.lshift(bit.band(r, 0xFF), 16) + 
-    bit.lshift(bit.band(g, 0xFF), 8) + 
-    bit.lshift(bit.band(b, 0xFF), 0)
+    if a > 1.0 then
+        a = 1.0
+    end
+
+    color = 
+    bit.lshift(bit.band((a * 255), 0xFF), 24) + 
+    bit.lshift(bit.band((r * 255), 0xFF), 16) + 
+    bit.lshift(bit.band((g * 255), 0xFF), 8) + 
+    bit.lshift(bit.band((b * 255), 0xFF), 0)
     return color
 end
 
@@ -52,9 +51,9 @@ local function readMonsters()
     
 
     imgui.Columns(2)
-    imguiPrint("Monster", 0xFFFFFFFF, true)
+    helpers.imguiPrint("Monster", 0xFFFFFFFF, true)
     imgui.NextColumn()
-    imguiPrint("HP", 0xFFFFFFFF, true)
+    helpers.imguiPrint("HP", 0xFFFFFFFF, true)
     imgui.NextColumn()
 
     for i=1,monsterCount,1 do
@@ -72,9 +71,9 @@ local function readMonsters()
                 
                 mName = unitxt.ReadMonsterName(mID, difficulty)
 
-                imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
+                helpers.imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
                 imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfg.fontSize, mHP, GetHPColorGradient(mHP/mHPMax))
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
                 imgui.NextColumn()
             end
         end
@@ -83,11 +82,16 @@ end
 
 local present = function()
     imgui.Begin("Monsters")
-    imgui.SetWindowFontScale(cfg.fontSize)
+    imgui.SetWindowFontScale(cfgFontSize)
     readMonsters()
     imgui.End()
 end
 
+pso.on_init(init)
+pso.on_present(present)
+
 return {
+    init = init,
     present = present,
 }
+
