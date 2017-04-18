@@ -50,16 +50,11 @@ local function readMonsters()
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
     
-    imgui.Columns(5)
+
+    imgui.Columns(2)
     imguiPrint("Monster", 0xFFFFFFFF, true)
     imgui.NextColumn()
     imguiPrint("HP", 0xFFFFFFFF, true)
-    imgui.NextColumn()
-    imguiPrint("X", 0xFFFFFFFF, true)
-    imgui.NextColumn()
-    imguiPrint("Y", 0xFFFFFFFF, true)
-    imgui.NextColumn()
-    imguiPrint("Z", 0xFFFFFFFF, true)
     imgui.NextColumn()
 
     for i=1,monsterCount,1 do
@@ -69,9 +64,9 @@ local function readMonsters()
             mID = pso.read_u32(mAddr + _MonsterID)
 
             if mID > 0 and mID < 100 then
-                mPosX = pso.read_f32(mAddr + _MonsterPosX)
-                mPosY = pso.read_f32(mAddr + _MonsterPosY)
-                mPosZ = pso.read_f32(mAddr + _MonsterPosZ)
+                --mPosX = pso.read_f32(mAddr + _MonsterPosX)
+                --mPosY = pso.read_f32(mAddr + _MonsterPosY)
+                --mPosZ = pso.read_f32(mAddr + _MonsterPosZ)
                 mHP = pso.read_u16(mAddr + _MonsterHP)
                 mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
                 
@@ -79,13 +74,7 @@ local function readMonsters()
 
                 imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
                 imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 15.0, mHP, GetHPColorGradient(mHP/mHPMax))
-                imgui.NextColumn()
-                imguiPrint(string.format("%.2f", mPosX), 0xFFFFFFFF, true)
-                imgui.NextColumn()
-                imguiPrint(string.format("%.2f", mPosY), 0xFFFFFFFF, true)
-                imgui.NextColumn()
-                imguiPrint(string.format("%.2f", mPosZ), 0xFFFFFFFF, true)
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfg.fontSize, mHP, GetHPColorGradient(mHP/mHPMax))
                 imgui.NextColumn()
             end
         end
