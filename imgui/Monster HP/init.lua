@@ -9,6 +9,7 @@ end
 
 helpers = require("lib/helpers")
 unitxt = require("lib/Unitxt")
+monsters = require("lib/Monsters")
 
 cfgFontColor = 0xFFFFFFFF
 cfgFontSize = 1.0
@@ -70,11 +71,20 @@ local function readMonsters()
                 mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
                 
                 mName = unitxt.ReadMonsterName(mID, difficulty)
+                mColor = 0xFFFFFFFF
+                mDisplay = true
 
-                helpers.imguiPrint(string.format("%s", mName), 0xFFFFFFFF, true)
-                imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
-                imgui.NextColumn()
+                if monsterdb.m[mID] ~= nil then
+                    mColor = monsterdb.m[mID][1]
+                    mDisplay = monsterdb.m[mID][2]
+                end
+                
+                if mDisplay == true then
+                    helpers.imguiPrint(string.format("%s", mName), mColor, true)
+                    imgui.NextColumn()
+                    helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
+                    imgui.NextColumn()
+                end
             end
         end
      end
