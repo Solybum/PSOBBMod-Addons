@@ -74,9 +74,9 @@ local function readMonsters()
                 mColor = 0xFFFFFFFF
                 mDisplay = true
 
-                if monsterdb.m[mID] ~= nil then
-                    mColor = monsterdb.m[mID][1]
-                    mDisplay = monsterdb.m[mID][2]
+                if monsters.m[mID] ~= nil then
+                    mColor = monsters.m[mID][1]
+                    mDisplay = monsters.m[mID][2]
                 end
                 
                 if mDisplay == true then
