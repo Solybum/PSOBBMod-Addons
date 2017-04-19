@@ -9,7 +9,7 @@ end
 
 helpers = require("lib/helpers")
 unitxt = require("lib/Unitxt")
-monsters = require("lib/Monsters")
+monsters = require("Monster HP/Monsters")
 
 cfgFontColor = 0xFFFFFFFF
 cfgFontSize = 1.0
