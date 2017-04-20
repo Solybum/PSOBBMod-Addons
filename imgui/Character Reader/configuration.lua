@@ -24,31 +24,23 @@ local dedicatedMagWindow = false
 local fontSize = 1.0
 
 -- All colors are 0xAARRGGBB
-
 local white = 0xFFFFFFFF
 local grey = 0xFFA0A0A0
 
--- Index (number before each item)
-local idx = 0xFFFFFFFF
-
--- Equipped
-local ieq = 0xFFFFFFFF
+-- Item
+local itemIndex = 0xFFFFFFFF
+local itemEquipped = 0xFFFFFFFF
 
 -- WEAPON
--- Untekked
-local wuw = 0xFFFF0000
--- Name
-local wna = 0xFFB060B0
--- S-Rank title: "S-RANK"
-local wst = 0xFFFF0000
--- S-Rank weapon name: "SABER"
-local wsn = 0xFF2D98B7
--- S-Rank custom name
-local wsc = 0xFFB060B0
--- Grind
-local wgn = 0xFF28CC66
--- Special
-local wsp =
+local weaponUntekked = 0xFFFF0000
+local weaponName = 0xFFB060B0
+local weaponGrind = 0xFF28CC66
+local weaponSRankTitle = 0xFFFF0000
+local weaponSRankName = 0xFF2D98B7
+local weaponSRankCustomName = 0xFFB060B0
+local weaponSRankSpecial = 0xFF2D98B7
+local wweaponKills = 0xFFFFFF00
+local weaponSpecial =
 {
     0xFFFFFFFF, -- None
     0xFFBFFDC4, -- Draw
@@ -92,15 +84,8 @@ local wsp =
     0xFFD3BFF0, -- Devil's
     0xFFA67FE0, -- Demon's
 }
--- S-Rank Special
-local wss = 0xFF2D98B7
--- Kills
-local wkl = 0xFFFFFF00
--- Color attributes when weapon is in inventory or bank
-local wap = true
--- Attributes
--- Max attribute value to select the color
-local wat =
+local weaponAttributesEnabled = true
+local weaponAttributes =
 {
      -1, 0xFFA0A0A0,
       0, 0xFFA0A0A0,
@@ -115,8 +100,7 @@ local wat =
      90, 0xFFFFFFFF,
     100, 0xFFFFFFFF,
 }
--- Hit
-local wht =
+local weaponHit =
 {
      -1, 0xFFA0A0A0,
       0, 0xFFFFFFFF,
@@ -133,33 +117,20 @@ local wht =
 }
 
 -- ARMOR (Frame and Barrier)
--- Name
-local ana = 0xFFB060B0
--- Stats
-local ast = 0xFF28CC66
--- Slots (Frame only)
-local asl = 0xFFFFFF00
+local armorName = 0xFFB060B0
+local armorStat = 0xFF28CC66
+local armorSlots = 0xFFFFFF00
 
 -- ARMOR (Unit)
--- Name
-local una = 0xFFB060B0
--- Mod (++/--)
-local umo = 0xFFB060B0
--- Kills
-local ukl = 0xFFFFFF00
+local unitName = 0xFFB060B0
+local unitKills = 0xFFFFFF00
 
 -- MAG
--- Name
-local mna = 0xFFB060B0
--- Color
-local mcl = 0xFF2D98B7
--- Stats
-local msc = 0xFF28CC66
--- Photon Blast
-local mpb = 0xFFFFFF00
--- Feed timer
--- Below the seconds amount, will use the color
-local mft = 
+local magName = 0xFFB060B0
+local magColor = 0xFF2D98B7
+local magStats = 0xFF28CC66
+local magPB = 0xFFFFFF00
+local magFeedTimer = 
 {
        1, 0xFF28CC66,
       16, 0xFFF1C40F,
@@ -168,22 +139,16 @@ local mft =
 }
 
 -- TOOL
--- Name
-local tna = 0xFFB060B0
--- Amount
-local tcc = 0xFF28CC66
+local toolName = 0xFFB060B0
+local toolAmount = 0xFF28CC66
 
 -- TECHNIQUE
--- Name
-local tch = 0xFFB060B0
--- Amount
-local tlv = 0xFF28CC66
+local techName = 0xFFB060B0
+local techLv = 0xFF28CC66
 
 -- MESETA
--- Name
-local nna = 0xFFB060B0
--- Color
-local nac = 0xFFFFFF00
+local mesetaName = 0xFFB060B0
+local mesetaAmount = 0xFFFFFF00
 
 return 
 {
@@ -205,35 +170,34 @@ return
     -- Colors
     white = white,
     grey = grey,
-    idx = idx,
-    ieq = ieq,
-    wuw = wuw,
-    wna = wna,
-    wst = wst,
-    wsn = wsn,
-    wsc = wsc,
-    wgn = wgn,
-    wsp = wsp,
-    wss = wss,
-    wkl = wkl,
-    wap = wap,
-    wat = wat,
-    wht = wht,
-    ana = ana,
-    ast = ast,
-    asl = asl,
-    una = una,
-    umo = umo,
-    ukl = ukl,
-    mna = mna,
-    mcl = mcl,
-    msc = msc,
-    mpb = mpb,
-    mft = mft,
-    tna = tna,
-    tcc = tcc,
-    tch = tch,
-    tlv = tlv,
-    nna = nna,
-    nac = nac,
+    itemIndex = itemIndex,
+    itemEquipped = itemEquipped,
+    weaponUntekked = weaponUntekked,
+    weaponName = weaponName,
+    weaponGrind = weaponGrind,
+    weaponSRankTitle = weaponSRankTitle,
+    weaponSRankName = weaponSRankName,
+    weaponSRankCustomName = weaponSRankCustomName,
+    weaponSRankSpecial = weaponSRankSpecial,
+    weaponKills = weaponKills,
+    weaponSpecial = weaponSpecial,
+    weaponAttributesEnabled = weaponAttributesEnabled,
+    weaponAttributes = weaponAttributes,
+    weaponHit = weaponHit,
+    armorName = armorName,
+    armorStats = armorStats,
+    armorSlots = armorSlots,
+    unitName = unitName,
+    unitKills = unitKills,
+    magName = magName,
+    magColor = magColor,
+    magStats = magStats,
+    magPB = magPB,
+    magFeedTimer = magFeedTimer,
+    toolName = toolName,
+    toolAmount = toolAmount,
+    techName = techName,
+    techLv = techLv,
+    mesetaName = mesetaName,
+    mesetaAmount = mesetaAmount,
 }

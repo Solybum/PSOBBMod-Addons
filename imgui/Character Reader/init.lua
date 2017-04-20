@@ -1,16 +1,7 @@
-helpers = require("Character Reader/Helpers")
-cfg = require("Character Reader/Configuration")
-ir = require("Character Reader/ItemReader")
-items = require("Character Reader/Items")
-
-local init = function()
-    return 
-    {
-        name = "Character Reader",
-        version = "1.4.7",
-        author = "Solybum"
-    }
-end
+helpers = require("lib.helpers")
+items = require("lib.Items")
+cfg = require("Character Reader.Configuration")
+ir = require("Character Reader.ItemReader")
 
 _MesetaAddress    = 0x00AA70F0
 _InvPointer = 0x00A95DE0 + 0x1C
@@ -168,16 +159,16 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     if cfg.itemsShowEquipped and equipped then
-        helpers.imguiPrint("[", cfg.white)
-        helpers.imguiPrint("E", cfg.ieq)
-        helpers.imguiPrint("] ", cfg.white)
+        helpers.imguiText("[", cfg.white)
+        helpers.imguiText("E", cfg.itemEquipped)
+        helpers.imguiText("] ", cfg.white)
     end
 
     wrapStr = nil
@@ -191,11 +182,11 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
 
     if wrapStr ~= nil then
         retStr = retStr .. "["
-        helpers.imguiPrint("[", cfg.white)
+        helpers.imguiText("[", cfg.white)
         retStr = retStr .. wrapStr
-        helpers.imguiPrint(wrapStr, cfg.wuw)
+        helpers.imguiText(wrapStr, cfg.weaponUntekked)
         retStr = retStr .. "] "
-        helpers.imguiPrint("] ", cfg.white)
+        helpers.imguiText("] ", cfg.white)
     end
     
     -- SRANK
@@ -206,16 +197,16 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         name = name .. " "
 
         retStr = retStr .. srankTitle
-        helpers.imguiPrint(srankTitle, cfg.wst)
+        helpers.imguiText(srankTitle, cfg.weaponSRankTitle)
         retStr = retStr .. name
-        helpers.imguiPrint(name, cfg.wsn)
+        helpers.imguiText(name, cfg.weaponSRankName)
         retStr = retStr .. srankName
-        helpers.imguiPrint(srankName, cfg.wsc)
+        helpers.imguiText(srankName, cfg.weaponSRankCustomName)
 
         if data[4] > 0 then
             grindStr = string.format(" +%i", data[4])
             retStr = retStr .. grindStr
-            helpers.imguiPrint(grindStr, cfg.wgn)
+            helpers.imguiText(grindStr, cfg.weaponGrind)
         end
 
         spec = data[3]
@@ -226,11 +217,11 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
             end
 
             retStr = retStr .. " ["
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             retStr = retStr .. specialStr
-            helpers.imguiPrint(specialStr, cfg.wss)
+            helpers.imguiText(specialStr, cfg.weaponSRankSpecial)
             retStr = retStr .. "]"
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
         end
     -- NON SRANK
     else
@@ -238,15 +229,15 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
         itemCfg = items.t[hexCode]
         if itemCfg ~= nil and itemCfg[1] ~= 0 then
-            helpers.imguiPrint(name, itemCfg[1])
+            helpers.imguiText(name, itemCfg[1])
         else
-            helpers.imguiPrint(name, cfg.wna)
+            helpers.imguiText(name, cfg.weaponName)
         end
 
         if data[4] > 0 then
             grindStr = string.format(" +%i", data[4])
             retStr = retStr .. grindStr
-            helpers.imguiPrint(grindStr, cfg.wgn)
+            helpers.imguiText(grindStr, cfg.weaponGrind)
         end
 
         spec = data[5] % 64
@@ -257,11 +248,11 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
             end
 
             retStr = retStr .. " ["
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             retStr = retStr .. specialStr
-            helpers.imguiPrint(specialStr, cfg.wsp[spec + 1])
+            helpers.imguiText(specialStr, cfg.weaponSpecial[spec + 1])
             retStr = retStr .. "]"
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
         end
 
         stats = {0,0,0,0,0,0}
@@ -285,7 +276,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         end
 
         retStr = retStr .. " ["
-        helpers.imguiPrint(" [", cfg.white)
+        helpers.imguiText(" [", cfg.white)
 
         for i=2,5,1 do
             stat = stats[i]
@@ -293,26 +284,26 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
             retStr = retStr .. statStr
 
             statColor = 0
-            for i2=1,helpers.tablelength(cfg.wat),2 do
+            for i2=1,helpers.tablelength(cfg.weaponAttributes),2 do
                 if statColor == 0 then
-                    if stat <= cfg.wat[i2] then
+                    if stat <= cfg.weaponAttributes[i2] then
                         statColor = i2 + 1
                     end
                 end
             end
 
-            if floor or cfg.wap then
-                helpers.imguiPrint(statStr, cfg.wat[statColor])
+            if floor or cfg.weaponAttributesEnabled then
+                helpers.imguiText(statStr, cfg.weaponAttributes[statColor])
             else
                 if stat == 0 then
-                    helpers.imguiPrint(statStr, cfg.grey)
+                    helpers.imguiText(statStr, cfg.grey)
                 else
-                    helpers.imguiPrint(statStr, cfg.white)
+                    helpers.imguiText(statStr, cfg.white)
                 end
             end
 
             retStr = retStr .. "/"
-            helpers.imguiPrint("/", cfg.white)
+            helpers.imguiText("/", cfg.white)
         end
 
         stat = stats[6]
@@ -320,37 +311,37 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         retStr = retStr .. statStr
 
         statColor = 0
-        for i2=1,helpers.tablelength(cfg.wht),2 do
+        for i2=1,helpers.tablelength(cfg.weaponHit),2 do
             if statColor == 0 then
-                if stat <= cfg.wht[i2] then
+                if stat <= cfg.weaponHit[i2] then
                     statColor = i2 + 1
                 end
             end
         end
 
-        if floor or cfg.wap then
-            helpers.imguiPrint(statStr, cfg.wht[statColor])
+        if floor or cfg.weaponAttributesEnabled then
+            helpers.imguiText(statStr, cfg.weaponHit[statColor])
         else
             if stat == 0 then
-                helpers.imguiPrint(statStr, cfg.grey)
+                helpers.imguiText(statStr, cfg.grey)
             else
-                helpers.imguiPrint(statStr, cfg.white)
+                helpers.imguiText(statStr, cfg.white)
             end
         end
 
         retStr = retStr .. "]"
-        helpers.imguiPrint("]", cfg.white)
+        helpers.imguiText("]", cfg.white)
 
         if data[11] >= 0x80 then
             kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
             killsStr = string.format("%iK", kills)
 
             retStr = retStr .. " ["
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             retStr = retStr .. killsStr
-            helpers.imguiPrint(killsStr, cfg.wkl)
+            helpers.imguiText(killsStr, cfg.weaponKills)
             retStr = retStr .. "]"
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
         end
     end
 
@@ -364,25 +355,25 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
     
     if cfg.itemsShowEquipped and equipped then
-        helpers.imguiPrint("[", cfg.white)
-        helpers.imguiPrint("E", cfg.ieq)
-        helpers.imguiPrint("] ", cfg.white)
+        helpers.imguiText("[", cfg.white)
+        helpers.imguiText("E", cfg.itemEquipped)
+        helpers.imguiText("] ", cfg.white)
     end
 
     retStr = retStr .. name
     hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
     itemCfg = items.t[hexCode]
     if itemCfg ~= nil and itemCfg[1] ~= 0 then
-        helpers.imguiPrint(name, itemCfg[1])
+        helpers.imguiText(name, itemCfg[1])
     else
-        helpers.imguiPrint(name, cfg.ana)
+        helpers.imguiText(name, cfg.armorName)
     end
     
     dfp = bit.lshift(data[8], 8) + data[7]
@@ -391,34 +382,34 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     evpStr = string.format("%i", evp)
 
     retStr = retStr .. " ["
-    helpers.imguiPrint(" [", cfg.white)
+    helpers.imguiText(" [", cfg.white)
     retStr = retStr .. dfpStr
     if dfp == 0 then
-        helpers.imguiPrint(dfpStr, cfg.grey)
+        helpers.imguiText(dfpStr, cfg.grey)
     else
-        helpers.imguiPrint(dfpStr, cfg.ast)
+        helpers.imguiText(dfpStr, cfg.armorStats)
     end
     retStr = retStr .. "/"
-    helpers.imguiPrint("/", cfg.white)
+    helpers.imguiText("/", cfg.white)
     retStr = retStr .. evpStr
     if evp == 0 then
-        helpers.imguiPrint(evpStr, cfg.grey)
+        helpers.imguiText(evpStr, cfg.grey)
     else
-        helpers.imguiPrint(evpStr, cfg.ast)
+        helpers.imguiText(evpStr, cfg.armorStats)
     end
     retStr = retStr .. "]"
-    helpers.imguiPrint("]", cfg.white)
+    helpers.imguiText("]", cfg.white)
     
     if data[2] == 1 then 
         retStr = retStr .. " ["
-        helpers.imguiPrint(" [", cfg.white)
+        helpers.imguiText(" [", cfg.white)
 
         slotStr = string.format("%iS", data[6])
         retStr = retStr .. slotStr
-        helpers.imguiPrint(slotStr, cfg.asl)
+        helpers.imguiText(slotStr, cfg.armorSlots)
 
         retStr = retStr .. "]"
-        helpers.imguiPrint("]", cfg.white)
+        helpers.imguiText("]", cfg.white)
     end
     return retStr
 end
@@ -430,25 +421,25 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     if cfg.itemsShowEquipped and equipped then
-        helpers.imguiPrint("[", cfg.white)
-        helpers.imguiPrint("E", cfg.ieq)
-        helpers.imguiPrint("] ", cfg.white)
+        helpers.imguiText("[", cfg.white)
+        helpers.imguiText("E", cfg.itemEquipped)
+        helpers.imguiText("] ", cfg.white)
     end
 
     retStr = retStr .. name
     hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
     itemCfg = items.t[hexCode]
     if itemCfg ~= nil and itemCfg[1] ~= 0 then
-        helpers.imguiPrint(name, itemCfg[1])
+        helpers.imguiText(name, itemCfg[1])
     else
-        helpers.imguiPrint(name, cfg.una)
+        helpers.imguiText(name, cfg.unitName)
     end
 
     mod = data[7]
@@ -468,18 +459,18 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
         modStr = " --"
     end
     retStr = retStr .. modStr
-    helpers.imguiPrint(modStr, cfg.umo)
+    helpers.imguiText(modStr, cfg.unitName)
     
     if data[11] >= 0x80 then
         kills = ((bit.lshift(data[11], 8) + data[12]) - 0x8000)
             killsStr = string.format("%iK", kills)
 
             retStr = retStr .. " ["
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             retStr = retStr .. killsStr
-            helpers.imguiPrint(killsStr, cfg.ukl)
+            helpers.imguiText(killsStr, cfg.unitKills)
             retStr = retStr .. "]"
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
     end
     return retStr
 end
@@ -491,25 +482,25 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
     end
 
     if cfg.itemsShowEquipped and equipped then
-        helpers.imguiPrint("[", cfg.white)
-        helpers.imguiPrint("E", cfg.ieq)
-        helpers.imguiPrint("] ", cfg.white)
+        helpers.imguiText("[", cfg.white)
+        helpers.imguiText("E", cfg.itemEquipped)
+        helpers.imguiText("] ", cfg.white)
     end
 
     retStr = retStr .. name
     hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8)
     itemCfg = items.t[hexCode]
     if itemCfg ~= nil and itemCfg[1] ~= 0 then
-        helpers.imguiPrint(name, itemCfg[1])
+        helpers.imguiText(name, itemCfg[1])
     else
-        helpers.imguiPrint(name, cfg.mna)
+        helpers.imguiText(name, cfg.magName)
     end
     
     colorStr  = "Not Set"
@@ -518,34 +509,34 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
     end
 
     retStr = retStr .. " ["
-    helpers.imguiPrint(" [", cfg.white)
+    helpers.imguiText(" [", cfg.white)
     retStr = retStr .. colorStr
-    helpers.imguiPrint(colorStr, cfg.mcl)
+    helpers.imguiText(colorStr, cfg.magColor)
     retStr = retStr .. "]"
-    helpers.imguiPrint("]", cfg.white)
+    helpers.imguiText("]", cfg.white)
 
     retStr = retStr .. " ["
-    helpers.imguiPrint(" [", cfg.white)
+    helpers.imguiText(" [", cfg.white)
 
     for i=1,4,1 do
         val = bit.lshift(data[6 + (i - 1) * 2],  8) + data[5 + (i - 1) * 2]
 
         statStr = string.format("%.2f", val/100)
         retStr = retStr .. statStr
-        helpers.imguiPrint(statStr, cfg.msc)
+        helpers.imguiText(statStr, cfg.magStats)
 
         if i < 4 then
             retStr = retStr .. "/"
-            helpers.imguiPrint("/", cfg.white)
+            helpers.imguiText("/", cfg.white)
         end
     end
 
     retStr = retStr .. "]"
-    helpers.imguiPrint("]", cfg.white)
+    helpers.imguiText("]", cfg.white)
 
     if cfg.magShowPBs then
         retStr = retStr .. " ["
-        helpers.imguiPrint(" [", cfg.white)
+        helpers.imguiText(" [", cfg.white)
 
         pbStr = ""
         if bit.band(data[15], 4) ~= 0 then
@@ -559,10 +550,10 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
             pbStr = "Empty"
         end
         retStr = retStr .. pbStr
-        helpers.imguiPrint(pbStr, cfg.mpb)
+        helpers.imguiText(pbStr, cfg.magPB)
 
         retStr = retStr .. "|"
-        helpers.imguiPrint("|", cfg.white)
+        helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 1) ~= 0 then
             pbStr = photonBlast[bit.band(data[4], 7) + 1]
@@ -570,10 +561,10 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
             pbStr = "Empty"
         end
         retStr = retStr .. pbStr
-        helpers.imguiPrint(pbStr, cfg.mpb)
+        helpers.imguiText(pbStr, cfg.magPB)
 
         retStr = retStr .. "|"
-        helpers.imguiPrint("|", cfg.white)
+        helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 2) ~= 0 then
             pbStr = photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1]
@@ -581,10 +572,10 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
             pbStr = "Empty"
         end
         retStr = retStr .. pbStr
-        helpers.imguiPrint(pbStr, cfg.mpb)
+        helpers.imguiText(pbStr, cfg.magPB)
         
         retStr = retStr .. "]"
-        helpers.imguiPrint("]", cfg.white)
+        helpers.imguiText("]", cfg.white)
     end
 
     return retStr
@@ -596,7 +587,7 @@ local formatPrintTool = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
@@ -614,24 +605,24 @@ local formatPrintTool = function(itemIndex, name, data)
         hexCode = bit.lshift(5, 16) + bit.lshift(data[5],  8) + data[3]
         itemCfg = items.t[hexCode]
         if itemCfg ~= nil and itemCfg[1] ~= 0 then
-            helpers.imguiPrint(name, itemCfg[1])
+            helpers.imguiText(name, itemCfg[1])
         else
-            helpers.imguiPrint(name, cfg.ana)
+            helpers.imguiText(name, cfg.techName)
         end
-        helpers.imguiPrint(techLvStr, cfg.tlv)
+        helpers.imguiText(techLvStr, cfg.techLevel)
     else
         retStr = retStr .. name
         hexCode = bit.lshift(data[1], 16) + bit.lshift(data[2],  8) + data[3]
         itemCfg = items.t[hexCode]
         if itemCfg ~= nil and itemCfg[1] ~= 0 then
-            helpers.imguiPrint(name, itemCfg[1])
+            helpers.imguiText(name, itemCfg[1])
         else
-            helpers.imguiPrint(name, cfg.tna)
+            helpers.imguiText(name, cfg.toolName)
         end
         if data[6] > 1 then
             amountStr = string.format(" x%i", data[6])
             retStr = retStr .. amountStr
-            helpers.imguiPrint(amountStr, cfg.tcc)
+            helpers.imguiText(amountStr, cfg.toolAmount)
         end
     end
     return retStr
@@ -647,7 +638,7 @@ local formatPrintMeseta = function(itemIndex, name, data)
     retStr = ""
     itemIndexStr = string.format("%03i ", itemIndex)
     if cfg.printItemIndex then 
-        helpers.imguiPrint(itemIndexStr, cfg.idx)
+        helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
     if cfg.printItemIndexToFile then 
         retStr = retStr .. itemIndexStr
@@ -664,13 +655,13 @@ local formatPrintMeseta = function(itemIndex, name, data)
     hexCode = 0x040000
     itemCfg = items.t[hexCode]
     if itemCfg ~= nil and itemCfg[1] ~= 0 then
-        helpers.imguiPrint(name, itemCfg[1])
+        helpers.imguiText(name, itemCfg[1])
     else
-        helpers.imguiPrint(name, cfg.nna)
+        helpers.imguiText(name, cfg.mesetaName)
     end
 
     mesetaStr = string.format(" x%i", meseta)
-    helpers.imguiPrint(mesetaStr, cfg.nac)
+    helpers.imguiText(mesetaStr, cfg.mesetaAmount)
 
     retStr = retStr .. mesetaStr
     return retStr
@@ -714,24 +705,24 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
             itemStr = formatPrintMag(index, itemName, item, equipped)
 
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             feedtimerStr = string.format("%is", feedtimer)
 
             ftColor = 0
-            for i=1,helpers.tablelength(cfg.mft),2 do
+            for i=1,helpers.tablelength(cfg.magFeedTimer),2 do
                 if ftColor == 0 then
-                    if feedtimer < cfg.mft[i] then
+                    if feedtimer < cfg.magFeedTimer[i] then
                         ftColor = i + 1
                     end
                 end
             end
 
             if feedtimer <= 0 then
-                helpers.imguiPrint("Feed Me!!!", cfg.mft[ftColor])
+                helpers.imguiText("Feed Me!!!", cfg.magFeedTimer[ftColor])
             else
-                helpers.imguiPrint(feedtimerStr, cfg.mft[ftColor])
+                helpers.imguiText(feedtimerStr, cfg.magFeedTimer[ftColor])
             end
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
         end
     else 
         if floor then
@@ -811,24 +802,24 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             feedtimer = pso.read_f32(iAddr + _ItemMagTimer) / 30
             itemStr = formatPrintMag(index, itemName, item, equipped)
 
-            helpers.imguiPrint(" [", cfg.white)
+            helpers.imguiText(" [", cfg.white)
             feedtimerStr = string.format("%is", feedtimer)
 
             ftColor = 0
-            for i=1,helpers.tablelength(cfg.mft),2 do
+            for i=1,helpers.tablelength(cfg.magFeedTimer),2 do
                 if ftColor == 0 then
-                    if feedtimer < cfg.mft[i] then
+                    if feedtimer < cfg.magFeedTimer[i] then
                         ftColor = i + 1
                     end
                 end
             end
 
             if feedtimer <= 0 then
-                helpers.imguiPrint("Feed Me!!!", cfg.mft[ftColor])
+                helpers.imguiText("Feed Me!!!", cfg.magFeedTimer[ftColor])
             else
-                helpers.imguiPrint(feedtimerStr, cfg.mft[ftColor])
+                helpers.imguiText(feedtimerStr, cfg.magFeedTimer[ftColor])
             end
-            helpers.imguiPrint("]", cfg.white)
+            helpers.imguiText("]", cfg.white)
         -- TOOL
         elseif item[1] == 3 then
             if item[2] == 2 then
@@ -1049,6 +1040,15 @@ local present = function()
         readItemList(0, false, true)
         imgui.End()
     end
+end
+
+local init = function()
+    return 
+    {
+        name = "Character Reader",
+        version = "1.4.8",
+        author = "Solybum"
+    }
 end
 
 pso.on_init(init)

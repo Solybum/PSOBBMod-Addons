@@ -10,24 +10,39 @@ function tableMerge(t1, t2)
    return t1
 end
 
--- By default it will print on the same line
-local function imguiPrint(text, color, newline)
-    color = color or cfg.white
-    newline = newline or false
+local function GetColorAsFloats(color)
+    color = color or 0xFFFFFFFF
 
-    if newline == false then
-        imgui.SameLine(0, 0)
-    end
-    
     a = bit.band(bit.rshift(color, 24), 0xFF) / 255;
     r = bit.band(bit.rshift(color, 16), 0xFF) / 255;
     g = bit.band(bit.rshift(color, 8), 0xFF) / 255;
     b = bit.band(color, 0xFF) / 255;
 
-    imgui.TextColored(r, g, b, a, text)
+    return {r, g, b, a}
 end
 
-local imguiProgressBar = function(progress, x, y, overlay, barColor, textColor)
+-- Prints text in the same line, with the given color
+local function imguiText(text, color)
+    color = color or cfg.white
+
+    c = GetColorAsFloats(color)
+
+    imgui.SameLine(0, 0)
+    imgui.TextColored(c[1], c[2], c[3], c[4], text)
+end
+-- Prints text in a new line, with the given color
+local function imguiTextLine(text, color)
+    color = color or cfg.white
+
+    if newline == false then
+        imgui.SameLine(0, 0)
+    end
+    
+    c = GetColorAsFloats(color)
+    imgui.TextColored(c[1], c[2], c[3], c[4], text)
+end
+
+local function imguiProgressBar(progress, x, y, overlay, barColor, textColor)
     x = x or -1.0
     y = y or 0.0
     barColor = barColor or 0xFFFFFFFF
@@ -38,17 +53,8 @@ local imguiProgressBar = function(progress, x, y, overlay, barColor, textColor)
         return
     end
 
-    a = bit.band(bit.rshift(textColor, 24), 0xFF) / 255;
-    r = bit.band(bit.rshift(textColor, 16), 0xFF) / 255;
-    g = bit.band(bit.rshift(textColor, 8), 0xFF) / 255;
-    b = bit.band(textColor, 0xFF) / 255;
-    imgui.PushStyleColor("Text", r, g, b, a)
-
-    a = bit.band(bit.rshift(barColor, 24), 0xFF) / 255;
-    r = bit.band(bit.rshift(barColor, 16), 0xFF) / 255;
-    g = bit.band(bit.rshift(barColor, 8), 0xFF) / 255;
-    b = bit.band(barColor, 0xFF) / 255;
-    imgui.PushStyleColor("PlotHistogram", r, g, b, a)
+    imgui.PushStyleColor("Text", GetColorAsFloats(textColor))
+    imgui.PushStyleColor("PlotHistogram", GetColorAsFloats(barColor))
     imgui.ProgressBar(progress, x, y, overlay)
     imgui.PopStyleColor(2)
 end
@@ -57,6 +63,8 @@ return
 {
     tablelength = tablelength,
     tableMerge = tableMerge,
-    imguiPrint = imguiPrint,
+    GetColorAsFloats = GetColorAsFloats,
+    imguiText = imguiText,
+    imguiTextLine = imguiTextLine,
     imguiProgressBar = imguiProgressBar,
 }

@@ -1,15 +1,6 @@
-local init = function()
-    return 
-    {
-        name = "Monster HP",
-        version = "1.0.0",
-        author = "Solybum"
-    }
-end
-
-helpers = require("lib/helpers")
-unitxt = require("lib/Unitxt")
-monsters = require("Monster HP/Monsters")
+helpers = require("lib.helpers")
+unitxt = require("lib.Unitxt")
+monsters = require("Monster HP.Monsters")
 
 cfgFontColor = 0xFFFFFFFF
 cfgFontSize = 1.0
@@ -52,9 +43,9 @@ local function readMonsters()
     
 
     imgui.Columns(2)
-    helpers.imguiPrint("Monster", 0xFFFFFFFF, true)
+    helpers.imguiTextLine("Monster", 0xFFFFFFFF)
     imgui.NextColumn()
-    helpers.imguiPrint("HP", 0xFFFFFFFF, true)
+    helpers.imguiTextLine("HP", 0xFFFFFFFF)
     imgui.NextColumn()
 
     for i=1,monsterCount,1 do
@@ -80,7 +71,7 @@ local function readMonsters()
                 end
                 
                 if mDisplay == true then
-                    helpers.imguiPrint(string.format("%s", mName), mColor, true)
+                    helpers.imguiTextLine(string.format("%s", mName), mColor)
                     imgui.NextColumn()
                     helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
                     imgui.NextColumn()
@@ -95,6 +86,15 @@ local present = function()
     imgui.SetWindowFontScale(cfgFontSize)
     readMonsters()
     imgui.End()
+end
+
+local init = function()
+    return 
+    {
+        name = "Monster HP",
+        version = "1.0.0",
+        author = "Solybum"
+    }
 end
 
 pso.on_init(init)
