@@ -53,8 +53,10 @@ local function imguiProgressBar(progress, x, y, overlay, barColor, textColor)
         return
     end
 
-    imgui.PushStyleColor("Text", GetColorAsFloats(textColor))
-    imgui.PushStyleColor("PlotHistogram", GetColorAsFloats(barColor))
+    c = GetColorAsFloats(textColor)
+    imgui.PushStyleColor("Text", c[1], c[2], c[3], c[4])
+    c = GetColorAsFloats(barColor)
+    imgui.PushStyleColor("PlotHistogram", c[1], c[2], c[3], c[4])
     imgui.ProgressBar(progress, x, y, overlay)
     imgui.PopStyleColor(2)
 end
