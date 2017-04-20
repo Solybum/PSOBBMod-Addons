@@ -93,14 +93,14 @@ m[77] = { 0xFFFF0000, true } -- Gal Gryphon
 m[82] = { 0xFFFFFFFF, true } -- Ill Gill
 m[83] = { 0xFFFFFFFF, true } -- Del Lily
 m[84] = { 0xFFFF8080, true } -- Epsilon
-m[87] = { 0xFFFFFFFF, false } -- Epsigard
+m[87] = { 0xFFFFFFFF, true } -- Epsigard
 
 -- Seabed
 m[64] = { 0xFFFFFFFF, true } -- Dolmolm
 m[65] = { 0xFFFFFFFF, true } -- Dolmdarl
 m[66] = { 0xFFFFFFFF, true } -- Morfos
 m[67] = { 0xFFFFFFFF, true } -- Recobox
-m[68] = { 0xFFFFFFFF, false } -- Recon
+m[68] = { 0xFFFFFFFF, true } -- Recon
 m[69] = { 0xFFFFFFFF, true } -- Sinow Zoa
 m[70] = { 0xFFFFFFFF, true } -- Sinow Zele
 m[71] = { 0xFFFFFFFF, true } -- Deldepth
