@@ -830,10 +830,10 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             itemStr = formatPrintTool(index, itemName, item)
         -- MESETA
         elseif item[1] == 4 then
-            item[13] = pso.read_u32(iAddr + _ItemMesetaAmount + 0)
-            item[14] = pso.read_u32(iAddr + _ItemMesetaAmount + 1)
-            item[15] = pso.read_u32(iAddr + _ItemMesetaAmount + 2)
-            item[16] = pso.read_u32(iAddr + _ItemMesetaAmount + 3)
+            item[13] = pso.read_u8(iAddr + _ItemMesetaAmount + 0)
+            item[14] = pso.read_u8(iAddr + _ItemMesetaAmount + 1)
+            item[15] = pso.read_u8(iAddr + _ItemMesetaAmount + 2)
+            item[16] = pso.read_u8(iAddr + _ItemMesetaAmount + 3)
 
             itemStr = formatPrintMeseta(index, itemName, item)
         end
