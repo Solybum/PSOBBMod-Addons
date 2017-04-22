@@ -61,7 +61,7 @@ function readMonsters()
                 mHP = pso.read_u16(mAddr + _MonsterHP)
                 mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
                 
-                mName = unitxt.ReadMonsterName(mID, difficulty)
+                mName = unitxt.GetMonsterName(mID, difficulty)
                 mColor = 0xFFFFFFFF
                 mDisplay = true
 

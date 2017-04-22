@@ -41,32 +41,6 @@ _ItemTechType = 0x108
 _ItemMesetaAmount = 0x100
 
 -- Arrays
-techNames = 
-{
-    "Foie", "Gifoie", "Rafoie",
-    "Barta", "Gibarta", "Rabarta",
-    "Zonde", "Gizonde", "Razonde",
-    "Grants", "Deband",
-    "Jellen", "Zalure",
-    "Shifta", "Ryuker",
-    "Resta", "Anti",
-    "Reverser", "Megid",
-}
-specialNames = 
-{
-    "None", 
-    "Draw", "Drain", "Fill", "Gush",
-    "Heart", "Mind", "Soul", "Geist", 
-    "Master's", "Lord's", "King's",
-    "Charge", "Spirit", "Berserk",
-    "Ice", "Frost", "Freeze", "Blizzard",
-    "Bind", "Hold", "Seize", "Arrest",
-    "Heat", "Fire", "Flame", "Burning",
-    "Shock", "Thunder", "Storm", "Tempest",
-    "Dim", "Shadow", "Dark", "Hell",
-    "Panic", "Riot", "Havoc", "Chaos",
-    "Devil's", "Demon's",
-}
 srankSpecial = 
 {
     "", "Jellen", "Zalure", "HP Regeneration", "TP Regeneration",
@@ -93,10 +67,6 @@ magNewColor =
     0x00, 0x01, 0x02, 0x0C, 0x04, 0x05, 0x0F, 0x0A, 0x04, 0x0D, 0x01, 0x08, 0x11, 0x04, 0x05, 0x0F, 0x05, 0x10, 0x10, 0x07, 0x02, 0x0B, 0x0A, 0x0A, 0x0F,
     0x00, 0x01, 0x0B, 0x0C, 0x04, 0x05, 0x06, 0x08, 0x0A, 0x0D, 0x07, 0x02, 0x11, 0x0A, 0x05, 0x06, 0x01, 0x0B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x07, 0x02, 0x11, 0x04, 0x05, 0x06, 0x09, 0x0C, 0x00, 0x01, 0x02, 0x11, 0x0D, 0x05, 0x10, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-}
-photonBlast = 
-{
-    "Farlla", "Estlla", "Golla", "Pilla", "Leilla", "Twins", "Invalid_1", "Invalid_2"
 }
 -- End of Arrays
 
@@ -141,7 +111,7 @@ local getLeftPBValue = function(pb)
             -- continue
         else
             if pb == 0 then
-                return i;
+                return (i - 1);
             else
                 pb = pb - 1
             end
@@ -244,9 +214,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         spec = data[5] % 64
         if spec ~= 0 then
             specialStr = "special"
-            if spec < helpers.tablelength(specialNames) then
-                specialStr = string.format("%s", specialNames[spec + 1])
-            end
+            specialStr = unitxt.GetSpecialName(spec)
 
             retStr = retStr .. " ["
             helpers.imguiText(" [", cfg.white)
@@ -545,7 +513,7 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
             if leftPBVal == -1 then
                 pbStr = "Error"
             else
-                pbStr = photonBlast[leftPBVal]
+                pbStr = unitxt.GetPhotonBlastName(leftPBVal)
             end
         else
             pbStr = "Empty"
@@ -557,7 +525,7 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
         helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 1) ~= 0 then
-            pbStr = photonBlast[bit.band(data[4], 7) + 1]
+            pbStr = unitxt.GetPhotonBlastName(bit.band(data[4], 7))
         else
             pbStr = "Empty"
         end
@@ -568,7 +536,7 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
         helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 2) ~= 0 then
-            pbStr = photonBlast[bit.rshift(bit.band(data[4], 56), 3) + 1]
+            pbStr = unitxt.GetPhotonBlastName(bit.rshift(bit.band(data[4], 56), 3))
         else
             pbStr = "Empty"
         end
@@ -595,12 +563,8 @@ local formatPrintTool = function(itemIndex, name, data)
     end
 
     if data[2] == 2 then
-        name = "Invalid technique"
-        techLvStr = string.format(" Lv%i", data[3] + 1)
-
-        if data[5] < helpers.tablelength(techNames) then
-            name = string.format("%s", techNames[data[5] + 1])
-        end
+        name = unitxt.GetTechniqueName(data[5])
+        techLvStr = string.format("Lv%i", data[3] + 1)
 
         retStr = name .. techLvStr
         hexCode = bit.lshift(5, 16) + bit.lshift(data[5],  8) + data[3]
