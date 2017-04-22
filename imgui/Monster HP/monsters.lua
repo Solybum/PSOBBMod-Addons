@@ -5,6 +5,8 @@ m = {}
 -- Changing the second value to "false" makes the enemy not appear on the monster
 -- reader.
 
+m[0] = { 0xFFFFFFFF, false } -- Unknown
+
 -- Forest
 m[1] = { 0xFFFFFFFF, true } -- Hildebear / Hildelt
 m[2] = { 0xFFFFFF00, true } -- Hildeblue / Hildetorr

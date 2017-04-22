@@ -14,7 +14,7 @@ _MonsterArray = 0x00AAD720
 _MonsterPosX = 0x38
 _MonsterPosY = 0x3C
 _MonsterPosZ = 0x40
-_MonsterID = 0x378
+_MonsterUnitxtID = 0x378
 _MonsterHP = 0x334
 _MonsterHPMax = 0x2BC
 
@@ -52,30 +52,23 @@ function readMonsters()
         mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
 
         if mAddr ~= 0 then
-            mID = pso.read_u32(mAddr + _MonsterID)
-
-            if mID ~= 0 then
-                --mPosX = pso.read_f32(mAddr + _MonsterPosX)
-                --mPosY = pso.read_f32(mAddr + _MonsterPosY)
-                --mPosZ = pso.read_f32(mAddr + _MonsterPosZ)
-                mHP = pso.read_u16(mAddr + _MonsterHP)
-                mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
-                
-                mName = unitxt.GetMonsterName(mID, difficulty)
-                mColor = 0xFFFFFFFF
-                mDisplay = true
-
-                if monsters.m[mID] ~= nil then
-                    mColor = monsters.m[mID][1]
-                    mDisplay = monsters.m[mID][2]
-                end
-                
-                if mDisplay == true then
-                    helpers.imguiTextLine(string.format("%s", mName), mColor)
-                    imgui.NextColumn()
-                    helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
-                    imgui.NextColumn()
-                end
+            mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
+            mHP = pso.read_u16(mAddr + _MonsterHP)
+            mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
+            
+            mName = unitxt.GetMonsterName(mUnitxtID, difficulty)
+            mColor = 0xFFFFFFFF
+            mDisplay = true
+            if monsters.m[mUnitxtID] ~= nil then
+                mColor = monsters.m[mUnitxtID][1]
+                mDisplay = monsters.m[mUnitxtID][2]
+            end
+            
+            if mDisplay == true then
+                helpers.imguiTextLine(string.format("%s", mName), mColor)
+                imgui.NextColumn()
+                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
+                imgui.NextColumn()
             end
         end
      end
