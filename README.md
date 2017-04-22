@@ -13,7 +13,6 @@ Override item name colors in [items.lua](https://github.com/Solybum/PSOBBMod-Add
   
 [Monster HP](https://github.com/Solybum/PSOBBMod-Addons/tree/master/imgui/Monster%20HP)  
 Personalize the mosnter name colors in [monsters.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/imgui/Monster%20HP/monsters.lua)  
-Override item name colors in [items.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/imgui/Character%20Reader/items.lua)  
 
 [dinput8.dll](https://github.com/Solybum/PSOBBMod-Addons/raw/master/bin/dinput8.dll) this library is a modification of the original, if you use this library, you have to place the addon folders in ./imgui/\*  
 You will also need [VC++ 2015 x86](https://www.microsoft.com/en-us/download/details.aspx?id=53840)  
