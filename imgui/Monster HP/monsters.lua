@@ -1,4 +1,4 @@
-local m = {}
+m = {}
 
 -- Standard enemy colors are white, rare enemies are yellow, bosses are red.
 -- Minibosses are a less threatening red. 8)

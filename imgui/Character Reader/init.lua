@@ -1,7 +1,8 @@
 helpers = require("lib.helpers")
-items = require("lib.Items")
+pmt = require("lib.pmt")
+unitxt = require("lib.unitxt")
+items = require("lib.items")
 cfg = require("Character Reader.Configuration")
-ir = require("Character Reader.ItemReader")
 
 _MesetaAddress    = 0x00AA70F0
 _InvPointer = 0x00A95DE0 + 0x1C
@@ -681,7 +682,8 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
     if item[1] == 4 then
         itemName = "Meseta"
     else
-        itemName = ir.getItemName(item) or "Unknown"
+        unitxt_id = pmt.GetItemUnitxtID(item)
+        itemName = unitxt.GetItemName(unitxt_id) or "Unknown"
     end
     
     -- Where the magic happens
@@ -955,8 +957,8 @@ local readBank = function(save)
             item[6] = pso.read_u8(address + 20)
         end
         address = address + 24
-        
-        itemName = ir.getItemName(item) or "Unknown"
+
+        itemName = unitxt.GetItemName(unitxt_id) or "Unknown"
         itemStr = ""
         -- WEAPON
         if item[1] == 0 then

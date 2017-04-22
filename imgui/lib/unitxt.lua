@@ -4,9 +4,7 @@ unitxtMonsterName = 0x08
 unitxtItemDesc = 0x0C
 unitxtMonsterNameUlt = 0x10
 
-local ReadInternal = function(group, index)
-    local str
-    
+function _Read(group, index)
     address = pso.read_u32(unitxtPointer)
     if address == 0 then
         return nil
@@ -24,33 +22,34 @@ local ReadInternal = function(group, index)
         return nil
     end
     
-    str = pso.read_wstr(address, 256)
-    return str
+    return pso.read_wstr(address, 256)
 end
 
 function Read(group, index)
-    str = ReadInternal(group, index)
-    return str
+    return _Read(group, index)
 end
-function ReadItemName(index)
-    return ReadInternal(unitxtItemName, index)
+
+function GetItemName(index)
+    return _Read(unitxtItemName, index)
 end
-function ReadItemDescription(index)
-    return ReadInternal(unitxtItemDesc, index)
+
+function GetItemDescription(index)
+    return _Read(unitxtItemDesc, index)
 end
-function ReadMonsterName(index, difficulty)
-    difficulty = difficulty or 0
-    if difficulty == 3 then
-        return ReadInternal(unitxtMonsterNameUlt, index)
+
+function GetMonsterName(index, ultimate)
+    ultimate = ultimate or false
+    if ultimate then
+        return _Read(unitxtMonsterNameUlt, index)
     else
-        return ReadInternal(unitxtMonsterName, index)
+        return _Read(unitxtMonsterName, index)
     end
 end
 
 return
 {
     Read = Read,
-    ReadItemName = ReadItemName,
-    ReadItemDescription = ReadItemDescription,
-    ReadMonsterName = ReadMonsterName,
+    GetItemName = GetItemName,
+    GetItemDescription = GetItemDescription,
+    GetMonsterName = GetMonsterName,
 }

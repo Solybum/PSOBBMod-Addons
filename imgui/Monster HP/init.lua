@@ -18,7 +18,7 @@ _MonsterID = 0x378
 _MonsterHP = 0x334
 _MonsterHPMax = 0x2BC
 
-local function GetHPColorGradient(percent)
+function GetHPColorGradient(percent)
     a = 1 - percent + 0.4
     r = 1 - percent
     g = percent
@@ -36,7 +36,7 @@ local function GetHPColorGradient(percent)
     return color
 end
 
-local function readMonsters()
+function readMonsters()
     difficulty = pso.read_u32(_Difficulty)
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
@@ -81,14 +81,14 @@ local function readMonsters()
      end
 end
 
-local present = function()
+function present()
     imgui.Begin("Monsters")
     imgui.SetWindowFontScale(cfgFontSize)
     readMonsters()
     imgui.End()
 end
 
-local init = function()
+function init()
     return 
     {
         name = "Monster HP",
