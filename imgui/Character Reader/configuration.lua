@@ -8,6 +8,8 @@ local printItemIndexToFile = true
 local ignoreMeseta = false
 -- Shows PBs of mags
 local magShowPBs = true
+-- Short PB names
+local magShortPBs = true
 -- Shows the feed timer mags
 local magShowFeedTimer = true
 -- Shows an [E] besides equipped items in the inventory
@@ -158,6 +160,7 @@ return
     printItemIndexToFile = printItemIndexToFile,
     ignoreMeseta = ignoreMeseta,
     magShowPBs = magShowPBs,
+    magShortPBs = magShortPBs,
     magShowFeedTimer = magShowFeedTimer,
     itemsShowEquipped = itemsShowEquipped,
     invertFloorItemsFlow = invertFloorItemsFlow,

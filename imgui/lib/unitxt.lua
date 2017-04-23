@@ -5,6 +5,11 @@ specialBaseID = 0x005E4CBB
 --unitxtItemDesc = 0x0C
 --unitxtMonsterNameUlt = 0x10
 
+pbShortNames = 
+{
+    "F", "E", "G", "P", "L", "M",
+}
+
 function _Read(group, index)
     address = pso.read_u32(unitxtPointer)
     if address == 0 then
@@ -60,7 +65,12 @@ function GetClassName(id)
     return _Read(8, id)
 end
 
-function GetPhotonBlastName(id)
+function GetPhotonBlastName(id, shortName)
+    shortName = shortName or false
+    
+    if shortName == true and id < 6 then
+        return pbShortNames[id + 1]
+    end
     return _Read(9, id)
 end
 

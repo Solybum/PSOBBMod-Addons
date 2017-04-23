@@ -513,10 +513,10 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
             if leftPBVal == -1 then
                 pbStr = "Error"
             else
-                pbStr = unitxt.GetPhotonBlastName(leftPBVal)
+                pbStr = unitxt.GetPhotonBlastName(leftPBVal, cfg.magShortPBs)
             end
         else
-            pbStr = "Empty"
+            pbStr = " "
         end
         retStr = retStr .. pbStr
         helpers.imguiText(pbStr, cfg.magPB)
@@ -525,9 +525,9 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
         helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 1) ~= 0 then
-            pbStr = unitxt.GetPhotonBlastName(bit.band(data[4], 7))
+            pbStr = unitxt.GetPhotonBlastName(bit.band(data[4], 7), cfg.magShortPBs)
         else
-            pbStr = "Empty"
+            pbStr = " "
         end
         retStr = retStr .. pbStr
         helpers.imguiText(pbStr, cfg.magPB)
@@ -536,9 +536,9 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
         helpers.imguiText("|", cfg.white)
 
         if bit.band(data[15], 2) ~= 0 then
-            pbStr = unitxt.GetPhotonBlastName(bit.rshift(bit.band(data[4], 56), 3))
+            pbStr = unitxt.GetPhotonBlastName(bit.rshift(bit.band(data[4], 56), 3), cfg.magShortPBs)
         else
-            pbStr = "Empty"
+            pbStr = " "
         end
         retStr = retStr .. pbStr
         helpers.imguiText(pbStr, cfg.magPB)
