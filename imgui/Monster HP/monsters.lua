@@ -1,4 +1,8 @@
-m = {}
+local maxDistance = 0   -- Set this to a number above 0 to hide monsters farther
+                        -- away than this distance. Recommended value 750-1000,
+                        -- but play with it and see what you like!
+
+local m = {}
 
 -- Standard enemy colors are white, rare enemies are yellow, bosses are red.
 -- Minibosses are a less threatening red. 8)
@@ -66,7 +70,7 @@ m[45] = { 0xFFFF0000, true } -- De Rol Le / Dal Ral Lie
 m[46] = { 0xFFFF0000, true } -- Vol Opt / Vol Opt ver.2
 m[47] = { 0xFFFF0000, true } -- Dark Falz
 
--- VR Temple	
+-- VR Temple    
 m[51] = { 0xFFFFFF00, true } -- Love Rappy
 m[73] = { 0xFFFF0000, true } -- Barba Ray
 m[74] = { 0xFFFFFFFF, true } -- Pig Ray
@@ -108,7 +112,7 @@ m[70] = { 0xFFFFFFFF, true } -- Sinow Zele
 m[71] = { 0xFFFFFFFF, true } -- Deldepth
 m[72] = { 0xFFFFFFFF, true } -- Delbiter
 m[78] = { 0xFFFF0000, true } -- Olga Flow
-m[85] = { 0xFFFFFFFF, true } -- Gael	
+m[85] = { 0xFFFFFFFF, true } -- Gael    
 m[86] = { 0xFFFFFFFF, true } -- Giel
 
 -- Crater
@@ -141,5 +145,6 @@ m[48] = { 0xFFFFFFFF, true } -- Container
 
 return 
 {
+    maxDistance = maxDistance,
     m = m,
 }
