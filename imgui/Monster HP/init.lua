@@ -5,15 +5,18 @@ monsters = require("Monster HP.Monsters")
 cfgFontColor = 0xFFFFFFFF
 cfgFontSize = 1.0
 
+_PlayerArray = 0x00A94254
+_PlayerIndex = 0x00A9C4F4
 _PlayerCount = 0x00AAE168
 _Difficulty = 0x00A9CD68
+
+_PosX = 0x38
+_PosY = 0x3C
+_PosZ = 0x40
 
 _MonsterCount = 0x00AAE164
 _MonsterArray = 0x00AAD720
 
-_MonsterPosX = 0x38
-_MonsterPosY = 0x3C
-_MonsterPosZ = 0x40
 _MonsterUnitxtID = 0x378
 _MonsterHP = 0x334
 _MonsterHPMax = 0x2BC
@@ -41,6 +44,8 @@ function readMonsters()
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
     
+    pIndex = pso.read_u32(_PlayerIndex)
+    pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
     imgui.Columns(2)
     helpers.imguiTextLine("Monster", 0xFFFFFFFF)
@@ -52,6 +57,20 @@ function readMonsters()
         mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
 
         if mAddr ~= 0 then
+            pPosX = pso.read_f32(pAddr + _PosX)
+            pPosZ = pso.read_f32(pAddr + _PosZ)
+            mPosX = pso.read_f32(mAddr + _PosX)
+            mPosZ = pso.read_f32(mAddr + _PosZ)
+            xDist = math.abs(pPosX - mPosX)
+            zDist = math.abs(pPosZ - mPosZ)
+            tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
+            
+            if monsters.maxDistance ~= nil then
+                maxDist = monsters.maxDistance
+            else
+                maxDist = 0
+            end
+            
             mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
             mHP = pso.read_u16(mAddr + _MonsterHP)
             mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
@@ -62,6 +81,10 @@ function readMonsters()
             if monsters.m[mUnitxtID] ~= nil then
                 mColor = monsters.m[mUnitxtID][1]
                 mDisplay = monsters.m[mUnitxtID][2]
+            end
+            
+            if maxDist > 0 and tDist > maxDist then
+                mDisplay = false
             end
             
             if mDisplay == true then
@@ -97,4 +120,3 @@ return {
     init = init,
     present = present,
 }
-
