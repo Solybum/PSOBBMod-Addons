@@ -14,8 +14,8 @@ _PosX = 0x38
 _PosY = 0x3C
 _PosZ = 0x40
 
-_MonsterCount = 0x00AAE164
-_MonsterArray = 0x00AAD720
+_EntityCount = 0x00AAE164
+_EntityArray = 0x00AAD720
 
 _MonsterUnitxtID = 0x378
 _MonsterHP = 0x334
@@ -46,7 +46,7 @@ function GetMonsterList()
     ultimate = difficulty == 3
 
     playerCount = pso.read_u32(_PlayerCount)
-    monsterCount = pso.read_u32(_MonsterCount)
+    entityCount = pso.read_u32(_EntityCount)
 
     pIndex = pso.read_u32(_PlayerIndex)
     pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
@@ -55,8 +55,8 @@ function GetMonsterList()
     pPosX = pso.read_f32(pAddr + _PosX)
     pPosZ = pso.read_f32(pAddr + _PosZ)
 
-    for i=1,monsterCount,1 do
-        mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
+    for i=1,entityCount,1 do
+        mAddr = pso.read_u32(_EntityArray + 4 * (i - 1 + playerCount))
 
         -- If we got a pointer, then read from it
         if mAddr ~= 0 then
@@ -86,7 +86,7 @@ function GetMonsterList()
                 mDisplay = false
             end
 
-            table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax })
+            table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax, color = mColor })
         end
     end
 
@@ -98,10 +98,10 @@ function PrintMonsters()
     monsterListCount = table.getn(monsterList)
     
     imgui.Columns(2)
-    helpers.imguiTextLine(string.format("Monster (%i)", monsterListCount), 0xFFFFFFFF)
-    imgui.NextColumn()
-    helpers.imguiTextLine("HP", 0xFFFFFFFF)
-    imgui.NextColumn()
+    --helpers.imguiTextLine("Monster", 0xFFFFFFFF)
+    --imgui.NextColumn()
+    --helpers.imguiTextLine("HP", 0xFFFFFFFF)
+    --imgui.NextColumn()
 
     for i=1,monsterListCount,1 do
         if monsterList[i].show then
