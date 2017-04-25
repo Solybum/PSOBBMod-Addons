@@ -26,6 +26,7 @@ function Test()
         helpers.imguiText(name, cfgFontColor, true)
         imgui.NextColumn()
         helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * cfgFontSize, hp, helpers.HPToGreenRedGradient(hp/mhp), cfgFontColor, true)
+        imgui.NextColumn()
     end
 end
 
