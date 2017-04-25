@@ -18,8 +18,18 @@ function GetPlayerName(player)
     return pso.read_wstr(player + 0x428 + 4, 10)
 end
 
+function GetPlayerHP(player)
+    return pso.read_u32(player + 0x334)
+end
+
+function GetPlayerMaxHP(player)
+    return pso.read_u32(player + 0x2BC)
+end
+
 return 
 {
     GetPlayerList = GetPlayerList,
     GetPlayerName = GetPlayerName,
+    GetPlayerHP = GetPlayerHP,
+    GetPlayerMaxHP = GetPlayerMaxHP,
 }
