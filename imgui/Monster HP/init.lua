@@ -51,6 +51,12 @@ function GetMonsterList()
     pIndex = pso.read_u32(_PlayerIndex)
     pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
+    -- If we don't have address (maybe warping or something)
+    -- return the empty list
+    if pAddr == 0 then
+        return monsterList
+    end
+
     -- Get player position
     pPosX = pso.read_f32(pAddr + _PosX)
     pPosZ = pso.read_f32(pAddr + _PosZ)
