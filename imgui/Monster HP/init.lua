@@ -21,24 +21,6 @@ _MonsterUnitxtID = 0x378
 _MonsterHP = 0x334
 _MonsterHPMax = 0x2BC
 
-function GetHPColorGradient(percent)
-    a = 1 - percent + 0.4
-    r = 1 - percent
-    g = percent
-    b = 0
-
-    if a > 1.0 then
-        a = 1.0
-    end
-
-    color = 
-    bit.lshift(bit.band((a * 255), 0xFF), 24) + 
-    bit.lshift(bit.band((r * 255), 0xFF), 16) + 
-    bit.lshift(bit.band((g * 255), 0xFF), 8) + 
-    bit.lshift(bit.band((b * 255), 0xFF), 0)
-    return color
-end
-
 function GetMonsterList()
     monsterList = {}
 
@@ -116,7 +98,7 @@ function PrintMonsters()
             
             helpers.imguiTextLine(monsterList[i].name, monsterList[i].color)
             imgui.NextColumn()
-            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
+            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfgFontColor)
             imgui.NextColumn()
         end
     end

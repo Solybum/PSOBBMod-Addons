@@ -16,6 +16,24 @@ local function GetColorAsFloats(color)
     return {r, g, b, a}
 end
 
+function HPToGreenRedGradient(percent)
+    a = 1 - percent + 0.4
+    r = 1 - percent
+    g = percent
+    b = 0
+
+    if a > 1.0 then
+        a = 1.0
+    end
+
+    color = 
+    bit.lshift(bit.band((a * 255), 0xFF), 24) + 
+    bit.lshift(bit.band((r * 255), 0xFF), 16) + 
+    bit.lshift(bit.band((g * 255), 0xFF), 8) + 
+    bit.lshift(bit.band((b * 255), 0xFF), 0)
+    return color
+end
+
 -- Prints text in the same line, with the given color
 local function imguiText(text, color)
     color = color or cfg.white
@@ -58,9 +76,9 @@ end
 
 return
 {
-    tablelength = tablelength,
     tableMerge = tableMerge,
     GetColorAsFloats = GetColorAsFloats,
+    HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
     imguiTextLine = imguiTextLine,
     imguiProgressBar = imguiProgressBar,
