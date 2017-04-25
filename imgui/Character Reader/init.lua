@@ -183,7 +183,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         spec = data[3]
         if spec ~= 0 then
             specialStr = "special"
-            if spec < helpers.tablelength(srankSpecial) then
+            if spec < table.getn(srankSpecial) then
                 specialStr = string.format("%s", srankSpecial[spec + 1])
             end
 
@@ -253,7 +253,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
             retStr = retStr .. statStr
 
             statColor = 0
-            for i2=1,helpers.tablelength(cfg.weaponAttributes),2 do
+            for i2=1,table.getn(cfg.weaponAttributes),2 do
                 if statColor == 0 then
                     if stat <= cfg.weaponAttributes[i2] then
                         statColor = i2 + 1
@@ -280,7 +280,7 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
         retStr = retStr .. statStr
 
         statColor = 0
-        for i2=1,helpers.tablelength(cfg.weaponHit),2 do
+        for i2=1,table.getn(cfg.weaponHit),2 do
             if statColor == 0 then
                 if stat <= cfg.weaponHit[i2] then
                     statColor = i2 + 1
@@ -473,7 +473,7 @@ local formatPrintMag = function(itemIndex, name, data, equipped)
     end
     
     colorStr  = "Not Set"
-    if data[16] < helpers.tablelength(magColor) then
+    if data[16] < table.getn(magColor) then
         colorStr  = magColor[data[16] + 1]
     end
 
@@ -675,7 +675,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             feedtimerStr = string.format("%is", feedtimer)
 
             ftColor = 0
-            for i=1,helpers.tablelength(cfg.magFeedTimer),2 do
+            for i=1,table.getn(cfg.magFeedTimer),2 do
                 if ftColor == 0 then
                     if feedtimer < cfg.magFeedTimer[i] then
                         ftColor = i + 1
@@ -772,7 +772,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             feedtimerStr = string.format("%is", feedtimer)
 
             ftColor = 0
-            for i=1,helpers.tablelength(cfg.magFeedTimer),2 do
+            for i=1,table.getn(cfg.magFeedTimer),2 do
                 if ftColor == 0 then
                     if feedtimer < cfg.magFeedTimer[i] then
                         ftColor = i + 1
@@ -968,7 +968,7 @@ local present = function()
         imgui.SetWindowFontScale(cfg.fontSize)
 
         local list = { "Inventory", "Bank", "Floor" }
-        status, selection = imgui.Combo(" ", selection, list, helpers.tablelength(list))
+        status, selection = imgui.Combo(" ", selection, list, table.getn(list))
         imgui.SameLine(0, 0)
 
         save = false
