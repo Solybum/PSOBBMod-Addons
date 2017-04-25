@@ -19,11 +19,11 @@ function GetPlayerName(player)
 end
 
 function GetPlayerHP(player)
-    return pso.read_u32(player + 0x334)
+    return pso.read_u16(player + 0x334)
 end
 
 function GetPlayerMaxHP(player)
-    return pso.read_u32(player + 0x2BC)
+    return pso.read_u16(player + 0x2BC)
 end
 
 return 

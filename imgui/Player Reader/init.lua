@@ -19,8 +19,6 @@ function Test()
         mhp = characters.GetPlayerMaxHP(address)
         hpColor = HPToGreenRedGradient(hp/mhp)
 
-        
-
         helpers.imguiText(string.format("%2i", index), cfgFontColor, true)
         imgui.NextColumn()
         helpers.imguiText(name, cfgFontColor, true)
