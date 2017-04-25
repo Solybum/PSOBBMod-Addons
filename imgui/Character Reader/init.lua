@@ -922,6 +922,7 @@ local readBank = function(save)
         end
         address = address + 24
 
+        unitxt_id = pmt.GetItemUnitxtID(item)
         itemName = unitxt.GetItemName(unitxt_id) or "Unknown"
         itemStr = ""
         -- WEAPON
