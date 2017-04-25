@@ -86,19 +86,15 @@ function PrintMonsters()
     monsterListCount = table.getn(monsterList)
     
     imgui.Columns(2)
-    --helpers.imguiTextLine("Monster", 0xFFFFFFFF)
-    --imgui.NextColumn()
-    --helpers.imguiTextLine("HP", 0xFFFFFFFF)
-    --imgui.NextColumn()
-
+    
     for i=1,monsterListCount,1 do
         if monsterList[i].show then
             mHP = monsterList[i].HP
             mHPMax = monsterList[i].HPMax
             
-            helpers.imguiTextLine(monsterList[i].name, monsterList[i].color)
+            helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
             imgui.NextColumn()
-            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfgFontColor)
+            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfgFontColor, true)
             imgui.NextColumn()
         end
     end

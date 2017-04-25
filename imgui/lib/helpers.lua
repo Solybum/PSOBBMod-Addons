@@ -5,7 +5,7 @@ function tableMerge(t1, t2)
    return t1
 end
 
-local function GetColorAsFloats(color)
+function GetColorAsFloats(color)
     color = color or 0xFFFFFFFF
 
     a = bit.band(bit.rshift(color, 24), 0xFF) / 255;
@@ -34,36 +34,37 @@ function HPToGreenRedGradient(percent)
     return color
 end
 
--- Prints text in the same line, with the given color
-local function imguiText(text, color)
-    color = color or cfg.white
-
-    c = GetColorAsFloats(color)
-
-    imgui.SameLine(0, 0)
-    imgui.TextColored(c[1], c[2], c[3], c[4], text)
-end
--- Prints text in a new line, with the given color
-local function imguiTextLine(text, color)
-    color = color or cfg.white
-
-    if newline == false then
+function imguiText(text, color, newLine)
+    color = color or 0xFFFFFFFF
+    newLine = newLine or false
+    
+    if newLine == false then
         imgui.SameLine(0, 0)
     end
-    
+
     c = GetColorAsFloats(color)
     imgui.TextColored(c[1], c[2], c[3], c[4], text)
 end
 
-local function imguiProgressBar(progress, x, y, overlay, barColor, textColor)
+function imguiProgressBarLine(progress, x, y, overlay, barColor, textColor)
+    
+    imguiProgressBar(progress, x, y, overlay, barColor, textColor)
+end
+
+function imguiProgressBar(progress, x, y, overlay, barColor, textColor, newLine)
     x = x or -1.0
     y = y or 0.0
     barColor = barColor or 0xFFFFFFFF
     textColor = textColor or 0xFFFFFFFF
+    newLine = newLine or false
     
     if progress == nil then
         imgui.Text("imguiProgressBar() Invalid progress")
         return
+    end
+
+    if newLine == false then
+        imgui.SameLine(0, 0)
     end
 
     c = GetColorAsFloats(textColor)
@@ -80,6 +81,5 @@ return
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
-    imguiTextLine = imguiTextLine,
     imguiProgressBar = imguiProgressBar,
 }
