@@ -39,69 +39,87 @@ function GetHPColorGradient(percent)
     return color
 end
 
-function readMonsters()
+function GetMonsterList()
+    monsterList = {}
+
     difficulty = pso.read_u32(_Difficulty)
     ultimate = difficulty == 3
 
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
-    
+
     pIndex = pso.read_u32(_PlayerIndex)
     pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
+    -- Get player position
+    pPosX = pso.read_f32(pAddr + _PosX)
+    pPosZ = pso.read_f32(pAddr + _PosZ)
+
+    for i=1,monsterCount,1 do
+        mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
+        
+        -- If we got a pointer, then read from it
+        if mAddr ~= 0 then
+            -- Get monster data
+            mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
+            mHP = pso.read_u16(mAddr + _MonsterHP)
+            mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
+            mPosX = pso.read_f32(mAddr + _PosX)
+            mPosZ = pso.read_f32(mAddr + _PosZ)
+            
+            -- Calculate the distance between it and the player
+            xDist = math.abs(pPosX - mPosX)
+            zDist = math.abs(pPosZ - mPosZ)
+            tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
+
+            -- Other data
+            mName = unitxt.GetMonsterName(mUnitxtID, ultimate)
+            mColor = 0xFFFFFFFF
+            mDisplay = true
+            
+            if monsters.m[mUnitxtID] ~= nil then
+                mColor = monsters.m[mUnitxtID][1]
+                mDisplay = monsters.m[mUnitxtID][2]
+            end
+
+            if monsters.maxDistance ~= 0 and tDist > monsters.maxDistance then
+                mDisplay = false
+            end
+
+            table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax })
+        end
+    end
+
+	return monsterList
+end
+
+function PrintMonsters()
+    monsterList = GetMonsterList()
+    monsterListCount = table.getn(monsterList)
+    
     imgui.Columns(2)
-    helpers.imguiTextLine("Monster", 0xFFFFFFFF)
+    helpers.imguiTextLine(string.format("Monster (%i)", monsterListCount), 0xFFFFFFFF)
     imgui.NextColumn()
     helpers.imguiTextLine("HP", 0xFFFFFFFF)
     imgui.NextColumn()
 
-    for i=1,monsterCount,1 do
-        mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
-
-        if mAddr ~= 0 then
-            -- Get position of entities
-            pPosX = pso.read_f32(pAddr + _PosX)
-            pPosZ = pso.read_f32(pAddr + _PosZ)
-            mPosX = pso.read_f32(mAddr + _PosX)
-            mPosZ = pso.read_f32(mAddr + _PosZ)
-
-            -- Calculate the distance between them
-            xDist = math.abs(pPosX - mPosX)
-            zDist = math.abs(pPosZ - mPosZ)
-            tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
+    for i=1,monsterListCount,1 do
+        if monsterList[i].show then
+            mHP = monsterList[i].HP
+            mHPMax = monsterList[i].HPMax
             
-
-            -- Do not show monsters that are too far away
-            if monsters.maxDistance == 0 or tDist < monsters.maxDistance then
-                -- Get some data about the monster
-                mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
-                mHP = pso.read_u16(mAddr + _MonsterHP)
-                mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
-
-                mName = unitxt.GetMonsterName(mUnitxtID, ultimate)
-                mColor = 0xFFFFFFFF
-                mDisplay = true
-
-                if monsters.m[mUnitxtID] ~= nil then
-                    mColor = monsters.m[mUnitxtID][1]
-                    mDisplay = monsters.m[mUnitxtID][2]
-                end
-
-                if mDisplay == true then
-                    helpers.imguiTextLine(string.format("%s", mName), mColor)
-                    imgui.NextColumn()
-                    helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
-                    imgui.NextColumn()
-                end
-            end
+            helpers.imguiTextLine(monsterList[i].name, monsterList[i].color)
+            imgui.NextColumn()
+            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
+            imgui.NextColumn()
         end
-     end
+    end
 end
 
 function present()
     imgui.Begin("Monsters")
     imgui.SetWindowFontScale(cfgFontSize)
-    readMonsters()
+    PrintMonsters()
     imgui.End()
 end
 
@@ -109,7 +127,7 @@ function init()
     return 
     {
         name = "Monster HP",
-        version = "1.0.0",
+        version = "1.0.1",
         author = "Solybum"
     }
 end

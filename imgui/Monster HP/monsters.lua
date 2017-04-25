@@ -1,14 +1,13 @@
-local maxDistance = 0   -- Set this to a number above 0 to hide monsters farther
-                        -- away than this distance. Recommended value 750-1000,
-                        -- but play with it and see what you like!
-
-local m = {}
+-- Set this to a number above 0 to hide monsters farther
+-- away than this distance. Recommended value 750-1000,
+-- but play with it and see what you like!
+local maxDistance = 0
 
 -- Standard enemy colors are white, rare enemies are yellow, bosses are red.
 -- Minibosses are a less threatening red. 8)
 -- Changing the second value to "false" makes the enemy not appear on the monster
 -- reader.
-
+local m = {}
 m[0] = { 0xFFFFFFFF, false } -- Unknown
 
 -- Forest
