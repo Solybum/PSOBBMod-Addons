@@ -57,7 +57,7 @@ function GetMonsterList()
 
     for i=1,monsterCount,1 do
         mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
-        
+
         -- If we got a pointer, then read from it
         if mAddr ~= 0 then
             -- Get monster data
@@ -90,7 +90,7 @@ function GetMonsterList()
         end
     end
 
-	return monsterList
+    return monsterList
 end
 
 function PrintMonsters()
