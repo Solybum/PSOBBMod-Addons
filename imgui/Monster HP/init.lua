@@ -41,6 +41,8 @@ end
 
 function readMonsters()
     difficulty = pso.read_u32(_Difficulty)
+    ultimate = difficulty == 3
+
     playerCount = pso.read_u32(_PlayerCount)
     monsterCount = pso.read_u32(_MonsterCount)
     
@@ -57,41 +59,40 @@ function readMonsters()
         mAddr = pso.read_u32(_MonsterArray + 4 * (i - 1 + playerCount))
 
         if mAddr ~= 0 then
+            -- Get position of entities
             pPosX = pso.read_f32(pAddr + _PosX)
             pPosZ = pso.read_f32(pAddr + _PosZ)
             mPosX = pso.read_f32(mAddr + _PosX)
             mPosZ = pso.read_f32(mAddr + _PosZ)
+
+            -- Calculate the distance between them
             xDist = math.abs(pPosX - mPosX)
             zDist = math.abs(pPosZ - mPosZ)
             tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
             
-            if monsters.maxDistance ~= nil then
-                maxDist = monsters.maxDistance
-            else
-                maxDist = 0
-            end
-            
-            mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
-            mHP = pso.read_u16(mAddr + _MonsterHP)
-            mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
-            
-            mName = unitxt.GetMonsterName(mUnitxtID, difficulty)
-            mColor = 0xFFFFFFFF
-            mDisplay = true
-            if monsters.m[mUnitxtID] ~= nil then
-                mColor = monsters.m[mUnitxtID][1]
-                mDisplay = monsters.m[mUnitxtID][2]
-            end
-            
-            if maxDist > 0 and tDist > maxDist then
-                mDisplay = false
-            end
-            
-            if mDisplay == true then
-                helpers.imguiTextLine(string.format("%s", mName), mColor)
-                imgui.NextColumn()
-                helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
-                imgui.NextColumn()
+
+            -- Do not show monsters that are too far away
+            if monsters.maxDistance == 0 or tDist < monsters.maxDistance then
+                -- Get some data about the monster
+                mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
+                mHP = pso.read_u16(mAddr + _MonsterHP)
+                mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
+
+                mName = unitxt.GetMonsterName(mUnitxtID, ultimate)
+                mColor = 0xFFFFFFFF
+                mDisplay = true
+
+                if monsters.m[mUnitxtID] ~= nil then
+                    mColor = monsters.m[mUnitxtID][1]
+                    mDisplay = monsters.m[mUnitxtID][2]
+                end
+
+                if mDisplay == true then
+                    helpers.imguiTextLine(string.format("%s", mName), mColor)
+                    imgui.NextColumn()
+                    helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, GetHPColorGradient(mHP/mHPMax), cfgFontColor)
+                    imgui.NextColumn()
+                end
             end
         end
      end

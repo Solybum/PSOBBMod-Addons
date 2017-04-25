@@ -70,7 +70,7 @@ m[45] = { 0xFFFF0000, true } -- De Rol Le / Dal Ral Lie
 m[46] = { 0xFFFF0000, true } -- Vol Opt / Vol Opt ver.2
 m[47] = { 0xFFFF0000, true } -- Dark Falz
 
--- VR Temple    
+-- VR Temple
 m[51] = { 0xFFFFFF00, true } -- Love Rappy
 m[73] = { 0xFFFF0000, true } -- Barba Ray
 m[74] = { 0xFFFFFFFF, true } -- Pig Ray
@@ -112,7 +112,7 @@ m[70] = { 0xFFFFFFFF, true } -- Sinow Zele
 m[71] = { 0xFFFFFFFF, true } -- Deldepth
 m[72] = { 0xFFFFFFFF, true } -- Delbiter
 m[78] = { 0xFFFF0000, true } -- Olga Flow
-m[85] = { 0xFFFFFFFF, true } -- Gael    
+m[85] = { 0xFFFFFFFF, true } -- Gael
 m[86] = { 0xFFFFFFFF, true } -- Giel
 
 -- Crater
