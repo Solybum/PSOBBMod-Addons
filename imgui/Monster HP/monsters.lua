@@ -124,7 +124,7 @@ m[96] = { 0xFFFFFFFF, true } -- Boota
 m[97] = { 0xFFFFFFFF, true } -- Za Boota
 m[98] = { 0xFFFFFFFF, true } -- Ba Boota
 m[99] = { 0xFFFFFFFF, true } -- Dorphon
-m[100] = { 0xFFFFFFFF, true } -- Dorphon Eclair
+m[100] = { 0xFFFFFF00, true } -- Dorphon Eclair
 m[104] = { 0xFFFFFFFF, true } -- Sand Rappy
 m[105] = { 0xFFFFFF00, true } -- Del Rappy
 
