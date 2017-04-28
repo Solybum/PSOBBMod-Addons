@@ -1,5 +1,7 @@
 -- Files to save to, when using the Save to file button
 local invFileName = "imgui/inv.txt"
+-- Show Save-to-file button in the Character Reader window
+local showSaveToFile = true
 -- Includes the item index in the items window
 local printItemIndex = true
 -- Includes the item index when saving to a file
@@ -16,14 +18,20 @@ local magShowFeedTimer = true
 local itemsShowEquipped = true
 -- new floor items are added by default on the top of the list, use this setting to add new items at the bottom
 local invertFloorItemsFlow = false
--- Shows the main window with inventory, bank and Floor combo box selection as well as save to file button
+-- Shows the main window with inventory, bank and Radio group selection as well as save to file button
 local mainWindow = true
 -- Shows a dedicated floor items window, this one doesn't have a selection neither a save to file button
 local floorItemsWindow = false
 -- Shows a dedicated mag window, this one only shows mags in the character inventory
 local dedicatedMagWindow = false
+-- Shows a dedicated mag window toggle button on main window
+local showDedicatedMagWindowToggle = true
 -- Font size for all windows
 local fontSize = 1.0
+-- Text to display when a mag is ready to be fed
+local magFeedReadyString = "Feed Me!!!"
+-- Default Character Reader selection: 1 - Inventory; 2 - Bank; 3 - Floor
+local defaultSelection = 1
 
 -- All colors are 0xAARRGGBB
 local white = 0xFFFFFFFF
@@ -169,6 +177,10 @@ return
     dedicatedMagWindow = dedicatedMagWindow,
     monstersWindow = monstersWindow,
     fontSize = fontSize,
+	magFeedReadyString = magFeedReadyString,
+	defaultSelection = defaultSelection,
+	showSaveToFile = showSaveToFile,
+	showDedicatedMagWindowToggle = showDedicatedMagWindowToggle,
 
     -- Colors
     white = white,

@@ -1,10 +1,8 @@
-helpers = require("lib.helpers")
-characters = require("lib.characters")
+local helpers = require("lib.helpers")
+local characters = require("lib.characters")
+local cfg = require("Player Reader.configuration")
 
-cfgFontColor = 0xFFFFFFFF
-cfgFontSize = 1.0
-
-function Test()
+local function Test()
     playerList = characters.GetPlayerList()
     playerListCount = table.getn(playerList)
 
@@ -19,23 +17,23 @@ function Test()
         mhp = characters.GetPlayerMaxHP(address)
         hpColor = HPToGreenRedGradient(hp/mhp)
 
-        helpers.imguiText(string.format("%2i", index), cfgFontColor, true)
+        helpers.imguiText(string.format("%2i", index), cfg.fontColor, true)
         imgui.NextColumn()
-        helpers.imguiText(name, cfgFontColor, true)
+        helpers.imguiText(name, cfg.fontColor, true)
         imgui.NextColumn()
-        helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * cfgFontSize, hp, helpers.HPToGreenRedGradient(hp/mhp), cfgFontColor, true)
+        helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * cfg.fontSize, hp, helpers.HPToGreenRedGradient(hp/mhp), cfg.fontColor, true)
         imgui.NextColumn()
     end
 end
 
-function present()
-    imgui.Begin("Player Reader")
-    imgui.SetWindowFontScale(1.0)
-    Test()
-    imgui.End()
+local function present()
+	imgui.Begin("Player Reader")
+	imgui.SetWindowFontScale(1.0)
+	Test()
+	imgui.End()
 end
 
-function init()
+local function init()
     return 
     {
         name = "Player Reader",
@@ -45,7 +43,10 @@ function init()
 end
 
 pso.on_init(init)
-pso.on_present(present)
+
+if cfg.showPlayerReader then
+	pso.on_present(present)
+end
 
 return {
     init = init,
