@@ -18,7 +18,7 @@ local magShowFeedTimer = true
 local itemsShowEquipped = true
 -- new floor items are added by default on the top of the list, use this setting to add new items at the bottom
 local invertFloorItemsFlow = false
--- Shows the main window with inventory, bank and Radio group selection as well as save to file button
+-- Shows the main window with inventory, bank and floor Radio group selection as well as save to file button
 local mainWindow = true
 -- Shows a dedicated floor items window, this one doesn't have a selection neither a save to file button
 local floorItemsWindow = false

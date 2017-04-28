@@ -975,7 +975,7 @@ local present = function()
     if cfg.mainWindow then
 		save = false
 		imgui.Begin("Character Reader")
-        imgui.SetWindowFontScale(cfg.fontSize)
+		imgui.SetWindowFontScale(cfg.fontSize)
 		
 		if imgui.RadioButton("Inventory", selection == 1) then
 			selection = 1
