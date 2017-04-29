@@ -961,11 +961,11 @@ local readBank = function(save)
 end
 
 local getDefaultSelection = function()
-	local default = cfg.defaultSelection or 1
-	if default < 1 or default > 3 then
-		default = 1
-	end
-	return default
+    local default = cfg.defaultSelection or 1
+    if default < 1 or default > 3 then
+        default = 1
+    end
+    return default
 end
 
 local selection = getDefaultSelection()
@@ -973,52 +973,43 @@ local status = true
 
 local present = function()
     if cfg.mainWindow then
-		save = false
-		imgui.Begin("Character Reader")
-		imgui.SetWindowFontScale(cfg.fontSize)
-		
-		if imgui.RadioButton("Inventory", selection == 1) then
-			selection = 1
-		end
-		imgui.SameLine(0, 5)
-		if imgui.RadioButton("Bank", selection == 2) then
-			selection = 2
-		end
-		imgui.SameLine(0, 5)
-		if imgui.RadioButton("Floor", selection == 3) then
-			selection = 3
-		end
+        save = false
+        imgui.Begin("Character Reader")
+        imgui.SetWindowFontScale(cfg.fontSize)
+
+        local list = { "Inventory", "Bank", "Floor" }
+        status, selection = imgui.Combo(" ", selection, list, table.getn(list))
+
+        if cfg.showSaveToFile then
+            imgui.SameLine(0, 5)
+            if imgui.Button("Save to file") then
+                save = true
+                -- Write nothing to it so its cleared works for appending
+                file = io.open(cfg.invFileName, "w")
+                io.output(file)
+                io.write("")
+                io.close(file)
+            end
+        end
+
+        if cfg.showDedicatedMagWindowToggle then
+            imgui.SameLine(0, 5)
+            if imgui.Button("Mag") then
+                cfg.dedicatedMagWindow = not cfg.dedicatedMagWindow
+            end
+        end
         
-		if cfg.showSaveToFile then
-			imgui.SameLine(0, 5)
-			if imgui.Button("Save to file") then
-				save = true
-				-- Write nothing to it so its cleared works for appending
-				file = io.open(cfg.invFileName, "w")
-				io.output(file)
-				io.write("")
-				io.close(file)
-			end
-		end
-		
-		if cfg.showDedicatedMagWindowToggle then
-			imgui.SameLine(0, 5) 
-			if imgui.Button("Mag") then
-				cfg.dedicatedMagWindow = not cfg.dedicatedMagWindow
-			end
-		end
-		
-		if imgui.BeginChild("ItemList", 0) then
-			if selection == 1 then
-				readItemList(0, save)
-			elseif selection == 2 then
-				readBank(save)
-			elseif selection == 3 then
-				readItemList(-1)
-			end
-			imgui.EndChild()
-		end        
-		
+        if imgui.BeginChild("ItemList", 0) then
+            if selection == 1 then
+                readItemList(0, save)
+            elseif selection == 2 then
+                readBank(save)
+            elseif selection == 3 then
+                readItemList(-1)
+            end
+            imgui.EndChild()
+        end
+
         imgui.End()
     end
 
