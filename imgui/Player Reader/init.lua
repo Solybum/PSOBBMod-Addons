@@ -52,4 +52,3 @@ return {
     init = init,
     present = present,
 }
-
