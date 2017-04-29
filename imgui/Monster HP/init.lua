@@ -1,27 +1,25 @@
-helpers = require("lib.helpers")
-unitxt = require("lib.Unitxt")
-monsters = require("Monster HP.Monsters")
+local helpers = require("lib.helpers")
+local unitxt = require("lib.Unitxt")
+local cfg = require("Monster HP.configuration")
+local monsters = require("Monster HP.monsters")
 
-cfgFontColor = 0xFFFFFFFF
-cfgFontSize = 1.0
+local _PlayerArray = 0x00A94254
+local _PlayerIndex = 0x00A9C4F4
+local _PlayerCount = 0x00AAE168
+local _Difficulty = 0x00A9CD68
 
-_PlayerArray = 0x00A94254
-_PlayerIndex = 0x00A9C4F4
-_PlayerCount = 0x00AAE168
-_Difficulty = 0x00A9CD68
+local _PosX = 0x38
+local _PosY = 0x3C
+local _PosZ = 0x40
 
-_PosX = 0x38
-_PosY = 0x3C
-_PosZ = 0x40
+local _EntityCount = 0x00AAE164
+local _EntityArray = 0x00AAD720
 
-_EntityCount = 0x00AAE164
-_EntityArray = 0x00AAD720
+local _MonsterUnitxtID = 0x378
+local _MonsterHP = 0x334
+local _MonsterHPMax = 0x2BC
 
-_MonsterUnitxtID = 0x378
-_MonsterHP = 0x334
-_MonsterHPMax = 0x2BC
-
-function GetMonsterList()
+local function GetMonsterList()
     monsterList = {}
 
     difficulty = pso.read_u32(_Difficulty)
@@ -81,7 +79,7 @@ function GetMonsterList()
     return monsterList
 end
 
-function PrintMonsters()
+local function PrintMonsters()
     monsterList = GetMonsterList()
     monsterListCount = table.getn(monsterList)
     
@@ -94,20 +92,20 @@ function PrintMonsters()
             
             helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
             imgui.NextColumn()
-            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfgFontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfgFontColor, true)
+            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfg.fontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfg.fontColor, true)
             imgui.NextColumn()
         end
     end
 end
 
-function present()
+local function present()
     imgui.Begin("Monsters")
-    imgui.SetWindowFontScale(cfgFontSize)
+    imgui.SetWindowFontScale(cfg.fontSize)
     PrintMonsters()
     imgui.End()
 end
 
-function init()
+local function init()
     return 
     {
         name = "Monster HP",
@@ -117,7 +115,10 @@ function init()
 end
 
 pso.on_init(init)
-pso.on_present(present)
+
+if cfg.showMonsterHP then
+	pso.on_present(present)
+end
 
 return {
     init = init,

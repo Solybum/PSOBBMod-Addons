@@ -1,44 +1,44 @@
-helpers = require("lib.helpers")
-pmt = require("lib.pmt")
-unitxt = require("lib.unitxt")
-items = require("lib.items")
-cfg = require("Character Reader.Configuration")
+local helpers = require("lib.helpers")
+local pmt = require("lib.pmt")
+local unitxt = require("lib.unitxt")
+local items = require("lib.items")
+local cfg = require("Character Reader.configuration")
 
-_MesetaAddress    = 0x00AA70F0
-_InvPointer = 0x00A95DE0 + 0x1C
-_BankPointer      = 0x00A95DE0 + 0x18
+local _MesetaAddress    = 0x00AA70F0
+local _InvPointer = 0x00A95DE0 + 0x1C
+local _BankPointer      = 0x00A95DE0 + 0x18
 
-_PlayerArray = 0x00A94254
-_PlayerMyIndex = 0x00A9C4F4
-_PlayerNameOff = 0x428
+local _PlayerArray = 0x00A94254
+local _PlayerMyIndex = 0x00A9C4F4
+local _PlayerNameOff = 0x428
 
-_ItemArray = 0x00A8D81C
-_ItemArrayCount = 0x00A8D820
-_ItemOwner = 0xE4
-_ItemCode = 0xF2
-_ItemEquipped = 0x190
+local _ItemArray = 0x00A8D81C
+local _ItemArrayCount = 0x00A8D820
+local _ItemOwner = 0xE4
+local _ItemCode = 0xF2
+local _ItemEquipped = 0x190
 ---- For the item pool
-_ItemKills = 0xE8
-_ItemWrapped = 0xDC -- value & 0x00000400
-_ItemWepGrind = 0x1F5
-_ItemWepSpecial = 0x1F6
-_ItemWepStats = 0x1C8
-_ItemArmSlots = 0x1B8
-_ItemFrameDef = 0x1B9
-_ItemFrameEvp = 0x1BA
-_ItemBarrierDef = 0x1E4
-_ItemBarrierEvp = 0x1E5
-_ItemUnitMod = 0x1DC
-_ItemMagStats = 0x1C0
-_ItemMagPBHas = 0x1C8
-_ItemMagPB = 0x1C9
-_ItemMagColor = 0x1CA
-_ItemMagSync = 0x1BE
-_ItemMagIQ = 0x1BC
-_ItemMagTimer = 0x1B4
-_ItemToolCount = 0x104
-_ItemTechType = 0x108
-_ItemMesetaAmount = 0x100
+local _ItemKills = 0xE8
+local _ItemWrapped = 0xDC -- value & 0x00000400
+local _ItemWepGrind = 0x1F5
+local _ItemWepSpecial = 0x1F6
+local _ItemWepStats = 0x1C8
+local _ItemArmSlots = 0x1B8
+local _ItemFrameDef = 0x1B9
+local _ItemFrameEvp = 0x1BA
+local _ItemBarrierDef = 0x1E4
+local _ItemBarrierEvp = 0x1E5
+local _ItemUnitMod = 0x1DC
+local _ItemMagStats = 0x1C0
+local _ItemMagPBHas = 0x1C8
+local _ItemMagPB = 0x1C9
+local _ItemMagColor = 0x1CA
+local _ItemMagSync = 0x1BE
+local _ItemMagIQ = 0x1BC
+local _ItemMagTimer = 0x1B4
+local _ItemToolCount = 0x104
+local _ItemTechType = 0x108
+local _ItemMesetaAmount = 0x100
 
 -- Arrays
 srankSpecial = 
@@ -69,7 +69,6 @@ magNewColor =
     0x00, 0x07, 0x02, 0x11, 0x04, 0x05, 0x06, 0x09, 0x0C, 0x00, 0x01, 0x02, 0x11, 0x0D, 0x05, 0x10, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 }
 -- End of Arrays
-
 
 local getSrankName = function(data)
     srankName = ""
@@ -684,7 +683,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             end
 
             if feedtimer <= 0 then
-                helpers.imguiText("Feed Me!!!", cfg.magFeedTimer[ftColor])
+                helpers.imguiText(cfg.magFeedReadyString, cfg.magFeedTimer[ftColor])
             else
                 helpers.imguiText(feedtimerStr, cfg.magFeedTimer[ftColor])
             end
@@ -781,7 +780,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
             end
 
             if feedtimer <= 0 then
-                helpers.imguiText("Feed Me!!!", cfg.magFeedTimer[ftColor])
+                helpers.imguiText(cfg.magFeedReadyString, cfg.magFeedTimer[ftColor])
             else
                 helpers.imguiText(feedtimerStr, cfg.magFeedTimer[ftColor])
             end
@@ -807,6 +806,7 @@ local readItemFromPool = function (index, iAddr, floor, magOnly)
 
     return itemStr
 end
+
 local readItemFromPoolForFloor = function()
 end
 
@@ -960,36 +960,65 @@ local readBank = function(save)
     end
 end
 
-local selection = 1
+local getDefaultSelection = function()
+	local default = cfg.defaultSelection or 1
+	if default < 1 or default > 3 then
+		default = 1
+	end
+	return default
+end
+
+local selection = getDefaultSelection()
 local status = true
 
 local present = function()
     if cfg.mainWindow then
-        imgui.Begin("Character Reader")
-        imgui.SetWindowFontScale(cfg.fontSize)
-
-        local list = { "Inventory", "Bank", "Floor" }
-        status, selection = imgui.Combo(" ", selection, list, table.getn(list))
-        imgui.SameLine(0, 0)
-
-        save = false
-        if imgui.Button("Save to file") then
-            save = true
-            -- Write nothing to it so its cleared works for appending
-            file = io.open(cfg.invFileName, "w")
-            io.output(file)
-            io.write("")
-            io.close(file)
-        end
-
-        if selection == 1 then
-            readItemList(0, save)
-        elseif selection == 2 then
-            readBank(save)
-        elseif selection == 3 then
-            readItemList(-1)
-        end
-
+		save = false
+		imgui.Begin("Character Reader")
+		imgui.SetWindowFontScale(cfg.fontSize)
+		
+		if imgui.RadioButton("Inventory", selection == 1) then
+			selection = 1
+		end
+		imgui.SameLine(0, 5)
+		if imgui.RadioButton("Bank", selection == 2) then
+			selection = 2
+		end
+		imgui.SameLine(0, 5)
+		if imgui.RadioButton("Floor", selection == 3) then
+			selection = 3
+		end
+        
+		if cfg.showSaveToFile then
+			imgui.SameLine(0, 5)
+			if imgui.Button("Save to file") then
+				save = true
+				-- Write nothing to it so its cleared works for appending
+				file = io.open(cfg.invFileName, "w")
+				io.output(file)
+				io.write("")
+				io.close(file)
+			end
+		end
+		
+		if cfg.showDedicatedMagWindowToggle then
+			imgui.SameLine(0, 5) 
+			if imgui.Button("Mag") then
+				cfg.dedicatedMagWindow = not cfg.dedicatedMagWindow
+			end
+		end
+		
+		if imgui.BeginChild("ItemList", 0) then
+			if selection == 1 then
+				readItemList(0, save)
+			elseif selection == 2 then
+				readBank(save)
+			elseif selection == 3 then
+				readItemList(-1)
+			end
+			imgui.EndChild()
+		end        
+		
         imgui.End()
     end
 
@@ -1003,7 +1032,6 @@ local present = function()
     if cfg.dedicatedMagWindow then
         imgui.Begin("Mags")
         imgui.SetWindowFontScale(cfg.fontSize)
-
         readItemList(0, false, true)
         imgui.End()
     end
