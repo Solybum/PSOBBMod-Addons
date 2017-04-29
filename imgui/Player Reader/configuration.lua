@@ -1,13 +1,13 @@
--- Show the Player Reader (set to false to hide it)
+-- Enable addon window
 local showPlayerReader = true
--- Choose the font color
+-- Default font color
 local fontColor = 0xFFFFFFFF
--- Choose the font size
+-- Default font size
 local fontSize = 1.0
 
 return 
 {
-	showPlayerReader = showPlayerReader,
-	fontColor = fontColor,
-	fontSize = fontSize
+    showPlayerReader = showPlayerReader,
+    fontColor = fontColor,
+    fontSize = fontSize
 }
