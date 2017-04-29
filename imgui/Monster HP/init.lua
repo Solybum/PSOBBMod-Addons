@@ -1,7 +1,7 @@
 local helpers = require("lib.helpers")
 local unitxt = require("lib.Unitxt")
-local cfg = require("Monster HP.configuration")
 local monsters = require("Monster HP.monsters")
+local cfg = require("Monster HP.configuration")
 
 local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
@@ -117,7 +117,7 @@ end
 pso.on_init(init)
 
 if cfg.showMonsterHP then
-	pso.on_present(present)
+    pso.on_present(present)
 end
 
 return {
