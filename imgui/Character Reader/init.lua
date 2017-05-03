@@ -999,16 +999,15 @@ local present = function()
             end
         end
         
-        if imgui.BeginChild("ItemList", 0) then
-            if selection == 1 then
-                readItemList(0, save)
-            elseif selection == 2 then
-                readBank(save)
-            elseif selection == 3 then
-                readItemList(-1)
-            end
-            imgui.EndChild()
+        imgui.BeginChild("ItemList", 0)
+        if selection == 1 then
+            readItemList(0, save)
+        elseif selection == 2 then
+            readBank(save)
+        elseif selection == 3 then
+            readItemList(-1)
         end
+        imgui.EndChild()
 
         imgui.End()
     end
