@@ -611,10 +611,10 @@ local formatPrintMeseta = function(itemIndex, name, data)
         retStr = retStr .. itemIndexStr
     end
 
-    local meseta = bit.lshift(item[13],  0) +
-        bit.lshift(item[14],  8) +
-        bit.lshift(item[15], 16) +
-        bit.lshift(item[16], 24)
+    local meseta = bit.lshift(data[13],  0) +
+        bit.lshift(data[14],  8) +
+        bit.lshift(data[15], 16) +
+        bit.lshift(data[16], 24)
 
     name = name
     retStr = retStr .. name
