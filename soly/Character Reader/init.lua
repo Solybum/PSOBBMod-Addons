@@ -1041,8 +1041,10 @@ local init = function()
     }
 end
 
-return {
-    __addon = {
+return 
+{
+    __addon = 
+    {
         init = init
     },
 }

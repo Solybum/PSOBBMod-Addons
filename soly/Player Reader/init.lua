@@ -30,10 +30,10 @@ local function present()
     if (not cfg.showPlayerReader) then
         return
     end
-	imgui.Begin("Player Reader")
-	imgui.SetWindowFontScale(1.0)
-	Test()
-	imgui.End()
+    imgui.Begin("Player Reader")
+    imgui.SetWindowFontScale(1.0)
+    Test()
+    imgui.End()
 end
 
 local function init()
@@ -46,8 +46,10 @@ local function init()
     }
 end
 
-return {
-    __addon = {
+return 
+{
+    __addon = 
+    {
         init = init
     }
 }

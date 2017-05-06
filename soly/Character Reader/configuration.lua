@@ -177,10 +177,10 @@ return
     dedicatedMagWindow = dedicatedMagWindow,
     monstersWindow = monstersWindow,
     fontSize = fontSize,
-	magFeedReadyString = magFeedReadyString,
-	defaultSelection = defaultSelection,
-	showSaveToFile = showSaveToFile,
-	showDedicatedMagWindowToggle = showDedicatedMagWindowToggle,
+    magFeedReadyString = magFeedReadyString,
+    defaultSelection = defaultSelection,
+    showSaveToFile = showSaveToFile,
+    showDedicatedMagWindowToggle = showDedicatedMagWindowToggle,
 
     -- Colors
     white = white,

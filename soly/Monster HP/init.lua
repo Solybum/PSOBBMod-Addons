@@ -118,8 +118,10 @@ local function init()
     }
 end
 
-return {
-    __addon = {
+return 
+{
+    __addon = 
+    {
         init = init
     }
 }

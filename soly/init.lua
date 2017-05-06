@@ -3,13 +3,13 @@ table.insert(addons, require("soly.Character Reader"))
 table.insert(addons, require("soly.Monster HP"))
 table.insert(addons, require("soly.Player Reader"))
 
-local present = function()
-	for i, a in ipairs(addons) do
-		a.__addon.init().present()
-	end
+local function present()
+    for i, a in ipairs(addons) do
+        a.__addon.init().present()
+    end
 end
 
-local init = function()
+local function init()
     return
     {
         name = "Soly Addons",
@@ -20,8 +20,10 @@ local init = function()
     }
 end
 
-return {
-    __addon = {
+return 
+{
+    __addon = 
+    {
         init = init
     },
 }
