@@ -142,7 +142,7 @@ m[108] = { 0xFFFF8000, true } -- Kondrieu
 -- Other
 m[48] = { 0xFFFFFFFF, true } -- Container
 
-return 
+return
 {
     maxDistance = maxDistance,
     m = m,

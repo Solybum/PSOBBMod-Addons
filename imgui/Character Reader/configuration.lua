@@ -1,5 +1,5 @@
 -- Files to save to, when using the Save to file button
-local invFileName = "imgui/inv.txt"
+local invFileName = "saved_inventory.txt"
 -- Enables a Save-to-file button in the Character Reader main window
 local showSaveToFile = true
 -- Includes the item index in the items window
@@ -49,7 +49,7 @@ local weaponSRankTitle = 0xFFFF0000
 local weaponSRankName = 0xFF2D98B7
 local weaponSRankCustomName = 0xFFB060B0
 local weaponSRankSpecial = 0xFF2D98B7
-local wweaponKills = 0xFFFFFF00
+local weaponKills = 0xFFFFFF00
 local weaponSpecial =
 {
     0xFFFFFFFF, -- None
@@ -128,7 +128,7 @@ local weaponHit =
 
 -- ARMOR (Frame and Barrier)
 local armorName = 0xFFB060B0
-local armorStat = 0xFF28CC66
+local armorStats = 0xFF28CC66
 local armorSlots = 0xFFFFFF00
 
 -- ARMOR (Unit)
@@ -140,7 +140,7 @@ local magName = 0xFFB060B0
 local magColor = 0xFF2D98B7
 local magStats = 0xFF28CC66
 local magPB = 0xFFFFFF00
-local magFeedTimer = 
+local magFeedTimer =
 {
        1, 0xFF28CC66,
       16, 0xFFF1C40F,
@@ -160,7 +160,7 @@ local techLv = 0xFF28CC66
 local mesetaName = 0xFFB060B0
 local mesetaAmount = 0xFFFFFF00
 
-return 
+return
 {
     -- Some options
     invFileName = invFileName,

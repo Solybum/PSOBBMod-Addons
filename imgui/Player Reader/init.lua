@@ -1,21 +1,21 @@
-local helpers = require("lib.helpers")
-local characters = require("lib.characters")
+local helpers = require("solylib.helpers")
+local characters = require("solylib.characters")
 local cfg = require("Player Reader.configuration")
 
 local function Test()
-    playerList = characters.GetPlayerList()
-    playerListCount = table.getn(playerList)
+    local playerList = characters.GetPlayerList()
+    local playerListCount = table.getn(playerList)
 
     imgui.Columns(3)
 
     for i=1,playerListCount,1 do
-        index = playerList[i].index
-        address = playerList[i].address
+        local index = playerList[i].index
+        local address = playerList[i].address
 
-        name = characters.GetPlayerName(address)
-        hp = characters.GetPlayerHP(address)
-        mhp = characters.GetPlayerMaxHP(address)
-        hpColor = HPToGreenRedGradient(hp/mhp)
+        local name = characters.GetPlayerName(address)
+        local hp = characters.GetPlayerHP(address)
+        local mhp = characters.GetPlayerMaxHP(address)
+        local hpColor = helpers.HPToGreenRedGradient(hp/mhp)
 
         helpers.imguiText(string.format("%2i", index), cfg.fontColor, true)
         imgui.NextColumn()
@@ -27,6 +27,9 @@ local function Test()
 end
 
 local function present()
+    if (not cfg.showPlayerReader) then
+        return
+    end
 	imgui.Begin("Player Reader")
 	imgui.SetWindowFontScale(1.0)
 	Test()
@@ -34,21 +37,17 @@ local function present()
 end
 
 local function init()
-    return 
+    return
     {
         name = "Player Reader",
         version = "1.0.0",
-        author = "Solybum"
+        author = "Solybum",
+        present = present
     }
 end
 
-pso.on_init(init)
-
-if cfg.showPlayerReader then
-	pso.on_present(present)
-end
-
 return {
-    init = init,
-    present = present,
+    __addon = {
+        init = init
+    }
 }

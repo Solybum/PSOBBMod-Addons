@@ -1,5 +1,5 @@
-local helpers = require("lib.helpers")
-local unitxt = require("lib.Unitxt")
+local helpers = require("solylib.helpers")
+local unitxt = require("solylib.Unitxt")
 local monsters = require("Monster HP.monsters")
 local cfg = require("Monster HP.configuration")
 
@@ -20,16 +20,16 @@ local _MonsterHP = 0x334
 local _MonsterHPMax = 0x2BC
 
 local function GetMonsterList()
-    monsterList = {}
+    local monsterList = {}
 
-    difficulty = pso.read_u32(_Difficulty)
-    ultimate = difficulty == 3
+    local difficulty = pso.read_u32(_Difficulty)
+    local ultimate = difficulty == 3
 
-    playerCount = pso.read_u32(_PlayerCount)
-    entityCount = pso.read_u32(_EntityCount)
+    local playerCount = pso.read_u32(_PlayerCount)
+    local entityCount = pso.read_u32(_EntityCount)
 
-    pIndex = pso.read_u32(_PlayerIndex)
-    pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
+    local pIndex = pso.read_u32(_PlayerIndex)
+    local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
     -- If we don't have address (maybe warping or something)
     -- return the empty list
@@ -38,31 +38,31 @@ local function GetMonsterList()
     end
 
     -- Get player position
-    pPosX = pso.read_f32(pAddr + _PosX)
-    pPosZ = pso.read_f32(pAddr + _PosZ)
+    local pPosX = pso.read_f32(pAddr + _PosX)
+    local pPosZ = pso.read_f32(pAddr + _PosZ)
 
     for i=1,entityCount,1 do
-        mAddr = pso.read_u32(_EntityArray + 4 * (i - 1 + playerCount))
+        local mAddr = pso.read_u32(_EntityArray + 4 * (i - 1 + playerCount))
 
         -- If we got a pointer, then read from it
         if mAddr ~= 0 then
             -- Get monster data
-            mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
-            mHP = pso.read_u16(mAddr + _MonsterHP)
-            mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
-            mPosX = pso.read_f32(mAddr + _PosX)
-            mPosZ = pso.read_f32(mAddr + _PosZ)
-            
+            local mUnitxtID = pso.read_u32(mAddr + _MonsterUnitxtID)
+            local mHP = pso.read_u16(mAddr + _MonsterHP)
+            local mHPMax = pso.read_u16(mAddr + _MonsterHPMax)
+            local mPosX = pso.read_f32(mAddr + _PosX)
+            local mPosZ = pso.read_f32(mAddr + _PosZ)
+
             -- Calculate the distance between it and the player
-            xDist = math.abs(pPosX - mPosX)
-            zDist = math.abs(pPosZ - mPosZ)
-            tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
+            local xDist = math.abs(pPosX - mPosX)
+            local zDist = math.abs(pPosZ - mPosZ)
+            local tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
 
             -- Other data
-            mName = unitxt.GetMonsterName(mUnitxtID, ultimate)
-            mColor = 0xFFFFFFFF
-            mDisplay = true
-            
+            local mName = unitxt.GetMonsterName(mUnitxtID, ultimate)
+            local mColor = 0xFFFFFFFF
+            local mDisplay = true
+
             if monsters.m[mUnitxtID] ~= nil then
                 mColor = monsters.m[mUnitxtID][1]
                 mDisplay = monsters.m[mUnitxtID][2]
@@ -80,16 +80,16 @@ local function GetMonsterList()
 end
 
 local function PrintMonsters()
-    monsterList = GetMonsterList()
-    monsterListCount = table.getn(monsterList)
-    
+    local monsterList = GetMonsterList()
+    local monsterListCount = table.getn(monsterList)
+
     imgui.Columns(2)
-    
+
     for i=1,monsterListCount,1 do
         if monsterList[i].show then
-            mHP = monsterList[i].HP
-            mHPMax = monsterList[i].HPMax
-            
+            local mHP = monsterList[i].HP
+            local mHPMax = monsterList[i].HPMax
+
             helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
             imgui.NextColumn()
             helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfg.fontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfg.fontColor, true)
@@ -99,6 +99,9 @@ local function PrintMonsters()
 end
 
 local function present()
+    if (not cfg.showMonsterHP) then
+        return
+    end
     imgui.Begin("Monsters")
     imgui.SetWindowFontScale(cfg.fontSize)
     PrintMonsters()
@@ -106,21 +109,21 @@ local function present()
 end
 
 local function init()
-    return 
+    return
     {
         name = "Monster HP",
         version = "1.0.1",
-        author = "Solybum"
+        author = "Solybum",
+        present = present
     }
 end
-
-pso.on_init(init)
 
 if cfg.showMonsterHP then
     pso.on_present(present)
 end
 
 return {
-    init = init,
-    present = present,
+    __addon = {
+        init = init
+    }
 }
