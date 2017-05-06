@@ -1,7 +1,7 @@
 local addons = {}
-table.insert(addons, require("soly.Character Reader.init"))
-table.insert(addons, require("soly.Monster HP.init"))
-table.insert(addons, require("soly.Player Reader.init"))
+table.insert(addons, require("soly.Character Reader"))
+table.insert(addons, require("soly.Monster HP"))
+table.insert(addons, require("soly.Player Reader"))
 
 local present = function()
 	for i, a in ipairs(addons) do
