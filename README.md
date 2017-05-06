@@ -3,7 +3,8 @@ Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
 1. Download [this](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip)
-2. Copy ./imgui (the whole folder) into ./addons in the game's root directory.
+2. Copy ./bin/dinput8.dll into the game's root directory
+3. Copy ./imgui (the whole folder) into the game's root directory
 
 ### Notes  
 [Character Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/imgui/Character%20Reader)  

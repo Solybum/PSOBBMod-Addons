@@ -1,5 +1,5 @@
 -- Files to save to, when using the Save to file button
-local invFileName = "saved_inventory.txt"
+local invFileName = "imgui/inv.txt"
 -- Enables a Save-to-file button in the Character Reader main window
 local showSaveToFile = true
 -- Includes the item index in the items window
