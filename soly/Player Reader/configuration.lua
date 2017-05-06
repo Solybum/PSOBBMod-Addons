@@ -1,5 +1,5 @@
--- Enable addon window
-local showPlayerReader = true
+-- Enable addon
+local enable = true
 -- Default font color
 local fontColor = 0xFFFFFFFF
 -- Default font size
@@ -7,7 +7,7 @@ local fontSize = 1.0
 
 return
 {
-    showPlayerReader = showPlayerReader,
+    enable = enable,
     fontColor = fontColor,
     fontSize = fontSize
 }

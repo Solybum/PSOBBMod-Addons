@@ -27,11 +27,12 @@ local function Test()
 end
 
 local function present()
-    if (not cfg.showPlayerReader) then
+    if cfg.enable == false then
         return
     end
+
     imgui.Begin("Player Reader")
-    imgui.SetWindowFontScale(1.0)
+    imgui.SetWindowFontScale(cfg.fontSize)
     Test()
     imgui.End()
 end
@@ -42,13 +43,14 @@ local function init()
         name = "Player Reader",
         version = "1.0.0",
         author = "Solybum",
-        present = present
+        description = "Work in progress",
+        present = present,
     }
 end
 
-return 
+return
 {
-    __addon = 
+    __addon =
     {
         init = init
     }

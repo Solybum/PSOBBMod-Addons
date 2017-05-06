@@ -22,10 +22,6 @@ local invertFloorItemsFlow = false
 local mainWindow = true
 -- Enables a dedicated floor items window
 local floorItemsWindow = false
--- Enables a dedicated mag window, only shows mags in the character inventory
-local dedicatedMagWindow = false
--- Enables a dedicated mag window toggle button on main window
-local showDedicatedMagWindowToggle = true
 -- Font size
 local fontSize = 1.0
 -- Text to display when a mag is ready to be fed
