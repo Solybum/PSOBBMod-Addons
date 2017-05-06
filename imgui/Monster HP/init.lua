@@ -118,10 +118,6 @@ local function init()
     }
 end
 
-if cfg.showMonsterHP then
-    pso.on_present(present)
-end
-
 return {
     __addon = {
         init = init
