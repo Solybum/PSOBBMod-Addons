@@ -3,7 +3,7 @@ Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
 1. Download [this](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip)
-2. Copy ./addons (the whole folder) into the game's root directory. (This should affect only the addons present here, but always have a backup)
+2. Copy ./soly (the whole folder) into the ./addons directory.
 
 ### Notes  
 [Character Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/addons/Character%20Reader)  

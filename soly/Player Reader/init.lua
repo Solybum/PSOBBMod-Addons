@@ -1,6 +1,6 @@
-local helpers = require("solylib.helpers")
-local characters = require("solylib.characters")
-local cfg = require("Player Reader.configuration")
+local helpers = require("soly.lib.helpers")
+local characters = require("soly.lib.characters")
+local cfg = require("soly.Player Reader.configuration")
 
 local function Test()
     local playerList = characters.GetPlayerList()

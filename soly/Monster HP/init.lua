@@ -1,7 +1,7 @@
-local helpers = require("solylib.helpers")
-local unitxt = require("solylib.Unitxt")
-local monsters = require("Monster HP.monsters")
-local cfg = require("Monster HP.configuration")
+local helpers = require("soly.lib.helpers")
+local unitxt = require("soly.lib.Unitxt")
+local monsters = require("soly.Monster HP.monsters")
+local cfg = require("soly.Monster HP.configuration")
 
 local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
