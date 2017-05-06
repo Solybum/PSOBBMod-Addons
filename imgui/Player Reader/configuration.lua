@@ -5,7 +5,7 @@ local fontColor = 0xFFFFFFFF
 -- Default font size
 local fontSize = 1.0
 
-return 
+return
 {
     showPlayerReader = showPlayerReader,
     fontColor = fontColor,

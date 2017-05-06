@@ -903,7 +903,7 @@ t[ 0x030E02 ] = { 0xFFFF0000, true } -- Magic Stone "Iritista"
 t[ 0x030E03 ] = { 0xFFFF0000, true } -- Blue-black stone
 t[ 0x030E04 ] = { 0xFFFF0000, true } -- Syncesta
 t[ 0x030E05 ] = { 0xFFFF0000, true } -- Magic Water
-t[ 0x030E06 ] = { 0xFFFF0000, true } -- Parasitic cell Type D 
+t[ 0x030E06 ] = { 0xFFFF0000, true } -- Parasitic cell Type D
 t[ 0x030E07 ] = { 0xFFFF0000, true } -- magic rock "Heart Key"
 t[ 0x030E08 ] = { 0xFFFF0000, true } -- magic rock "Moola"
 t[ 0x030E09 ] = { 0xFFFF0000, true } -- Star Amplifier
@@ -932,7 +932,7 @@ t[ 0x030E1F ] = { 0xFFFF0000, true } -- Amplifier of Rabarta
 t[ 0x030E20 ] = { 0xFFFF0000, true } -- Amplifier of Zonde
 t[ 0x030E21 ] = { 0xFFFF0000, true } -- Amplifier of Gizonde
 t[ 0x030E22 ] = { 0xFFFF0000, true } -- Amplifier of Razonde
-t[ 0x030E23 ] = { 0xFFFF0000, true } -- Amplifier of Red 
+t[ 0x030E23 ] = { 0xFFFF0000, true } -- Amplifier of Red
 t[ 0x030E24 ] = { 0xFFFF0000, true } -- Amplifier of Blue
 t[ 0x030E25 ] = { 0xFFFF0000, true } -- Amplifier of Yellow
 t[ 0x030E26 ] = { 0xFFFF0000, true } -- Heart of KAPU KAPU
@@ -1513,7 +1513,7 @@ t[ 0x05121B ] = { 0xFF00FF00, true } -- Megid Lv28
 t[ 0x05121C ] = { 0xFF00FF00, true } -- Megid Lv29
 t[ 0x05121D ] = { 0xFF00FF00, true } -- Megid Lv30
 
-return 
+return
 {
     t = t,
 }
