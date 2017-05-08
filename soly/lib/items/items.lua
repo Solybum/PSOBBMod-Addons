@@ -71,12 +71,12 @@ local function _ParseItemMag(item)
     if bit.band(item.data[15], 2) ~= 0 then
         item.mag.pbRight = bit.rshift(bit.band(item.data[4], 56), 3)
     else
-        item.mag.pbCenter = -1
+        item.mag.pbRight = -1
     end
     if bit.band(item.data[15], 4) ~= 0 then
         item.mag.pbLeft = _GetLeftPBValue(item.data[4])
     else
-        item.mag.pbCenter = -1
+        item.mag.pbLeft = -1
     end
 
     return item
