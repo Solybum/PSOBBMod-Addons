@@ -748,6 +748,11 @@ local readItemFromPool = function (index, iAddr, floor)
     return itemStr
 end
 
+local findInventory = function(playerAddr)
+    local listPtr = (playerAddr ~= 0) and pso.read_u32(playerAddr + 0xDF4) or 0
+    local listAddr = (listPtr ~= 0) and pso.read_u32(listPtr + 0x1C4) or 0
+    return (listAddr ~= 0) and pso.read_u32(listAddr + 0x18) or 0
+end
 local readItemList = function(index, save)
     save = save or false
     magOnly = magOnly or false
@@ -759,11 +764,9 @@ local readItemList = function(index, save)
         index = pso.read_u32(_PlayerMyIndex)
     end
 
-    if index ~= 0 then
-        myAddress = pso.read_u32(_PlayerArray) + 4 * index
-        if myAddress == 0 then
-            return "Could not find data, if not in a lobby, get to one"
-        end
+    myAddress = pso.read_u32(_PlayerArray) + 4 * index
+    if index ~= 0 and myAddress == 0 then
+        return "Could not find data, if not in a lobby, get to one"
     end
 
     local iCount = pso.read_u32(_ItemArrayCount)
@@ -802,25 +805,25 @@ local readItemList = function(index, save)
             end
         end
     else
-        for i=1,iCount,1 do
-            local iAddr = pso.read_u32(ilAddress + 4 * (i - 1))
+        local slotAddr = findInventory(myAddress)
+
+        while slotAddr ~= 0 do
+            local iAddr = pso.read_u32(slotAddr + 0x1C)
 
             if iAddr ~= 0 then
-                local owner = pso.read_i8(iAddr + _ItemOwner)
+                localCount = localCount + 1
 
-                if owner == index then
-                    localCount = localCount + 1
+                local itemStr = readItemFromPool(localCount, iAddr, false, magOnly)
 
-                    local itemStr = readItemFromPool(localCount, iAddr, false, magOnly)
-
-                    if save and itemStr ~= nil then
-                        local file = io.open(cfg.invFileName, "a")
-                        io.output(file)
-                        io.write(itemStr .. "\n")
-                        io.close(file)
-                    end
+                if save and itemStr ~= nil then
+                    local file = io.open(cfg.invFileName, "a")
+                    io.output(file)
+                    io.write(itemStr .. "\n")
+                    io.close(file)
                 end
             end
+
+            slotAddr = pso.read_u32(slotAddr + 0x10)
         end
     end
 end
