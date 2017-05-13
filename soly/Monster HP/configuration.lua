@@ -9,5 +9,5 @@ return
 {
     showMonsterHP = showMonsterHP,
     fontColor = fontColor,
-    fontSize = fontSize
+    fontSize = fontSize,
 }

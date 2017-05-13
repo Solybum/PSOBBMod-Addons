@@ -1,5 +1,5 @@
 -- Enable addon
-local enable = true
+local enable = false
 -- Default font color
 local fontColor = 0xFFFFFFFF
 -- Default font size
@@ -9,5 +9,5 @@ return
 {
     enable = enable,
     fontColor = fontColor,
-    fontSize = fontSize
+    fontSize = fontSize,
 }

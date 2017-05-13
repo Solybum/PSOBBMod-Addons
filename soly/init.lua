@@ -11,6 +11,7 @@ local function init()
     table.insert(addons, {addon = require("soly.Mags")})
     table.insert(addons, {addon = require("soly.Monster HP")})
     table.insert(addons, {addon = require("soly.Player Reader")})
+    table.insert(addons, {addon = require("soly.Quest Registers")})
 
     for i, a in ipairs(addons) do
         a.present = a.addon.__addon.init().present
