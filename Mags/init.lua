@@ -11,7 +11,6 @@ local function DisplayMags()
 
     for index, item in ipairs(itemList) do
         if item.type == 2 then
-
             -- Index
             local text = string.format("%2i", index)
             helpers.imguiText(text, cfg.fontColor, false)

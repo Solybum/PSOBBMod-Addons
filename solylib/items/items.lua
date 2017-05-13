@@ -54,6 +54,75 @@ local function _GetLeftPBValue(pb)
     return -1;
 end
 
+local function _ParseSRank(item)
+    item.weapon.isSRank = true
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+    item.weapon.nameSrank = unitxt.GetSRankName(data)
+    item.weapon.specialSRank = data[3]
+
+    return item
+end
+
+local function _ParseItemWeapon(item)
+    item.weapon.isSRank = false
+
+    item.weapon.wrapped = false
+    item.weapon.untekked = false
+    if item.data[5] > 0xBF then
+        item.weapon.wrapped = true
+        item.weapon.untekked = true
+    elseif item.data[5] > 0x7F then
+        item.weapon.unteked = true
+    elseif item.data[5] > 0x3F then
+        item.weapon.wrapped = true
+    end
+
+    item.weapon.grind = item.data[4]
+    item.weapon.special = item.data[5]
+
+    -- SRANK
+    if (item.data[2] > 0x6F and item.data[2] < 0x89) or (item.data[2] > 0xA4 and item.data[2] < 0xAA) then
+        return _ParseSRank(item)
+    -- NON SRANK
+    else
+        item.weapon.stats = {0,0,0,0,0,0}
+        if item.data[7] < 6 then
+            item.weapon.stats[item.data[7] + 1] = item.data[8]
+            if item.weapon.stats[item.data[7] + 1] > 127 then
+                item.weapon.stats[item.data[7] + 1] = item.weapon.stats[item.data[7] + 1] - 256
+            end
+        end
+        if item.data[9] < 6 then
+            item.weapon.stats[item.data[9] + 1] = item.data[10]
+            if item.weapon.stats[item.data[9] + 1] > 127 then
+                item.weapon.stats[item.data[9] + 1] = item.weapon.stats[item.data[9] + 1] - 256
+            end
+        end
+        if item.data[11] < 6 then
+            item.weapon.stats[item.data[11] + 1] = item.data[12]
+            if item.weapon.stats[item.data[11] + 1] > 127 then
+                item.weapon.stats[item.data[11] + 1] = item.weapon.stats[item.data[11] + 1] - 256
+            end
+        end
+    end
+    return item
+end
+
+local function _ParseItemFrame(item)
+
+    return item
+end
+
+local function _ParseItemBarrier(item)
+
+    return item
+end
+
+local function _ParseItemUnit(item)
+
+    return item
+end
+
 local function _ParseItemMag(item)
     item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
     item.mag.Color = unitxt.GetMagColor(item.data[16])
@@ -82,6 +151,21 @@ local function _ParseItemMag(item)
     return item
 end
 
+local function _ParseItemTool(item)
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+    item.tech.level = item.data[5]
+
+    return item
+end
+
+local function _ParseItemTechnique(item)
+    item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
+    item.name = unitxt.GetTechniqueName(data[5])
+    item.tech.level = item.data[3]
+
+    return item
+end
+
 local function ReadItemFromItemPool(itemAddr, floor)
     floor = floor or false
 
@@ -93,12 +177,14 @@ local function ReadItemFromItemPool(itemAddr, floor)
     item.data[1] = pso.read_u8(itemAddr + _ItemCode + 0)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
     item.data[3] = pso.read_u8(itemAddr + _ItemCode + 2)
+    item.hex = bit.lshift(item.data[1], 16) + bit.lshift(item.data[2],  8) + item.data[3]
+
     item.equipped = bit.band(pso.read_u8(itemAddr +  _ItemEquipped), 1) == 1
 
     -- WEAPON
     if item.data[1] == 0 then
         item.type = 0
-        item.subtype = 0
+        item.weapon = {}
 
         item.data[4] = pso.read_u8(itemAddr + _ItemWepGrind)
         item.data[5] = pso.read_u8(itemAddr + _ItemWepSpecial)
@@ -113,7 +199,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.kills = pso.read_u16(itemAddr + _ItemKills)
         end
 
-        -- itemStr = formatPrintWeapon(index, itemName, item, equipped, floor)
+        item = _ParseItemWeapon(item)
     -- ARMOR
     elseif item.data[1] == 1 then
         -- FRAME
@@ -125,7 +211,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.data[7] = pso.read_u8(itemAddr + _ItemFrameDef)
             item.data[9] = pso.read_u8(itemAddr + _ItemFrameEvp)
 
-            -- itemStr = formatPrintArmor(index, itemName, item, equipped)
+            item = _ParseItemFrame(item)
         -- BARRIER
         elseif item.data[2] == 2 then
             item.type = 1
@@ -134,7 +220,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDef)
             item.data[9] = pso.read_u8(itemAddr + _ItemBarrierEvp)
 
-            --itemStr = formatPrintArmor(index, itemName, item, equipped)
+            item = _ParseItemBarrier(item)
         -- UNIT
         elseif item.data[2] == 3 then
             item.type = 1
@@ -147,7 +233,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
                 item.kills = pso.read_u16(itemAddr + _ItemKills)
             end
 
-            -- itemStr = formatPrintUnit(index, itemName, item, equipped)
+            item = _ParseItemUnit(item)
         end
     -- MAG
     elseif item.data[1] == 2 then
@@ -178,10 +264,14 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.subtype = 1
 
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
+
+            item = _ParseItemTechnique(item)
         else
             item.subtype = 0
 
             item.data[6] = bit.bxor(pso.read_u32(itemAddr + _ItemToolCount), (itemAddr + _ItemToolCount))
+
+            item = _ParseItemTool(item)
         end
     -- MESETA
     elseif item.data[1] == 4 then
