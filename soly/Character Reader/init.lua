@@ -931,6 +931,8 @@ local present = function()
         end
 
         imgui.BeginChild("ItemList", 0)
+        imgui.SetWindowFontScale(cfg.fontSize)
+
         if selection == 1 then
             readItemList(0, save)
         elseif selection == 2 then
