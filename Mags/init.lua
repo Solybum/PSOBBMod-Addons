@@ -1,7 +1,7 @@
-local helpers = require("soly.lib.helpers")
-local unitxt = require("soly.lib.unitxt")
-local libitems = require("soly.lib.items.items")
-local cfg = require("soly.Mags.configuration")
+local helpers = require("solylib.helpers")
+local unitxt = require("solylib.unitxt")
+local libitems = require("solylib.items.items")
+local cfg = require("Mags.configuration")
 
 local _PlayerMyIndex = 0x00A9C4F4
 

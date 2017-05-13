@@ -1,7 +1,7 @@
-local helpers = require("soly.lib.helpers")
-local unitxt = require("soly.lib.Unitxt")
-local monsters = require("soly.Monster HP.monsters")
-local cfg = require("soly.Monster HP.configuration")
+local helpers = require("solylib.helpers")
+local unitxt = require("solylib.Unitxt")
+local monsters = require("Monster HP.monsters")
+local cfg = require("Monster HP.configuration")
 
 local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
@@ -99,9 +99,10 @@ local function PrintMonsters()
 end
 
 local function present()
-    if (not cfg.showMonsterHP) then
+    if cfg.enable == false then
         return
     end
+
     imgui.Begin("Monsters")
     imgui.SetWindowFontScale(cfg.fontSize)
     PrintMonsters()
@@ -114,7 +115,8 @@ local function init()
         name = "Monster HP",
         version = "1.0.1",
         author = "Solybum",
-        present = present
+        description = "List of nearby monsters with their HP",
+        present = present,
     }
 end
 

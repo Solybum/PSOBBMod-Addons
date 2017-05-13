@@ -1,5 +1,5 @@
-local pmt = require("soly.lib.pmt")
-local unitxt = require("soly.lib.unitxt")
+local pmt = require("solylib.pmt")
+local unitxt = require("solylib.unitxt")
 
 local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820

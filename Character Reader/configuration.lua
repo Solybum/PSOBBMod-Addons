@@ -138,10 +138,10 @@ local magStats = 0xFF28CC66
 local magPB = 0xFFFFFF00
 local magFeedTimer =
 {
-       1, 0xFF28CC66,
-      16, 0xFFF1C40F,
-      30, 0xFFFF8C00,
-    9001, 0xFFFF0000, -- over 9000, really just needs 210 at most
+    1,      0xFF28CC66,
+    16,     0xFFF1C40F,
+    30,     0xFFFF8C00,
+    9001,   0xFFFF0000, -- over 9000, really just needs 210 at most
 }
 
 -- TOOL
@@ -170,13 +170,10 @@ return
     invertFloorItemsFlow = invertFloorItemsFlow,
     mainWindow = mainWindow,
     floorItemsWindow = floorItemsWindow,
-    dedicatedMagWindow = dedicatedMagWindow,
-    monstersWindow = monstersWindow,
     fontSize = fontSize,
     magFeedReadyString = magFeedReadyString,
     defaultSelection = defaultSelection,
     showSaveToFile = showSaveToFile,
-    showDedicatedMagWindowToggle = showDedicatedMagWindowToggle,
 
     -- Colors
     white = white,

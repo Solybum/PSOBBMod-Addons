@@ -1,5 +1,3 @@
-local imguiProgressBar
-
 local function GetColorAsFloats(color)
     color = color or 0xFFFFFFFF
 

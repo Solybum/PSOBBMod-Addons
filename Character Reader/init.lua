@@ -1,16 +1,16 @@
-local helpers = require("soly.lib.helpers")
-local pmt = require("soly.lib.pmt")
-local unitxt = require("soly.lib.unitxt")
-local items = require("soly.lib.items.items_config")
-local cfg = require("soly.Character Reader.configuration")
+local helpers = require("solylib.helpers")
+local pmt = require("solylib.pmt")
+local unitxt = require("solylib.unitxt")
+local items = require("solylib.items.items_config")
+local cfg = require("Character Reader.configuration")
 
-local _MesetaAddress    = 0x00AA70F0
-local _InvPointer = 0x00A95DE0 + 0x1C
-local _BankPointer      = 0x00A95DE0 + 0x18
+local _MesetaAddress =  0x00AA70F0
+local _InvPointer =     0x00A95DE0 + 0x1C
+local _BankPointer =    0x00A95DE0 + 0x18
 
-local _PlayerArray = 0x00A94254
-local _PlayerMyIndex = 0x00A9C4F4
-local _PlayerNameOff = 0x428
+local _PlayerArray =    0x00A94254
+local _PlayerMyIndex =  0x00A9C4F4
+local _PlayerNameOff =  0x428
 
 local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820
@@ -917,10 +917,10 @@ local present = function()
         local save = false
         imgui.Begin("Character Reader")
         imgui.SetWindowFontScale(cfg.fontSize)
-
+    
         local list = { "Inventory", "Bank", "Floor" }
         status, selection = imgui.Combo(" ", selection, list, table.getn(list))
-
+    
         if cfg.showSaveToFile then
             imgui.SameLine(0, 5)
             if imgui.Button("Save to file") then
@@ -932,10 +932,10 @@ local present = function()
                 io.close(file)
             end
         end
-
+    
         imgui.BeginChild("ItemList", 0)
         imgui.SetWindowFontScale(cfg.fontSize)
-
+    
         if selection == 1 then
             readItemList(0, save)
         elseif selection == 2 then
@@ -944,10 +944,10 @@ local present = function()
             readItemList(-1)
         end
         imgui.EndChild()
-
+    
         imgui.End()
     end
-
+    
     if cfg.floorItemsWindow then
         imgui.Begin("Floor Items")
         imgui.SetWindowFontScale(cfg.fontSize)
@@ -962,13 +962,14 @@ local init = function()
         name = "Character Reader",
         version = "1.4.9",
         author = "Solybum",
-        present = present
+        description = "Read inventory and bank items",
+        present = present,
     }
 end
 
 return 
 {
-    __addon = 
+    __addon =
     {
         init = init
     },
