@@ -24,23 +24,23 @@ local function _Read(group, index)
     if address == 0 then
         return nil
     end
-    
+
     address = address + (group * 4)
     address = pso.read_u32(address)
     if address == 0 then
         return nil
     end
-    
+
     address = address + 4 * index
     address = pso.read_u32(address)
     if address == 0 then
         return nil
     end
-    
+
     return pso.read_wstr(address, 256)
 end
 
--- Public function to read a string from a 
+-- Public function to read a string from a
 -- given string group in the unitxt
 local function Read(group, index)
     return _Read(group, index)
@@ -83,11 +83,11 @@ local function GetClassName(id)
 end
 
 -- Reads photon blast names based on it's id
--- If shortName is true, only the first character 
+-- If shortName is true, only the first character
 -- of the name will be read
 local function GetPhotonBlastName(id, shortName)
     shortName = shortName or false
-    
+
     if id < 0 then
         return " "
     end

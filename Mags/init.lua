@@ -21,7 +21,7 @@ local function DisplayMags()
             helpers.imguiText(text, cfg.fontColor, false)
 
             -- Stats
-            text = string.format(" [%.2f/%.2f/%.2f/%.2f]", 
+            text = string.format(" [%.2f/%.2f/%.2f/%.2f]",
                 item.mag.DFP,
                 item.mag.ATP,
                 item.mag.ATA,
@@ -29,7 +29,7 @@ local function DisplayMags()
             helpers.imguiText(text, cfg.fontColor, false)
 
             -- PBs
-            text = string.format(" [%s|%s|%s]", 
+            text = string.format(" [%s|%s|%s]",
                 unitxt.GetPhotonBlastName(item.mag.pbLeft, true),
                 unitxt.GetPhotonBlastName(item.mag.pbCenter, true),
                 unitxt.GetPhotonBlastName(item.mag.pbRight, true))

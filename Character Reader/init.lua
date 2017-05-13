@@ -309,7 +309,7 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
     retStr = retStr .. "]"
     helpers.imguiText("]", cfg.white)
 
-    if data[2] == 1 then 
+    if data[2] == 1 then
         retStr = retStr .. " ["
         helpers.imguiText(" [", cfg.white)
 
@@ -493,10 +493,10 @@ local formatPrintTool = function(itemIndex, name, data)
 
     local retStr = ""
     local itemIndexStr = string.format("%03i ", itemIndex)
-    if cfg.printItemIndex then 
+    if cfg.printItemIndex then
         helpers.imguiText(itemIndexStr, cfg.itemIndex)
     end
-    if cfg.printItemIndexToFile then 
+    if cfg.printItemIndexToFile then
         retStr = retStr .. itemIndexStr
     end
 
@@ -917,10 +917,10 @@ local present = function()
         local save = false
         imgui.Begin("Character Reader")
         imgui.SetWindowFontScale(cfg.fontSize)
-    
+
         local list = { "Inventory", "Bank", "Floor" }
         status, selection = imgui.Combo(" ", selection, list, table.getn(list))
-    
+
         if cfg.showSaveToFile then
             imgui.SameLine(0, 5)
             if imgui.Button("Save to file") then
@@ -932,10 +932,10 @@ local present = function()
                 io.close(file)
             end
         end
-    
+
         imgui.BeginChild("ItemList", 0)
         imgui.SetWindowFontScale(cfg.fontSize)
-    
+
         if selection == 1 then
             readItemList(0, save)
         elseif selection == 2 then
@@ -944,10 +944,10 @@ local present = function()
             readItemList(-1)
         end
         imgui.EndChild()
-    
+
         imgui.End()
     end
-    
+
     if cfg.floorItemsWindow then
         imgui.Begin("Floor Items")
         imgui.SetWindowFontScale(cfg.fontSize)
@@ -967,7 +967,7 @@ local init = function()
     }
 end
 
-return 
+return
 {
     __addon =
     {

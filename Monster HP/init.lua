@@ -120,9 +120,9 @@ local function init()
     }
 end
 
-return 
+return
 {
-    __addon = 
+    __addon =
     {
         init = init
     }

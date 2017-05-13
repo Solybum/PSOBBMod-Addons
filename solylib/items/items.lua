@@ -99,7 +99,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
     if item.data[1] == 0 then
         item.type = 0
         item.subtype = 0
-    
+
         item.data[4] = pso.read_u8(itemAddr + _ItemWepGrind)
         item.data[5] = pso.read_u8(itemAddr + _ItemWepSpecial)
         item.data[7] = pso.read_u8(itemAddr + _ItemWepStats + 0)
@@ -108,11 +108,11 @@ local function ReadItemFromItemPool(itemAddr, floor)
         item.data[10] = pso.read_u8(itemAddr + _ItemWepStats + 3)
         item.data[11] = pso.read_u8(itemAddr + _ItemWepStats + 4)
         item.data[12] = pso.read_u8(itemAddr + _ItemWepStats + 5)
-    
+
         if item.data[2] == 0x33 or item.data[2] == 0xAB then
             item.kills = pso.read_u16(itemAddr + _ItemKills)
         end
-    
+
         -- itemStr = formatPrintWeapon(index, itemName, item, equipped, floor)
     -- ARMOR
     elseif item.data[1] == 1 then
@@ -120,41 +120,41 @@ local function ReadItemFromItemPool(itemAddr, floor)
         if item.data[2] == 1 then
             item.type = 1
             item.subtype = 0
-    
+
             item.data[6] = pso.read_u8(itemAddr + _ItemArmSlots)
             item.data[7] = pso.read_u8(itemAddr + _ItemFrameDef)
             item.data[9] = pso.read_u8(itemAddr + _ItemFrameEvp)
-    
+
             -- itemStr = formatPrintArmor(index, itemName, item, equipped)
         -- BARRIER
         elseif item.data[2] == 2 then
             item.type = 1
             item.subtype = 1
-    
+
             item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDef)
             item.data[9] = pso.read_u8(itemAddr + _ItemBarrierEvp)
-    
+
             --itemStr = formatPrintArmor(index, itemName, item, equipped)
         -- UNIT
         elseif item.data[2] == 3 then
             item.type = 1
             item.subtype = 2
-    
+
             item.data[7] = pso.read_u8(itemAddr + _ItemUnitMod + 0)
             item.data[8] = pso.read_u8(itemAddr + _ItemUnitMod + 1)
-    
+
             if item.data[3] == 0x4D or item.data[3] == 0x4F then
                 item.kills = pso.read_u16(itemAddr + _ItemKills)
             end
-    
+
             -- itemStr = formatPrintUnit(index, itemName, item, equipped)
         end
     -- MAG
     elseif item.data[1] == 2 then
         item.type = 2
-    
+
         item.mag = {}
-    
+
         item.data[4] = pso.read_u8(itemAddr + _ItemMagPB)
         item.data[5] = pso.read_u8(itemAddr + _ItemMagStats + 0)
         item.data[6] = pso.read_u8(itemAddr + _ItemMagStats + 1)
@@ -168,7 +168,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
         item.data[14] = pso.read_u8(itemAddr + _ItemMagIQ)
         item.data[15] = pso.read_u8(itemAddr + _ItemMagPBHas)
         item.data[16] = pso.read_u8(itemAddr + _ItemMagColor)
-    
+
         item.mag.timer = pso.read_f32(itemAddr + _ItemMagTimer) / 30
         item = _ParseItemMag(item)
     -- TOOL
@@ -176,17 +176,17 @@ local function ReadItemFromItemPool(itemAddr, floor)
         item.type = 3
         if item.data[2] == 2 then
             item.subtype = 1
-    
+
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
         else
             item.subtype = 0
-    
+
             item.data[6] = bit.bxor(pso.read_u32(itemAddr + _ItemToolCount), (itemAddr + _ItemToolCount))
         end
     -- MESETA
     elseif item.data[1] == 4 then
         item.type = 4
-    
+
         item.meseta = pso.read_u32(itemAddr + _ItemMesetaAmount)
     end
 
