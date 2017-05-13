@@ -1,4 +1,4 @@
--- Enable addon window
+-- Enable addon
 local enable = true
 -- Default font color
 local fontColor = 0xFFFFFFFF
