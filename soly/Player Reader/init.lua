@@ -1,3 +1,4 @@
+local theme = require("soly.lib.theme")
 local helpers = require("soly.lib.helpers")
 local characters = require("soly.lib.characters")
 local cfg = require("soly.Player Reader.configuration")
@@ -31,10 +32,12 @@ local function present()
         return
     end
 
+    theme.Push()
     imgui.Begin("Player Reader")
     imgui.SetWindowFontScale(cfg.fontSize)
     Test()
     imgui.End()
+    theme.Pop()
 end
 
 local function init()

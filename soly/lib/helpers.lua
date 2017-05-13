@@ -41,7 +41,7 @@ local function imguiText(text, color, newLine)
     imgui.TextColored(c[1], c[2], c[3], c[4], text)
 end
 
-imguiProgressBar = function(progress, x, y, overlay, barColor, textColor, newLine)
+local function imguiProgressBar(progress, x, y, overlay, barColor, textColor, newLine)
     x = x or -1.0
     y = y or 0.0
     barColor = barColor or 0xFFFFFFFF
