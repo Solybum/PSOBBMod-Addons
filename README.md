@@ -12,7 +12,7 @@ If you are developing addons, feel free to use it.
 
 [Character Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Character%20Reader)  
 Personalize the general colors in [configuration.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Character%20Reader/configuration.lua)  
-Override item name colors in [items.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/solylib/items.lua)  
+Override item name colors in [items.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/solylib/items/items_config.lua)  
   
-[Monster HP](https://github.com/Solybum/PSOBBMod-Addons/tree/master/addons/Monster%20HP)  
+[Monster HP](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Monster%20HP)  
 Personalize the monster name colors in [monsters.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Monster%20HP/monsters.lua)  
