@@ -153,8 +153,7 @@ end
 
 local function _ParseItemTool(item)
     item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-    item.tech.level = item.data[5]
-
+    item.tool.count = item.data[5]
     return item
 end
 
@@ -263,12 +262,14 @@ local function ReadItemFromItemPool(itemAddr, floor)
         if item.data[2] == 2 then
             item.subtype = 1
 
+            item.tech = {}
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
 
             item = _ParseItemTechnique(item)
         else
             item.subtype = 0
-
+            
+            item.tool = {}
             item.data[6] = bit.bxor(pso.read_u32(itemAddr + _ItemToolCount), (itemAddr + _ItemToolCount))
 
             item = _ParseItemTool(item)
