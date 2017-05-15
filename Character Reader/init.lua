@@ -753,6 +753,7 @@ local findInventory = function(playerAddr)
     local listAddr = (listPtr ~= 0) and pso.read_u32(listPtr + 0x1C4) or 0
     return (listAddr ~= 0) and pso.read_u32(listAddr + 0x18) or 0
 end
+
 local readItemList = function(index, save)
     save = save or false
     magOnly = magOnly or false
@@ -762,11 +763,12 @@ local readItemList = function(index, save)
 
     if index ~= -1 then
         index = pso.read_u32(_PlayerMyIndex)
-    end
+        myAddress = pso.read_u32(_PlayerArray + 4 * index)
 
-    myAddress = pso.read_u32(_PlayerArray) + 4 * index
-    if index ~= 0 and myAddress == 0 then
-        return "Could not find data, if not in a lobby, get to one"
+        if myAddress == 0 then
+            helpers.imguiText("Could not find data, if not in a lobby, get to one")
+            return
+        end
     end
 
     local iCount = pso.read_u32(_ItemArrayCount)
@@ -827,6 +829,7 @@ local readItemList = function(index, save)
         end
     end
 end
+
 local readBank = function(save)
     local meseta
     local count
@@ -834,7 +837,8 @@ local readBank = function(save)
 
     address = pso.read_i32(_BankPointer)
     if address == 0 then
-        return "Error reading bank data"
+        helpers.imguiText("Error reading bank data")
+        return
     end
 
     address = address + 0x021C
