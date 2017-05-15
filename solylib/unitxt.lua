@@ -101,12 +101,11 @@ local function GetPhotonBlastName(id, shortName)
 end
 
 -- Reads the encoded srank name from the item data
--- Item data must be 16 bytes
 local function GetSRankName(itemData)
     if itemData == null then
         return "Null"
     end
-    if table.getn(itemData) ~= 16 then
+    if table.getn(itemData) < 12 then
         return "Invalid length"
     end
 
