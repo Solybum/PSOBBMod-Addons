@@ -159,7 +159,7 @@ end
 
 local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
-    item.name = unitxt.GetTechniqueName(data[5])
+    item.name = unitxt.GetTechniqueName(item.data[5])
     item.tech.level = item.data[3]
 
     return item
