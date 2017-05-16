@@ -106,7 +106,6 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
     -- SRANK
     if (data[2] > 0x6F and data[2] < 0x89) or (data[2] > 0xA4 and data[2] < 0xAA) then
         local srankName = unitxt.GetSRankName(data)
-
         local srankTitle = "S-RANK "
         name = name .. " "
 
