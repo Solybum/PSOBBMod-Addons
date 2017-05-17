@@ -7,7 +7,7 @@ Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Notes  
 [SolyLib](https://github.com/Solybum/PSOBBMod-Addons/tree/master/solylib)  
-This folder is required by all my addons, they contain helper functions shared between different addons
+This folder is required by all my addons, they contain helper functions shared between different addons.  
 If you are developing addons, feel free to use it.
 
 [Character Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Character%20Reader)  
