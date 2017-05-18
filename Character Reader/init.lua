@@ -591,7 +591,7 @@ local readItemFromPool = function (index, iAddr, floor)
 
     -- Where the magic happens
 
-    if magOnly then
+    if floor == false and cfg.magFilter == true then
         if item[1] == 2 then
             item[4] = pso.read_u8(iAddr + _ItemMagPB)
             item[5] = pso.read_u8(iAddr + _ItemMagStats + 0)
@@ -904,16 +904,9 @@ local readBank = function(save)
     end
 end
 
-local getDefaultSelection = function()
-    local default = cfg.defaultSelection or 1
-    if default < 1 or default > 3 then
-        default = 1
-    end
-    return default
-end
-
-local selection = getDefaultSelection()
 local status = true
+local selection = cfg.defaultSelection
+local magFilter = cfg.magFilter
 
 local present = function()
     if cfg.mainWindow then
@@ -921,11 +914,21 @@ local present = function()
         imgui.Begin("Character Reader")
         imgui.SetWindowFontScale(cfg.fontSize)
 
-        local list = { "Inventory", "Bank", "Floor" }
+        local list = { "Inventory", "Bank", "Floor", }
+        imgui.PushItemWidth(150)
         status, selection = imgui.Combo(" ", selection, list, table.getn(list))
+        imgui.PopItemWidth()
+
+        if selection == 1 then
+            magFilter = cfg.magFilter
+            imgui.SameLine(0, 5)
+            if imgui.Checkbox("Mags only", magFilter) then
+                cfg.magFilter = not cfg.magFilter
+            end
+        end
 
         if cfg.showSaveToFile then
-            imgui.SameLine(0, 5)
+            imgui.SameLine(0, 20)
             if imgui.Button("Save to file") then
                 save = true
                 -- Write nothing to it so its cleared works for appending
@@ -963,7 +966,7 @@ local init = function()
     return
     {
         name = "Character Reader",
-        version = "1.4.9",
+        version = "1.4.10",
         author = "Solybum",
         description = "Read inventory and bank items",
         present = present,

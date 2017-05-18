@@ -14,6 +14,8 @@ local magShowPBs = true
 local magShortPBs = true
 -- Shows the feed timer mags
 local magShowFeedTimer = true
+-- Show mags only
+local magFilter = false
 -- Shows an [E] besides equipped items in the inventory
 local itemsShowEquipped = true
 -- new floor items are added by default on the top of the list, use this setting to add new items at the bottom
@@ -166,6 +168,7 @@ return
     magShowPBs = magShowPBs,
     magShortPBs = magShortPBs,
     magShowFeedTimer = magShowFeedTimer,
+    magFilter = magFilter,
     itemsShowEquipped = itemsShowEquipped,
     invertFloorItemsFlow = invertFloorItemsFlow,
     mainWindow = mainWindow,
