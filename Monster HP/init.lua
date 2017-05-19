@@ -72,6 +72,41 @@ local function GetMonsterList()
                 mDisplay = false
             end
 
+            -- Handle De Rol Le's hitpoints as a special case
+            if mUnitxtID == 45 then
+                if i == 1 then
+                    mHP = pso.read_u16(mAddr + 0x6B4)
+                    mHPMax = pso.read_u16(mAddr + 0x6B0)
+                    table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax, color = mColor })
+
+                    mHP = pso.read_u16(mAddr + 0x6B8)
+                    mHPMax = mHP
+                    mName = mName .. " Skull"
+                else
+                    mHP = pso.read_u16(mAddr + 0x39C)
+                    mHPMax = mHP
+                    mName = mName .. " Shell"
+                end
+            end
+
+            -- Barba Ray generally works the same as
+            -- De Rol Le but uses different offsets
+            if mUnitxtID == 73 then
+                if i == 1 then
+                    mHP = pso.read_u16(mAddr + 0x704)
+                    mHPMax = pso.read_u16(mAddr + 0x700)
+                    table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax, color = mColor })
+
+                    mHP = pso.read_u16(mAddr + 0x708)
+                    mHPMax = mHP
+                    mName = mName .. " Skull"
+                else
+                    mHP = pso.read_u16(mAddr + 0x7AC)
+                    mHPMax = mHP
+                    mName = mName .. " Shell"
+                end
+            end
+
             table.insert(monsterList, { show = mDisplay, name = mName, HP = mHP, HPMax = mHPMax, color = mColor })
         end
     end
