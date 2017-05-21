@@ -48,6 +48,9 @@ end
 
 -- Reads item names from the unitxt with the given id, from the PMT data
 local function GetItemName(index)
+    if index == -1 then
+        return "???"
+    end
     return _Read(1, index)
 end
 

@@ -13,9 +13,9 @@ local _ItemWepGrind = 0x1F5
 local _ItemWepSpecial = 0x1F6
 local _ItemWepStats = 0x1C8
 local _ItemArmSlots = 0x1B8
-local _ItemFrameDef = 0x1B9
+local _ItemFrameDfp = 0x1B9
 local _ItemFrameEvp = 0x1BA
-local _ItemBarrierDef = 0x1E4
+local _ItemBarrierDfp = 0x1E4
 local _ItemBarrierEvp = 0x1E5
 local _ItemUnitMod = 0x1DC
 local _ItemMagStats = 0x1C0
@@ -81,7 +81,7 @@ local function _ParseItemWeapon(item)
     item.weapon.special = item.data[5]
 
     -- SRANK
-    if (item.data[2] > 0x6F and item.data[2] < 0x89) or (item.data[2] > 0xA4 and item.data[2] < 0xAA) then
+    if (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA) then
         return _ParseSRank(item)
     -- NON SRANK
     else
@@ -109,16 +109,39 @@ local function _ParseItemWeapon(item)
 end
 
 local function _ParseItemFrame(item)
-
+    item.armor.slots = item.data[6]
+    item.armor.dfp = item.data[7]
+    item.armor.evp = item.data[9]
     return item
 end
 
 local function _ParseItemBarrier(item)
+    item.armor.dfp = item.data[7]
+    item.armor.evp = item.data[9]
 
     return item
 end
 
 local function _ParseItemUnit(item)
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+
+    local mod = item.data[7]
+    if mod > 127 then
+        mod = mod - 256
+    end
+
+    item.unit.mod = 0
+    if mod == 0 then
+        item.unit.mod = 0
+    elseif mod == 1 then
+        item.unit.mod = 1
+    elseif mod > 1 then
+        item.unit.mod = 2
+    elseif mod == -1 then
+        item.unit.mod = -1
+    elseif mod < -1 then
+        item.unit.mod = -2
+    end
 
     return item
 end
@@ -160,7 +183,7 @@ end
 local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
     item.name = unitxt.GetTechniqueName(item.data[5])
-    item.tech.level = item.data[3]
+    item.tool.techlevel = item.data[3]
 
     return item
 end
@@ -177,6 +200,7 @@ local function ReadItemFromItemPool(itemAddr, floor)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
     item.data[3] = pso.read_u8(itemAddr + _ItemCode + 2)
     item.hex = bit.lshift(item.data[1], 16) + bit.lshift(item.data[2],  8) + item.data[3]
+    item.kills = 0
 
     item.equipped = bit.band(pso.read_u8(itemAddr +  _ItemEquipped), 1) == 1
 
@@ -206,8 +230,10 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.type = 1
             item.subtype = 0
 
+            item.armor = {}
+
             item.data[6] = pso.read_u8(itemAddr + _ItemArmSlots)
-            item.data[7] = pso.read_u8(itemAddr + _ItemFrameDef)
+            item.data[7] = pso.read_u8(itemAddr + _ItemFrameDfp)
             item.data[9] = pso.read_u8(itemAddr + _ItemFrameEvp)
 
             item = _ParseItemFrame(item)
@@ -216,7 +242,9 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.type = 1
             item.subtype = 1
 
-            item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDef)
+            item.armor = {}
+
+            item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDfp)
             item.data[9] = pso.read_u8(itemAddr + _ItemBarrierEvp)
 
             item = _ParseItemBarrier(item)
@@ -224,6 +252,8 @@ local function ReadItemFromItemPool(itemAddr, floor)
         elseif item.data[2] == 3 then
             item.type = 1
             item.subtype = 2
+
+            item.unit = {}
 
             item.data[7] = pso.read_u8(itemAddr + _ItemUnitMod + 0)
             item.data[8] = pso.read_u8(itemAddr + _ItemUnitMod + 1)
@@ -259,17 +289,17 @@ local function ReadItemFromItemPool(itemAddr, floor)
     -- TOOL
     elseif item.data[1] == 3 then
         item.type = 3
+
+        item.tool = {}
+
         if item.data[2] == 2 then
             item.subtype = 1
 
-            item.tech = {}
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
 
             item = _ParseItemTechnique(item)
         else
             item.subtype = 0
-            
-            item.tool = {}
             item.data[6] = bit.bxor(pso.read_u32(itemAddr + _ItemToolCount), (itemAddr + _ItemToolCount))
 
             item = _ParseItemTool(item)
@@ -323,7 +353,7 @@ local function GetItemList(playerIndex, inverted)
 
     return itemTable;
 end
-
+ 
 return
 {
     GetItemList = GetItemList

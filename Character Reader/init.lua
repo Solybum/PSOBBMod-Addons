@@ -24,9 +24,9 @@ local _ItemWepGrind = 0x1F5
 local _ItemWepSpecial = 0x1F6
 local _ItemWepStats = 0x1C8
 local _ItemArmSlots = 0x1B8
-local _ItemFrameDef = 0x1B9
+local _ItemFrameDfp = 0x1B9
 local _ItemFrameEvp = 0x1BA
-local _ItemBarrierDef = 0x1E4
+local _ItemBarrierDfp = 0x1E4
 local _ItemBarrierEvp = 0x1E5
 local _ItemUnitMod = 0x1DC
 local _ItemMagStats = 0x1C0
@@ -210,8 +210,13 @@ local formatPrintWeapon = function(itemIndex, name, data, equipped, floor)
                 end
             end
 
-            retStr = retStr .. "/"
-            helpers.imguiText("/", cfg.white)
+            if i < 5 then
+                retStr = retStr .. "/"
+                helpers.imguiText("/", cfg.white)
+            else
+                retStr = retStr .. "|"
+                helpers.imguiText("|", cfg.white)
+            end
         end
 
         local stat = stats[6]
@@ -284,27 +289,51 @@ local formatPrintArmor = function(itemIndex, name, data, equipped)
         helpers.imguiText(name, cfg.armorName)
     end
 
-    local dfp = bit.lshift(data[8], 8) + data[7]
-    local evp = bit.lshift(data[10], 8) + data[9]
+    local pmtData = pmt.GetItemData(data)
+    local dfp = data[7]
+    local evp = data[9]
+    local dfpM = pmtData.armor.dfpR
+    local evpM = pmtData.armor.evpR
+
     local dfpStr = string.format("%i", dfp)
     local evpStr = string.format("%i", evp)
+    local dfpMStr = string.format("%i", dfpM)
+    local evpMStr = string.format("%i", evpM)
 
     retStr = retStr .. " ["
     helpers.imguiText(" [", cfg.white)
+
     retStr = retStr .. dfpStr
+    retStr = retStr .. "/"
+    retStr = retStr .. dfpMStr
+
     if dfp == 0 then
         helpers.imguiText(dfpStr, cfg.grey)
+        helpers.imguiText("/", cfg.white)
+        helpers.imguiText(dfpMStr, cfg.grey)
     else
         helpers.imguiText(dfpStr, cfg.armorStats)
+        helpers.imguiText("/", cfg.white)
+        helpers.imguiText(dfpMStr, cfg.armorStats)
     end
-    retStr = retStr .. "/"
-    helpers.imguiText("/", cfg.white)
+
+    retStr = retStr .. " | "
+    helpers.imguiText(" | ", cfg.white)
+
     retStr = retStr .. evpStr
+    retStr = retStr .. "/"
+    retStr = retStr .. evpMStr
+
     if evp == 0 then
         helpers.imguiText(evpStr, cfg.grey)
+        helpers.imguiText("/", cfg.white)
+        helpers.imguiText(evpMStr, cfg.grey)
     else
         helpers.imguiText(evpStr, cfg.armorStats)
+        helpers.imguiText("/", cfg.white)
+        helpers.imguiText(evpMStr, cfg.armorStats)
     end
+
     retStr = retStr .. "]"
     helpers.imguiText("]", cfg.white)
 
@@ -382,7 +411,6 @@ local formatPrintUnit = function(itemIndex, name, data, equipped)
     end
     return retStr
 end
-
 local formatPrintMag = function(itemIndex, name, data, equipped)
     equipped = equipped or false
     -- new line
@@ -529,7 +557,6 @@ local formatPrintTool = function(itemIndex, name, data)
     end
     return retStr
 end
-
 local formatPrintMeseta = function(itemIndex, name, data)
     if cfg.ignoreMeseta then
         return nil
@@ -665,14 +692,24 @@ local readItemFromPool = function (index, iAddr, floor)
             -- FRAME
             if item[2] == 1 then
                 item[6] = pso.read_u8(iAddr + _ItemArmSlots)
-                item[7] = pso.read_u8(iAddr + _ItemFrameDef)
+                item[7] = pso.read_u8(iAddr + _ItemFrameDfp)
                 item[9] = pso.read_u8(iAddr + _ItemFrameEvp)
+
+                -- PSO uses 1 byte for the variation, we'll use the 
+                -- next byte to hold the max stat
+                item[8] = pso.read_u8(iAddr + _ItemFrameDfp + 2)
+                item[10] = pso.read_u8(iAddr + _ItemFrameEvp + 2)
 
                 itemStr = formatPrintArmor(index, itemName, item, equipped)
             -- BARRIER
             elseif item[2] == 2 then
-                item[7] = pso.read_u8(iAddr + _ItemBarrierDef)
+                item[7] = pso.read_u8(iAddr + _ItemBarrierDfp)
                 item[9] = pso.read_u8(iAddr + _ItemBarrierEvp)
+
+                -- PSO uses 1 byte for the variation, we'll use the 
+                -- next byte to hold the max stat
+                item[8] = pso.read_u8(iAddr + _ItemBarrierDfp + 2)
+                item[10] = pso.read_u8(iAddr + _ItemBarrierEvp + 2)
 
                 itemStr = formatPrintArmor(index, itemName, item, equipped)
             -- UNIT
@@ -746,13 +783,11 @@ local readItemFromPool = function (index, iAddr, floor)
 
     return itemStr
 end
-
 local findInventory = function(playerAddr)
     local listPtr = (playerAddr ~= 0) and pso.read_u32(playerAddr + 0xDF4) or 0
     local listAddr = (listPtr ~= 0) and pso.read_u32(listPtr + 0x1C4) or 0
     return (listAddr ~= 0) and pso.read_u32(listAddr + 0x18) or 0
 end
-
 local readItemList = function(index, save)
     save = save or false
     magOnly = magOnly or false
@@ -828,7 +863,6 @@ local readItemList = function(index, save)
         end
     end
 end
-
 local readBank = function(save)
     local meseta
     local count

@@ -12,10 +12,8 @@ local function LoadPMTAddress()
     return pmtAddress ~= 0
 end
 
--- Easy UnitxtID lookup
-local function _GetItemUnitxtID(type, group, index)
-    local id = -1
-
+local function _GetItemAddress(type, group, index)
+    local result = 0
     if LoadPMTAddress() ~= 0 then
         if type == 0 then
             local weaponAddress = pso.read_u32(pmtAddress + pmtWeaponOffset)
@@ -26,7 +24,7 @@ local function _GetItemUnitxtID(type, group, index)
                 local itemAddress = pso.read_u32(groupAddress + 4)
 
                 if index < count and itemAddress ~= 0 then
-                    id = pso.read_i32(itemAddress + 44 * index)
+                    result = itemAddress + 44 * index
                 end
             end
         elseif type == 1 then
@@ -39,7 +37,7 @@ local function _GetItemUnitxtID(type, group, index)
                     local itemAddress = pso.read_u32(groupAddress + 4)
 
                     if index < count and itemAddress ~= 0 then
-                        id = pso.read_i32(itemAddress + 32 * index)
+                        result = itemAddress + 32 * index
                     end
                 end
             elseif group == 3 then
@@ -49,7 +47,7 @@ local function _GetItemUnitxtID(type, group, index)
                 local itemAddress = pso.read_u32(unitAddress + 4)
 
                 if index < count and itemAddress ~= 0 then
-                    id = pso.read_i32(itemAddress + 20 * index)
+                    result = itemAddress + 20 * index
                 end
             end
         elseif type == 2 then
@@ -59,7 +57,7 @@ local function _GetItemUnitxtID(type, group, index)
             local itemAddress = pso.read_u32(magAddress + 4)
 
             if group < count and itemAddress ~= 0 then
-                id = pso.read_i32(itemAddress + 28 * group)
+                result = itemAddress + 28 * group
             end
         elseif type == 3 then
             local toolAddress = pso.read_u32(pmtAddress + pmtToolOffset)
@@ -70,12 +68,21 @@ local function _GetItemUnitxtID(type, group, index)
                 local itemAddress = pso.read_u32(groupAddress + 4)
 
                 if index < count and itemAddress ~= 0 then
-                    id = pso.read_i32(itemAddress + 24 * index)
+                    result = itemAddress + 24 * index
                 end
             end
         end
     end
+    return result
+end
 
+-- Easy UnitxtID lookup
+local function _GetItemUnitxtID(type, group, index)
+    local id = -1
+    local itemAddress = _GetItemAddress(type, group, index)
+    if itemAddress ~= 0 then
+        id = pso.read_i32(itemAddress)
+    end
     return id
 end
 local function GetItemUnitxtID(data)
@@ -83,20 +90,11 @@ local function GetItemUnitxtID(data)
 end
 
 -- Full item data lookup
-local function _GetWeaponData(group, index, itemdata)
-    local weaponAddress = pso.read_u32(pmtAddress + pmtWeaponOffset)
-    if weaponAddress ~= 0 then
-        local groupAddress = weaponAddress + 8 * group
-
-        local count = pso.read_u32(groupAddress)
-        local itemAddress = pso.read_u32(groupAddress + 4)
-
-        if index < count and itemAddress ~= 0 then
-            -- id = pso.read_i32(itemAddress + 44 * index)
-        end
-    end
+local function _GetWeaponData(group, index, itemdata, itemAddress)
+    
+    return itemdata
 end
-local function _GetArmorData(group, index, itemdata)
+local function _GetArmorData(group, index, itemdata, itemAddress)
     itemdata.armor = {}
     itemdata.armor.dfp = 0
     itemdata.armor.evp = 0
@@ -116,70 +114,41 @@ local function _GetArmorData(group, index, itemdata)
     itemdata.armor.unknown1 = 0
     itemdata.armor.unknown2 = 0
 
-    local armorAddress = pso.read_u32(pmtAddress + pmtArmorOffset)
-    if armorAddress ~= 0 then
-        local groupAddress = armorAddress + 8 * (group - 1)
+    itemdata.id =                   pso.read_u32(itemAddress + 32 * index + 0)
+    itemdata.model =                pso.read_u16(itemAddress + 32 * index + 4)
+    itemdata.texture =              pso.read_u16(itemAddress + 32 * index + 6)
+    itemdata.teampoints =           pso.read_u32(itemAddress + 32 * index + 8)
+    itemdata.armor.dfp =            pso.read_u16(itemAddress + 32 * index + 12)
+    itemdata.armor.evp =            pso.read_u16(itemAddress + 32 * index + 14)
+    itemdata.armor.blockParticle =  pso.read_u8(itemAddress + 32 * index + 16)
+    itemdata.armor.blockEffect =    pso.read_u8(itemAddress + 32 * index + 17)
+    itemdata.armor._class =         pso.read_u16(itemAddress + 32 * index + 18)
+    itemdata.armor.level =          pso.read_u8(itemAddress + 32 * index + 20) + 1
+    itemdata.armor.efr =            pso.read_i8(itemAddress + 32 * index + 21)
+    itemdata.armor.eth =            pso.read_i8(itemAddress + 32 * index + 22)
+    itemdata.armor.eic =            pso.read_i8(itemAddress + 32 * index + 23)
+    itemdata.armor.edk =            pso.read_i8(itemAddress + 32 * index + 24)
+    itemdata.armor.elt =            pso.read_i8(itemAddress + 32 * index + 25)
+    itemdata.armor.dfpR =           pso.read_u8(itemAddress + 32 * index + 26)
+    itemdata.armor.evpR =           pso.read_u8(itemAddress + 32 * index + 27)
+    itemdata.armor.statBoost =      pso.read_u8(itemAddress + 32 * index + 28)
+    itemdata.armor.techBoost =      pso.read_u8(itemAddress + 32 * index + 29)
+    itemdata.armor.unknown1 =       pso.read_u8(itemAddress + 32 * index + 30)
+    itemdata.armor.unknown2 =       pso.read_u8(itemAddress + 32 * index + 31)
 
-        local count = pso.read_u32(groupAddress)
-        local itemAddress = pso.read_u32(groupAddress + 4)
-
-        if index < count and itemAddress ~= 0 then
-            itemdata.id =                   pso.read_u32(itemAddress + 32 * index + 0)
-            itemdata.model =                pso.read_u16(itemAddress + 32 * index + 4)
-            itemdata.texture =              pso.read_u16(itemAddress + 32 * index + 6)
-            itemdata.teampoints =           pso.read_u32(itemAddress + 32 * index + 8)
-            itemdata.armor.dfp =            pso.read_u16(itemAddress + 32 * index + 12)
-            itemdata.armor.evp =            pso.read_u16(itemAddress + 32 * index + 14)
-            itemdata.armor.blockParticle =  pso.read_u8(itemAddress + 32 * index + 16)
-            itemdata.armor.blockEffect =    pso.read_u8(itemAddress + 32 * index + 17)
-            itemdata.armor._class =         pso.read_u16(itemAddress + 32 * index + 18)
-            itemdata.armor.level =          pso.read_u8(itemAddress + 32 * index + 20) + 1
-            itemdata.armor.efr =            pso.read_i8(itemAddress + 32 * index + 21)
-            itemdata.armor.eth =            pso.read_i8(itemAddress + 32 * index + 22)
-            itemdata.armor.eic =            pso.read_i8(itemAddress + 32 * index + 23)
-            itemdata.armor.edk =            pso.read_i8(itemAddress + 32 * index + 24)
-            itemdata.armor.elt =            pso.read_i8(itemAddress + 32 * index + 25)
-            itemdata.armor.dfpR =           pso.read_u8(itemAddress + 32 * index + 26)
-            itemdata.armor.evpR =           pso.read_u8(itemAddress + 32 * index + 27)
-            itemdata.armor.statBoost =      pso.read_u8(itemAddress + 32 * index + 28)
-            itemdata.armor.techBoost =      pso.read_u8(itemAddress + 32 * index + 29)
-            itemdata.armor.unknown1 =       pso.read_u8(itemAddress + 32 * index + 30)
-            itemdata.armor.unknown2 =       pso.read_u8(itemAddress + 32 * index + 31)
-        end
-    end
+    return itemdata
 end
-local function _GetUnitData(index, itemdata)
-    local unitAddress = pso.read_u32(pmtAddress + pmtUnitOffset)
+local function _GetUnitData(index, itemdata, itemAddress)
 
-    local count = pso.read_u32(unitAddress)
-    local itemAddress = pso.read_u32(unitAddress + 4)
-
-    if index < count and itemAddress ~= 0 then
-        --id = pso.read_i32(itemAddress + 20 * index)
-    end
+    return itemdata
 end
-local function _GetMagData(index, itemdata)
-    local magAddress = pso.read_u32(pmtAddress + pmtMagOffset)
+local function _GetMagData(index, itemdata, itemAddress)
 
-    local count = pso.read_u32(magAddress)
-    local itemAddress = pso.read_u32(magAddress + 4)
-
-    if group < count and itemAddress ~= 0 then
-        --id = pso.read_i32(itemAddress + 28 * group)
-    end
+    return itemdata
 end
-local function _GetToolData(group, index, itemdata)
-    local toolAddress = pso.read_u32(pmtAddress + pmtToolOffset)
-    if toolAddress ~= 0 then
-        local groupAddress = toolAddress + 8 * group
+local function _GetToolData(group, index, itemdata, itemAddress)
 
-        local count = pso.read_u32(groupAddress)
-        local itemAddress = pso.read_u32(groupAddress + 4)
-
-        if index < count and itemAddress ~= 0 then
-            id = pso.read_i32(itemAddress + 24 * index)
-        end
-    end
+    return itemdata
 end
 
 local function _GetItemData(type, group, index)
@@ -189,21 +158,23 @@ local function _GetItemData(type, group, index)
     itemdata.texture = -1
     itemdata.teampoints = 0
 
-    if LoadPMTAddress() ~= 0 then
+    local itemAddress = _GetItemAddress(type, group, index)
+    if itemAddress ~= 0 then
         if type == 0 then
-            itemdata = _GetWeaponData(group, index, itemdata)
+            itemdata = _GetWeaponData(group, index, itemdata, itemAddress)
         elseif type == 1 then
             if group == 1 or group == 2 then
-                itemdata = _GetArmorData(group, index, itemdata)
+                itemdata = _GetArmorData(group, index, itemdata, itemAddress)
             elseif group == 3 then
-                itemdata = _GetUnitData(index, itemdata)
+                itemdata = _GetUnitData(index, itemdata, itemAddress)
             end
         elseif type == 2 then
-            itemdata = _GetMagData(index, itemdata)
+            itemdata = _GetMagData(index, itemdata, itemAddress)
         elseif type == 3 then
-            itemdata = _GetToolData(group, index, itemdata)
+            itemdata = _GetToolData(group, index, itemdata, itemAddress)
         end
     end
+    return itemdata
 end
 local function GetItemData(data)
     return _GetItemData(data[1], data[2], data[3])
