@@ -215,7 +215,17 @@ local function PrintMonsters()
 
     imgui.Columns(2)
 
-    for i=1,monsterListCount,1 do
+    local startIndex = 1
+    local endIndex = monsterListCount
+    local step = 1
+
+    if cfg.invertMonsterList then
+        startIndex = monsterListCount
+        endIndex = 1
+        step = -1
+    end
+
+    for i=startIndex, endIndex, step do
         if monsterList[i].display then
             local mHP = monsterList[i].HP
             local mHPMax = monsterList[i].HPMax
