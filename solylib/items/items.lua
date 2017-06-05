@@ -80,8 +80,8 @@ local function _ParseItemWeapon(item)
     -- SRANK
     if item.weapon.isSRank then
         item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-        item.weapon.nameSrank = unitxt.GetSRankName(data)
-        item.weapon.specialSRank = data[3]
+        item.weapon.nameSrank = unitxt.GetSRankName(item.data)
+        item.weapon.specialSRank = item.data[3]
     -- NON SRANK
     else
         item.weapon.stats = {0,0,0,0,0,0}
