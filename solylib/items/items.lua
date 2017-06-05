@@ -80,10 +80,8 @@ local function _ParseItemWeapon(item)
     item.weapon.special = item.data[5]
 
     item.weapon.isSRank = (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA)
-
     -- SRANK
     if item.weapon.isSRank then
-        item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
         item.weapon.nameSrank = unitxt.GetSRankName(item.data)
         item.weapon.specialSRank = item.data[3]
     -- NON SRANK
@@ -133,8 +131,6 @@ local function _ParseItemBarrier(item)
 end
 
 local function _ParseItemUnit(item)
-    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-
     local mod = item.data[7]
     if mod > 127 then
         mod = mod - 256
@@ -157,8 +153,7 @@ local function _ParseItemUnit(item)
 end
 
 local function _ParseItemMag(item)
-    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-    item.mag.color = unitxt.GetMagColor(item.data[16])
+    item.mag.color = item.data[16]
 
     item.mag.def = (bit.lshift(item.data[6],  8) + item.data[5] ) / 100.0
     item.mag.pow = (bit.lshift(item.data[8],  8) + item.data[7] ) / 100.0
@@ -185,21 +180,28 @@ local function _ParseItemMag(item)
 end
 
 local function _ParseItemTool(item)
-    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-    item.tool.count = item.data[5]
+    item.tool.count = item.data[6]
     return item
 end
 
 local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
     item.name = unitxt.GetTechniqueName(item.data[5])
-    item.tool.techlevel = item.data[3]
+    item.tool.level = item.data[3] + 1
     return item
 end
 
-local function ReadItemFromItemPool(itemAddr, floor)
-    floor = floor or false
+local function _ParseItemMeseta(item)
+    item.name = "Meseta"
+    item.meseta = 
+        bit.lshift(item.data[13],  0) +
+        bit.lshift(item.data[14],  8) +
+        bit.lshift(item.data[15], 16) +
+        bit.lshift(item.data[16], 24)
+    return item
+end
 
+local function ReadItemFromItemPool(itemAddr)
     local item = {}
     item.address = itemAddr
 
@@ -212,6 +214,8 @@ local function ReadItemFromItemPool(itemAddr, floor)
     item.kills = 0
 
     item.equipped = bit.band(pso.read_u8(itemAddr +  _ItemEquipped), 1) == 1
+
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
 
     -- WEAPON
     if item.data[1] == 0 then
@@ -294,7 +298,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
     -- TOOL
     elseif item.data[1] == 3 then
         item.tool = {}
-
         if item.data[2] == 2 then
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
 
@@ -306,7 +309,12 @@ local function ReadItemFromItemPool(itemAddr, floor)
         end
     -- MESETA
     elseif item.data[1] == 4 then
-        item.meseta = pso.read_u32(itemAddr + _ItemMesetaAmount)
+        item.data[13] = pso.read_u8(itemAddr + _ItemMesetaAmount + 0)
+        item.data[14] = pso.read_u8(itemAddr + _ItemMesetaAmount + 1)
+        item.data[15] = pso.read_u8(itemAddr + _ItemMesetaAmount + 2)
+        item.data[16] = pso.read_u8(itemAddr + _ItemMesetaAmount + 3)
+
+        item = _ParseItemMeseta(item)
     end
 
     return item
@@ -346,7 +354,7 @@ local function GetItemList(playerIndex, inverted)
             local owner = pso.read_i8(itemAddr + _ItemOwner)
             if owner == playerIndex then
                 itemIndex = itemIndex + 1
-                local item = ReadItemFromItemPool(itemAddr, playerIndex == -1)
+                local item = ReadItemFromItemPool(itemAddr)
                 item.index = itemIndex
                 table.insert(itemTable, item)
             end

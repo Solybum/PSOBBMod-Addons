@@ -39,6 +39,24 @@ local function imguiText(text, color, newLine)
     imgui.TextColored(c[1], c[2], c[3], c[4], text)
 end
 
+-- Text functions
+local function Text(newLine, fmt, ...)
+    TextC(newLine, 0xFFFFFFFF, fmt, ...)
+end
+local function TextC(newLine, col, fmt, ...)
+    newLine = newLine or false
+    col = col or 0xFFFFFFFF
+    fmt = fmt or "nil"
+
+    if newLine == false then
+        imgui.SameLine(0, 0)
+    end
+
+    local c = GetColorAsFloats(col)
+    local str = string.format(fmt, ...)
+    imgui.TextColored(c[1], c[2], c[3], c[4], str)
+end
+
 local function imguiProgressBar(progress, x, y, overlay, barColor, textColor, newLine)
     x = x or -1.0
     y = y or 0.0
@@ -68,5 +86,7 @@ return
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
+    Text = Text,
+    TextC = TextC,
     imguiProgressBar = imguiProgressBar,
 }

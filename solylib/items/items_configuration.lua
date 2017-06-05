@@ -62,38 +62,39 @@ local weaponSpecial =
 local weaponAttributesEnabled = true
 local weaponAttributes =
 {
-     -1, 0xFFA0A0A0,
-      0, 0xFFA0A0A0,
-     10, 0xFFFFFFFF,
-     20, 0xFFFFFFFF,
-     30, 0xFFFFFFFF,
-     40, 0xFFFFFFFF,
-     50, 0xFFFFFFFF,
-     60, 0xFFFFFFFF,
-     70, 0xFFFFFFFF,
-     80, 0xFFFFFFFF,
-     90, 0xFFFFFFFF,
     100, 0xFFFFFFFF,
+    90, 0xFFFFFFFF,
+    80, 0xFFFFFFFF,
+    70, 0xFFFFFFFF,
+    60, 0xFFFFFFFF,
+    50, 0xFFFFFFFF,
+    40, 0xFFFFFFFF,
+    30, 0xFFFFFFFF,
+    20, 0xFFFFFFFF,
+    10, 0xFFFFFFFF,
+    0, 0xFFA0A0A0,
+    -1, 0xFFA0A0A0,
 }
 local weaponHit =
 {
-     -1, 0xFFA0A0A0,
-      0, 0xFFFFFFFF,
-     10, 0xFF00FF00,
-     20, 0xFF38FF00,
-     30, 0xFF71FF00,
-     40, 0xFFAAFF00,
-     50, 0xFFE2FF00,
-     60, 0xFFFFE200,
-     70, 0xFFFFAA00,
-     80, 0xFFFF7100,
-     90, 0xFFFF3800,
     100, 0xFFFF0000,
+    90, 0xFFFF3800,
+    80, 0xFFFF7100,
+    70, 0xFFFFAA00,
+    60, 0xFFFFE200,
+    50, 0xFFE2FF00,
+    40, 0xFFAAFF00,
+    30, 0xFF71FF00,
+    20, 0xFF38FF00,
+    10, 0xFF00FF00,
+    0, 0xFFFFFFFF,
+    -1, 0xFFA0A0A0,
 }
 
 -- ARMOR (Frame and Barrier)
 local armorName = 0xFFB060B0
 local armorStats = 0xFF28CC66
+local armorStatsMax = 0xFF28CC66
 local armorSlots = 0xFFFFFF00
 
 -- ARMOR (Unit)
@@ -107,7 +108,7 @@ local magStats = 0xFF28CC66
 local magPB = 0xFFFFFF00
 local magFeedTimer =
 {
-    9001,   0xFFFF0000, -- over 9000, really just needs 210 at most
+    9001,   0xFFFF0000, -- over 9000, really just needs 211
     30,     0xFFFF8C00,
     16,     0xFFF1C40F,
     1,      0xFF28CC66,
@@ -119,7 +120,7 @@ local toolAmount = 0xFF28CC66
 
 -- TECHNIQUE
 local techName = 0xFFB060B0
-local techLv = 0xFF28CC66
+local techLevel = 0xFF28CC66
 
 -- MESETA
 local mesetaName = 0xFFB060B0
@@ -157,7 +158,7 @@ return
     toolName = toolName,
     toolAmount = toolAmount,
     techName = techName,
-    techLv = techLv,
+    techLevel = techLevel,
     mesetaName = mesetaName,
     mesetaAmount = mesetaAmount,
 }

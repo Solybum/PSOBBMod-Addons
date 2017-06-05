@@ -13,55 +13,52 @@ local function Main()
     for i=1,itemCount,1 do
         local item = itemList[i]
         if item.mag ~= nil then
-            -- new line
-            imgui.Text("")
+            -- Get a new line
+            lib_helpers.TextC(true, 0, "")
 
             -- Item index
-            local indexStr = string.format("% 3i", item.index)
-            lib_helpers.imguiText(indexStr, lib_items_cfg.itemIndex)
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i", item.index)
 
             -- Equipped
-            lib_helpers.imguiText(" [", lib_items_cfg.white)
-            lib_helpers.imguiText("E", lib_items_cfg.itemEquipped)
-            lib_helpers.imguiText("]", lib_items_cfg.white)
+            lib_helpers.TextC(false, lib_items_cfg.white, " [")
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "E")
+            lib_helpers.TextC(false, lib_items_cfg.white, "]")
 
             -- Mag name
-            lib_helpers.imguiText(" ", lib_items_cfg.white)
+            local nameColor = lib_items_cfg.magName
             local item_cfg = lib_items_list.t[item.hex]
             if item_cfg ~= nil and item_cfg[1] ~= 0 then
-                lib_helpers.imguiText(item.name, item_cfg[1])
-            else
-                lib_helpers.imguiText(item.name, lib_items_cfg.magName)
+                nameColor = item_cfg[1]
             end
+            lib_helpers.TextC(false, nameColor, " %s", item.name)
 
             -- Mag color
-            lib_helpers.imguiText(" [", lib_items_cfg.white)
-            lib_helpers.imguiText(item.mag.color, lib_items_cfg.magColor)
-            lib_helpers.imguiText("]", lib_items_cfg.white)
+            lib_helpers.TextC(false, lib_items_cfg.white, " [")
+            lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+            lib_helpers.TextC(false, lib_items_cfg.white, "]")
 
             -- Mag stats
 
-            lib_helpers.imguiText(" [", lib_items_cfg.white)
-            lib_helpers.imguiText(item.mag.def, lib_items_cfg.magStats)
-            lib_helpers.imguiText("/", lib_items_cfg.white)
-            lib_helpers.imguiText(item.mag.pow, lib_items_cfg.magStats)
-            lib_helpers.imguiText("/", lib_items_cfg.white)
-            lib_helpers.imguiText(item.mag.dex, lib_items_cfg.magStats)
-            lib_helpers.imguiText("/", lib_items_cfg.white)
-            lib_helpers.imguiText(item.mag.mind, lib_items_cfg.magStats)
-            lib_helpers.imguiText("]", lib_items_cfg.white)
+            lib_helpers.TextC(false, lib_items_cfg.white, " [")
+            lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
+            lib_helpers.TextC(false, lib_items_cfg.white, "/")
+            lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.pow)
+            lib_helpers.TextC(false, lib_items_cfg.white, "/")
+            lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.dex)
+            lib_helpers.TextC(false, lib_items_cfg.white, "/")
+            lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.mind)
+            lib_helpers.TextC(false, lib_items_cfg.white, "]")
             
             -- Mag PBs
-            lib_helpers.imguiText(" [", lib_items_cfg.white)
-            lib_helpers.imguiText(lib_unitxt.GetPhotonBlastName(item.mag.pbL, cfg.shortPBNames), lib_items_cfg.magPB)
-            lib_helpers.imguiText("|", lib_items_cfg.white)
-            lib_helpers.imguiText(lib_unitxt.GetPhotonBlastName(item.mag.pbC, cfg.shortPBNames), lib_items_cfg.magPB)
-            lib_helpers.imguiText("|", lib_items_cfg.white)
-            lib_helpers.imguiText(lib_unitxt.GetPhotonBlastName(item.mag.pbR, cfg.shortPBNames), lib_items_cfg.magPB)
-            lib_helpers.imguiText("]", lib_items_cfg.white)
+            lib_helpers.TextC(false, lib_items_cfg.white, " [")
+            lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, cfg.shortPBNames))
+            lib_helpers.TextC(false, lib_items_cfg.white, "|")
+            lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, cfg.shortPBNames))
+            lib_helpers.TextC(false, lib_items_cfg.white, "|")
+            lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, cfg.shortPBNames))
+            lib_helpers.TextC(false, lib_items_cfg.white, "]")
 
             -- Mag timer
-            local timerStr = string.format("%i", item.mag.timer)
             local timerColor = lib_items_cfg.white
             for i=1,table.getn(lib_items_cfg.magFeedTimer),2 do
                 if item.mag.timer < lib_items_cfg.magFeedTimer[i] then
@@ -69,9 +66,9 @@ local function Main()
                 end
             end
 
-            lib_helpers.imguiText(" [", lib_items_cfg.white)
-            lib_helpers.imguiText(timerStr, timerColor)
-            lib_helpers.imguiText("]", lib_items_cfg.white)
+            lib_helpers.TextC(false, lib_items_cfg.white, " [")
+            lib_helpers.TextC(false, timerColor, "%i", item.mag.timer)
+            lib_helpers.TextC(false, lib_items_cfg.white, "]")
         end
     end
 end
@@ -81,12 +78,10 @@ local function present()
         return
     end
 
-    lib_theme.Push()
     imgui.Begin("Mags")
     imgui.SetWindowFontScale(cfg.fontSize)
     Main()
     imgui.End()
-    lib_theme.Pop()
 end
 
 local function init()
