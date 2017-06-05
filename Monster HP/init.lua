@@ -7,6 +7,7 @@ local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
 local _PlayerCount = 0x00AAE168
 local _Difficulty = 0x00A9CD68
+local _Ultimate
 
 local _PosX = 0x38
 local _PosY = 0x3C
@@ -117,7 +118,7 @@ local function GetMonsterData(monster)
     monster.posZ = pso.read_f32(monster.address + _PosZ)
 
     -- Other stuff
-    monster.name = unitxt.GetMonsterName(monster.unitxtID, ultimate)
+    monster.name = unitxt.GetMonsterName(monster.unitxtID, _Ultimate)
     monster.color = 0xFFFFFFFF
     monster.display = true
 
@@ -135,7 +136,7 @@ local function GetMonsterList()
     local monsterList = {}
 
     local difficulty = pso.read_u32(_Difficulty)
-    local ultimate = difficulty == 3
+    _Ultimate = difficulty == 3
 
     local pIndex = pso.read_u32(_PlayerIndex)
     local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
