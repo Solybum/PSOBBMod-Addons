@@ -1,7 +1,7 @@
 local helpers = require("solylib.helpers")
 local pmt = require("solylib.pmt")
 local unitxt = require("solylib.unitxt")
-local items = require("solylib.items.items_config")
+local items = require("solylib.items.items_list")
 local cfg = require("Character Reader.configuration")
 
 local _MesetaAddress =  0x00AA70F0

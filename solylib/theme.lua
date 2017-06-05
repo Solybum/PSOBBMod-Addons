@@ -1,3 +1,4 @@
+-- Colors are R G B A
 local function Push()
     imgui.PushStyleColor("Text"                   , 0.90, 0.90, 0.90, 1.00)
     imgui.PushStyleColor("TextDisabled"           , 0.60, 0.60, 0.60, 1.00)

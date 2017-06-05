@@ -30,6 +30,10 @@ local _ItemTechType = 0x108
 local _ItemMesetaAmount = 0x100
 
 local _PlayerArray = 0x00A94254
+local _PlayerIndex =  0x00A9C4F4
+
+local NoOwner = -1
+local Me = -2
 
 local function _GetLeftPBValue(pb)
     local pbs = { 0,0,0,0,0,0,0,0, }
@@ -45,7 +49,7 @@ local function _GetLeftPBValue(pb)
             -- continue
         else
             if pb == 0 then
-                return (i - 1);
+                return (i - 1)
             else
                 pb = pb - 1
             end
@@ -54,17 +58,8 @@ local function _GetLeftPBValue(pb)
     return -1;
 end
 
-local function _ParseSRank(item)
-    item.weapon.isSRank = true
-    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-    item.weapon.nameSrank = unitxt.GetSRankName(data)
-    item.weapon.specialSRank = data[3]
-
-    return item
-end
-
 local function _ParseItemWeapon(item)
-    item.weapon.isSRank = false
+    item.weapon = {}
 
     item.weapon.wrapped = false
     item.weapon.untekked = false
@@ -80,9 +75,13 @@ local function _ParseItemWeapon(item)
     item.weapon.grind = item.data[4]
     item.weapon.special = item.data[5]
 
+    item.weapon.isSRank = (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA)
+
     -- SRANK
-    if (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA) then
-        return _ParseSRank(item)
+    if item.weapon.isSRank then
+        item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+        item.weapon.nameSrank = unitxt.GetSRankName(data)
+        item.weapon.specialSRank = data[3]
     -- NON SRANK
     else
         item.weapon.stats = {0,0,0,0,0,0}
@@ -148,27 +147,27 @@ end
 
 local function _ParseItemMag(item)
     item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
-    item.mag.Color = unitxt.GetMagColor(item.data[16])
+    item.mag.color = unitxt.GetMagColor(item.data[16])
 
-    item.mag.DFP = (bit.lshift(item.data[6],  8) + item.data[5] ) / 100.0
-    item.mag.ATP = (bit.lshift(item.data[8],  8) + item.data[7] ) / 100.0
-    item.mag.ATA = (bit.lshift(item.data[10], 8) + item.data[9] ) / 100.0
-    item.mag.MST = (bit.lshift(item.data[12], 8) + item.data[11]) / 100.0
+    item.mag.def = (bit.lshift(item.data[6],  8) + item.data[5] ) / 100.0
+    item.mag.pow = (bit.lshift(item.data[8],  8) + item.data[7] ) / 100.0
+    item.mag.dex = (bit.lshift(item.data[10], 8) + item.data[9] ) / 100.0
+    item.mag.mind = (bit.lshift(item.data[12], 8) + item.data[11]) / 100.0
 
     if bit.band(item.data[15], 1) ~= 0 then
-        item.mag.pbCenter = bit.band(item.data[4], 7)
+        item.mag.pbC = bit.band(item.data[4], 7)
     else
-        item.mag.pbCenter = -1
+        item.mag.pbC = -1
     end
     if bit.band(item.data[15], 2) ~= 0 then
-        item.mag.pbRight = bit.rshift(bit.band(item.data[4], 56), 3)
+        item.mag.pbR = bit.rshift(bit.band(item.data[4], 56), 3)
     else
-        item.mag.pbRight = -1
+        item.mag.pbR = -1
     end
     if bit.band(item.data[15], 4) ~= 0 then
-        item.mag.pbLeft = _GetLeftPBValue(item.data[4])
+        item.mag.pbL = _GetLeftPBValue(item.data[4])
     else
-        item.mag.pbLeft = -1
+        item.mag.pbL = -1
     end
 
     return item
@@ -184,7 +183,6 @@ local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
     item.name = unitxt.GetTechniqueName(item.data[5])
     item.tool.techlevel = item.data[3]
-
     return item
 end
 
@@ -192,9 +190,9 @@ local function ReadItemFromItemPool(itemAddr, floor)
     floor = floor or false
 
     local item = {}
-    item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
+    item.address = itemAddr
 
-    item.type = -1
+    item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
 
     item.data[1] = pso.read_u8(itemAddr + _ItemCode + 0)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
@@ -206,7 +204,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
 
     -- WEAPON
     if item.data[1] == 0 then
-        item.type = 0
         item.weapon = {}
 
         item.data[4] = pso.read_u8(itemAddr + _ItemWepGrind)
@@ -227,9 +224,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
     elseif item.data[1] == 1 then
         -- FRAME
         if item.data[2] == 1 then
-            item.type = 1
-            item.subtype = 0
-
             item.armor = {}
 
             item.data[6] = pso.read_u8(itemAddr + _ItemArmSlots)
@@ -239,9 +233,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item = _ParseItemFrame(item)
         -- BARRIER
         elseif item.data[2] == 2 then
-            item.type = 1
-            item.subtype = 1
-
             item.armor = {}
 
             item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDfp)
@@ -250,9 +241,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item = _ParseItemBarrier(item)
         -- UNIT
         elseif item.data[2] == 3 then
-            item.type = 1
-            item.subtype = 2
-
             item.unit = {}
 
             item.data[7] = pso.read_u8(itemAddr + _ItemUnitMod + 0)
@@ -266,8 +254,6 @@ local function ReadItemFromItemPool(itemAddr, floor)
         end
     -- MAG
     elseif item.data[1] == 2 then
-        item.type = 2
-
         item.mag = {}
 
         item.data[4] = pso.read_u8(itemAddr + _ItemMagPB)
@@ -288,30 +274,23 @@ local function ReadItemFromItemPool(itemAddr, floor)
         item = _ParseItemMag(item)
     -- TOOL
     elseif item.data[1] == 3 then
-        item.type = 3
-
         item.tool = {}
 
         if item.data[2] == 2 then
-            item.subtype = 1
-
             item.data[5] = pso.read_u8(itemAddr + _ItemTechType)
 
             item = _ParseItemTechnique(item)
         else
-            item.subtype = 0
             item.data[6] = bit.bxor(pso.read_u32(itemAddr + _ItemToolCount), (itemAddr + _ItemToolCount))
 
             item = _ParseItemTool(item)
         end
     -- MESETA
     elseif item.data[1] == 4 then
-        item.type = 4
-
         item.meseta = pso.read_u32(itemAddr + _ItemMesetaAmount)
     end
 
-    return item;
+    return item
 end
 
 -- Reads items from the item pool
@@ -322,6 +301,10 @@ end
 -- will be shown at the top
 local function GetItemList(playerIndex, inverted)
     inverted = inverted or false
+
+    if playerIndex == Me then
+        playerIndex = pso.read_u32(_PlayerIndex)
+    end
 
     local itemCount = pso.read_u32(_ItemArrayCount)
     local itemArray = pso.read_u32(_ItemArray)
@@ -337,24 +320,26 @@ local function GetItemList(playerIndex, inverted)
     end
 
     local itemTable = {}
-
+    local itemIndex = 0
     for i=startIndex, endIndex, step do
         local itemAddr = pso.read_u32(itemArray + 4 * (i - 1))
-
         if itemAddr ~= 0 then
             local owner = pso.read_i8(itemAddr + _ItemOwner)
-
             if owner == playerIndex then
+                itemIndex = itemIndex + 1
                 local item = ReadItemFromItemPool(itemAddr, playerIndex == -1)
+                item.index = itemIndex
                 table.insert(itemTable, item)
             end
         end
     end
 
-    return itemTable;
+    return itemTable
 end
- 
+
 return
 {
+    NoOwner = NoOwner,
+    Me = Me,
     GetItemList = GetItemList
 }
