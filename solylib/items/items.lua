@@ -15,8 +15,12 @@ local _ItemWepStats = 0x1C8
 local _ItemArmSlots = 0x1B8
 local _ItemFrameDfp = 0x1B9
 local _ItemFrameEvp = 0x1BA
+local _ItemFrameDfpMax = 0x1BB
+local _ItemFrameEvpMax = 0x1BC
 local _ItemBarrierDfp = 0x1E4
 local _ItemBarrierEvp = 0x1E5
+local _ItemBarrierDfpMax = 0x1E6
+local _ItemBarrierEvpMax = 0x1E7
 local _ItemUnitMod = 0x1DC
 local _ItemMagStats = 0x1C0
 local _ItemMagPBHas = 0x1C8
@@ -111,13 +115,20 @@ local function _ParseItemFrame(item)
     item.armor.slots = item.data[6]
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
+    -- This is not how it actually works in game, the item doesn't know
+    -- about it's max data but since the data is empty, we'll roll with it
+    item.armor.dfpMax = item.data[8]
+    item.armor.evpMax = item.data[10]
     return item
 end
 
 local function _ParseItemBarrier(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
-
+    -- This is not how it actually works in game, the item doesn't know
+    -- about it's max data but since the data is empty, we'll roll with it
+    item.armor.dfpMax = item.data[8]
+    item.armor.evpMax = item.data[10]
     return item
 end
 
@@ -229,6 +240,10 @@ local function ReadItemFromItemPool(itemAddr, floor)
             item.data[6] = pso.read_u8(itemAddr + _ItemArmSlots)
             item.data[7] = pso.read_u8(itemAddr + _ItemFrameDfp)
             item.data[9] = pso.read_u8(itemAddr + _ItemFrameEvp)
+            -- This is not how it actually works in game, the item doesn't know
+            -- about it's max data but since the data is empty, we'll roll with it
+            item.data[8] = pso.read_u8(itemAddr + _ItemFrameDfpMax)
+            item.data[10] = pso.read_u8(itemAddr + _ItemFrameEvpMax)
 
             item = _ParseItemFrame(item)
         -- BARRIER
@@ -237,6 +252,10 @@ local function ReadItemFromItemPool(itemAddr, floor)
 
             item.data[7] = pso.read_u8(itemAddr + _ItemBarrierDfp)
             item.data[9] = pso.read_u8(itemAddr + _ItemBarrierEvp)
+            -- This is not how it actually works in game, the item doesn't know
+            -- about it's max data but since the data is empty, we'll roll with it
+            item.data[8] = pso.read_u8(itemAddr + _ItemBarrierDfpMax)
+            item.data[10] = pso.read_u8(itemAddr + _ItemBarrierEvpMax)
 
             item = _ParseItemBarrier(item)
         -- UNIT
