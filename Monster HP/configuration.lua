@@ -6,6 +6,9 @@ local fontColor = 0xFFFFFFFF
 local fontSize = 1.0
 -- Invert the order of the monster list
 local invertMonsterList = false
+-- Hide HP bars for monsters that are
+-- not in the room that the player is in
+local showOnlyPlayerRoom = false
 
 return
 {
@@ -13,4 +16,5 @@ return
     fontColor = fontColor,
     fontSize = fontSize,
     invertMonsterList = invertMonsterList,
+    showOnlyPlayerRoom = showOnlyPlayerRoom,
 }

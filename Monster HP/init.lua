@@ -9,6 +9,7 @@ local _PlayerCount = 0x00AAE168
 local _Difficulty = 0x00A9CD68
 local _Ultimate
 
+local _Room = 0x28
 local _PosX = 0x38
 local _PosY = 0x3C
 local _PosZ = 0x40
@@ -148,6 +149,7 @@ local function GetMonsterList()
     end
 
     -- Get player position
+    local playerRoom = pso.read_u16(pAddr + _Room)
     local pPosX = pso.read_f32(pAddr + _PosX)
     local pPosZ = pso.read_f32(pAddr + _PosZ)
 
@@ -178,6 +180,13 @@ local function GetMonsterList()
             local tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
         
             if cfgMonsters.maxDistance ~= 0 and tDist > cfgMonsters.maxDistance then
+                monster.display = false
+            end
+
+            -- Determine whether the player is in the same room as the monster
+            local monsterRoom = pso.read_u16(monster.address + _Room)
+
+            if cfg.showOnlyPlayerRoom and playerRoom ~= monsterRoom then
                 monster.display = false
             end
 
