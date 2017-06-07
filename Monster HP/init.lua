@@ -43,6 +43,7 @@ local function CopyMonster(monster)
     local copy = {}
 
     copy.index    = monster.index
+    copy.room     = monster.room
     copy.posX     = monster.posX
     copy.posY     = monster.posY
     copy.posZ     = monster.posZ
@@ -114,6 +115,7 @@ local function GetMonsterData(monster)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+    monster.room = pso.read_u16(monster.address + _Room)
     monster.posX = pso.read_f32(monster.address + _PosX)
     monster.posY = pso.read_f32(monster.address + _PosY)
     monster.posZ = pso.read_f32(monster.address + _PosZ)
@@ -178,15 +180,13 @@ local function GetMonsterList()
             local xDist = math.abs(pPosX - monster.posX)
             local zDist = math.abs(pPosZ - monster.posZ)
             local tDist = math.sqrt(xDist ^ 2 + zDist ^ 2)
-        
+
             if cfgMonsters.maxDistance ~= 0 and tDist > cfgMonsters.maxDistance then
                 monster.display = false
             end
 
             -- Determine whether the player is in the same room as the monster
-            local monsterRoom = pso.read_u16(monster.address + _Room)
-
-            if cfg.showOnlyPlayerRoom and playerRoom ~= monsterRoom then
+            if cfg.showOnlyPlayerRoom and playerRoom ~= monster.room then
                 monster.display = false
             end
 
