@@ -91,7 +91,6 @@ end
 
 -- Full item data lookup
 local function _GetWeaponData(group, index, itemdata, itemAddress)
-    
     return itemdata
 end
 local function _GetArmorData(group, index, itemdata, itemAddress)
@@ -101,7 +100,7 @@ local function _GetArmorData(group, index, itemdata, itemAddress)
     itemdata.armor.blockParticle = 0
     itemdata.armor.blockEffect = 26
     itemdata.armor._class = 0
-    itemdata.armor.level = 1
+    itemdata.armor.level = 0
     itemdata.armor.efr = 0
     itemdata.armor.eth = 0
     itemdata.armor.eic = 0
@@ -114,27 +113,29 @@ local function _GetArmorData(group, index, itemdata, itemAddress)
     itemdata.armor.unknown1 = 0
     itemdata.armor.unknown2 = 0
 
-    itemdata.id =                   pso.read_u32(itemAddress + 32 * index + 0)
-    itemdata.model =                pso.read_u16(itemAddress + 32 * index + 4)
-    itemdata.texture =              pso.read_u16(itemAddress + 32 * index + 6)
-    itemdata.teampoints =           pso.read_u32(itemAddress + 32 * index + 8)
-    itemdata.armor.dfp =            pso.read_u16(itemAddress + 32 * index + 12)
-    itemdata.armor.evp =            pso.read_u16(itemAddress + 32 * index + 14)
-    itemdata.armor.blockParticle =  pso.read_u8(itemAddress + 32 * index + 16)
-    itemdata.armor.blockEffect =    pso.read_u8(itemAddress + 32 * index + 17)
-    itemdata.armor._class =         pso.read_u16(itemAddress + 32 * index + 18)
-    itemdata.armor.level =          pso.read_u8(itemAddress + 32 * index + 20) + 1
-    itemdata.armor.efr =            pso.read_i8(itemAddress + 32 * index + 21)
-    itemdata.armor.eth =            pso.read_i8(itemAddress + 32 * index + 22)
-    itemdata.armor.eic =            pso.read_i8(itemAddress + 32 * index + 23)
-    itemdata.armor.edk =            pso.read_i8(itemAddress + 32 * index + 24)
-    itemdata.armor.elt =            pso.read_i8(itemAddress + 32 * index + 25)
-    itemdata.armor.dfpR =           pso.read_u8(itemAddress + 32 * index + 26)
-    itemdata.armor.evpR =           pso.read_u8(itemAddress + 32 * index + 27)
-    itemdata.armor.statBoost =      pso.read_u8(itemAddress + 32 * index + 28)
-    itemdata.armor.techBoost =      pso.read_u8(itemAddress + 32 * index + 29)
-    itemdata.armor.unknown1 =       pso.read_u8(itemAddress + 32 * index + 30)
-    itemdata.armor.unknown2 =       pso.read_u8(itemAddress + 32 * index + 31)
+    itemdata.id =                   pso.read_u32(itemAddress + 0)
+    itemdata.model =                pso.read_u16(itemAddress + 4)
+    itemdata.texture =              pso.read_u16(itemAddress + 6)
+    itemdata.teampoints =           pso.read_u32(itemAddress + 8)
+    itemdata.armor.dfp =            pso.read_u16(itemAddress + 12)
+    itemdata.armor.evp =            pso.read_u16(itemAddress + 14)
+    itemdata.armor.blockParticle =  pso.read_u8(itemAddress + 16)
+    itemdata.armor.blockEffect =    pso.read_u8(itemAddress + 17)
+    itemdata.armor._class =         pso.read_u16(itemAddress + 18)
+    itemdata.armor.level =          pso.read_u8(itemAddress + 20)
+    itemdata.armor.efr =            pso.read_i8(itemAddress + 21)
+    itemdata.armor.eth =            pso.read_i8(itemAddress + 22)
+    itemdata.armor.eic =            pso.read_i8(itemAddress + 23)
+    itemdata.armor.edk =            pso.read_i8(itemAddress + 24)
+    itemdata.armor.elt =            pso.read_i8(itemAddress + 25)
+    itemdata.armor.dfpR =           pso.read_u8(itemAddress + 26)
+    itemdata.armor.evpR =           pso.read_u8(itemAddress + 27)
+    itemdata.armor.statBoost =      pso.read_u8(itemAddress + 28)
+    itemdata.armor.techBoost =      pso.read_u8(itemAddress + 29)
+    itemdata.armor.unknown1 =       pso.read_u8(itemAddress + 30)
+    itemdata.armor.unknown2 =       pso.read_u8(itemAddress + 31)
+
+    itemdata.armor.level = itemdata.armor.level + 1
 
     return itemdata
 end
