@@ -77,7 +77,7 @@ local function _ParseItemWeapon(item)
     end
 
     item.weapon.grind = item.data[4]
-    item.weapon.special = item.data[5]
+    item.weapon.special = item.data[5] % 64
 
     item.weapon.isSRank = (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA)
     -- SRANK
