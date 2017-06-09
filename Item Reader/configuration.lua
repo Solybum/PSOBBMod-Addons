@@ -15,6 +15,11 @@ local enableFloorWindow = true
 -- Enable mags window
 local enableMagsWindow = true
 
+-- Enable save to file button
+local showButtonSaveToFile = true
+-- File to dump inventory to
+local saveFileName = "addons/saved_inventory.txt"
+
 -- Includes the item index in the items window
 local printItemIndex = true
 -- Shows an [E] besides equipped items in the inventory
@@ -38,6 +43,9 @@ return
     enableBankWindow = enableBankWindow,
     enableFloorWindow = enableFloorWindow,
     enableMagsWindow = enableMagsWindow,
+
+    showButtonSaveToFile = showButtonSaveToFile,
+    saveFileName = saveFileName,
 
     printItemIndex = printItemIndex,
     showEquippedItems = showEquippedItems,
