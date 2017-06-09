@@ -71,7 +71,7 @@ local function _ParseItemWeapon(item)
         item.weapon.wrapped = true
         item.weapon.untekked = true
     elseif item.data[5] > 0x7F then
-        item.weapon.unteked = true
+        item.weapon.untekked = true
     elseif item.data[5] > 0x3F then
         item.weapon.wrapped = true
     end
