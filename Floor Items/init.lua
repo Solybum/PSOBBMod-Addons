@@ -291,6 +291,8 @@ local function ProcessMeseta(item)
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i", item.index)
         lib_helpers.TextC(false, lib_items_cfg.mesetaName, " %s", item.name)
         lib_helpers.TextC(false, lib_items_cfg.mesetaAmount, " %i", item.meseta)
+    else
+        imgui.SameLine(0, 0)
     end
 end
 
