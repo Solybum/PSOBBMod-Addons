@@ -1,3 +1,4 @@
+local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_theme = require("solylib.theme")
 local lib_unitxt = require("solylib.unitxt")
@@ -5,15 +6,133 @@ local lib_items = require("solylib.items.items")
 local lib_items_list = require("solylib.items.items_list")
 local lib_items_cfg = require("solylib.items.items_configuration")
 local cfg = require("Item Reader.configuration")
+local optionsLoaded, options = pcall(require, "Item Reader.options")
+
+local ResolutionWidth = 0x00A46C48
+local ResolutionHeight = 0x00A46C4A
+
+local optionsFileName = "addons/Item Reader/options.lua"
+local firstPresent = true
+local ConfigurationWindow
+
+if optionsLoaded == false then
+    options = {
+        configurationEnableWindow = true,
+
+        enable = true,
+        fontScale = 1.0,
+        printItemIndex = true,
+        showEquippedItems = true,
+        shortPBNames = true,
+        ignoreMeseta = false,
+        invertItemList = false,
+
+        aioEnableWindow = true,
+        aioChanged = false,
+        aioAnchor = 1,
+        aioX = 50,
+        aioY = 50,
+        aioW = 450,
+        aioH = 350,
+        showButtonSaveToFile = true,
+        saveFileName = "addons/saved_inventory.txt",
+    }
+end
+
+local function SaveOptions(options)
+    local file = io.open(optionsFileName, "w")
+    if file ~= nil then
+        io.output(file)
+
+        io.write("return {\n")
+        io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
+        io.write(string.format("    enable = %s,\n", tostring(options.enable)))
+        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
+        io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
+        io.write(string.format("    showEquippedItems = %s,\n", tostring(options.showEquippedItems)))
+        io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
+        io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
+        io.write(string.format("    invertItemList = %s,\n", tostring(options.invertItemList)))
+
+        io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
+        io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
+        io.write(string.format("    aioAnchor = %i,\n", options.aioAnchor))
+        io.write(string.format("    aioX = %i,\n", options.aioX))
+        io.write(string.format("    aioY = %i,\n", options.aioY))
+        io.write(string.format("    aioW = %i,\n", options.aioW))
+        io.write(string.format("    aioH = %i,\n", options.aioH))
+        io.write(string.format("    showButtonSaveToFile = %s,\n",  tostring(options.showButtonSaveToFile)))
+        io.write(string.format("    saveFileName = \"%s\",\n", options.saveFileName))
+        io.write("}\n")
+
+        io.close(file)
+    end
+end
+
+local function GetPosAndSizeByAnchor(_x, _y, _w, _h, _anchor)
+    local x
+    local y
+
+    local resW = pso.read_u16(ResolutionWidth)
+    local resH = pso.read_u16(ResolutionHeight)
+
+    -- Top left
+    if _anchor == 1 then
+        x = _x
+        y = _y
+
+    -- Left
+    elseif _anchor == 2 then
+        x = _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom left
+    elseif _anchor == 3 then
+        x = _x
+        y = resH - _h + _y
+
+    -- Top
+    elseif _anchor == 4 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = _y
+
+    -- Center
+    elseif _anchor == 5 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom
+    elseif _anchor == 6 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = resH - _h + _y
+
+    -- Top right
+    elseif _anchor == 7 then
+        x = resW - _w + _x
+        y = _y
+
+    -- Right
+    elseif _anchor == 8 then
+        x = resW - _w + _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom right
+    elseif _anchor == 9 then
+        x = resW - _w + _x
+        y = resH - _h + _y
+    end
+
+    return { x, y, w, h, }
+end
 
 local function ProcessWeapon(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if cfg.showEquippedItems then
+    if options.showEquippedItems then
         if item.equipped then
             lib_helpers.TextC(false, lib_items_cfg.white, "[")
             lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
@@ -107,11 +226,11 @@ end
 local function ProcessFrame(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if cfg.showEquippedItems then
+    if options.showEquippedItems then
         if item.equipped then
             lib_helpers.TextC(false, lib_items_cfg.white, "[")
             lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
@@ -170,11 +289,11 @@ end
 local function ProcessBarrier(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if cfg.showEquippedItems then
+    if options.showEquippedItems then
         if item.equipped then
             lib_helpers.TextC(false, lib_items_cfg.white, "[")
             lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
@@ -229,11 +348,11 @@ end
 local function ProcessUnit(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if cfg.showEquippedItems then
+    if options.showEquippedItems then
         if item.equipped then
             lib_helpers.TextC(false, lib_items_cfg.white, "[")
             lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
@@ -272,11 +391,11 @@ end
 local function ProcessMag(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if cfg.showEquippedItems then
+    if options.showEquippedItems then
         if item.equipped then
             lib_helpers.TextC(false, lib_items_cfg.white, "[")
             lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
@@ -306,11 +425,11 @@ local function ProcessMag(item)
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, cfg.shortPBNames))
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, cfg.shortPBNames))
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, options.shortPBNames))
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, cfg.shortPBNames))
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, options.shortPBNames))
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
     local timerColor = lib_items_cfg.white
@@ -329,7 +448,7 @@ end
 local function ProcessTool(item)
     local result = ""
     imgui.Text("")
-    if cfg.printItemIndex then
+    if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
@@ -357,9 +476,9 @@ local function ProcessTool(item)
 end
 local function ProcessMeseta(item)
     local result = ""
-    if not cfg.ignoreMeseta then
+    if not options.ignoreMeseta then
         imgui.Text("")
-        if cfg.printItemIndex then
+        if options.printItemIndex then
             lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
@@ -391,7 +510,7 @@ local function ProcessItem(item, save)
     end
 
     if save then
-        local file = io.open(cfg.saveFileName, "a")
+        local file = io.open(options.saveFileName, "a")
         io.output(file)
         io.write(itemStr .. "\n")
         io.close(file)
@@ -419,7 +538,7 @@ local function PresentBank(save)
     end
 end
 local function PresentFloor()
-    local itemList = lib_items.GetItemList(lib_items.NoOwner, cfg.invertItemList)
+    local itemList = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
     local itemCount = table.getn(itemList)
 
     for i=1,itemCount,1 do
@@ -447,12 +566,12 @@ local function PresentAIO()
     aioStatus, aioSelection = imgui.Combo(" ", aioSelection, selectionList, table.getn(selectionList))
     imgui.PopItemWidth()
 
-    if cfg.showButtonSaveToFile then
+    if options.showButtonSaveToFile then
         imgui.SameLine(0, 20)
         if imgui.Button("Save to file") then
             save = true
             -- Write nothing to it so its cleared works for appending
-            local file = io.open(cfg.saveFileName, "w")
+            local file = io.open(options.saveFileName, "w")
             io.output(file)
             io.write("")
             io.close(file)
@@ -460,7 +579,7 @@ local function PresentAIO()
     end
 
     imgui.BeginChild("ItemList", 0)
-    imgui.SetWindowFontScale(cfg.fontSize)
+    imgui.SetWindowFontScale(options.fontScale)
     if aioSelection == 1 then
         PresentInventory(save)
     elseif aioSelection == 2 then
@@ -474,43 +593,77 @@ local function PresentAIO()
 end
 
 local function present()
-    if cfg.enable == false then
+    -- If the addon has never been used, open the config window
+    -- and disable the config window setting
+    if options.configurationEnableWindow then
+        ConfigurationWindow.open = true
+        options.configurationEnableWindow = false
+    end
+
+    ConfigurationWindow.Update()
+    if ConfigurationWindow.changed then
+        SaveOptions(options)
+    end
+
+    -- Global enable here to let the configuration window work
+    if options.enable == false then
         return
     end
 
-    if cfg.enableAIOWindow then
-        imgui.Begin("Item Reader - AIO")
-        imgui.SetWindowFontScale(cfg.fontSize)
-        PresentAIO()
-        imgui.End()
+    if options.aioEnableWindow then
+        -- If we changed the position from the options, update it here
+        if firstPresent or options.aioChangedthen then
+            options.aioChanged = false
+            local ps = GetPosAndSizeByAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
+        end
+
+        if imgui.Begin("Item Reader - AIO") then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentAIO()
+            imgui.End()
+        end
     end
-    if cfg.enableInventoryWindow then
+    if options.inventoryEnableWindow then
         imgui.Begin("Item Reader - Inventory")
-        imgui.SetWindowFontScale(cfg.fontSize)
+        imgui.SetWindowFontScale(options.fontScale)
         PresentInventory()
         imgui.End()
     end
-    if cfg.enableBankWindow then
+    if options.bankEnableWindow then
         imgui.Begin("Item Reader - Bank")
-        imgui.SetWindowFontScale(cfg.fontSize)
+        imgui.SetWindowFontScale(options.fontScale)
         PresentBank()
         imgui.End()
     end
-    if cfg.enableFloorWindow then
+    if options.floorEnableWindow then
         imgui.Begin("Item Reader - Floor")
-        imgui.SetWindowFontScale(cfg.fontSize)
+        imgui.SetWindowFontScale(options.fontScale)
         PresentFloor()
         imgui.End()
     end
-    if cfg.enableMagsWindow then
+    if options.magsEnableWindow then
         imgui.Begin("Item Reader - Mags")
-        imgui.SetWindowFontScale(cfg.fontSize)
+        imgui.SetWindowFontScale(options.fontScale)
         PresentMags()
         imgui.End()
+    end
+
+    if firstPresent then
+        firstPresent = false
     end
 end
 
 local function init()
+    ConfigurationWindow = cfg.ConfigurationWindow(options)
+
+    local function mainMenuButtonHandler()
+        ConfigurationWindow.open = not ConfigurationWindow.open
+    end
+
+    core_mainmenu.add_button("Item Reader", mainMenuButtonHandler)
+
     return
     {
         name = "Item Reader",
