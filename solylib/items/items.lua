@@ -119,10 +119,10 @@ end
 local function _ParseItemBarrier(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
-    
+
     pmtF = pmt.GetItemData(item.data)
-    item.armor.dfpMax = pmtF.dfpR
-    item.armor.evpMax = pmtF.evpR
+    item.armor.dfpMax = pmtF.armor.dfpR
+    item.armor.evpMax = pmtF.armor.evpR
     return item
 end
 
@@ -197,7 +197,7 @@ local function _ParseItemMeseta(item)
     return item
 end
 
-local function ReadItemFromItemPool(itemAddr)
+local function ReadItemData(itemAddr)
     local item = {}
     item.address = itemAddr
 
@@ -342,7 +342,7 @@ local function GetItemList(playerIndex, inverted)
             local owner = pso.read_i8(itemAddr + _ItemOwner)
             if owner == playerIndex then
                 itemIndex = itemIndex + 1
-                local item = ReadItemFromItemPool(itemAddr)
+                local item = ReadItemData(itemAddr)
                 item.index = itemIndex
                 table.insert(itemTable, item)
             end
@@ -352,9 +352,45 @@ local function GetItemList(playerIndex, inverted)
     return itemTable
 end
 
+local function GetInventory(playerIndex)
+    if playerIndex == Me then
+        playerIndex = pso.read_u32(_PlayerIndex)
+    end
+
+    local listItem = 0
+
+    local playerAddr = pso.read_u32(_PlayerArray + 4 * playerIndex)
+    if playerAddr ~= 0 then
+        local listPtr = pso.read_u32(playerAddr + 0xDF4) 
+        if listPtr ~= 0 then
+            local listAddr = pso.read_u32(listPtr + 0x1C4)
+            if listAddr ~= 0 then
+                listItem = pso.read_u32(listAddr + 0x18)
+            end
+        end
+    end
+
+    local itemTable = {}
+    local itemIndex = 0
+    while listItem ~= 0 do
+        local itemAddr = pso.read_u32(listItem + 0x1C)
+
+        if itemAddr ~= 0 then
+            itemIndex = itemIndex + 1
+            local item = ReadItemData(itemAddr)
+            item.index = itemIndex
+            table.insert(itemTable, item)
+        end
+
+        listItem = pso.read_u32(listItem + 0x10)
+    end
+    return itemTable
+end
+
 return
 {
     NoOwner = NoOwner,
     Me = Me,
-    GetItemList = GetItemList
+    GetItemList = GetItemList,
+    GetInventory = GetInventory,
 }
