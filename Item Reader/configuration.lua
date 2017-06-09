@@ -53,7 +53,7 @@ local function ConfigurationWindow(configuration)
             imgui.TreePop()
         end
 
-        if imgui.TreeNodeEx("AIO", "DefaultOpen") then
+        if imgui.TreeNodeEx("AIO") then
             if imgui.Checkbox("Enable", _configuration.aioEnableWindow) then
                 _configuration.aioEnableWindow = not _configuration.aioEnableWindow
                 this.changed = true
@@ -99,6 +99,112 @@ local function ConfigurationWindow(configuration)
             imgui.PopItemWidth()
             if success then
                 _configuration.aioChanged = true
+                this.changed = true
+            end
+
+            imgui.TreePop()
+        end
+
+        if imgui.TreeNodeEx("Floor") then
+            if imgui.Checkbox("Enable", _configuration.floorEnableWindow) then
+                print(_configuration.floorEnableWindow)
+                _configuration.floorEnableWindow = not _configuration.floorEnableWindow
+                this.changed = true
+            end
+
+            imgui.Text("Position and Size")
+            imgui.PushItemWidth(150)
+            success, _configuration.floorAnchor = imgui.Combo("Anchor", _configuration.floorAnchor, anchorList, table.getn(anchorList))
+            imgui.PopItemWidth()
+            if success then
+                _configuration.floorChanged = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.floorX = imgui.InputInt("X", _configuration.floorX)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.floorChanged = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 38)
+            imgui.PushItemWidth(100)
+            success, _configuration.floorY = imgui.InputInt("Y", _configuration.floorY)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.floorChanged = true
+                this.changed = true
+            end
+            
+            imgui.PushItemWidth(100)
+            success, _configuration.floorW = imgui.InputInt("Width", _configuration.floorW)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.floorChanged = true
+                this.changed = true
+            end
+            
+            imgui.SameLine(0, 10)
+            imgui.PushItemWidth(100)
+            success, _configuration.floorH = imgui.InputInt("Height", _configuration.floorH)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.floorChanged = true
+                this.changed = true
+            end
+
+            imgui.TreePop()
+        end
+
+        if imgui.TreeNodeEx("Mags") then
+            if imgui.Checkbox("Enable", _configuration.magsEnableWindow) then
+                print(_configuration.magsEnableWindow)
+                _configuration.magsEnableWindow = not _configuration.magsEnableWindow
+                this.changed = true
+            end
+
+            imgui.Text("Position and Size")
+            imgui.PushItemWidth(150)
+            success, _configuration.magsAnchor = imgui.Combo("Anchor", _configuration.magsAnchor, anchorList, table.getn(anchorList))
+            imgui.PopItemWidth()
+            if success then
+                _configuration.magsChanged = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.magsX = imgui.InputInt("X", _configuration.magsX)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.magsChanged = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 38)
+            imgui.PushItemWidth(100)
+            success, _configuration.magsY = imgui.InputInt("Y", _configuration.magsY)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.magsChanged = true
+                this.changed = true
+            end
+            
+            imgui.PushItemWidth(100)
+            success, _configuration.magsW = imgui.InputInt("Width", _configuration.magsW)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.magsChanged = true
+                this.changed = true
+            end
+            
+            imgui.SameLine(0, 10)
+            imgui.PushItemWidth(100)
+            success, _configuration.magsH = imgui.InputInt("Height", _configuration.magsH)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.magsChanged = true
                 this.changed = true
             end
 

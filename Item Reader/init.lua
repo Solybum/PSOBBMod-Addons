@@ -15,8 +15,45 @@ local optionsFileName = "addons/Item Reader/options.lua"
 local firstPresent = true
 local ConfigurationWindow
 
-if optionsLoaded == false then
-    options = {
+if optionsLoaded then
+    -- If options loaded, make sure we have all those we need
+    options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
+    options.enable = options.enable == nil and true or options.enable
+    options.fontScale = options.fontScale or 1.0
+    options.printItemIndex = options.printItemIndex == nil and true or options.printItemIndex
+    options.showEquippedItems = options.showEquippedItems == nil and true or options.showEquippedItems
+    options.shortPBNames = options.shortPBNames == nil and true or options.shortPBNames
+    options.ignoreMeseta = options.ignoreMeseta == nil and true or options.ignoreMeseta
+    options.invertItemList = options.invertItemList == nil and true or options.invertItemList
+
+    options.aioEnableWindow = options.aioEnableWindow == nil and true or options.aioEnableWindow
+    options.aioChanged = options.aioChanged == nil and true or options.aioChanged
+    options.aioAnchor = options.aioAnchor or 1
+    options.aioX = options.aioX or 50
+    options.aioY = options.aioY or 50
+    options.aioW = options.aioW or 450
+    options.aioH = options.aioH or 350
+    options.showButtonSaveToFile = options.showButtonSaveToFile == nil and true or options.showButtonSaveToFile
+    options.saveFileName = options.saveFileName or "addons/saved_inventory.txt"
+
+    options.floorEnableWindow = options.floorEnableWindow == nil and true or options.floorEnableWindow
+    options.floorChanged = options.floorChanged == nil and true or options.floorChanged
+    options.floorAnchor = options.floorAnchor or 1
+    options.floorX = options.floorX or 50
+    options.floorY = options.floorY or 50
+    options.floorW = options.floorW or 450
+    options.floorH = options.floorH or 350
+
+    options.magsEnableWindow = options.magsEnableWindow == nil and true or options.magsEnableWindow
+    options.magsChanged = options.magsChanged == nil and true or options.magsChanged
+    options.magsAnchor = options.magsAnchor or 1
+    options.magsX = options.magsX or 50
+    options.magsY = options.magsY or 50
+    options.magsW = options.magsW or 450
+    options.magsH = options.magsH or 350
+else
+    options = 
+    {
         configurationEnableWindow = true,
 
         enable = true,
@@ -36,6 +73,22 @@ if optionsLoaded == false then
         aioH = 350,
         showButtonSaveToFile = true,
         saveFileName = "addons/saved_inventory.txt",
+
+        floorEnableWindow = true,
+        floorChanged = false,
+        floorAnchor = 1,
+        floorX = 50,
+        floorY = 50,
+        floorW = 450,
+        floorH = 350,
+
+        magsEnableWindow = true,
+        magsChanged = false,
+        magsAnchor = 1,
+        magsX = 50,
+        magsY = 50,
+        magsW = 450,
+        magsH = 350,
     }
 end
 
@@ -63,6 +116,23 @@ local function SaveOptions(options)
         io.write(string.format("    aioH = %i,\n", options.aioH))
         io.write(string.format("    showButtonSaveToFile = %s,\n",  tostring(options.showButtonSaveToFile)))
         io.write(string.format("    saveFileName = \"%s\",\n", options.saveFileName))
+
+        io.write(string.format("    floorEnableWindow = %s,\n", tostring(options.floorEnableWindow)))
+        io.write(string.format("    floorChanged = %s,\n", tostring(options.floorChanged)))
+        io.write(string.format("    floorAnchor = %i,\n", options.floorAnchor))
+        io.write(string.format("    floorX = %i,\n", options.floorX))
+        io.write(string.format("    floorY = %i,\n", options.floorY))
+        io.write(string.format("    floorW = %i,\n", options.floorW))
+        io.write(string.format("    floorH = %i,\n", options.floorH))
+
+        io.write(string.format("    magsEnableWindow = %s,\n", tostring(options.magsEnableWindow)))
+        io.write(string.format("    magsChanged = %s,\n", tostring(options.magsChanged)))
+        io.write(string.format("    magsAnchor = %i,\n", options.magsAnchor))
+        io.write(string.format("    magsX = %i,\n", options.magsX))
+        io.write(string.format("    magsY = %i,\n", options.magsY))
+        io.write(string.format("    magsW = %i,\n", options.magsW))
+        io.write(string.format("    magsH = %i,\n", options.magsH))
+
         io.write("}\n")
 
         io.close(file)
@@ -602,6 +672,7 @@ local function present()
 
     ConfigurationWindow.Update()
     if ConfigurationWindow.changed then
+        print("options changed")
         SaveOptions(options)
     end
 
@@ -611,8 +682,7 @@ local function present()
     end
 
     if options.aioEnableWindow then
-        -- If we changed the position from the options, update it here
-        if firstPresent or options.aioChangedthen then
+        if firstPresent or options.aioChanged then
             options.aioChanged = false
             local ps = GetPosAndSizeByAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
@@ -625,29 +695,33 @@ local function present()
             imgui.End()
         end
     end
-    if options.inventoryEnableWindow then
-        imgui.Begin("Item Reader - Inventory")
-        imgui.SetWindowFontScale(options.fontScale)
-        PresentInventory()
-        imgui.End()
-    end
-    if options.bankEnableWindow then
-        imgui.Begin("Item Reader - Bank")
-        imgui.SetWindowFontScale(options.fontScale)
-        PresentBank()
-        imgui.End()
-    end
     if options.floorEnableWindow then
-        imgui.Begin("Item Reader - Floor")
-        imgui.SetWindowFontScale(options.fontScale)
-        PresentFloor()
-        imgui.End()
+        if firstPresent or options.floorChanged then
+            options.floorChanged = false
+            local ps = GetPosAndSizeByAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
+        end
+
+        if imgui.Begin("Item Reader - Floor") then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentFloor()
+            imgui.End()
+        end
     end
     if options.magsEnableWindow then
-        imgui.Begin("Item Reader - Mags")
-        imgui.SetWindowFontScale(options.fontScale)
-        PresentMags()
-        imgui.End()
+        if firstPresent or options.magsChanged then
+            options.magsChanged = false
+            local ps = GetPosAndSizeByAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
+        end
+
+        if imgui.Begin("Item Reader - Mags") then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentMags()
+            imgui.End()
+        end
     end
 
     if firstPresent then
