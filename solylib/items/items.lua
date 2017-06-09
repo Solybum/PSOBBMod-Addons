@@ -4,6 +4,9 @@ local unitxt = require("solylib.unitxt")
 local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820
 
+local _MesetaAddress =  0x00AA70F0
+local _BankPointer =    0x00A95DE0 + 0x18
+
 local _ItemOwner = 0xE4
 local _ItemCode = 0xF2
 local _ItemEquipped = 0x190
@@ -104,7 +107,6 @@ local function _ParseItemWeapon(item)
     end
     return item
 end
-
 local function _ParseItemFrame(item)
     item.armor.slots = item.data[6]
     item.armor.dfp = item.data[7]
@@ -115,7 +117,6 @@ local function _ParseItemFrame(item)
     item.armor.evpMax = pmtF.armor.evpR
     return item
 end
-
 local function _ParseItemBarrier(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
@@ -125,7 +126,6 @@ local function _ParseItemBarrier(item)
     item.armor.evpMax = pmtF.armor.evpR
     return item
 end
-
 local function _ParseItemUnit(item)
     local mod = item.data[7]
     if mod > 127 then
@@ -147,7 +147,6 @@ local function _ParseItemUnit(item)
 
     return item
 end
-
 local function _ParseItemMag(item)
     item.mag.color = item.data[16]
 
@@ -174,19 +173,16 @@ local function _ParseItemMag(item)
 
     return item
 end
-
 local function _ParseItemTool(item)
     item.tool.count = item.data[6]
     return item
 end
-
 local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
     item.name = unitxt.GetTechniqueName(item.data[5])
     item.tool.level = item.data[3] + 1
     return item
 end
-
 local function _ParseItemMeseta(item)
     item.name = "Meseta"
     item.meseta = 
@@ -307,6 +303,92 @@ local function ReadItemData(itemAddr)
 
     return item
 end
+local function ReadBankItemData(itemAddr)
+    local item = {}
+    item.address = itemAddr
+
+    item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
+
+    item.data[1] = pso.read_u8(itemAddr + 0)
+    item.data[2] = pso.read_u8(itemAddr + 1)
+    item.data[3] = pso.read_u8(itemAddr + 2)
+    item.data[4] = pso.read_u8(itemAddr + 3)
+    item.data[5] = pso.read_u8(itemAddr + 4)
+    item.data[6] = pso.read_u8(itemAddr + 5)
+    item.data[7] = pso.read_u8(itemAddr + 6)
+    item.data[8] = pso.read_u8(itemAddr + 7)
+    item.data[9] = pso.read_u8(itemAddr + 8)
+    item.data[10] = pso.read_u8(itemAddr + 9)
+    item.data[11] = pso.read_u8(itemAddr + 10)
+    item.data[12] = pso.read_u8(itemAddr + 11)
+    item.data[13] = pso.read_u8(itemAddr + 16)
+    item.data[14] = pso.read_u8(itemAddr + 17)
+    item.data[15] = pso.read_u8(itemAddr + 18)
+    item.data[16] = pso.read_u8(itemAddr + 19)
+
+    if item.data[1] == 3 then
+        item.data[6] = pso.read_u8(itemAddr + 20)
+    end
+
+    item.hex = bit.lshift(item.data[1], 16) + bit.lshift(item.data[2],  8) + item.data[3]
+    item.kills = 0
+
+    item.equipped = false
+
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+
+    -- WEAPON
+    if item.data[1] == 0 then
+        item.weapon = {}
+
+        if item.data[2] == 0x33 or item.data[2] == 0xAB then
+            item.kills = pso.read_u16(itemAddr + _ItemKills)
+        end
+
+        item = _ParseItemWeapon(item)
+    -- ARMOR
+    elseif item.data[1] == 1 then
+        -- FRAME
+        if item.data[2] == 1 then
+            item.armor = {}
+
+            item = _ParseItemFrame(item)
+        -- BARRIER
+        elseif item.data[2] == 2 then
+            item.armor = {}
+
+            item = _ParseItemBarrier(item)
+        -- UNIT
+        elseif item.data[2] == 3 then
+            item.unit = {}
+
+            if item.data[3] == 0x4D or item.data[3] == 0x4F then
+                item.kills = pso.read_u16(itemAddr + _ItemKills)
+            end
+
+            item = _ParseItemUnit(item)
+        end
+    -- MAG
+    elseif item.data[1] == 2 then
+        item.mag = {}
+
+        item.mag.timer = 210
+        item = _ParseItemMag(item)
+    -- TOOL
+    elseif item.data[1] == 3 then
+        item.tool = {}
+        if item.data[2] == 2 then
+            item = _ParseItemTechnique(item)
+        else
+            item = _ParseItemTool(item)
+        end
+    -- MESETA
+    elseif item.data[1] == 4 then
+        item = _ParseItemMeseta(item)
+    end
+
+    return item
+end
 
 -- Reads items from the item pool
 -- This function reads items from the owner (index) only
@@ -352,6 +434,8 @@ local function GetItemList(playerIndex, inverted)
     return itemTable
 end
 
+-- Reads a player's inventory (meseta and items)
+-- If owner(index) is -2, the function will automatically obtain the client's playerIndex
 local function GetInventory(playerIndex)
     if playerIndex == Me then
         playerIndex = pso.read_u32(_PlayerIndex)
@@ -370,7 +454,10 @@ local function GetInventory(playerIndex)
         end
     end
 
-    local itemTable = {}
+    local inventory = {}
+    inventory.meseta = pso.read_u32(_MesetaAddress)
+
+    inventory.items = {}
     local itemIndex = 0
     while listItem ~= 0 do
         local itemAddr = pso.read_u32(listItem + 0x1C)
@@ -379,12 +466,37 @@ local function GetInventory(playerIndex)
             itemIndex = itemIndex + 1
             local item = ReadItemData(itemAddr)
             item.index = itemIndex
-            table.insert(itemTable, item)
+            table.insert(inventory.items, item)
         end
 
         listItem = pso.read_u32(listItem + 0x10)
     end
-    return itemTable
+    return inventory
+end
+
+-- Reads the client's bank (meseta and items)
+local function GetBank()
+    local bank = {}
+    bank.meseta = 0
+    bank.items = {}
+
+    local bankAddress = pso.read_i32(_BankPointer)
+    if bankAddress ~= 0 then
+        bankAddress = bankAddress + 0x021C
+
+        local count = pso.read_u8(bankAddress)
+        bank.meseta = pso.read_i32(bankAddress + 4)
+
+        local itemIndex = 0
+        for i=1,count,1 do
+            itemIndex = itemIndex + 1
+            local item = ReadBankItemData(bankAddress + 8 + 24 * i - 24)
+            item.index = itemIndex
+            table.insert(bank.items, item)
+        end
+    end
+
+    return bank
 end
 
 return
@@ -393,4 +505,5 @@ return
     Me = Me,
     GetItemList = GetItemList,
     GetInventory = GetInventory,
+    GetBank = GetBank,
 }
