@@ -8,7 +8,7 @@ local cfg = require("Item Reader.configuration")
 
 local function ProcessWeapon(item)
     local result = ""
-
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -106,7 +106,7 @@ local function ProcessWeapon(item)
 end
 local function ProcessFrame(item)
     local result = ""
-
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -169,7 +169,7 @@ local function ProcessFrame(item)
 end
 local function ProcessBarrier(item)
     local result = ""
-
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -228,7 +228,7 @@ local function ProcessBarrier(item)
 end
 local function ProcessUnit(item)
     local result = ""
-
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -271,7 +271,7 @@ local function ProcessUnit(item)
 end
 local function ProcessMag(item)
     local result = ""
-
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -328,6 +328,7 @@ local function ProcessMag(item)
 end
 local function ProcessTool(item)
     local result = ""
+    imgui.Text("")
     if cfg.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -357,6 +358,7 @@ end
 local function ProcessMeseta(item)
     local result = ""
     if not cfg.ignoreMeseta then
+        imgui.Text("")
         if cfg.printItemIndex then
             lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
@@ -368,7 +370,6 @@ local function ProcessMeseta(item)
 end
 local function ProcessItem(item, save)
     save = save or false
-    imgui.Text("")
 
     local itemStr = ""
     if item.data[1] == 0 then
