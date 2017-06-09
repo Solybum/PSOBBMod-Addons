@@ -672,7 +672,7 @@ local function present()
 
     ConfigurationWindow.Update()
     if ConfigurationWindow.changed then
-        print("options changed")
+        ConfigurationWindow.changed = false
         SaveOptions(options)
     end
 
