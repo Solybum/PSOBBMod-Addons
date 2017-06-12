@@ -752,11 +752,9 @@ local function present()
     lib_theme.Pop()
 
     if status == false then
-        print(status)
         print(err)
         error("Stopping addon, InternalPresent failure")
     end
-    
 
     if firstPresent then
         firstPresent = false
