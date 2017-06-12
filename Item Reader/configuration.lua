@@ -24,6 +24,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Use custom theme", _configuration.useCustomTheme) then
+                _configuration.useCustomTheme = not _configuration.useCustomTheme
+                this.changed = true
+            end
+
             success, _configuration.fontScale = imgui.InputFloat("Font Scale", _configuration.fontScale)
             if success then
                 this.changed = true

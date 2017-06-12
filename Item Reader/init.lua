@@ -19,6 +19,7 @@ if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
     options.enable = options.enable == nil and true or options.enable
+    options.useCustomTheme = options.useCustomTheme == nil and true or options.useCustomTheme
     options.fontScale = options.fontScale or 1.0
     options.printItemIndex = options.printItemIndex == nil and true or options.printItemIndex
     options.showEquippedItems = options.showEquippedItems == nil and true or options.showEquippedItems
@@ -63,6 +64,7 @@ else
         configurationEnableWindow = true,
 
         enable = true,
+        useCustomTheme = false,
         fontScale = 1.0,
         printItemIndex = true,
         showEquippedItems = true,
@@ -112,13 +114,14 @@ local function SaveOptions(options)
         io.write("return {\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
+        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.enable)))
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
         io.write(string.format("    showEquippedItems = %s,\n", tostring(options.showEquippedItems)))
         io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
         io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
         io.write(string.format("    invertItemList = %s,\n", tostring(options.invertItemList)))
-
+        io.write("\n")
         io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
         io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
         io.write(string.format("    aioAnchor = %i,\n", options.aioAnchor))
@@ -130,7 +133,7 @@ local function SaveOptions(options)
         io.write(string.format("    aioNoResize = \"%s\",\n", options.aioNoResize))
         io.write(string.format("    showButtonSaveToFile = %s,\n",  tostring(options.showButtonSaveToFile)))
         io.write(string.format("    saveFileName = \"%s\",\n", options.saveFileName))
-
+        io.write("\n")
         io.write(string.format("    floorEnableWindow = %s,\n", tostring(options.floorEnableWindow)))
         io.write(string.format("    floorChanged = %s,\n", tostring(options.floorChanged)))
         io.write(string.format("    floorAnchor = %i,\n", options.floorAnchor))
@@ -140,7 +143,7 @@ local function SaveOptions(options)
         io.write(string.format("    floorH = %i,\n", options.floorH))
         io.write(string.format("    floorNoTitleBar = \"%s\",\n", options.floorNoTitleBar))
         io.write(string.format("    floorNoResize = \"%s\",\n", options.floorNoResize))
-
+        io.write("\n")
         io.write(string.format("    magsEnableWindow = %s,\n", tostring(options.magsEnableWindow)))
         io.write(string.format("    magsChanged = %s,\n", tostring(options.magsChanged)))
         io.write(string.format("    magsAnchor = %i,\n", options.magsAnchor))
@@ -150,7 +153,6 @@ local function SaveOptions(options)
         io.write(string.format("    magsH = %i,\n", options.magsH))
         io.write(string.format("    magsNoTitleBar = \"%s\",\n", options.magsNoTitleBar))
         io.write(string.format("    magsNoResize = \"%s\",\n", options.magsNoResize))
-
         io.write("}\n")
 
         io.close(file)
@@ -680,9 +682,30 @@ local function PresentAIO()
     imgui.EndChild()
 end
 
--- Using a second level present to not throw instantly
--- If there is an error, the push pop of themes won't crash
-local function InternalPresent()
+local function present()
+    -- If the addon has never been used, open the config window
+    -- and disable the config window setting
+    if options.configurationEnableWindow then
+        ConfigurationWindow.open = true
+        options.configurationEnableWindow = false
+    end
+
+    ConfigurationWindow.Update()
+    if ConfigurationWindow.changed then
+        ConfigurationWindow.changed = false
+        SaveOptions(options)
+    end
+
+    -- Global enable here to let the configuration window work
+    if options.enable == false then
+        return
+    end
+
+    -- Push custom theme, only if enabled
+    if options.useCustomTheme then
+        lib_theme.Push()
+    end
+
     if options.aioEnableWindow then
         if firstPresent or options.aioChanged then
             options.aioChanged = false
@@ -725,35 +748,10 @@ local function InternalPresent()
             imgui.End()
         end
     end
-end
 
-local function present()
-    -- If the addon has never been used, open the config window
-    -- and disable the config window setting
-    if options.configurationEnableWindow then
-        ConfigurationWindow.open = true
-        options.configurationEnableWindow = false
-    end
-
-    ConfigurationWindow.Update()
-    if ConfigurationWindow.changed then
-        ConfigurationWindow.changed = false
-        SaveOptions(options)
-    end
-
-    -- Global enable here to let the configuration window work
-    if options.enable == false then
-        return
-    end
-
-    -- Main thing
-    lib_theme.Push()
-    local status, err = xpcall(InternalPresent, debug.traceback)
-    lib_theme.Pop()
-
-    if status == false then
-        print(err)
-        error("Stopping addon, InternalPresent failure")
+    -- Pop custom theme, only if enabled
+    if options.useCustomTheme then
+        lib_theme.Pop()
     end
 
     if firstPresent then
