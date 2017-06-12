@@ -59,6 +59,23 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("No title bar", _configuration.aioNoTitleBar == "NoTitleBar") then
+                if _configuration.aioNoTitleBar == "NoTitleBar" then
+                    _configuration.aioNoTitleBar = ""
+                else
+                    _configuration.aioNoTitleBar = "NoTitleBar"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No resize", _configuration.aioNoResize == "NoResize") then
+                if _configuration.aioNoResize == "NoResize" then
+                    _configuration.aioNoResize = ""
+                else
+                    _configuration.aioNoResize = "NoResize"
+                end
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(150)
             success, _configuration.aioAnchor = imgui.Combo("Anchor", _configuration.aioAnchor, anchorList, table.getn(anchorList))
@@ -107,8 +124,24 @@ local function ConfigurationWindow(configuration)
 
         if imgui.TreeNodeEx("Floor") then
             if imgui.Checkbox("Enable", _configuration.floorEnableWindow) then
-                print(_configuration.floorEnableWindow)
                 _configuration.floorEnableWindow = not _configuration.floorEnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("No title bar", _configuration.floorNoTitleBar == "NoTitleBar") then
+                if _configuration.floorNoTitleBar == "NoTitleBar" then
+                    _configuration.floorNoTitleBar = ""
+                else
+                    _configuration.floorNoTitleBar = "NoTitleBar"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No resize", _configuration.floorNoResize == "NoResize") then
+                if _configuration.floorNoResize == "NoResize" then
+                    _configuration.floorNoResize = ""
+                else
+                    _configuration.floorNoResize = "NoResize"
+                end
                 this.changed = true
             end
 
@@ -160,8 +193,24 @@ local function ConfigurationWindow(configuration)
 
         if imgui.TreeNodeEx("Mags") then
             if imgui.Checkbox("Enable", _configuration.magsEnableWindow) then
-                print(_configuration.magsEnableWindow)
                 _configuration.magsEnableWindow = not _configuration.magsEnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("No title bar", _configuration.magsNoTitleBar == "NoTitleBar") then
+                if _configuration.magsNoTitleBar == "NoTitleBar" then
+                    _configuration.magsNoTitleBar = ""
+                else
+                    _configuration.magsNoTitleBar = "NoTitleBar"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No resize", _configuration.magsNoResize == "NoResize") then
+                if _configuration.magsNoResize == "NoResize" then
+                    _configuration.magsNoResize = ""
+                else
+                    _configuration.magsNoResize = "NoResize"
+                end
                 this.changed = true
             end
 

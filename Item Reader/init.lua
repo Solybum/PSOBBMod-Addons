@@ -33,6 +33,8 @@ if optionsLoaded then
     options.aioY = options.aioY or 50
     options.aioW = options.aioW or 450
     options.aioH = options.aioH or 350
+    options.aioNoTitleBar = options.aioNoTitleBar or ""
+    options.aioNoResize = options.aioNoResize or ""
     options.showButtonSaveToFile = options.showButtonSaveToFile == nil and true or options.showButtonSaveToFile
     options.saveFileName = options.saveFileName or "addons/saved_inventory.txt"
 
@@ -43,6 +45,8 @@ if optionsLoaded then
     options.floorY = options.floorY or 50
     options.floorW = options.floorW or 450
     options.floorH = options.floorH or 350
+    options.floorNoTitleBar = options.floorNoTitleBar or ""
+    options.floorNoResize = options.floorNoResize or ""
 
     options.magsEnableWindow = options.magsEnableWindow == nil and true or options.magsEnableWindow
     options.magsChanged = options.magsChanged == nil and true or options.magsChanged
@@ -51,6 +55,8 @@ if optionsLoaded then
     options.magsY = options.magsY or 50
     options.magsW = options.magsW or 450
     options.magsH = options.magsH or 350
+    options.magsNoTitleBar = options.magsNoTitleBar or ""
+    options.magsNoResize = options.magsNoResize or ""
 else
     options = 
     {
@@ -71,6 +77,8 @@ else
         aioY = 50,
         aioW = 450,
         aioH = 350,
+        aioNoTitleBar = "",
+        aioNoResize = "",
         showButtonSaveToFile = true,
         saveFileName = "addons/saved_inventory.txt",
 
@@ -81,6 +89,8 @@ else
         floorY = 50,
         floorW = 450,
         floorH = 350,
+        floorNoTitleBar = "",
+        floorNoResize = "",
 
         magsEnableWindow = true,
         magsChanged = false,
@@ -89,6 +99,8 @@ else
         magsY = 50,
         magsW = 450,
         magsH = 350,
+        magsNoTitleBar = "",
+        magsNoResize = "",
     }
 end
 
@@ -114,6 +126,8 @@ local function SaveOptions(options)
         io.write(string.format("    aioY = %i,\n", options.aioY))
         io.write(string.format("    aioW = %i,\n", options.aioW))
         io.write(string.format("    aioH = %i,\n", options.aioH))
+        io.write(string.format("    aioNoTitleBar = \"%s\",\n", options.aioNoTitleBar))
+        io.write(string.format("    aioNoResize = \"%s\",\n", options.aioNoResize))
         io.write(string.format("    showButtonSaveToFile = %s,\n",  tostring(options.showButtonSaveToFile)))
         io.write(string.format("    saveFileName = \"%s\",\n", options.saveFileName))
 
@@ -124,6 +138,8 @@ local function SaveOptions(options)
         io.write(string.format("    floorY = %i,\n", options.floorY))
         io.write(string.format("    floorW = %i,\n", options.floorW))
         io.write(string.format("    floorH = %i,\n", options.floorH))
+        io.write(string.format("    floorNoTitleBar = \"%s\",\n", options.floorNoTitleBar))
+        io.write(string.format("    floorNoResize = \"%s\",\n", options.floorNoResize))
 
         io.write(string.format("    magsEnableWindow = %s,\n", tostring(options.magsEnableWindow)))
         io.write(string.format("    magsChanged = %s,\n", tostring(options.magsChanged)))
@@ -132,6 +148,8 @@ local function SaveOptions(options)
         io.write(string.format("    magsY = %i,\n", options.magsY))
         io.write(string.format("    magsW = %i,\n", options.magsW))
         io.write(string.format("    magsH = %i,\n", options.magsH))
+        io.write(string.format("    magsNoTitleBar = \"%s\",\n", options.magsNoTitleBar))
+        io.write(string.format("    magsNoResize = \"%s\",\n", options.magsNoResize))
 
         io.write("}\n")
 
@@ -689,7 +707,7 @@ local function present()
             imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
         end
 
-        if imgui.Begin("Item Reader - AIO") then
+        if imgui.Begin("Item Reader - AIO", nil, { options.aioNoTitleBar, options.aioNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
             imgui.End()
@@ -703,7 +721,7 @@ local function present()
             imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
         end
 
-        if imgui.Begin("Item Reader - Floor") then
+        if imgui.Begin("Item Reader - Floor", nil, { options.floorNoTitleBar, options.floorNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
             imgui.End()
@@ -717,7 +735,7 @@ local function present()
             imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
         end
 
-        if imgui.Begin("Item Reader - Mags") then
+        if imgui.Begin("Item Reader - Mags", nil, { options.magsNoTitleBar, options.magsNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
             imgui.End()
