@@ -680,25 +680,9 @@ local function PresentAIO()
     imgui.EndChild()
 end
 
-local function present()
-    -- If the addon has never been used, open the config window
-    -- and disable the config window setting
-    if options.configurationEnableWindow then
-        ConfigurationWindow.open = true
-        options.configurationEnableWindow = false
-    end
-
-    ConfigurationWindow.Update()
-    if ConfigurationWindow.changed then
-        ConfigurationWindow.changed = false
-        SaveOptions(options)
-    end
-
-    -- Global enable here to let the configuration window work
-    if options.enable == false then
-        return
-    end
-
+-- Using a second level present to not throw instantly
+-- If there is an error, the push pop of themes won't crash
+local function InternalPresent()
     if options.aioEnableWindow then
         if firstPresent or options.aioChanged then
             options.aioChanged = false
@@ -741,6 +725,38 @@ local function present()
             imgui.End()
         end
     end
+end
+
+local function present()
+    -- If the addon has never been used, open the config window
+    -- and disable the config window setting
+    if options.configurationEnableWindow then
+        ConfigurationWindow.open = true
+        options.configurationEnableWindow = false
+    end
+
+    ConfigurationWindow.Update()
+    if ConfigurationWindow.changed then
+        ConfigurationWindow.changed = false
+        SaveOptions(options)
+    end
+
+    -- Global enable here to let the configuration window work
+    if options.enable == false then
+        return
+    end
+
+    -- Main thing
+    lib_theme.Push()
+    local status, err = xpcall(InternalPresent, debug.traceback)
+    lib_theme.Pop()
+
+    if status == false then
+        print(status)
+        print(err)
+        error("Stopping addon, InternalPresent failure")
+    end
+    
 
     if firstPresent then
         firstPresent = false
