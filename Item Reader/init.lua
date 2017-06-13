@@ -717,8 +717,8 @@ local function present()
         if imgui.Begin("Item Reader - AIO", nil, { options.aioNoTitleBar, options.aioNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
-            imgui.End()
         end
+        imgui.End()
     end
     if options.floorEnableWindow then
         if firstPresent or options.floorChanged then
@@ -731,8 +731,8 @@ local function present()
         if imgui.Begin("Item Reader - Floor", nil, { options.floorNoTitleBar, options.floorNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
-            imgui.End()
         end
+        imgui.End()
     end
     if options.magsEnableWindow then
         if firstPresent or options.magsChanged then
@@ -745,8 +745,8 @@ local function present()
         if imgui.Begin("Item Reader - Mags", nil, { options.magsNoTitleBar, options.magsNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
-            imgui.End()
         end
+        imgui.End()
     end
 
     -- Pop custom theme, only if enabled
