@@ -1,6 +1,3 @@
-local function present()
-end
-
 local function init()
     return
     {
@@ -8,7 +5,7 @@ local function init()
         version = "1.0.1",
         author = "Solybum",
         description = "Libraries for the addons",
-        present = present,
+        present = nil,
     }
 end
 
