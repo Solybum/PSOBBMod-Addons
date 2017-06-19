@@ -1,7 +1,73 @@
-local helpers = require("solylib.helpers")
-local unitxt = require("solylib.Unitxt")
-local cfgMonsters = require("Monster HP.monsters")
+local core_mainmenu = require("core_mainmenu")
+local lib_helpers = require("solylib.helpers")
+local lib_theme = require("solylib.theme")
+local lib_unitxt = require("solylib.unitxt")
 local cfg = require("Monster HP.configuration")
+-- TODO move to options
+local cfgMonsters = require("Monster HP.monsters")
+local optionsLoaded, options = pcall(require, "Monster HP.options")
+
+local optionsFileName = "addons/Monster HP/options.lua"
+local firstPresent = true
+local ConfigurationWindow
+
+if optionsLoaded then
+    -- If options loaded, make sure we have all those we need
+    options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
+    options.enable = options.enable == nil and true or options.enable
+    options.useCustomTheme = options.useCustomTheme == nil and true or options.useCustomTheme
+    options.fontScale = options.fontScale or 1.0
+    options.invertMonsterList = options.invertMonsterList == nil and true or options.invertMonsterList
+    options.showCurrentRoomOnly = options.showCurrentRoomOnly == nil and true or options.showCurrentRoomOnly
+
+    options.mhpEnableWindow = options.mhpEnableWindow == nil and true or options.mhpEnableWindow
+    options.mhpChanged = options.mhpChanged == nil and true or options.mhpChanged
+    options.mhpAnchor = options.mhpAnchor or 1
+    options.mhpX = options.mhpX or 50
+    options.mhpY = options.mhpY or 50
+    options.mhpW = options.mhpW or 450
+    options.mhpH = options.mhpH or 350
+    options.mhpNoTitleBar = options.mhpNoTitleBar or ""
+    options.mhpNoResize = options.mhpNoResize or ""
+else
+    options = 
+    {
+        configurationEnableWindow = true,
+        enable = true,
+        useCustomTheme = false,
+        fontScale = 1.0,
+        invertMonsterList = true,
+        showCurrentRoomOnly = true,
+
+        mhpEnableWindow = true,
+        mhpChanged = false,
+        mhpAnchor = 1,
+        mhpX = 50,
+        mhpY = 50,
+        mhpW = 450,
+        mhpH = 350,
+        mhpNoTitleBar = "",
+        mhpNoResize = "",
+    }
+end
+
+local function SaveOptions(options)
+    local file = io.open(optionsFileName, "w")
+    if file ~= nil then
+        io.output(file)
+
+        io.write("return {\n")
+        io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
+        io.write(string.format("    enable = %s,\n", tostring(options.enable)))
+        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.enable)))
+        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
+        io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
+        io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
+        io.write("}\n")
+
+        io.close(file)
+    end
+end
 
 local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
@@ -121,7 +187,7 @@ local function GetMonsterData(monster)
     monster.posZ = pso.read_f32(monster.address + _PosZ)
 
     -- Other stuff
-    monster.name = unitxt.GetMonsterName(monster.unitxtID, _Ultimate)
+    monster.name = lib_unitxt.GetMonsterName(monster.unitxtID, _Ultimate)
     monster.color = 0xFFFFFFFF
     monster.display = true
 
@@ -186,7 +252,7 @@ local function GetMonsterList()
             end
 
             -- Determine whether the player is in the same room as the monster
-            if cfg.showOnlyPlayerRoom and playerRoom ~= monster.room then
+            if options.showCurrentRoomOnly and playerRoom ~= monster.room then
                 monster.display = false
             end
 
@@ -218,7 +284,7 @@ local function GetMonsterList()
     return monsterList
 end
 
-local function PrintMonsters()
+local function PresentMonsters()
     local monsterList = GetMonsterList()
     local monsterListCount = table.getn(monsterList)
 
@@ -228,7 +294,7 @@ local function PrintMonsters()
     local endIndex = monsterListCount
     local step = 1
 
-    if cfg.invertMonsterList then
+    if options.invertMonsterList then
         startIndex = monsterListCount
         endIndex = 1
         step = -1
@@ -239,30 +305,76 @@ local function PrintMonsters()
             local mHP = monsterList[i].HP
             local mHPMax = monsterList[i].HPMax
 
-            helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
+            lib_helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
             imgui.NextColumn()
-            helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * cfg.fontSize, mHP, helpers.HPToGreenRedGradient(mHP/mHPMax), cfg.fontColor, true)
+            lib_helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), options.fontColor, true)
             imgui.NextColumn()
         end
     end
 end
 
 local function present()
-    if cfg.enable == false then
+    -- If the addon has never been used, open the config window
+    -- and disable the config window setting
+    if options.configurationEnableWindow then
+        ConfigurationWindow.open = true
+        options.configurationEnableWindow = false
+    end
+
+    ConfigurationWindow.Update()
+    if ConfigurationWindow.changed then
+        ConfigurationWindow.changed = false
+        SaveOptions(options)
+    end
+
+    -- Global enable here to let the configuration window work
+    if options.enable == false then
         return
     end
 
-    imgui.Begin("Monsters")
-    imgui.SetWindowFontScale(cfg.fontSize)
-    PrintMonsters()
-    imgui.End()
+    -- Push custom theme, only if enabled
+    if options.useCustomTheme then
+        lib_theme.Push()
+    end
+
+    if options.mhpEnableWindow then
+        if firstPresent or options.mhpChanged then
+            options.mhpChanged = false
+            local ps = lib_helpers.GetPosAndSizeByAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH, options.mhpAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
+        end
+
+        if imgui.Begin("Monster HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentMonsters()
+        end
+        imgui.End()
+    end
+
+    -- Pop custom theme, only if enabled
+    if options.useCustomTheme then
+        lib_theme.Pop()
+    end
+
+    if firstPresent then
+        firstPresent = false
+    end
 end
 
 local function init()
+    ConfigurationWindow = cfg.ConfigurationWindow(options)
+
+    local function mainMenuButtonHandler()
+        ConfigurationWindow.open = not ConfigurationWindow.open
+    end
+
+    core_mainmenu.add_button("Monster HP", mainMenuButtonHandler)
+
     return
     {
         name = "Monster HP",
-        version = "1.0.1",
+        version = "1.0.2",
         author = "Solybum",
         description = "List of nearby monsters with their HP",
         present = present,
