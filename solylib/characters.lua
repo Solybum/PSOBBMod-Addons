@@ -15,7 +15,13 @@ local function GetPlayerList()
 end
 
 local function GetPlayerName(player)
-    return pso.read_wstr(player + 0x428 + 4, 10)
+    local playerName = pso.read_wstr(player + 0x428, 12)
+
+    if string.sub(playerName, 1, 1) == "\t" then
+        playerName = string.sub(playerName, 3, string.len(playerName))
+    end
+
+    return playerName
 end
 
 local function GetPlayerHP(player)

@@ -2,7 +2,7 @@ local helpers = require("solylib.helpers")
 local characters = require("solylib.characters")
 local cfg = require("Players.configuration")
 
-local function Test()
+local function PresentPlayers()
     local playerList = characters.GetPlayerList()
     local playerListCount = table.getn(playerList)
 
@@ -33,7 +33,7 @@ local function present()
 
     imgui.Begin("Players")
     imgui.SetWindowFontScale(cfg.fontSize)
-    Test()
+    PresentPlayers()
     imgui.End()
 end
 
