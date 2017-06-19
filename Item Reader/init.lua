@@ -8,9 +8,6 @@ local lib_items_cfg = require("solylib.items.items_configuration")
 local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
-local ResolutionWidth = 0x00A46C48
-local ResolutionHeight = 0x00A46C4A
-
 local optionsFileName = "addons/Item Reader/options.lua"
 local firstPresent = true
 local ConfigurationWindow
@@ -157,62 +154,6 @@ local function SaveOptions(options)
 
         io.close(file)
     end
-end
-
-local function GetPosAndSizeByAnchor(_x, _y, _w, _h, _anchor)
-    local x
-    local y
-
-    local resW = pso.read_u16(ResolutionWidth)
-    local resH = pso.read_u16(ResolutionHeight)
-
-    -- Top left
-    if _anchor == 1 then
-        x = _x
-        y = _y
-
-    -- Left
-    elseif _anchor == 2 then
-        x = _x
-        y = (resH / 2) - (_h / 2) + _y
-
-    -- Bottom left
-    elseif _anchor == 3 then
-        x = _x
-        y = resH - _h + _y
-
-    -- Top
-    elseif _anchor == 4 then
-        x = (resW / 2) - (_w / 2) + _x
-        y = _y
-
-    -- Center
-    elseif _anchor == 5 then
-        x = (resW / 2) - (_w / 2) + _x
-        y = (resH / 2) - (_h / 2) + _y
-
-    -- Bottom
-    elseif _anchor == 6 then
-        x = (resW / 2) - (_w / 2) + _x
-        y = resH - _h + _y
-
-    -- Top right
-    elseif _anchor == 7 then
-        x = resW - _w + _x
-        y = _y
-
-    -- Right
-    elseif _anchor == 8 then
-        x = resW - _w + _x
-        y = (resH / 2) - (_h / 2) + _y
-
-    -- Bottom right
-    elseif _anchor == 9 then
-        x = resW - _w + _x
-        y = resH - _h + _y
-    end
-
-    return { x, y, w, h, }
 end
 
 local function ProcessWeapon(item)
@@ -689,8 +630,8 @@ local function present()
         ConfigurationWindow.open = true
         options.configurationEnableWindow = false
     end
-
     ConfigurationWindow.Update()
+
     if ConfigurationWindow.changed then
         ConfigurationWindow.changed = false
         SaveOptions(options)
@@ -709,7 +650,7 @@ local function present()
     if options.aioEnableWindow then
         if firstPresent or options.aioChanged then
             options.aioChanged = false
-            local ps = GetPosAndSizeByAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
+            local ps = lib_helpers.GetPosAndSizeByAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
         end
@@ -723,7 +664,7 @@ local function present()
     if options.floorEnableWindow then
         if firstPresent or options.floorChanged then
             options.floorChanged = false
-            local ps = GetPosAndSizeByAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
+            local ps = lib_helpers.GetPosAndSizeByAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
         end
@@ -737,7 +678,7 @@ local function present()
     if options.magsEnableWindow then
         if firstPresent or options.magsChanged then
             options.magsChanged = false
-            local ps = GetPosAndSizeByAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
+            local ps = lib_helpers.GetPosAndSizeByAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
         end

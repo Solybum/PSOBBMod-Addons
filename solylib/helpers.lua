@@ -1,3 +1,62 @@
+local ResolutionWidth = 0x00A46C48
+local ResolutionHeight = 0x00A46C4A
+
+local function GetPosAndSizeByAnchor(_x, _y, _w, _h, _anchor)
+    local x
+    local y
+
+    local resW = pso.read_u16(ResolutionWidth)
+    local resH = pso.read_u16(ResolutionHeight)
+
+    -- Top left
+    if _anchor == 1 then
+        x = _x
+        y = _y
+
+    -- Left
+    elseif _anchor == 2 then
+        x = _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom left
+    elseif _anchor == 3 then
+        x = _x
+        y = resH - _h + _y
+
+    -- Top
+    elseif _anchor == 4 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = _y
+
+    -- Center
+    elseif _anchor == 5 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom
+    elseif _anchor == 6 then
+        x = (resW / 2) - (_w / 2) + _x
+        y = resH - _h + _y
+
+    -- Top right
+    elseif _anchor == 7 then
+        x = resW - _w + _x
+        y = _y
+
+    -- Right
+    elseif _anchor == 8 then
+        x = resW - _w + _x
+        y = (resH / 2) - (_h / 2) + _y
+
+    -- Bottom right
+    elseif _anchor == 9 then
+        x = resW - _w + _x
+        y = resH - _h + _y
+    end
+
+    return { x, y, w, h, }
+end
+
 local function GetColorAsFloats(color)
     color = color or 0xFFFFFFFF
 
@@ -84,6 +143,7 @@ end
 
 return
 {
+    GetPosAndSizeByAnchor = GetPosAndSizeByAnchor,
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
