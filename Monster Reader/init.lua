@@ -2,12 +2,12 @@ local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_theme = require("solylib.theme")
 local lib_unitxt = require("solylib.unitxt")
-local cfg = require("Monsters.configuration")
+local cfg = require("Monster Reader.configuration")
 -- TODO move to options
-local cfgMonsters = require("Monsters.monsters")
-local optionsLoaded, options = pcall(require, "Monsters.options")
+local cfgMonsters = require("Monster Reader.monsters")
+local optionsLoaded, options = pcall(require, "Monster Reader.options")
 
-local optionsFileName = "addons/Monsters/options.lua"
+local optionsFileName = "addons/Monster Reader/options.lua"
 local firstPresent = true
 local ConfigurationWindow
 
@@ -350,12 +350,12 @@ local function present()
     if options.mhpEnableWindow then
         if firstPresent or options.mhpChanged then
             options.mhpChanged = false
-            local ps = lib_helpers.GetPosAndSizeByAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH, options.mhpAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH, options.mhpAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
         end
 
-        if imgui.Begin("Monsters - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
+        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
@@ -379,12 +379,12 @@ local function init()
         ConfigurationWindow.open = not ConfigurationWindow.open
     end
 
-    core_mainmenu.add_button("Monsters", mainMenuButtonHandler)
+    core_mainmenu.add_button("Monster Reader", mainMenuButtonHandler)
 
     return
     {
-        name = "Monsters",
-        version = "1.0.2",
+        name = "Monster Reader",
+        version = "1.0.3",
         author = "Solybum",
         description = "Information about monsters",
         present = present,

@@ -1,7 +1,7 @@
 local function ConfigurationWindow(configuration)
     local this = 
     {
-        title = "Monsters - Configuration",
+        title = "Monster Reader - Configuration",
         fontScale = 1.0,
         open = false,
         changed = false,
@@ -45,7 +45,7 @@ local function ConfigurationWindow(configuration)
             imgui.TreePop()
         end
 
-        if imgui.TreeNodeEx("Monsters - HP") then
+        if imgui.TreeNodeEx("HP") then
             if imgui.Checkbox("Enable", _configuration.mhpEnableWindow) then
                 _configuration.mhpEnableWindow = not _configuration.mhpEnableWindow
                 this.changed = true

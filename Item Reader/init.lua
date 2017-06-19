@@ -650,7 +650,7 @@ local function present()
     if options.aioEnableWindow then
         if firstPresent or options.aioChanged then
             options.aioChanged = false
-            local ps = lib_helpers.GetPosAndSizeByAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
         end
@@ -664,7 +664,7 @@ local function present()
     if options.floorEnableWindow then
         if firstPresent or options.floorChanged then
             options.floorChanged = false
-            local ps = lib_helpers.GetPosAndSizeByAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
         end
@@ -678,7 +678,7 @@ local function present()
     if options.magsEnableWindow then
         if firstPresent or options.magsChanged then
             options.magsChanged = false
-            local ps = lib_helpers.GetPosAndSizeByAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
         end

@@ -1,7 +1,7 @@
 local ResolutionWidth = 0x00A46C48
 local ResolutionHeight = 0x00A46C4A
 
-local function GetPosAndSizeByAnchor(_x, _y, _w, _h, _anchor)
+local function GetPosBySizeAndAnchor(_x, _y, _w, _h, _anchor)
     local x
     local y
 
@@ -52,9 +52,14 @@ local function GetPosAndSizeByAnchor(_x, _y, _w, _h, _anchor)
     elseif _anchor == 9 then
         x = resW - _w + _x
         y = resH - _h + _y
+
+    -- Whatever
+    else
+        x = _x
+        y = _y
     end
 
-    return { x, y, w, h, }
+    return { x, y }
 end
 
 local function GetColorAsFloats(color)
@@ -143,7 +148,7 @@ end
 
 return
 {
-    GetPosAndSizeByAnchor = GetPosAndSizeByAnchor,
+    GetPosBySizeAndAnchor = GetPosBySizeAndAnchor,
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
