@@ -2,12 +2,12 @@ local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_theme = require("solylib.theme")
 local lib_unitxt = require("solylib.unitxt")
-local cfg = require("Monster HP.configuration")
+local cfg = require("Monsters.configuration")
 -- TODO move to options
-local cfgMonsters = require("Monster HP.monsters")
-local optionsLoaded, options = pcall(require, "Monster HP.options")
+local cfgMonsters = require("Monsters.monsters")
+local optionsLoaded, options = pcall(require, "Monsters.options")
 
-local optionsFileName = "addons/Monster HP/options.lua"
+local optionsFileName = "addons/Monsters/options.lua"
 local firstPresent = true
 local ConfigurationWindow
 
@@ -63,6 +63,16 @@ local function SaveOptions(options)
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
         io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
+        io.write("\n")
+        io.write(string.format("    mhpEnableWindow = %s,\n", tostring(options.mhpEnableWindow)))
+        io.write(string.format("    mhpChanged = %s,\n", tostring(options.mhpChanged)))
+        io.write(string.format("    mhpAnchor = %i,\n", options.mhpAnchor))
+        io.write(string.format("    mhpX = %i,\n", options.mhpX))
+        io.write(string.format("    mhpY = %i,\n", options.mhpY))
+        io.write(string.format("    mhpW = %i,\n", options.mhpW))
+        io.write(string.format("    mhpH = %i,\n", options.mhpH))
+        io.write(string.format("    mhpNoTitleBar = \"%s\",\n", options.mhpNoTitleBar))
+        io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
         io.write("}\n")
 
         io.close(file)
@@ -345,7 +355,7 @@ local function present()
             imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
         end
 
-        if imgui.Begin("Monster HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
+        if imgui.Begin("Monsters - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
@@ -369,14 +379,14 @@ local function init()
         ConfigurationWindow.open = not ConfigurationWindow.open
     end
 
-    core_mainmenu.add_button("Monster HP", mainMenuButtonHandler)
+    core_mainmenu.add_button("Monsters", mainMenuButtonHandler)
 
     return
     {
-        name = "Monster HP",
+        name = "Monsters",
         version = "1.0.2",
         author = "Solybum",
-        description = "List of nearby monsters with their HP",
+        description = "Information about monsters",
         present = present,
     }
 end

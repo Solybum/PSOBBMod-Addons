@@ -5,5 +5,5 @@
 /.vs
 /.vscode
 /Item Reader/options.lua
-/Monster HP/options.lua
+/Monsters/options.lua
 /Players/options.lua
