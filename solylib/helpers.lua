@@ -104,9 +104,6 @@ local function imguiText(text, color, newLine)
 end
 
 -- Text functions
-local function Text(newLine, fmt, ...)
-    return TextC(newLine, 0xFFFFFFFF, fmt, ...)
-end
 local function TextC(newLine, col, fmt, ...)
     newLine = newLine or false
     col = col or 0xFFFFFFFF
@@ -120,6 +117,9 @@ local function TextC(newLine, col, fmt, ...)
     local str = string.format(fmt, ...)
     imgui.TextColored(c[1], c[2], c[3], c[4], str)
     return str
+end
+local function Text(newLine, fmt, ...)
+    return TextC(newLine, 0xFFFFFFFF, fmt, ...)
 end
 
 local function imguiProgressBar(progress, x, y, overlay, barColor, textColor, newLine)
