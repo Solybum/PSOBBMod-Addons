@@ -6,11 +6,6 @@ Addons for https://github.com/HybridEidolon/psobbaddonplugin
 2. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
 
 ### Notes  
-[deprecated](https://github.com/Solybum/PSOBBMod-Addons/tree/master/deprecated)  
-Contains addons no longer maintained, but that people still use, these have been replaced by new addons for various reasons and is preferred that you use said new addons.  
-In this list are: Character Reader, Floor Items and Mags, all of these replaced by Item Reader.  
-The addons here and the folder itself might be removed at any time.  
-
 [SolyLib](https://github.com/Solybum/PSOBBMod-Addons/tree/master/solylib)  
 This folder is required by all my addons, they contain helper functions shared between different addons.  
 If you are developing addons, feel free to use it.  
