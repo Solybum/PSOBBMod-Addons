@@ -85,7 +85,8 @@ local _PlayerCount = 0x00AAE168
 local _Difficulty = 0x00A9CD68
 local _Ultimate
 
-local _Room = 0x28
+local _RoomP = 0x2E
+local _RoomM = 0x28
 local _PosX = 0x38
 local _PosY = 0x3C
 local _PosZ = 0x40
@@ -191,7 +192,7 @@ local function GetMonsterData(monster)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
-    monster.room = pso.read_u16(monster.address + _Room)
+    monster.room = pso.read_u16(monster.address + _RoomM)
     monster.posX = pso.read_f32(monster.address + _PosX)
     monster.posY = pso.read_f32(monster.address + _PosY)
     monster.posZ = pso.read_f32(monster.address + _PosZ)
@@ -227,7 +228,7 @@ local function GetMonsterList()
     end
 
     -- Get player position
-    local playerRoom = pso.read_u16(pAddr + _Room)
+    local playerRoom = pso.read_u16(pAddr + _RoomP)
     local pPosX = pso.read_f32(pAddr + _PosX)
     local pPosZ = pso.read_f32(pAddr + _PosZ)
 
