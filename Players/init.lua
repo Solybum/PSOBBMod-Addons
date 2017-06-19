@@ -1,6 +1,6 @@
 local helpers = require("solylib.helpers")
 local characters = require("solylib.characters")
-local cfg = require("Player Reader.configuration")
+local cfg = require("Players.configuration")
 
 local function Test()
     local playerList = characters.GetPlayerList()
@@ -31,7 +31,7 @@ local function present()
         return
     end
 
-    imgui.Begin("Player Reader")
+    imgui.Begin("Players")
     imgui.SetWindowFontScale(cfg.fontSize)
     Test()
     imgui.End()
@@ -40,7 +40,7 @@ end
 local function init()
     return
     {
-        name = "Player Reader",
+        name = "Players",
         version = "1.0.0",
         author = "Solybum",
         description = "Work in progress",
