@@ -471,7 +471,7 @@ local function ProcessMag(item)
     end
 
     lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    lib_helpers.TextC(false, timerColor, "%i", item.mag.timer)
+    lib_helpers.TextC(false, timerColor, os.date("!%M:%S", item.mag.timer))
     lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
     return result
