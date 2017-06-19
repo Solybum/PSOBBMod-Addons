@@ -169,9 +169,9 @@ local function init()
     return
     {
         name = "Players",
-        version = "1.0.1",
+        version = "1.0.2",
         author = "Solybum",
-        description = "Work in progress",
+        description = "Information about players in a lobby",
         present = present,
     }
 end
