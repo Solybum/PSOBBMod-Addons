@@ -81,16 +81,16 @@ local function PresentPlayers()
         local index = playerList[i].index
         local address = playerList[i].address
 
-        local name = lib_helpers.GetPlayerName(address)
-        local hp = lib_helpers.GetPlayerHP(address)
-        local mhp = lib_helpers.GetPlayerMaxHP(address)
+        local name = lib_characters.GetPlayerName(address)
+        local hp = lib_characters.GetPlayerHP(address)
+        local mhp = lib_characters.GetPlayerMaxHP(address)
         local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
 
-        lib_helpers.imguiText(string.format("%2i", index), cfg.fontColor, true)
+        lib_helpers.Text(true, "%2i", index)
         imgui.NextColumn()
-        lib_helpers.imguiText(name, cfg.fontColor, true)
+        lib_helpers.Text(true, name)
         imgui.NextColumn()
-        lib_helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * cfg.fontScale, hp, lib_helpers.HPToGreenRedGradient(hp/mhp), cfg.fontColor, true)
+        lib_helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * options.fontScale, hp, lib_helpers.HPToGreenRedGradient(hp/mhp), cfg.fontColor, true)
         imgui.NextColumn()
     end
 end

@@ -315,7 +315,7 @@ local function PresentMonsters()
             local mHP = monsterList[i].HP
             local mHPMax = monsterList[i].HPMax
 
-            lib_helpers.imguiText(monsterList[i].name, monsterList[i].color, true)
+            lib_helpers.TextC(true, monsterList[i].color, monsterList[i].name)
             imgui.NextColumn()
             lib_helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), options.fontColor, true)
             imgui.NextColumn()
