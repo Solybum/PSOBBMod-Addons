@@ -41,7 +41,7 @@ local function init()
     return
     {
         name = "Players",
-        version = "1.0.0",
+        version = "1.0.1",
         author = "Solybum",
         description = "Work in progress",
         present = present,
