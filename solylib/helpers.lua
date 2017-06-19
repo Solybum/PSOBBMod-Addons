@@ -92,6 +92,7 @@ local function HPToGreenRedGradient(percent)
 end
 
 local function imguiText(text, color, newLine)
+    print("Call to deprecated function imguiText. This function might be removed at any time\n" .. debug.traceback())
     color = color or 0xFFFFFFFF
     newLine = newLine or false
 
