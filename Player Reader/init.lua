@@ -75,7 +75,7 @@ local function PresentPlayers()
     local playerList = lib_characters.GetPlayerList()
     local playerListCount = table.getn(playerList)
 
-    imgui.Columns(3)
+    imgui.Columns(4)
 
     for i=1,playerListCount,1 do
         local index = playerList[i].index
@@ -85,12 +85,25 @@ local function PresentPlayers()
         local hp = lib_characters.GetPlayerHP(address)
         local mhp = lib_characters.GetPlayerMaxHP(address)
         local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
+        local atkTech = lib_characters.GetPlayerTechStatus(address, 0)
+        local defTech = lib_characters.GetPlayerTechStatus(address, 1)
 
         lib_helpers.Text(true, "%2i", index)
         imgui.NextColumn()
         lib_helpers.Text(true, name)
         imgui.NextColumn()
         lib_helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * options.fontScale, hp, lib_helpers.HPToGreenRedGradient(hp/mhp), cfg.fontColor, true)
+        imgui.NextColumn()
+        if atkTech.type == 0 then
+            lib_helpers.Text(true, "---")
+        else
+            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+        end
+        if defTech.type == 0 then
+            lib_helpers.Text(true, "---")
+        else
+            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+        end
         imgui.NextColumn()
     end
 end
