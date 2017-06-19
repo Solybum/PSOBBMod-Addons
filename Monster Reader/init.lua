@@ -36,8 +36,8 @@ else
         enable = true,
         useCustomTheme = false,
         fontScale = 1.0,
-        invertMonsterList = true,
-        showCurrentRoomOnly = true,
+        invertMonsterList = false,
+        showCurrentRoomOnly = false,
 
         mhpEnableWindow = true,
         mhpChanged = false,
