@@ -518,8 +518,17 @@ local function ProcessMeseta(item)
     end
     return result
 end
-local function ProcessItem(item, save)
+local function ProcessItem(item, floor, save)
+    floor = floor or false
     save = save or false
+
+    -- Do not process disabled items when it's floor list
+    if floor == true then
+        local item_cfg = lib_items_list.t[item.hex]
+        if item_cfg ~= nil and item_cfg[2] == false then
+            return
+        end
+    end
 
     local itemStr = ""
     if item.data[1] == 0 then
@@ -555,7 +564,7 @@ local function PresentInventory(save)
     lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i", inventory.meseta)
 
     for i=1,itemCount,1 do
-        ProcessItem(inventory.items[i], save)
+        ProcessItem(inventory.items[i], false, save)
     end
 end
 local function PresentBank(save)
@@ -565,7 +574,7 @@ local function PresentBank(save)
     lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Count: %i", bank.meseta, itemCount)
 
     for i=1,itemCount,1 do
-        ProcessItem(bank.items[i], save)
+        ProcessItem(bank.items[i], false, save)
     end
 end
 local function PresentFloor()
@@ -573,7 +582,7 @@ local function PresentFloor()
     local itemCount = table.getn(itemList)
 
     for i=1,itemCount,1 do
-        ProcessItem(itemList[i])
+        ProcessItem(itemList[i], true, false)
     end
 end
 local function PresentMags()
@@ -582,7 +591,7 @@ local function PresentMags()
 
     for i=1,itemCount,1 do
         if itemList[i].mag ~= nil then
-            ProcessItem(itemList[i])
+            ProcessItem(itemList[i], false, false)
         end
     end
 end
