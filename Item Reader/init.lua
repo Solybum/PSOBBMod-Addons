@@ -33,8 +33,9 @@ if optionsLoaded then
     options.aioH = options.aioH or 350
     options.aioNoTitleBar = options.aioNoTitleBar or ""
     options.aioNoResize = options.aioNoResize or ""
-    options.showButtonSaveToFile = options.showButtonSaveToFile == nil and true or options.showButtonSaveToFile
-    options.saveFileName = options.saveFileName or "addons/saved_inventory.txt"
+    options.aioShowButtonSaveToFile = options.aioShowButtonSaveToFile == nil and true or options.aioShowButtonSaveToFile
+    options.aioSaveFileName = options.saveFileName or "addons/saved_inventory.txt"
+    options.aioSelectedInventory = options.aioSelectedInventory or 1
 
     options.floorEnableWindow = options.floorEnableWindow == nil and true or options.floorEnableWindow
     options.floorChanged = options.floorChanged == nil and true or options.floorChanged
@@ -78,8 +79,9 @@ else
         aioH = 350,
         aioNoTitleBar = "",
         aioNoResize = "",
-        showButtonSaveToFile = true,
-        saveFileName = "addons/saved_inventory.txt",
+        auiShowButtonSaveToFile = true,
+        aioSaveFileName = "addons/saved_inventory.txt",
+        aioSelectedInventory = 1,
 
         floorEnableWindow = true,
         floorChanged = false,
@@ -128,8 +130,9 @@ local function SaveOptions(options)
         io.write(string.format("    aioH = %i,\n", options.aioH))
         io.write(string.format("    aioNoTitleBar = \"%s\",\n", options.aioNoTitleBar))
         io.write(string.format("    aioNoResize = \"%s\",\n", options.aioNoResize))
-        io.write(string.format("    showButtonSaveToFile = %s,\n",  tostring(options.showButtonSaveToFile)))
-        io.write(string.format("    saveFileName = \"%s\",\n", options.saveFileName))
+        io.write(string.format("    aioShowButtonSaveToFile = %s,\n",  tostring(options.aioShowButtonSaveToFile)))
+        io.write(string.format("    aioSaveFileName = \"%s\",\n", options.aioSaveFileName))
+        io.write(string.format("    aioSelectedInventory = %i,\n", options.aioSelectedInventory))
         io.write("\n")
         io.write(string.format("    floorEnableWindow = %s,\n", tostring(options.floorEnableWindow)))
         io.write(string.format("    floorChanged = %s,\n", tostring(options.floorChanged)))
@@ -550,7 +553,7 @@ local function ProcessItem(item, floor, save)
     end
 
     if save then
-        local file = io.open(options.saveFileName, "a")
+        local file = io.open(options.aioSaveFileName, "a")
         io.output(file)
         io.write(itemStr .. "\n")
         io.close(file)
@@ -597,21 +600,26 @@ local function PresentMags()
 end
 
 local aioStatus = true
-local aioSelection = 1
+local aioSelectedInventory = options.aioSelectedInventory
 local function PresentAIO()
     local save = false
 
     local selectionList = { "Inventory", "Bank", "Floor", "Mags" }
     imgui.PushItemWidth(150)
-    aioStatus, aioSelection = imgui.Combo(" ", aioSelection, selectionList, table.getn(selectionList))
+    aioStatus, aioSelectedInventory = imgui.Combo(" ", aioSelectedInventory, selectionList, table.getn(selectionList))
     imgui.PopItemWidth()
 
-    if options.showButtonSaveToFile then
+    if aioSelectedInventory ~= options.aioSelectedInventory then
+        options.aioSelectedInventory = aioSelectedInventory
+        SaveOptions(options)
+    end
+
+    if options.aioShowButtonSaveToFile then
         imgui.SameLine(0, 20)
         if imgui.Button("Save to file") then
             save = true
             -- Write nothing to it so its cleared works for appending
-            local file = io.open(options.saveFileName, "w")
+            local file = io.open(options.aioSaveFileName, "w")
             io.output(file)
             io.write("")
             io.close(file)
@@ -620,13 +628,13 @@ local function PresentAIO()
 
     imgui.BeginChild("ItemList", 0)
     imgui.SetWindowFontScale(options.fontScale)
-    if aioSelection == 1 then
+    if aioSelectedInventory == 1 then
         PresentInventory(save)
-    elseif aioSelection == 2 then
+    elseif aioSelectedInventory == 2 then
         PresentBank(save)
-    elseif aioSelection == 3 then
+    elseif aioSelectedInventory == 3 then
         PresentFloor(save)
-    elseif aioSelection == 4 then
+    elseif aioSelectedInventory == 4 then
         PresentMags(save)
     end
     imgui.EndChild()

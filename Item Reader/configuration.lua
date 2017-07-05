@@ -123,13 +123,13 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Show \"Save to file\" button", _configuration.showButtonSaveToFile) then
-                _configuration.showButtonSaveToFile = not _configuration.showButtonSaveToFile
+            if imgui.Checkbox("Show \"Save to file\" button", _configuration.aioShowButtonSaveToFile) then
+                _configuration.aioShowButtonSaveToFile = not _configuration.aioShowButtonSaveToFile
                 this.changed = true
             end
 
             imgui.PushItemWidth(200)
-            success, _configuration.saveFileName = imgui.InputText("Save file path", _configuration.saveFileName, 255, 0, nil, _configuration.saveFileName)
+            success, _configuration.aioSaveFileName = imgui.InputText("Save file path", _configuration.aioSaveFileName, 255, 0, nil, _configuration.aioSaveFileName)
             imgui.PopItemWidth()
             if success then
                 this.changed = true
