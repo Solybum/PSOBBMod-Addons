@@ -2,8 +2,9 @@
 Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
-1. Download [this](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip)
-2. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
+1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin#installation)
+2. Download the [latest version](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip) of these repository
+3. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
 
 ### Notes  
 [SolyLib](https://github.com/Solybum/PSOBBMod-Addons/tree/master/solylib)  
