@@ -50,7 +50,8 @@ local function SaveOptions(options)
     if file ~= nil then
         io.output(file)
 
-        io.write("return {\n")
+        io.write("return\n")
+        io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
         io.write(string.format("    useCustomTheme = %s,\n", tostring(options.enable)))
