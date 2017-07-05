@@ -1,3 +1,5 @@
+local enable = false
+
 local styleColors = 
 {
     { name = "Text"                   , color = { 0.90, 0.90, 0.90, 1.00, } },
@@ -64,7 +66,7 @@ end
 
 return
 {
-    configurationEnableWindow = false,
+    enable = enable,
     styleColors = styleColors,
     Push = Push,
     Pop = Pop,

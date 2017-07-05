@@ -1,11 +1,8 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
-local cfg = require("Theme Editor.configuration")
 local optionsLoaded, options = pcall(require, "Theme Editor.theme_custom")
 
 local optionsFileName = "addons/Theme Editor/theme_custom.lua"
-local ConfigurationWindow
-
 if optionsLoaded == false then
     options = require("Theme Editor.theme_default")
 end
@@ -49,7 +46,7 @@ local function SaveOptions(options)
         io.write(string.format("\n"))
         io.write(string.format("return\n"))
         io.write(string.format("{\n"))
-        io.write(string.format("    configurationEnableWindow = %s,\n", tostring(ConfigurationWindow.open)))
+        io.write(string.format("    enable = %s,\n", tostring(options.enable)))
         io.write(string.format("    styleColors = styleColors,\n"))
         io.write(string.format("    Push = Push,\n"))
         io.write(string.format("    Pop = Pop,\n"))
@@ -59,26 +56,35 @@ local function SaveOptions(options)
     end
 end
 
+local function PresentColorEditor()
+    imgui.SetNextWindowSize(500, 400, 'FirstUseEver')
+    if imgui.Begin("Theme Editor") then
+        -- TODO put all the stuff here
+    end
+    imgui.End()
+end
+
 local function present()
-    -- If the addon has never been used, open the config window
-    -- and disable the config window setting
-    if options.configurationEnableWindow then
-        ConfigurationWindow.open = true
-        options.configurationEnableWindow = false
+    local changed = false
+
+    if options.enable == false then
+        return
     end
 
-    ConfigurationWindow.Update()
-    if ConfigurationWindow.changed then
-        ConfigurationWindow.changed = false
+    options.Push()
+
+    PresentColorEditor()
+
+    options.Pop()
+
+    if changed then
         SaveOptions(options)
     end
 end
 
 local function init()
-    ConfigurationWindow = cfg.ConfigurationWindow(options)
-
     local function mainMenuButtonHandler()
-        ConfigurationWindow.open = not ConfigurationWindow.open
+        options.enable = not options.enable
         SaveOptions(options)
     end
 
@@ -86,7 +92,7 @@ local function init()
 
     return
     {
-        name = "Theme",
+        name = "Theme Editor",
         version = "1.0.0",
         author = "Solybum",
         description = "Theme editor, output used by addons",
