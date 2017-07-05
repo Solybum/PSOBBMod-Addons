@@ -1,5 +1,6 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
+local optionsDefault = require("Theme Editor.theme_default")
 local optionsLoaded, options = pcall(require, "Theme Editor.theme_custom")
 
 local optionsFileName = "addons/Theme Editor/theme_custom.lua"
@@ -12,6 +13,8 @@ local function SaveOptions(options)
     if file ~= nil then
         io.output(file)
 
+        io.write(string.format("local enable = %s\n", tostring(options.enable)))
+        io.write(string.format("\n"))
         io.write(string.format("local styleColors =\n"))
         io.write(string.format("{\n"))
 
@@ -46,7 +49,7 @@ local function SaveOptions(options)
         io.write(string.format("\n"))
         io.write(string.format("return\n"))
         io.write(string.format("{\n"))
-        io.write(string.format("    enable = %s,\n", tostring(options.enable)))
+        io.write(string.format("    enable = enable,\n"))
         io.write(string.format("    styleColors = styleColors,\n"))
         io.write(string.format("    Push = Push,\n"))
         io.write(string.format("    Pop = Pop,\n"))
@@ -56,28 +59,116 @@ local function SaveOptions(options)
     end
 end
 
-local function PresentColorEditor()
+local function PresentColorEditor(label, col, col_d)
+    local changed = false
+    local i =
+    {
+        lib_helpers.F32ToInt8(col[1]),
+        lib_helpers.F32ToInt8(col[2]),
+        lib_helpers.F32ToInt8(col[3]),
+        lib_helpers.F32ToInt8(col[4]),
+    }
+    local i_d =
+    {
+        lib_helpers.F32ToInt8(col_d[1]),
+        lib_helpers.F32ToInt8(col_d[2]),
+        lib_helpers.F32ToInt8(col_d[3]),
+        lib_helpers.F32ToInt8(col_d[4]),
+    }
+
+    local ids = { "##X", "##Y", "##Z", "##W" }
+    local fmt = { "R:%3.0f", "G:%3.0f", "B:%3.0f", "A:%3.0f" }
+
+    imgui.BeginGroup()
+    imgui.PushID(label)
+
+    imgui.PushItemWidth(50)
+    for n = 1, 4, 1 do
+        local changedDragInt = false
+        if n ~= 1 then
+            imgui.SameLine(0, 5)
+        end
+        
+        changedDragInt, i[n] = imgui.DragInt(ids[n], i[n], 1.0, 0, 255, fmt[n])
+    end
+    imgui.PopItemWidth()
+
+    imgui.SameLine(0, 5)
+    imgui.ColorButton(col[1], col[2], col[3], 1.0)
+    if imgui.IsItemHovered() then
+        imgui.SetTooltip(
+            string.format(
+                "Color:\n(%.2f,%.2f,%.2f,%.2f)\n#%02X%02X%02X%02X",
+                col[1], col[2], col[3], col[4],
+                col[1] * 255,
+                col[2] * 255,
+                col[3] * 255,
+                col[4] * 255
+            )
+        )
+    end
+
+    imgui.SameLine(0, 5)
+    imgui.Text(label)
+
+    for n = 1, 4, 1 do
+        col[n] = i[n] / 255
+
+        if i[n] ~= i_d[n] then
+            changed = true
+        end
+    end
+
+    if changed then
+        imgui.SameLine(0, 5)
+        if imgui.Button("Revert") then
+            for n = 1, 4, 1 do
+                col[n] = col_d[n]
+            end
+        end
+    end
+
+    imgui.PopID()
+    imgui.EndGroup()
+end
+
+local function PresentColorEditors()
+    local save = false
     imgui.SetNextWindowSize(500, 400, 'FirstUseEver')
     if imgui.Begin("Theme Editor") then
-        -- TODO put all the stuff here
+        if imgui.Button("Save") then
+            save = true
+        end
+
+        imgui.BeginChild("ColorList", 0)
+
+        for i = 1, table.getn(options.styleColors), 1 do
+            PresentColorEditor(options.styleColors[i].name,
+                options.styleColors[i].color,
+                optionsDefault.styleColors[i].color)
+        end
+
+        imgui.EndChild()
     end
     imgui.End()
+
+    return save
 end
 
 local function present()
-    local changed = false
+    local save = false
 
     if options.enable == false then
         return
     end
 
-    options.Push()
+    --options.Push()
 
-    PresentColorEditor()
+    save = PresentColorEditors()
 
-    options.Pop()
+    --options.Pop()
 
-    if changed then
+    if save then
         SaveOptions(options)
     end
 end

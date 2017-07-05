@@ -62,6 +62,14 @@ local function GetPosBySizeAndAnchor(_x, _y, _w, _h, _anchor)
     return { x, y }
 end
 
+function Round(num, numDecimalPlaces)
+    return tonumber(string.format("%." .. (numDecimalPlaces or 0) .. "f", num))
+end
+
+local function F32ToInt8(value)
+    return Round(value * 255)
+end
+
 local function GetColorAsFloats(color)
     color = color or 0xFFFFFFFF
 
@@ -150,6 +158,8 @@ end
 return
 {
     GetPosBySizeAndAnchor = GetPosBySizeAndAnchor,
+    Round = Round,
+    F32ToInt8 = F32ToInt8,
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
     imguiText = imguiText,
