@@ -1,7 +1,7 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
-local lib_theme = require("solylib.theme")
 local lib_unitxt = require("solylib.unitxt")
+local lib_theme = require("Theme Editor.theme")
 local cfg = require("Monster Reader.configuration")
 -- TODO move to options
 local cfgMonsters = require("Monster Reader.monsters")

@@ -1,7 +1,7 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
-local lib_theme = require("solylib.theme")
 local lib_characters = require("solylib.characters")
+local lib_theme = require("Theme Editor.theme")
 local cfg = require("Player Reader.configuration")
 local optionsLoaded, options = pcall(require, "Player Reader.options")
 
