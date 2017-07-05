@@ -59,7 +59,6 @@ local function SaveOptions(options)
     end
 end
 
-local lastOpenState = false
 local function present()
     -- If the addon has never been used, open the config window
     -- and disable the config window setting
