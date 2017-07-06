@@ -78,7 +78,7 @@ local function GetColorAsFloats(color)
     local g = bit.band(bit.rshift(color, 8), 0xFF) / 255;
     local b = bit.band(color, 0xFF) / 255;
 
-    return {r, g, b, a}
+    return { r = r, g = g, b = b, a = a }
 end
 
 local function HPToGreenRedGradient(percent)
@@ -109,7 +109,7 @@ local function imguiText(text, color, newLine)
     end
 
     local c = GetColorAsFloats(color)
-    imgui.TextColored(c[1], c[2], c[3], c[4], text)
+    imgui.TextColored(c.r, c.g, c.b, c.a, text)
 end
 
 -- Text functions
@@ -124,7 +124,7 @@ local function TextC(newLine, col, fmt, ...)
 
     local c = GetColorAsFloats(col)
     local str = string.format(fmt, ...)
-    imgui.TextColored(c[1], c[2], c[3], c[4], str)
+    imgui.TextColored(c.r, c.g, c.b, c.a, str)
     return str
 end
 local function Text(newLine, fmt, ...)
@@ -148,9 +148,9 @@ local function imguiProgressBar(progress, x, y, overlay, barColor, textColor, ne
     end
 
     local c = GetColorAsFloats(textColor)
-    imgui.PushStyleColor("Text", c[1], c[2], c[3], c[4])
+    imgui.PushStyleColor("Text", c.r, c.g, c.b, c.a)
     c = GetColorAsFloats(barColor)
-    imgui.PushStyleColor("PlotHistogram", c[1], c[2], c[3], c[4])
+    imgui.PushStyleColor("PlotHistogram", c.r, c.g, c.b, c.a)
     imgui.ProgressBar(progress, x, y, overlay)
     imgui.PopStyleColor(2)
 end
