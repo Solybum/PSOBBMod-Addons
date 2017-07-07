@@ -1,5 +1,6 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
+local lib_characters = require("solylib.characters")
 local lib_unitxt = require("solylib.unitxt")
 local lib_theme = require("Theme Editor.theme")
 local cfg = require("Monster Reader.configuration")
@@ -30,6 +31,17 @@ if optionsLoaded then
     options.mhpNoTitleBar        = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
     options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
+
+    options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
+    options.targetChanged           = lib_helpers.NotNilOrDefault(options.targetChanged, false)
+    options.targetAnchor            = lib_helpers.NotNilOrDefault(options.targetAnchor, 1)
+    options.targetX                 = lib_helpers.NotNilOrDefault(options.targetX, 50)
+    options.targetY                 = lib_helpers.NotNilOrDefault(options.targetY, 50)
+    options.targetW                 = lib_helpers.NotNilOrDefault(options.targetW, 450)
+    options.targetH                 = lib_helpers.NotNilOrDefault(options.targetH, 350)
+    options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "")
+    options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "")
+    options.targetTransparentWindow = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
 else
     options = 
     {
@@ -50,6 +62,17 @@ else
         mhpNoTitleBar = "",
         mhpNoResize = "",
         mhpTransparentWindow = false,
+
+        targetEnableWindow = true,
+        targetChanged = false,
+        targetAnchor = 1,
+        targetX = 50,
+        targetY = 50,
+        targetW = 450,
+        targetH = 350,
+        targetNoTitleBar = "",
+        targetNoResize = "",
+        targetTransparentWindow = false,
     }
 end
 
@@ -62,7 +85,7 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.enable)))
+        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.useCustomTheme)))
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
         io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
@@ -77,6 +100,17 @@ local function SaveOptions(options)
         io.write(string.format("    mhpNoTitleBar = \"%s\",\n", options.mhpNoTitleBar))
         io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
         io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
+        io.write("\n")
+        io.write(string.format("    targetEnableWindow = %s,\n", tostring(options.targetEnableWindow)))
+        io.write(string.format("    targetChanged = %s,\n", tostring(options.targetChanged)))
+        io.write(string.format("    targetAnchor = %i,\n", options.targetAnchor))
+        io.write(string.format("    targetX = %i,\n", options.targetX))
+        io.write(string.format("    targetY = %i,\n", options.targetY))
+        io.write(string.format("    targetW = %i,\n", options.targetW))
+        io.write(string.format("    targetH = %i,\n", options.targetH))
+        io.write(string.format("    targetNoTitleBar = \"%s\",\n", options.targetNoTitleBar))
+        io.write(string.format("    targetNoResize = \"%s\",\n", options.targetNoResize))
+        io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
         io.write("}\n")
 
         io.close(file)
@@ -89,10 +123,14 @@ local _PlayerCount = 0x00AAE168
 local _Difficulty = 0x00A9CD68
 local _Ultimate
 
+local _ID = 0x1C
 local _Room = 0x28
 local _PosX = 0x38
 local _PosY = 0x3C
 local _PosZ = 0x40
+
+local _targetPointerOffset = 0x18
+local _targetOffset = 0x108C
 
 local _EntityCount = 0x00AAE164
 local _EntityArray = 0x00AAD720
@@ -123,6 +161,7 @@ local function CopyMonster(monster)
     local copy = {}
 
     copy.index    = monster.index
+    copy.id       = monster.id
     copy.room     = monster.room
     copy.posX     = monster.posX
     copy.posY     = monster.posY
@@ -192,6 +231,7 @@ local function GetMonsterDataBarbaRay(monster)
 end
 
 local function GetMonsterData(monster)
+    monster.id = pso.read_u32(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
@@ -213,6 +253,55 @@ local function GetMonsterData(monster)
     end
 
     return monster
+end
+
+local function GetTargetMonster()
+    local difficulty = pso.read_u32(_Difficulty)
+    _Ultimate = difficulty == 3
+
+    local pIndex = pso.read_u32(_PlayerIndex)
+    local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
+
+    -- If we don't have address (maybe warping or something)
+    -- return the empty list
+    if pAddr == 0 then
+        return nil
+    end
+
+    local targetID = -1
+    local targetPointerOffset = pso.read_u32(pAddr + _targetPointerOffset)
+    if targetPointerOffset ~= 0 then
+        targetID = pso.read_i16(targetPointerOffset + _targetOffset)
+    end
+
+    if targetID == -1 then
+        return nil
+    end
+
+    local _targetPointerOffset = 0x18
+    local _targetOffset = 0x108C
+
+    local playerCount = pso.read_u32(_PlayerCount)
+    local entityCount = pso.read_u32(_EntityCount)
+
+    local i = 0
+    while i < entityCount do
+        local monster = {}
+
+        monster.address = pso.read_u32(_EntityArray + 4 * (i + playerCount))
+        -- If we got a pointer, then read from it
+        if monster.address ~= 0 then
+            monster.id = pso.read_i16(monster.address + _ID)
+
+            if monster.id == targetID then
+                monster = GetMonsterData(monster)
+                return monster
+            end
+        end
+        i = i + 1
+    end
+
+    return nil
 end
 
 local function GetMonsterList()
@@ -321,9 +410,34 @@ local function PresentMonsters()
 
             lib_helpers.TextC(true, monsterList[i].color, monsterList[i].name)
             imgui.NextColumn()
-            lib_helpers.imguiProgressBar(mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), options.fontColor, true)
+            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
             imgui.NextColumn()
         end
+    end
+end
+
+local function PresentTargetMonster()
+    monster = GetTargetMonster()
+    if monster ~= nil then
+        local mHP = monster.HP
+        local mHPMax = monster.HPMax
+
+        -- I won't rename it because of this, at least not yet
+        local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
+        local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
+
+        if atkTech.type == 0 then
+            lib_helpers.Text(true, "")
+        else
+            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+        end
+        if defTech.type == 0 then
+            lib_helpers.Text(true, "")
+        else
+            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+        end
+
+        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
     end
 end
 
@@ -374,6 +488,29 @@ local function present()
         end
     end
 
+    if options.targetEnableWindow then
+        if firstPresent or options.targetChanged then
+            options.targetChanged = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.targetW, options.targetH, "Always");
+        end
+
+        if options.targetTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
+        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize }) then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentTargetMonster()
+        end
+        imgui.End()
+
+        if options.targetTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
+    end
+
     -- Pop custom theme, only if enabled
     if options.useCustomTheme then
         lib_theme.Pop()
@@ -396,7 +533,7 @@ local function init()
     return
     {
         name = "Monster Reader",
-        version = "1.0.4",
+        version = "1.0.5",
         author = "Solybum",
         description = "Information about monsters",
         present = present,
