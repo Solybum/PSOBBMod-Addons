@@ -455,7 +455,7 @@ local function ProcessMag(item)
     result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
-    if options.hideMagStats == true then
+    if options.hideMagStats == false then
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
         result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
@@ -467,7 +467,7 @@ local function ProcessMag(item)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
     end
 
-    if options.hideMagPBs == true then
+    if options.hideMagPBs == false then
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
         result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
