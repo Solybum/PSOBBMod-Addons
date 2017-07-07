@@ -20,15 +20,16 @@ if optionsLoaded then
     options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
     options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
 
-    options.mhpEnableWindow = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
-    options.mhpChanged      = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
-    options.mhpAnchor       = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
-    options.mhpX            = lib_helpers.NotNilOrDefault(options.mhpX, 50)
-    options.mhpY            = lib_helpers.NotNilOrDefault(options.mhpY, 50)
-    options.mhpW            = lib_helpers.NotNilOrDefault(options.mhpW, 450)
-    options.mhpH            = lib_helpers.NotNilOrDefault(options.mhpH, 350)
-    options.mhpNoTitleBar   = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
-    options.mhpNoResize     = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
+    options.mhpEnableWindow      = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
+    options.mhpChanged           = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
+    options.mhpAnchor            = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
+    options.mhpX                 = lib_helpers.NotNilOrDefault(options.mhpX, 50)
+    options.mhpY                 = lib_helpers.NotNilOrDefault(options.mhpY, 50)
+    options.mhpW                 = lib_helpers.NotNilOrDefault(options.mhpW, 450)
+    options.mhpH                 = lib_helpers.NotNilOrDefault(options.mhpH, 350)
+    options.mhpNoTitleBar        = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
+    options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
+    options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 else
     options = 
     {
@@ -48,6 +49,7 @@ else
         mhpH = 350,
         mhpNoTitleBar = "",
         mhpNoResize = "",
+        mhpTransparentWindow = false,
     }
 end
 
@@ -356,11 +358,19 @@ local function present()
             imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
         end
 
+        if options.mhpTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
         if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
         imgui.End()
+
+        if options.mhpTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
 
     -- Pop custom theme, only if enabled

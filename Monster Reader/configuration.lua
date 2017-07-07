@@ -110,6 +110,12 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpChanged = true
                 this.changed = true
             end
+
+            if imgui.Checkbox("Transparent window", _configuration.mhpTransparentWindow) then
+                _configuration.mhpTransparentWindow = not _configuration.mhpTransparentWindow
+                this.changed = true
+            end
+
             imgui.TreePop()
         end
     end
