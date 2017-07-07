@@ -740,7 +740,7 @@ local function init()
     return
     {
         name = "Item Reader",
-        version = "1.0.1",
+        version = "1.0.2",
         author = "Solybum",
         description = "Information about items, anywhere",
         present = present,
