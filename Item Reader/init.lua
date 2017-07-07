@@ -14,50 +14,50 @@ local ConfigurationWindow
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
-    options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
-    options.enable = options.enable == nil and true or options.enable
-    options.useCustomTheme = options.useCustomTheme == nil and true or options.useCustomTheme
-    options.fontScale = options.fontScale or 1.0
-    options.printItemIndex = options.printItemIndex == nil and true or options.printItemIndex
-    options.showEquippedItems = options.showEquippedItems == nil and true or options.showEquippedItems
-    options.shortPBNames = options.shortPBNames == nil and true or options.shortPBNames
-    options.ignoreMeseta = options.ignoreMeseta == nil and true or options.ignoreMeseta
-    options.invertItemList = options.invertItemList == nil and true or options.invertItemList
-    options.hideMagStats = options.hideMagStats == nil and true or options.hideMagStats
-    options.hideMagPBs = options.hideMagPBs == nil and true or options.hideMagPBs
+    options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
+    options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
+    options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
+    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
+    options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
+    options.showEquippedItems         = lib_helpers.NotNilOrDefault(options.showEquippedItems, true)
+    options.shortPBNames              = lib_helpers.NotNilOrDefault(options.shortPBNames, true)
+    options.ignoreMeseta              = lib_helpers.NotNilOrDefault(options.ignoreMeseta, false)
+    options.invertItemList            = lib_helpers.NotNilOrDefault(options.invertItemList, false)
+    options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
+    options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
 
-    options.aioEnableWindow = options.aioEnableWindow == nil and true or options.aioEnableWindow
-    options.aioChanged = options.aioChanged == nil and true or options.aioChanged
-    options.aioAnchor = options.aioAnchor or 1
-    options.aioX = options.aioX or 50
-    options.aioY = options.aioY or 50
-    options.aioW = options.aioW or 450
-    options.aioH = options.aioH or 350
-    options.aioNoTitleBar = options.aioNoTitleBar or ""
-    options.aioNoResize = options.aioNoResize or ""
-    options.aioShowButtonSaveToFile = options.aioShowButtonSaveToFile == nil and true or options.aioShowButtonSaveToFile
-    options.aioSaveFileName = options.saveFileName or "addons/saved_inventory.txt"
-    options.aioSelectedInventory = options.aioSelectedInventory or 1
+    options.aioEnableWindow         = lib_helpers.NotNilOrDefault(options.aioEnableWindow, true)
+    options.aioChanged              = lib_helpers.NotNilOrDefault(options.aioChanged, false)
+    options.aioAnchor               = lib_helpers.NotNilOrDefault(options.aioAnchor, 1)
+    options.aioX                    = lib_helpers.NotNilOrDefault(options.aioX, 50)
+    options.aioY                    = lib_helpers.NotNilOrDefault(options.aioY, 5)
+    options.aioW                    = lib_helpers.NotNilOrDefault(options.aioW, 450)
+    options.aioH                    = lib_helpers.NotNilOrDefault(options.aioH, 350)
+    options.aioNoTitleBar           = lib_helpers.NotNilOrDefault(options.aioNoTitleBar, "")
+    options.aioNoResize             = lib_helpers.NotNilOrDefault(options.aioNoResize, "")
+    options.aioShowButtonSaveToFile = lib_helpers.NotNilOrDefault(options.aioShowButtonSaveToFile, true)
+    options.aioSaveFileName         = lib_helpers.NotNilOrDefault(options.saveFileName, "addons/saved_inventory.txt")
+    options.aioSelectedInventory    = lib_helpers.NotNilOrDefault(options.aioSelectedInventory, 1)
 
-    options.floorEnableWindow = options.floorEnableWindow == nil and true or options.floorEnableWindow
-    options.floorChanged = options.floorChanged == nil and true or options.floorChanged
-    options.floorAnchor = options.floorAnchor or 1
-    options.floorX = options.floorX or 50
-    options.floorY = options.floorY or 50
-    options.floorW = options.floorW or 450
-    options.floorH = options.floorH or 350
-    options.floorNoTitleBar = options.floorNoTitleBar or ""
-    options.floorNoResize = options.floorNoResize or ""
+    options.floorEnableWindow = lib_helpers.NotNilOrDefault(options.floorEnableWindow, true)
+    options.floorChanged      = lib_helpers.NotNilOrDefault(options.floorChanged, false)
+    options.floorAnchor       = lib_helpers.NotNilOrDefault(options.floorAnchor, 1)
+    options.floorX            = lib_helpers.NotNilOrDefault(options.floorX, 50)
+    options.floorY            = lib_helpers.NotNilOrDefault(options.floorY, 50)
+    options.floorW            = lib_helpers.NotNilOrDefault(options.floorW, 450)
+    options.floorH            = lib_helpers.NotNilOrDefault(options.floorH, 350)
+    options.floorNoTitleBar   = lib_helpers.NotNilOrDefault(options.floorNoTitleBar, "")
+    options.floorNoResize     = lib_helpers.NotNilOrDefault(options.floorNoResize, "")
 
-    options.magsEnableWindow = options.magsEnableWindow == nil and true or options.magsEnableWindow
-    options.magsChanged = options.magsChanged == nil and true or options.magsChanged
-    options.magsAnchor = options.magsAnchor or 1
-    options.magsX = options.magsX or 50
-    options.magsY = options.magsY or 50
-    options.magsW = options.magsW or 450
-    options.magsH = options.magsH or 350
-    options.magsNoTitleBar = options.magsNoTitleBar or ""
-    options.magsNoResize = options.magsNoResize or ""
+    options.magsEnableWindow = lib_helpers.NotNilOrDefault(options.magsEnableWindow, true)
+    options.magsChanged      = lib_helpers.NotNilOrDefault(options.magsChanged, false)
+    options.magsAnchor       = lib_helpers.NotNilOrDefault(options.magsAnchor, 1)
+    options.magsX            = lib_helpers.NotNilOrDefault(options.magsX, 50)
+    options.magsY            = lib_helpers.NotNilOrDefault(options.magsY, 50)
+    options.magsW            = lib_helpers.NotNilOrDefault(options.magsW, 450)
+    options.magsH            = lib_helpers.NotNilOrDefault(options.magsH, 350)
+    options.magsNoTitleBar   = lib_helpers.NotNilOrDefault(options.magsNoTitleBar, "")
+    options.magsNoResize     = lib_helpers.NotNilOrDefault(options.magsNoResize, "")
 else
     options = 
     {

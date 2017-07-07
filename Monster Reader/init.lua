@@ -13,22 +13,22 @@ local ConfigurationWindow
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
-    options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
-    options.enable = options.enable == nil and true or options.enable
-    options.useCustomTheme = options.useCustomTheme == nil and true or options.useCustomTheme
-    options.fontScale = options.fontScale or 1.0
-    options.invertMonsterList = options.invertMonsterList == nil and true or options.invertMonsterList
-    options.showCurrentRoomOnly = options.showCurrentRoomOnly == nil and true or options.showCurrentRoomOnly
+    options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
+    options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
+    options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
+    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
+    options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
+    options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
 
-    options.mhpEnableWindow = options.mhpEnableWindow == nil and true or options.mhpEnableWindow
-    options.mhpChanged = options.mhpChanged == nil and true or options.mhpChanged
-    options.mhpAnchor = options.mhpAnchor or 1
-    options.mhpX = options.mhpX or 50
-    options.mhpY = options.mhpY or 50
-    options.mhpW = options.mhpW or 450
-    options.mhpH = options.mhpH or 350
-    options.mhpNoTitleBar = options.mhpNoTitleBar or ""
-    options.mhpNoResize = options.mhpNoResize or ""
+    options.mhpEnableWindow = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
+    options.mhpChanged      = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
+    options.mhpAnchor       = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
+    options.mhpX            = lib_helpers.NotNilOrDefault(options.mhpX, 50)
+    options.mhpY            = lib_helpers.NotNilOrDefault(options.mhpY, 50)
+    options.mhpW            = lib_helpers.NotNilOrDefault(options.mhpW, 450)
+    options.mhpH            = lib_helpers.NotNilOrDefault(options.mhpH, 350)
+    options.mhpNoTitleBar   = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
+    options.mhpNoResize     = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
 else
     options = 
     {

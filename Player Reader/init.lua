@@ -11,20 +11,20 @@ local ConfigurationWindow
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
-    options.configurationEnableWindow = options.configurationEnableWindow == nil and true or options.configurationEnableWindow
-    options.enable = options.enable == nil and true or options.enable
-    options.useCustomTheme = options.useCustomTheme == nil and true or options.useCustomTheme
-    options.fontScale = options.fontScale or 1.0
+    options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
+    options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
+    options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
+    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
 
-    options.playersEnableWindow = options.playersEnableWindow == nil and true or options.playersEnableWindow
-    options.playersChanged = options.playersChanged == nil and true or options.playersChanged
-    options.playersAnchor = options.playersAnchor or 1
-    options.playersX = options.playersX or 50
-    options.playersY = options.playersY or 50
-    options.playersW = options.playersW or 450
-    options.playersH = options.playersH or 350
-    options.playersNoTitleBar = options.playersNoTitleBar or ""
-    options.playersNoResize = options.playersNoResize or ""
+    options.playersEnableWindow = lib_helpers.NotNilOrDefault(options.playersEnableWindow, true)
+    options.playersChanged      = lib_helpers.NotNilOrDefault(options.playersChanged, false)
+    options.playersAnchor       = lib_helpers.NotNilOrDefault(options.playersAnchor, 1)
+    options.playersX            = lib_helpers.NotNilOrDefault(options.playersX, 50)
+    options.playersY            = lib_helpers.NotNilOrDefault(options.playersY, 50)
+    options.playersW            = lib_helpers.NotNilOrDefault(options.playersW, 450)
+    options.playersH            = lib_helpers.NotNilOrDefault(options.playersH, 350)
+    options.playersNoTitleBar   = lib_helpers.NotNilOrDefault(options.playersNoTitleBar, "")
+    options.playersNoResize     = lib_helpers.NotNilOrDefault(options.playersNoResize, "")
 else
     options = 
     {

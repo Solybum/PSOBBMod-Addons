@@ -99,6 +99,14 @@ local function HPToGreenRedGradient(percent)
     return color
 end
 
+local function NotNilOrDefault(value, default)
+    if value == nil then
+        return default
+    else
+        return value
+    end
+end
+
 local function imguiText(text, color, newLine)
     print("Call to deprecated function imguiText. This function might be removed at any time\n" .. debug.traceback())
     color = color or 0xFFFFFFFF
@@ -162,6 +170,7 @@ return
     F32ToInt8 = F32ToInt8,
     GetColorAsFloats = GetColorAsFloats,
     HPToGreenRedGradient = HPToGreenRedGradient,
+    NotNilOrDefault = NotNilOrDefault,
     imguiText = imguiText,
     Text = Text,
     TextC = TextC,
