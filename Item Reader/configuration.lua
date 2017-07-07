@@ -54,6 +54,15 @@ local function ConfigurationWindow(configuration)
                 _configuration.invertItemList = not _configuration.invertItemList
                 this.changed = true
             end
+            if imgui.Checkbox("Hide mag stats", _configuration.hideMagStats) then
+                _configuration.hideMagStats = not _configuration.hideMagStats
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide mag PBs", _configuration.hideMagPBs) then
+                _configuration.hideMagPBs = not _configuration.hideMagPBs
+                this.changed = true
+            end
+
             imgui.TreePop()
         end
 

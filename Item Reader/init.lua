@@ -23,6 +23,8 @@ if optionsLoaded then
     options.shortPBNames = options.shortPBNames == nil and true or options.shortPBNames
     options.ignoreMeseta = options.ignoreMeseta == nil and true or options.ignoreMeseta
     options.invertItemList = options.invertItemList == nil and true or options.invertItemList
+    options.hideMagStats = options.hideMagStats == nil and true or options.hideMagStats
+    options.hideMagPBs = options.hideMagPBs == nil and true or options.hideMagPBs
 
     options.aioEnableWindow = options.aioEnableWindow == nil and true or options.aioEnableWindow
     options.aioChanged = options.aioChanged == nil and true or options.aioChanged
@@ -69,6 +71,8 @@ else
         shortPBNames = true,
         ignoreMeseta = false,
         invertItemList = false,
+        hideMagStats = false,
+        hideMagPBs = false,
 
         aioEnableWindow = true,
         aioChanged = false,
@@ -121,6 +125,8 @@ local function SaveOptions(options)
         io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
         io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
         io.write(string.format("    invertItemList = %s,\n", tostring(options.invertItemList)))
+        io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
+        io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write("\n")
         io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
         io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
@@ -449,23 +455,27 @@ local function ProcessMag(item)
     result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.pow)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.dex)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.mind)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    if options.hideMagStats == true then
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.pow)
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.dex)
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.mind)
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    end
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, options.shortPBNames))
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, options.shortPBNames))
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    if options.hideMagPBs == true then
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, options.shortPBNames))
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, options.shortPBNames))
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    end
 
     local timerColor = lib_items_cfg.white
     for i=1,table.getn(lib_items_cfg.magFeedTimer),2 do
