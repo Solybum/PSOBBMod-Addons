@@ -34,13 +34,13 @@ if optionsLoaded then
 
     options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
     options.targetChanged           = lib_helpers.NotNilOrDefault(options.targetChanged, false)
-    options.targetAnchor            = lib_helpers.NotNilOrDefault(options.targetAnchor, 1)
-    options.targetX                 = lib_helpers.NotNilOrDefault(options.targetX, 50)
-    options.targetY                 = lib_helpers.NotNilOrDefault(options.targetY, 50)
-    options.targetW                 = lib_helpers.NotNilOrDefault(options.targetW, 450)
-    options.targetH                 = lib_helpers.NotNilOrDefault(options.targetH, 350)
-    options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "")
-    options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "")
+    options.targetAnchor            = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
+    options.targetX                 = lib_helpers.NotNilOrDefault(options.targetX, 150)
+    options.targetY                 = lib_helpers.NotNilOrDefault(options.targetY, -45)
+    options.targetW                 = lib_helpers.NotNilOrDefault(options.targetW, 120)
+    options.targetH                 = lib_helpers.NotNilOrDefault(options.targetH, 85)
+    options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
+    options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
     options.targetTransparentWindow = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
 else
     options = 
@@ -65,13 +65,13 @@ else
 
         targetEnableWindow = true,
         targetChanged = false,
-        targetAnchor = 1,
-        targetX = 50,
-        targetY = 50,
-        targetW = 450,
-        targetH = 350,
-        targetNoTitleBar = "",
-        targetNoResize = "",
+        targetAnchor = 3,
+        targetX = 150,
+        targetY = -45,
+        targetW = 120,
+        targetH = 85,
+        targetNoTitleBar = "NoTitleBar",
+        targetNoResize = "NoResize",
         targetTransparentWindow = false,
     }
 end
