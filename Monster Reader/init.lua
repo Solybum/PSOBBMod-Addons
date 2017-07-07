@@ -76,6 +76,7 @@ local function SaveOptions(options)
         io.write(string.format("    mhpH = %i,\n", options.mhpH))
         io.write(string.format("    mhpNoTitleBar = \"%s\",\n", options.mhpNoTitleBar))
         io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
+        io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
         io.write("}\n")
 
         io.close(file)
