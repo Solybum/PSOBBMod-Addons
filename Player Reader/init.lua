@@ -136,7 +136,7 @@ local function PresentPlayers()
         imgui.NextColumn()
         lib_helpers.Text(true, name)
         imgui.NextColumn()
-        lib_helpers.imguiProgressBar(hp/mhp, -1.0, 13.0 * options.fontScale, hp, lib_helpers.HPToGreenRedGradient(hp/mhp), cfg.fontColor, true)
+        lib_helpers.imguiProgressBar(true, hp/mhp, -1.0, 13.0 * options.fontScale, hp, lib_helpers.HPToGreenRedGradient(hp/mhp))
         imgui.NextColumn()
         if atkTech.type == 0 then
             lib_helpers.Text(true, "---")
