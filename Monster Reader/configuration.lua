@@ -67,7 +67,12 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-            
+
+            if imgui.Checkbox("Transparent window", _configuration.mhpTransparentWindow) then
+                _configuration.mhpTransparentWindow = not _configuration.mhpTransparentWindow
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.mhpAnchor = imgui.Combo("Anchor", _configuration.mhpAnchor, anchorList, table.getn(anchorList))
@@ -108,11 +113,6 @@ local function ConfigurationWindow(configuration)
             imgui.PopItemWidth()
             if success then
                 _configuration.mhpChanged = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Transparent window", _configuration.mhpTransparentWindow) then
-                _configuration.mhpTransparentWindow = not _configuration.mhpTransparentWindow
                 this.changed = true
             end
 
