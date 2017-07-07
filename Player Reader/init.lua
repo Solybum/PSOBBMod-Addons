@@ -16,15 +16,30 @@ if optionsLoaded then
     options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
 
-    options.playersEnableWindow = lib_helpers.NotNilOrDefault(options.playersEnableWindow, true)
-    options.playersChanged      = lib_helpers.NotNilOrDefault(options.playersChanged, false)
-    options.playersAnchor       = lib_helpers.NotNilOrDefault(options.playersAnchor, 1)
-    options.playersX            = lib_helpers.NotNilOrDefault(options.playersX, 50)
-    options.playersY            = lib_helpers.NotNilOrDefault(options.playersY, 50)
-    options.playersW            = lib_helpers.NotNilOrDefault(options.playersW, 450)
-    options.playersH            = lib_helpers.NotNilOrDefault(options.playersH, 350)
-    options.playersNoTitleBar   = lib_helpers.NotNilOrDefault(options.playersNoTitleBar, "")
-    options.playersNoResize     = lib_helpers.NotNilOrDefault(options.playersNoResize, "")
+    options.playersEnableWindow          = lib_helpers.NotNilOrDefault(options.playersEnableWindow, true)
+    options.playersChanged               = lib_helpers.NotNilOrDefault(options.playersChanged, false)
+    options.playersAnchor                = lib_helpers.NotNilOrDefault(options.playersAnchor, 1)
+    options.playersX                     = lib_helpers.NotNilOrDefault(options.playersX, 50)
+    options.playersY                     = lib_helpers.NotNilOrDefault(options.playersY, 50)
+    options.playersW                     = lib_helpers.NotNilOrDefault(options.playersW, 450)
+    options.playersH                     = lib_helpers.NotNilOrDefault(options.playersH, 350)
+    options.playersNoTitleBar            = lib_helpers.NotNilOrDefault(options.playersNoTitleBar, "")
+    options.playersNoResize              = lib_helpers.NotNilOrDefault(options.playersNoResize, "")
+    options.playersTransparentWindow     = lib_helpers.NotNilOrDefault(options.playersTransparentWindow, false)
+
+    options.p1EnableWindow          = lib_helpers.NotNilOrDefault(options.p1EnableWindow, true)
+    options.p1Changed               = lib_helpers.NotNilOrDefault(options.p1Changed, false)
+    options.p1Anchor                = lib_helpers.NotNilOrDefault(options.p1Anchor, 1)
+    options.p1X                     = lib_helpers.NotNilOrDefault(options.p1X, 50)
+    options.p1Y                     = lib_helpers.NotNilOrDefault(options.p1Y, 50)
+    options.p1W                     = lib_helpers.NotNilOrDefault(options.p1W, 450)
+    options.p1H                     = lib_helpers.NotNilOrDefault(options.p1H, 350)
+    options.p1NoTitleBar            = lib_helpers.NotNilOrDefault(options.p1NoTitleBar, "")
+    options.p1NoResize              = lib_helpers.NotNilOrDefault(options.p1NoResize, "")
+    options.p1NoScrollbar           = lib_helpers.NotNilOrDefault(options.p1NoScrollbar, "")
+    options.p1TransparentWindow     = lib_helpers.NotNilOrDefault(options.p1TransparentWindow, false)
+    options.p1SD                    = lib_helpers.NotNilOrDefault(options.p1SD, true)
+
 else
     options = 
     {
@@ -42,6 +57,20 @@ else
         playersH = 350,
         playersNoTitleBar = "",
         playersNoResize = "",
+        playersTransparentWindow = false,
+
+        p1EnableWindow = true,
+        p1Changed = false,
+        p1Anchor = 1,
+        p1X = 50,
+        p1Y = 50,
+        p1W = 450,
+        p1H = 350,
+        p1NoTitleBar = "",
+        p1NoResize = "",
+        p1NoScrollbar = "",
+        p1TransparentWindow = false,
+        p1SD = true,
     }
 end
 
@@ -66,6 +95,20 @@ local function SaveOptions(options)
         io.write(string.format("    playersH = %i,\n", options.playersH))
         io.write(string.format("    playersNoTitleBar = \"%s\",\n", options.playersNoTitleBar))
         io.write(string.format("    playersNoResize = \"%s\",\n", options.playersNoResize))
+        io.write(string.format("    playersTransparentWindow = %s,\n", tostring(options.playersTransparentWindow)))
+        io.write("\n")
+        io.write(string.format("    p1EnableWindow = %s,\n", tostring(options.p1EnableWindow)))
+        io.write(string.format("    p1Changed = %s,\n", tostring(options.p1Changed)))
+        io.write(string.format("    p1Anchor = %i,\n", options.p1Anchor))
+        io.write(string.format("    p1X = %i,\n", options.p1X))
+        io.write(string.format("    p1Y = %i,\n", options.p1Y))
+        io.write(string.format("    p1W = %i,\n", options.p1W))
+        io.write(string.format("    p1H = %i,\n", options.p1H))
+        io.write(string.format("    p1NoTitleBar = \"%s\",\n", options.p1NoTitleBar))
+        io.write(string.format("    p1NoResize = \"%s\",\n", options.p1NoResize))
+        io.write(string.format("    p1NoScrollbar = \"%s\",\n", options.p1NoScrollbar))
+        io.write(string.format("    p1TransparentWindow = %s,\n", tostring(options.p1TransparentWindow)))
+        io.write(string.format("    p1SD = %s,\n", tostring(options.p1SD)))
         io.write("}\n")
 
         io.close(file)
@@ -109,6 +152,30 @@ local function PresentPlayers()
     end
 end
 
+local function PresentPlayer(index)
+    local address = lib_characters.GetPlayer(index)
+
+    if address == 0 then
+        return
+    end
+
+    local atkTech = lib_characters.GetPlayerTechStatus(address, 0)
+    local defTech = lib_characters.GetPlayerTechStatus(address, 1)
+
+    if options.p1SD == true then
+        if atkTech.type == 0 then
+            lib_helpers.Text(true, "")
+        else
+            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+        end
+        if defTech.type == 0 then
+            lib_helpers.Text(true, "")
+        else
+            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+        end
+    end
+end
+
 local function present()
     -- If the addon has never been used, open the config window
     -- and disable the config window setting
@@ -146,6 +213,30 @@ local function present()
             PresentPlayers()
         end
         imgui.End()
+    end
+
+    if options.p1EnableWindow then
+        if firstPresent or options.p1Changed then
+            options.p1Changed = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.p1X, options.p1Y, options.p1W, options.p1H, options.p1Anchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.p1W, options.p1H, "Always");
+        end
+
+        if options.p1TransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
+        if imgui.Begin("Player Reader - Player 1", nil, { options.p1NoTitleBar, options.p1NoResize, options.p1NoScrollbar }) then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentPlayer(1)
+        end
+
+        imgui.End()
+
+        if options.p1TransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
 
     -- Pop custom theme, only if enabled

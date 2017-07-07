@@ -60,7 +60,7 @@ local function ConfigurationWindow(configuration)
             end
 
             imgui.Text("Position and Size")
-            imgui.PushItemWidth(150)
+            imgui.PushItemWidth(200)
             success, _configuration.playersAnchor = imgui.Combo("Anchor", _configuration.playersAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
@@ -101,6 +101,93 @@ local function ConfigurationWindow(configuration)
                 _configuration.playersChanged = true
                 this.changed = true
             end
+            imgui.TreePop()
+        end
+
+        if imgui.TreeNodeEx("P1") then
+            if imgui.Checkbox("Enable", _configuration.p1EnableWindow) then
+                _configuration.p1EnableWindow = not _configuration.p1EnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("No title bar", _configuration.p1NoTitleBar == "NoTitleBar") then
+                if _configuration.p1NoTitleBar == "NoTitleBar" then
+                    _configuration.p1NoTitleBar = ""
+                else
+                    _configuration.p1NoTitleBar = "NoTitleBar"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No resize", _configuration.p1NoResize == "NoResize") then
+                if _configuration.p1NoResize == "NoResize" then
+                    _configuration.p1NoResize = ""
+                else
+                    _configuration.p1NoResize = "NoResize"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No scrollbar", _configuration.p1NoScrollbar == "NoScrollbar") then
+                if _configuration.p1NoScrollbar == "NoScrollbar" then
+                    _configuration.p1NoScrollbar = ""
+                else
+                    _configuration.p1NoScrollbar = "NoScrollbar"
+                end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Transparent Window", _configuration.p1TransparentWindow) then
+                _configuration.p1TransparentWindow = not _configuration.p1TransparentWindow
+                this.changed = true
+            end
+
+            imgui.Text("Position and Size")
+            imgui.PushItemWidth(200)
+            success, _configuration.p1Anchor = imgui.Combo("Anchor", _configuration.p1Anchor, anchorList, table.getn(anchorList))
+            imgui.PopItemWidth()
+            if success then
+                _configuration.p1Changed = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.p1X = imgui.InputInt("X", _configuration.p1X)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.p1Changed = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 38)
+            imgui.PushItemWidth(100)
+            success, _configuration.p1Y = imgui.InputInt("Y", _configuration.p1Y)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.p1Changed = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.p1W = imgui.InputInt("Width", _configuration.p1W)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.p1Changed = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 10)
+            imgui.PushItemWidth(100)
+            success, _configuration.p1H = imgui.InputInt("Height", _configuration.p1H)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.p1Changed = true
+                this.changed = true
+            end
+
+            if imgui.Checkbox("S/D (J/Z)", _configuration.p1SD) then
+                _configuration.p1SD = not _configuration.p1SD
+                this.changed = true
+            end
+
             imgui.TreePop()
         end
     end
