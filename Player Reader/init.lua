@@ -30,14 +30,14 @@ if optionsLoaded then
     options.p1EnableWindow          = lib_helpers.NotNilOrDefault(options.p1EnableWindow, true)
     options.p1Changed               = lib_helpers.NotNilOrDefault(options.p1Changed, false)
     options.p1Anchor                = lib_helpers.NotNilOrDefault(options.p1Anchor, 1)
-    options.p1X                     = lib_helpers.NotNilOrDefault(options.p1X, 50)
-    options.p1Y                     = lib_helpers.NotNilOrDefault(options.p1Y, 50)
-    options.p1W                     = lib_helpers.NotNilOrDefault(options.p1W, 450)
-    options.p1H                     = lib_helpers.NotNilOrDefault(options.p1H, 350)
-    options.p1NoTitleBar            = lib_helpers.NotNilOrDefault(options.p1NoTitleBar, "")
-    options.p1NoResize              = lib_helpers.NotNilOrDefault(options.p1NoResize, "")
-    options.p1NoScrollbar           = lib_helpers.NotNilOrDefault(options.p1NoScrollbar, "")
-    options.p1TransparentWindow     = lib_helpers.NotNilOrDefault(options.p1TransparentWindow, false)
+    options.p1X                     = lib_helpers.NotNilOrDefault(options.p1X, 250)
+    options.p1Y                     = lib_helpers.NotNilOrDefault(options.p1Y, 30)
+    options.p1W                     = lib_helpers.NotNilOrDefault(options.p1W, 150)
+    options.p1H                     = lib_helpers.NotNilOrDefault(options.p1H, 45)
+    options.p1NoTitleBar            = lib_helpers.NotNilOrDefault(options.p1NoTitleBar, "NoTitleBar")
+    options.p1NoResize              = lib_helpers.NotNilOrDefault(options.p1NoResize, "NoResize")
+    options.p1NoScrollbar           = lib_helpers.NotNilOrDefault(options.p1NoScrollbar, "NoScrollbar")
+    options.p1TransparentWindow     = lib_helpers.NotNilOrDefault(options.p1TransparentWindow, true)
     options.p1SD                    = lib_helpers.NotNilOrDefault(options.p1SD, true)
 
 else
@@ -62,14 +62,14 @@ else
         p1EnableWindow = true,
         p1Changed = false,
         p1Anchor = 1,
-        p1X = 50,
-        p1Y = 50,
-        p1W = 450,
-        p1H = 350,
-        p1NoTitleBar = "",
-        p1NoResize = "",
-        p1NoScrollbar = "",
-        p1TransparentWindow = false,
+        p1X = 250,
+        p1Y = 30,
+        p1W = 150,
+        p1H = 45,
+        p1NoTitleBar = "NoTitleBar",
+        p1NoResize = "NoResize",
+        p1NoScrollbar = "NoScrollbar",
+        p1TransparentWindow = true,
         p1SD = true,
     }
 end
