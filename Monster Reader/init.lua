@@ -396,7 +396,7 @@ local function init()
     return
     {
         name = "Monster Reader",
-        version = "1.0.3",
+        version = "1.0.4",
         author = "Solybum",
         description = "Information about monsters",
         present = present,
