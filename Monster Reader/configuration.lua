@@ -69,7 +69,7 @@ local function ConfigurationWindow(configuration)
             end
             
             imgui.Text("Position and Size")
-            imgui.PushItemWidth(150)
+            imgui.PushItemWidth(200)
             success, _configuration.mhpAnchor = imgui.Combo("Anchor", _configuration.mhpAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then

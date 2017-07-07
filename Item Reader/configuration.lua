@@ -90,7 +90,7 @@ local function ConfigurationWindow(configuration)
             end
         
             imgui.Text("Position and Size")
-            imgui.PushItemWidth(150)
+            imgui.PushItemWidth(200)
             success, _configuration.aioAnchor = imgui.Combo("Anchor", _configuration.aioAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
@@ -170,7 +170,7 @@ local function ConfigurationWindow(configuration)
             end
         
             imgui.Text("Position and Size")
-            imgui.PushItemWidth(150)
+            imgui.PushItemWidth(200)
             success, _configuration.floorAnchor = imgui.Combo("Anchor", _configuration.floorAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
@@ -238,7 +238,7 @@ local function ConfigurationWindow(configuration)
             end
         
             imgui.Text("Position and Size")
-            imgui.PushItemWidth(150)
+            imgui.PushItemWidth(200)
             success, _configuration.magsAnchor = imgui.Combo("Anchor", _configuration.magsAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
