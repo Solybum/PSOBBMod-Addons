@@ -2,7 +2,7 @@ local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
 local lib_unitxt = require("solylib.unitxt")
-local lib_theme = require("Theme Editor.theme")
+local lib_theme_loaded, lib_theme = pcall(require, "Theme Editor.theme")
 local cfg = require("Monster Reader.configuration")
 -- TODO move to options
 local cfgMonsters = require("Monster Reader.monsters")
@@ -461,7 +461,7 @@ local function present()
     end
 
     -- Push custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Push()
     end
 
@@ -512,7 +512,7 @@ local function present()
     end
 
     -- Pop custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Pop()
     end
 
@@ -529,6 +529,10 @@ local function init()
     end
 
     core_mainmenu.add_button("Monster Reader", mainMenuButtonHandler)
+
+    if lib_theme_loaded == false then
+        print("Monster Reader: lib_theme couldn't be loaded")
+    end
 
     return
     {

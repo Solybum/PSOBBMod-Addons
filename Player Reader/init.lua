@@ -1,7 +1,7 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
-local lib_theme = require("Theme Editor.theme")
+local lib_theme_loaded, lib_theme = pcall(require, "Theme Editor.theme")
 local cfg = require("Player Reader.configuration")
 local optionsLoaded, options = pcall(require, "Player Reader.options")
 
@@ -196,7 +196,7 @@ local function present()
     end
 
     -- Push custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Push()
     end
 
@@ -240,7 +240,7 @@ local function present()
     end
 
     -- Pop custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Pop()
     end
 
@@ -257,6 +257,10 @@ local function init()
     end
 
     core_mainmenu.add_button("Player Reader", mainMenuButtonHandler)
+
+    if lib_theme_loaded == false then
+        print("Player Reader: lib_theme couldn't be loaded")
+    end
 
     return
     {

@@ -4,7 +4,7 @@ local lib_unitxt = require("solylib.unitxt")
 local lib_items = require("solylib.items.items")
 local lib_items_list = require("solylib.items.items_list")
 local lib_items_cfg = require("solylib.items.items_configuration")
-local lib_theme = require("Theme Editor.theme")
+local lib_theme_loaded, lib_theme = pcall(require, "Theme Editor.theme")
 local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
@@ -671,7 +671,7 @@ local function present()
     end
 
     -- Push custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Push()
     end
 
@@ -719,7 +719,7 @@ local function present()
     end
 
     -- Pop custom theme, only if enabled
-    if options.useCustomTheme then
+    if lib_theme_loaded and options.useCustomTheme then
         lib_theme.Pop()
     end
 
@@ -736,6 +736,10 @@ local function init()
     end
 
     core_mainmenu.add_button("Item Reader", mainMenuButtonHandler)
+
+    if lib_theme_loaded == false then
+        print("Item Reader: lib_theme couldn't be loaded")
+    end
 
     return
     {
