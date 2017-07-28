@@ -58,6 +58,14 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
+            if imgui.Checkbox("No move", _configuration.playersNoMove == "NoMove") then
+                if _configuration.playersNoMove == "NoMove" then
+                    _configuration.playersNoMove = ""
+                else
+                    _configuration.playersNoMove = "NoMove"
+                end
+                this.changed = true
+            end
 
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
@@ -123,6 +131,14 @@ local function ConfigurationWindow(configuration)
                     _configuration.p1NoResize = ""
                 else
                     _configuration.p1NoResize = "NoResize"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No move", _configuration.p1NoMove == "NoMove") then
+                if _configuration.p1NoMove == "NoMove" then
+                    _configuration.p1NoMove = ""
+                else
+                    _configuration.p1NoMove = "NoMove"
                 end
                 this.changed = true
             end

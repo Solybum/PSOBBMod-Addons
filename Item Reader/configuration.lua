@@ -1,5 +1,5 @@
 local function ConfigurationWindow(configuration)
-    local this = 
+    local this =
     {
         title = "Item Reader - Configuration",
         fontScale = 1.0,
@@ -71,7 +71,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.aioEnableWindow = not _configuration.aioEnableWindow
                 this.changed = true
             end
-        
+
             if imgui.Checkbox("No title bar", _configuration.aioNoTitleBar == "NoTitleBar") then
                 if _configuration.aioNoTitleBar == "NoTitleBar" then
                     _configuration.aioNoTitleBar = ""
@@ -88,7 +88,15 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-        
+            if imgui.Checkbox("No move", _configuration.aioNoMove == "NoMove") then
+                if _configuration.aioNoMove == "NoMove" then
+                    _configuration.aioNoMove = ""
+                else
+                    _configuration.aioNoMove = "NoMove"
+                end
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.aioAnchor = imgui.Combo("Anchor", _configuration.aioAnchor, anchorList, table.getn(anchorList))
@@ -97,7 +105,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.aioChanged = true
                 this.changed = true
             end
-        
+
             imgui.PushItemWidth(100)
             success, _configuration.aioX = imgui.InputInt("X", _configuration.aioX)
             imgui.PopItemWidth()
@@ -105,7 +113,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.aioChanged = true
                 this.changed = true
             end
-        
+
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
             success, _configuration.aioY = imgui.InputInt("Y", _configuration.aioY)
@@ -114,7 +122,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.aioChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.aioW = imgui.InputInt("Width", _configuration.aioW)
             imgui.PopItemWidth()
@@ -122,7 +130,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.aioChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
             success, _configuration.aioH = imgui.InputInt("Height", _configuration.aioH)
@@ -151,7 +159,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floorEnableWindow = not _configuration.floorEnableWindow
                 this.changed = true
             end
-        
+
             if imgui.Checkbox("No title bar", _configuration.floorNoTitleBar == "NoTitleBar") then
                 if _configuration.floorNoTitleBar == "NoTitleBar" then
                     _configuration.floorNoTitleBar = ""
@@ -168,7 +176,15 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-        
+            if imgui.Checkbox("No move", _configuration.floorNoMove == "NoMove") then
+                if _configuration.floorNoMove == "NoMove" then
+                    _configuration.floorNoMove = ""
+                else
+                    _configuration.floorNoMove = "NoMove"
+                end
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.floorAnchor = imgui.Combo("Anchor", _configuration.floorAnchor, anchorList, table.getn(anchorList))
@@ -177,7 +193,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floorChanged = true
                 this.changed = true
             end
-        
+
             imgui.PushItemWidth(100)
             success, _configuration.floorX = imgui.InputInt("X", _configuration.floorX)
             imgui.PopItemWidth()
@@ -185,7 +201,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floorChanged = true
                 this.changed = true
             end
-        
+
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
             success, _configuration.floorY = imgui.InputInt("Y", _configuration.floorY)
@@ -194,7 +210,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floorChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.floorW = imgui.InputInt("Width", _configuration.floorW)
             imgui.PopItemWidth()
@@ -202,7 +218,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floorChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
             success, _configuration.floorH = imgui.InputInt("Height", _configuration.floorH)
@@ -219,7 +235,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.magsEnableWindow = not _configuration.magsEnableWindow
                 this.changed = true
             end
-        
+
             if imgui.Checkbox("No title bar", _configuration.magsNoTitleBar == "NoTitleBar") then
                 if _configuration.magsNoTitleBar == "NoTitleBar" then
                     _configuration.magsNoTitleBar = ""
@@ -236,7 +252,15 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-        
+            if imgui.Checkbox("No move", _configuration.magsNoMove == "NoMove") then
+                if _configuration.magsNoMove == "NoMove" then
+                    _configuration.magsNoMove = ""
+                else
+                    _configuration.magsNoMove = "NoMove"
+                end
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.magsAnchor = imgui.Combo("Anchor", _configuration.magsAnchor, anchorList, table.getn(anchorList))
@@ -245,7 +269,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.magsChanged = true
                 this.changed = true
             end
-        
+
             imgui.PushItemWidth(100)
             success, _configuration.magsX = imgui.InputInt("X", _configuration.magsX)
             imgui.PopItemWidth()
@@ -253,7 +277,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.magsChanged = true
                 this.changed = true
             end
-        
+
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
             success, _configuration.magsY = imgui.InputInt("Y", _configuration.magsY)
@@ -262,7 +286,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.magsChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.magsW = imgui.InputInt("Width", _configuration.magsW)
             imgui.PopItemWidth()
@@ -270,7 +294,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.magsChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
             success, _configuration.magsH = imgui.InputInt("Height", _configuration.magsH)
@@ -302,7 +326,7 @@ local function ConfigurationWindow(configuration)
     return this
 end
 
-return 
+return
 {
     ConfigurationWindow = ConfigurationWindow,
 }

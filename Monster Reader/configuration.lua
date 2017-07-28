@@ -67,6 +67,14 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
+            if imgui.Checkbox("No move", _configuration.mhpNoMove == "NoMove") then
+                if _configuration.mhpNoMove == "NoMove" then
+                    _configuration.mhpNoMove = ""
+                else
+                    _configuration.mhpNoMove = "NoMove"
+                end
+                this.changed = true
+            end
 
             if imgui.Checkbox("Transparent window", _configuration.mhpTransparentWindow) then
                 _configuration.mhpTransparentWindow = not _configuration.mhpTransparentWindow
@@ -138,6 +146,14 @@ local function ConfigurationWindow(configuration)
                     _configuration.targetNoResize = ""
                 else
                     _configuration.targetNoResize = "NoResize"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No move", _configuration.targetNoMove == "NoMove") then
+                if _configuration.targetNoMove == "NoMove" then
+                    _configuration.targetNoMove = ""
+                else
+                    _configuration.targetNoMove = "NoMove"
                 end
                 this.changed = true
             end

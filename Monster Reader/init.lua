@@ -30,6 +30,7 @@ if optionsLoaded then
     options.mhpH                 = lib_helpers.NotNilOrDefault(options.mhpH, 350)
     options.mhpNoTitleBar        = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
     options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
+    options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
     options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
@@ -41,6 +42,7 @@ if optionsLoaded then
     options.targetH                 = lib_helpers.NotNilOrDefault(options.targetH, 85)
     options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
     options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
+    options.targetNoMove            = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
     options.targetTransparentWindow = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
 else
     options = 
@@ -61,6 +63,7 @@ else
         mhpH = 350,
         mhpNoTitleBar = "",
         mhpNoResize = "",
+        mhpNoMove = "",
         mhpTransparentWindow = false,
 
         targetEnableWindow = true,
@@ -72,6 +75,7 @@ else
         targetH = 85,
         targetNoTitleBar = "NoTitleBar",
         targetNoResize = "NoResize",
+        targetNoMove = "NoMove",
         targetTransparentWindow = false,
     }
 end
@@ -99,6 +103,7 @@ local function SaveOptions(options)
         io.write(string.format("    mhpH = %i,\n", options.mhpH))
         io.write(string.format("    mhpNoTitleBar = \"%s\",\n", options.mhpNoTitleBar))
         io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
+        io.write(string.format("    mhpNoMove = \"%s\",\n", options.mhpNoMove))
         io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
         io.write("\n")
         io.write(string.format("    targetEnableWindow = %s,\n", tostring(options.targetEnableWindow)))
@@ -110,6 +115,7 @@ local function SaveOptions(options)
         io.write(string.format("    targetH = %i,\n", options.targetH))
         io.write(string.format("    targetNoTitleBar = \"%s\",\n", options.targetNoTitleBar))
         io.write(string.format("    targetNoResize = \"%s\",\n", options.targetNoResize))
+        io.write(string.format("    targetNoMove = \"%s\",\n", options.targetNoMove))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
         io.write("}\n")
 
@@ -477,7 +483,7 @@ local function present()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize }) then
+        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
@@ -500,7 +506,7 @@ local function present()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize }) then
+        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentTargetMonster()
         end

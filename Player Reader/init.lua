@@ -25,6 +25,7 @@ if optionsLoaded then
     options.playersH                     = lib_helpers.NotNilOrDefault(options.playersH, 350)
     options.playersNoTitleBar            = lib_helpers.NotNilOrDefault(options.playersNoTitleBar, "")
     options.playersNoResize              = lib_helpers.NotNilOrDefault(options.playersNoResize, "")
+    options.playersNoMove                = lib_helpers.NotNilOrDefault(options.playersNoMove, "")
     options.playersTransparentWindow     = lib_helpers.NotNilOrDefault(options.playersTransparentWindow, false)
 
     options.p1EnableWindow          = lib_helpers.NotNilOrDefault(options.p1EnableWindow, true)
@@ -36,6 +37,7 @@ if optionsLoaded then
     options.p1H                     = lib_helpers.NotNilOrDefault(options.p1H, 45)
     options.p1NoTitleBar            = lib_helpers.NotNilOrDefault(options.p1NoTitleBar, "NoTitleBar")
     options.p1NoResize              = lib_helpers.NotNilOrDefault(options.p1NoResize, "NoResize")
+    options.p1NoMove                = lib_helpers.NotNilOrDefault(options.p1NoMove, "NoMove")
     options.p1NoScrollbar           = lib_helpers.NotNilOrDefault(options.p1NoScrollbar, "NoScrollbar")
     options.p1TransparentWindow     = lib_helpers.NotNilOrDefault(options.p1TransparentWindow, true)
     options.p1SD                    = lib_helpers.NotNilOrDefault(options.p1SD, true)
@@ -57,6 +59,7 @@ else
         playersH = 350,
         playersNoTitleBar = "",
         playersNoResize = "",
+        playersNoMove = "",
         playersTransparentWindow = false,
 
         p1EnableWindow = true,
@@ -68,6 +71,7 @@ else
         p1H = 45,
         p1NoTitleBar = "NoTitleBar",
         p1NoResize = "NoResize",
+        p1NoMove = "NoMove",
         p1NoScrollbar = "NoScrollbar",
         p1TransparentWindow = true,
         p1SD = true,
@@ -95,6 +99,7 @@ local function SaveOptions(options)
         io.write(string.format("    playersH = %i,\n", options.playersH))
         io.write(string.format("    playersNoTitleBar = \"%s\",\n", options.playersNoTitleBar))
         io.write(string.format("    playersNoResize = \"%s\",\n", options.playersNoResize))
+        io.write(string.format("    playersNoMove = \"%s\",\n", options.playersNoMove))
         io.write(string.format("    playersTransparentWindow = %s,\n", tostring(options.playersTransparentWindow)))
         io.write("\n")
         io.write(string.format("    p1EnableWindow = %s,\n", tostring(options.p1EnableWindow)))
@@ -106,6 +111,7 @@ local function SaveOptions(options)
         io.write(string.format("    p1H = %i,\n", options.p1H))
         io.write(string.format("    p1NoTitleBar = \"%s\",\n", options.p1NoTitleBar))
         io.write(string.format("    p1NoResize = \"%s\",\n", options.p1NoResize))
+        io.write(string.format("    p1NoMove = \"%s\",\n", options.p1NoMove))
         io.write(string.format("    p1NoScrollbar = \"%s\",\n", options.p1NoScrollbar))
         io.write(string.format("    p1TransparentWindow = %s,\n", tostring(options.p1TransparentWindow)))
         io.write(string.format("    p1SD = %s,\n", tostring(options.p1SD)))
@@ -208,7 +214,7 @@ local function present()
             imgui.SetNextWindowSize(options.playersW, options.playersH, "Always");
         end
 
-        if imgui.Begin("Player Reader - Players", nil, { options.playersNoTitleBar, options.playersNoResize }) then
+        if imgui.Begin("Player Reader - Players", nil, { options.playersNoTitleBar, options.playersNoResize, options.playersNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentPlayers()
         end
@@ -227,7 +233,7 @@ local function present()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Player Reader - Player 1", nil, { options.p1NoTitleBar, options.p1NoResize, options.p1NoScrollbar }) then
+        if imgui.Begin("Player Reader - Player 1", nil, { options.p1NoTitleBar, options.p1NoResize, options.p1NoMove, options.p1NoScrollbar }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentPlayer(1)
         end
