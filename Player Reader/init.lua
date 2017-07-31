@@ -235,7 +235,7 @@ local function present()
 
         if imgui.Begin("Player Reader - Player 1", nil, { options.p1NoTitleBar, options.p1NoResize, options.p1NoMove, options.p1NoScrollbar }) then
             imgui.SetWindowFontScale(options.fontScale)
-            PresentPlayer(1)
+            PresentPlayer(0)
         end
 
         imgui.End()
