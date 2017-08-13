@@ -72,7 +72,7 @@ local function GetPlayerTechStatus(player, tech)
         name = "Z"
     end
 
-    local level = tonumber(string.format("%.0f", ((multiplier * 100) - 10) / 1.30))
+    local level = tonumber(string.format("%.0f", ((math.abs(multiplier) * 100) - 10) / 1.30))
     local time = tonumber(string.format("%.0f", frames / 30))
     local totalTime = ((level * 10) + 40)
 
