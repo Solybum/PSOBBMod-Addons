@@ -433,38 +433,40 @@ local function PresentMonsters()
             imgui.NextColumn()
             
             if options.mhpShowStatus then
-
-                local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
-                local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
                 
-                if atkTech.type == 0 then
-                    lib_helpers.TextC(true, 0, "    ")
-                else
-                    lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
-                end
-                
-                if defTech.type == 0 then
-                    lib_helpers.TextC(false, 0, "    ")
-                else
-                    lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
-                end
-                
-                local frozenOrConfused = pso.read_u8(monster.address + 0x0268)
-                local frozen = frozenOrConfused == 0x02
-                local confused = frozenOrConfused == 0x12
-                
-                if frozen then
-                    lib_helpers.TextC(false, 0xFF00FFFF, "F ")
-                elseif confused then
-                    lib_helpers.TextC(false, 0xFFFF00FF, "C ")
-                else
-                    lib_helpers.TextC(false, 0, "  ")
-                end
-                
-                local paralyzed = pso.read_u8(monster.address + 0x025c) == 0x10
-                
-                if paralyzed then
-                    lib_helpers.TextC(false, 0xFFFF4000, "P ")
+                if monster ~= nil then
+                    local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
+                    local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
+                    
+                    if atkTech.type == 0 then
+                        lib_helpers.TextC(true, 0, "    ")
+                    else
+                        lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+                    end
+                    
+                    if defTech.type == 0 then
+                        lib_helpers.TextC(false, 0, "    ")
+                    else
+                        lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                    end
+                    
+                    local frozenOrConfused = pso.read_u8(monster.address + 0x0268)
+                    local frozen = frozenOrConfused == 0x02
+                    local confused = frozenOrConfused == 0x12
+                    
+                    if frozen then
+                        lib_helpers.TextC(false, 0xFF00FFFF, "F ")
+                    elseif confused then
+                        lib_helpers.TextC(false, 0xFFFF00FF, "C ")
+                    else
+                        lib_helpers.TextC(false, 0, "  ")
+                    end
+                    
+                    local paralyzed = pso.read_u8(monster.address + 0x025c) == 0x10
+                    
+                    if paralyzed then
+                        lib_helpers.TextC(false, 0xFFFF4000, "P ")
+                    end
                 end
                 
                 imgui.NextColumn()
