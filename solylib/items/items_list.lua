@@ -1,3 +1,10 @@
+-- Possible values for this variable are:
+-- Ultima
+-- Ephinea
+-- Schthack
+-- Feel free to add your server items at the end, if you don't do that, your PR won't be merged
+local server = "Vanilla"
+
 local t = {}
 
 -- Settings the color to something different than 0 will make the addon use the selected
@@ -1512,6 +1519,41 @@ t[ 0x05121A ] = { 0xFF00FF00, true } -- Megid Lv27
 t[ 0x05121B ] = { 0xFF00FF00, true } -- Megid Lv28
 t[ 0x05121C ] = { 0xFF00FF00, true } -- Megid Lv29
 t[ 0x05121D ] = { 0xFF00FF00, true } -- Megid Lv30
+
+if server == "Ultima" then
+    
+elseif server == "Ephinea" then
+    t[ 0x031005 ] = { 0xFFFF0000, true } -- Event Egg
+    t[ 0x031006 ] = { 0xFFFF0000, true } -- 1st Anniv. Bronze Badge
+    t[ 0x031007 ] = { 0xFFFF0000, true } -- 1st Anniv. Silver Badge
+    t[ 0x031008 ] = { 0xFFFF0000, true } -- 1st Anniv. Gold Badge
+    t[ 0x031009 ] = { 0xFFFF0000, true } -- 1st Anniv. Platinum Badge
+    t[ 0x03100A ] = { 0xFFFF0000, true } -- 2nd Anniv. Bronze Badge
+    t[ 0x03100B ] = { 0xFFFF0000, true } -- 2nd Anniv. Silver Badge
+    t[ 0x03100C ] = { 0xFFFF0000, true } -- 2nd Anniv. Gold Badge
+    t[ 0x03100D ] = { 0xFFFF0000, true } -- 2nd Anniv. Platinum Badge
+    t[ 0x03160C ] = { 0xFFFFFF00, true } -- Disk Vol.13 "Get It Up"
+    t[ 0x03160D ] = { 0xFFFFFF00, true } -- Disk Vol.14 "Flight"
+    t[ 0x03160E ] = { 0xFFFFFF00, true } -- Disk Vol.15 "Space Harrier"
+    t[ 0x03160F ] = { 0xFFFFFF00, true } -- Disk Vol.16 "Deathwatch"
+    t[ 0x031610 ] = { 0xFFFFFF00, true } -- Disk Vol.17 "Fly Me To The Moon"
+    t[ 0x031611 ] = { 0xFFFFFF00, true } -- Disk Vol.18 "Puyo Puyo"
+    t[ 0x031612 ] = { 0xFFFFFF00, true } -- Disk Vol.19 "Rhythm And Balance"
+    t[ 0x031613 ] = { 0xFFFFFF00, true } -- Disk Vol.20 "The Party Must Go On"
+    t[ 0x031705 ] = { 0xFFFF0000, true } -- Viridia Badge
+    t[ 0x031706 ] = { 0xFFFF0000, true } -- Greenill Badge
+    t[ 0x031707 ] = { 0xFFFF0000, true } -- Skyly Badge
+    t[ 0x031708 ] = { 0xFFFF0000, true } -- Bluefull Badge
+    t[ 0x031709 ] = { 0xFFFF0000, true } -- Purplenum Badge
+    t[ 0x03170A ] = { 0xFFFF0000, true } -- Pinkal Badge
+    t[ 0x03170B ] = { 0xFFFF0000, true } -- Redria Badge
+    t[ 0x03170C ] = { 0xFFFF0000, true } -- Oran Badge
+    t[ 0x03170D ] = { 0xFFFF0000, true } -- Yellowboze Badge
+    t[ 0x03170E ] = { 0xFFFF0000, true } -- Whitill Badge
+    t[ 0x031810 ] = { 0xFFFF0000, true } -- Heart of YN-0117
+elseif server == "Schthack" then
+    
+end
 
 return
 {
