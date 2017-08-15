@@ -98,7 +98,7 @@ end
 local function GetPlayerConfusedStatus(player)
     return pso.read_u32(player + 0x268) == 0x12
 end
-local function GetPlayerParalizedStatus(player)
+local function GetPlayerParalyzedStatus(player)
     return pso.read_u32(player + 0x25C) == 0x10
 end
 
@@ -112,5 +112,5 @@ return
     GetPlayerTechStatus = GetPlayerTechStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
-    GetPlayerParalizedStatus = GetPlayerParalizedStatus,
+    GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
 }

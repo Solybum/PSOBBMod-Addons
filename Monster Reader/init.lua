@@ -469,7 +469,7 @@ local function PresentMonsters()
 
                 local frozen = lib_characters.GetPlayerFrozenStatus(monster.address)
                 local confused = lib_characters.GetPlayerConfusedStatus(monster.address)
-                local paralyzed = lib_characters.GetPlayerParalizedStatus(monster.address)
+                local paralyzed = lib_characters.GetPlayerParalyzedStatus(monster.address)
 
                 if frozen then
                     lib_helpers.TextC(false, 0xFF00FFFF, "F ")
