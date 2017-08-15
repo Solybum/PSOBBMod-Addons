@@ -173,6 +173,7 @@ local _MonsterBarbaRayShellHPMax = 0x1C
 local function CopyMonster(monster)
     local copy = {}
 
+    copy.address  = monster.address
     copy.index    = monster.index
     copy.id       = monster.id
     copy.room     = monster.room
@@ -596,12 +597,7 @@ local function present()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        local NoInputs = ""
-        if options.mhpTransparentWindow == true and options.mhpNoTitleBar == "NoTitleBar" then
-            NoInputs = "NoInputs"
-        end
-
-        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove, NoInputs }) then
+        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
