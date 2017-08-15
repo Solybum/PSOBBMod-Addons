@@ -628,7 +628,7 @@ local function BuildAIOSelection()
 
     for i=1, playerListCount, 1 do
         local playerName = lib_characters.GetPlayerName(playerList[i].address)
-        --table.insert(selectionList, playerName)
+        table.insert(selectionList, playerName)
     end
 
     return selectionList
