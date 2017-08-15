@@ -1,5 +1,6 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
+local lib_characters = require("solylib.characters")
 local lib_unitxt = require("solylib.unitxt")
 local lib_items = require("solylib.items.items")
 local lib_items_list = require("solylib.items.items_list")
@@ -580,12 +581,13 @@ local function ProcessItem(item, floor, save)
     end
 end
 
-local function PresentInventory(save)
-    local inventory = lib_items.GetInventory(lib_items.Me)
+local function PresentInventory(save, index)
+    index = index or lib_items.Me
+    local inventory = lib_items.GetInventory(index)
     local itemCount = table.getn(inventory.items)
-
+    
     lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i", inventory.meseta)
-
+    
     for i=1,itemCount,1 do
         ProcessItem(inventory.items[i], false, save)
     end
@@ -619,17 +621,35 @@ local function PresentMags()
     end
 end
 
+local function BuildAIOSelection()
+    local selectionList = { "Inventory", "Bank", "Floor", "Mags" }
+    local playerList = lib_characters.GetPlayerList()
+    local playerListCount = table.getn(playerList)
+
+    for i=1, playerListCount, 1 do
+        local playerName = lib_characters.GetPlayerName(playerList[i].address)
+        --table.insert(selectionList, playerName)
+    end
+
+    return selectionList
+end
+
 local aioStatus = true
 local aioSelectedInventory = options.aioSelectedInventory
 local function PresentAIO()
     local save = false
 
-    local selectionList = { "Inventory", "Bank", "Floor", "Mags" }
+    local selectionList = BuildAIOSelection()
+    local selectionListCount = table.getn(selectionList)
+    if aioSelectedInventory > selectionListCount then
+        aioSelectedInventory = 1
+    end
+
     imgui.PushItemWidth(150)
-    aioStatus, aioSelectedInventory = imgui.Combo(" ", aioSelectedInventory, selectionList, table.getn(selectionList))
+    aioStatus, aioSelectedInventory = imgui.Combo(" ", aioSelectedInventory, selectionList, selectionListCount)
     imgui.PopItemWidth()
 
-    if aioSelectedInventory ~= options.aioSelectedInventory then
+    if aioSelectedInventory < 4 and aioSelectedInventory ~= options.aioSelectedInventory then
         options.aioSelectedInventory = aioSelectedInventory
         SaveOptions(options)
     end
@@ -649,13 +669,15 @@ local function PresentAIO()
     imgui.BeginChild("ItemList", 0)
     imgui.SetWindowFontScale(options.fontScale)
     if aioSelectedInventory == 1 then
-        PresentInventory(save)
+        PresentInventory(save, lib_items.Me)
     elseif aioSelectedInventory == 2 then
         PresentBank(save)
     elseif aioSelectedInventory == 3 then
         PresentFloor(save)
     elseif aioSelectedInventory == 4 then
         PresentMags(save)
+    else
+        PresentInventory(save, aioSelectedInventory - 5)
     end
     imgui.EndChild()
 end
