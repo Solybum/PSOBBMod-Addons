@@ -20,6 +20,7 @@ if optionsLoaded then
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
     options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
+    options.showMonsterStatus         = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
 
     options.mhpEnableWindow      = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
     options.mhpChanged           = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
@@ -32,7 +33,6 @@ if optionsLoaded then
     options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
     options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
-    options.mhpShowStatus        = lib_helpers.NotNilOrDefault(options.mhpShowStatus, false)
 
     options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
     options.targetChanged           = lib_helpers.NotNilOrDefault(options.targetChanged, false)
@@ -54,6 +54,7 @@ else
         fontScale = 1.0,
         invertMonsterList = false,
         showCurrentRoomOnly = false,
+        showMonsterStatus = false,
 
         mhpEnableWindow = true,
         mhpChanged = false,
@@ -66,7 +67,6 @@ else
         mhpNoResize = "",
         mhpNoMove = "",
         mhpTransparentWindow = false,
-        mhpShowStatus = false,
 
         targetEnableWindow = true,
         targetChanged = false,
@@ -95,6 +95,7 @@ local function SaveOptions(options)
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
         io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
+        io.write(string.format("    showMonsterStatus = %s,\n", tostring(options.showMonsterStatus)))
         io.write("\n")
         io.write(string.format("    mhpEnableWindow = %s,\n", tostring(options.mhpEnableWindow)))
         io.write(string.format("    mhpChanged = %s,\n", tostring(options.mhpChanged)))
@@ -107,7 +108,6 @@ local function SaveOptions(options)
         io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
         io.write(string.format("    mhpNoMove = \"%s\",\n", options.mhpNoMove))
         io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
-        io.write(string.format("    mhpShowStatus = %s,\n", tostring(options.mhpShowStatus)))
         io.write("\n")
         io.write(string.format("    targetEnableWindow = %s,\n", tostring(options.targetEnableWindow)))
         io.write(string.format("    targetChanged = %s,\n", tostring(options.targetChanged)))
@@ -400,15 +400,20 @@ local function PresentMonsters()
     local monsterList = GetMonsterList()
     local monsterListCount = table.getn(monsterList)
 
-    if options.mhpShowStatus then
+    local columnCount = 2
+
+    -- Get how many columns we'll need
+    if options.showMonsterStatus then
+        columnCount = columnCount + 1
+    end
+    imgui.Columns(columnCount)
+
+    if options.showMonsterStatus then
         local windowWidth = imgui.GetWindowSize()
         local charWidth = 8 * options.fontScale
         local statusColumnWidth = #"J30 Z30 F P" * charWidth + 10
-        imgui.Columns(3)
         imgui.SetColumnOffset(1, 16 * charWidth)
         imgui.SetColumnOffset(2, windowWidth - statusColumnWidth)
-    else
-        imgui.Columns(2)
     end
 
     local startIndex = 1
@@ -432,60 +437,54 @@ local function PresentMonsters()
             lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
             imgui.NextColumn()
             
-            if options.mhpShowStatus then
+            if options.showMonsterStatus then
+                local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
+                local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
                 
-                if monster ~= nil then
-                    local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
-                    local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
-                    
-                    if atkTech.type == 0 then
-                        lib_helpers.TextC(true, 0, "    ")
-                    else
-                        lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
-                    end
-                    
-                    if defTech.type == 0 then
-                        lib_helpers.TextC(false, 0, "    ")
-                    else
-                        lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
-                    end
-                    
-                    local frozenOrConfused = pso.read_u8(monster.address + 0x0268)
-                    local frozen = frozenOrConfused == 0x02
-                    local confused = frozenOrConfused == 0x12
-                    
-                    if frozen then
-                        lib_helpers.TextC(false, 0xFF00FFFF, "F ")
-                    elseif confused then
-                        lib_helpers.TextC(false, 0xFFFF00FF, "C ")
-                    else
-                        lib_helpers.TextC(false, 0, "  ")
-                    end
-                    
-                    local paralyzed = pso.read_u8(monster.address + 0x025c) == 0x10
-                    
-                    if paralyzed then
-                        lib_helpers.TextC(false, 0xFFFF4000, "P ")
-                    end
+                if atkTech.type == 0 then
+                    lib_helpers.TextC(true, 0, "    ")
+                else
+                    lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
                 end
                 
+                if defTech.type == 0 then
+                    lib_helpers.TextC(false, 0, "    ")
+                else
+                    lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                end
+
+                local frozen = lib_characters.GetPlayerFrozenStatus(monster.address)
+                local confused = lib_characters.GetPlayerConfusedStatus(monster.address)
+                local paralyzed = lib_characters.GetPlayerParalizedStatus(monster.address)
+
+                if frozen then
+                    lib_helpers.TextC(false, 0xFF00FFFF, "F ")
+                elseif confused then
+                    lib_helpers.TextC(false, 0xFFFF00FF, "C ")
+                else
+                    lib_helpers.TextC(false, 0, "  ")
+                end
+                if paralyzed then
+                    lib_helpers.TextC(false, 0xFFFF4000, "P ")
+                end
+
                 imgui.NextColumn()
-                
             end
         end
     end
 end
 
-local function PresentTargetMonster()
-    monster = GetTargetMonster()
+local function PresentTargetMonster(monster)
     if monster ~= nil then
         local mHP = monster.HP
         local mHPMax = monster.HPMax
-
+    
         -- I won't rename it because of this, at least not yet
         local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
         local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
-
+    
+        lib_helpers.Text(true, monster.name)
+        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
         if atkTech.type == 0 then
             lib_helpers.Text(true, "")
         else
@@ -496,8 +495,50 @@ local function PresentTargetMonster()
         else
             lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
+    end
+end
 
-        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
+-- Need to use this so I can hide the window when nothing is targetted
+local targetCache = nil
+local targetWindowTimeOut = 0
+local function PresentTargetMonsterWindow()
+    local monster = GetTargetMonster()
+
+    if monster == nil then
+        if targetWindowTimeOut > 0 then
+            targetWindowTimeOut = targetWindowTimeOut - 1
+        end
+
+        monster = targetCache
+        if targetWindowTimeOut <= 0 then
+            return
+        end
+    else 
+        targetWindowTimeOut = 90
+        targetCache = monster
+    end
+    
+    if options.targetEnableWindow then
+        if firstPresent or options.targetChanged then
+          options.targetChanged = false
+          local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)
+          imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+          imgui.SetNextWindowSize(options.targetW, options.targetH, "Always");
+        end
+
+        if options.targetTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
+        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove }) then
+            imgui.SetWindowFontScale(options.fontScale)
+            PresentTargetMonster(monster)
+        end
+        imgui.End()
+    
+        if options.targetTransparentWindow == true then
+          imgui.PopStyleColor()
+        end
     end
 end
 
@@ -548,28 +589,7 @@ local function present()
         end
     end
 
-    if options.targetEnableWindow then
-        if firstPresent or options.targetChanged then
-            options.targetChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)
-            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.targetW, options.targetH, "Always");
-        end
-
-        if options.targetTransparentWindow == true then
-            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
-        end
-
-        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove }) then
-            imgui.SetWindowFontScale(options.fontScale)
-            PresentTargetMonster()
-        end
-        imgui.End()
-
-        if options.targetTransparentWindow == true then
-            imgui.PopStyleColor()
-        end
-    end
+    PresentTargetMonsterWindow()
 
     -- Pop custom theme, only if enabled
     if lib_theme_loaded and options.useCustomTheme then

@@ -42,6 +42,11 @@ local function ConfigurationWindow(configuration)
                 _configuration.showCurrentRoomOnly = not _configuration.showCurrentRoomOnly
                 this.changed = true
             end
+            if imgui.Checkbox("Show monster status", _configuration.showMonsterStatus) then
+                _configuration.showMonsterStatus = not _configuration.showMonsterStatus
+                this.changed = true
+            end
+
             imgui.TreePop()
         end
 
@@ -121,11 +126,6 @@ local function ConfigurationWindow(configuration)
             imgui.PopItemWidth()
             if success then
                 _configuration.mhpChanged = true
-                this.changed = true
-            end
-            
-            if imgui.Checkbox("Show monster status", _configuration.mhpShowStatus) then
-                _configuration.mhpShowStatus = not _configuration.mhpShowStatus
                 this.changed = true
             end
 
