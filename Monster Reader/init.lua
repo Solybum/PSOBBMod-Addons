@@ -32,6 +32,7 @@ if optionsLoaded then
     options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
     options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
+    options.mhpShowStatus        = lib_helpers.NotNilOrDefault(options.mhpShowStatus, false)
 
     options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
     options.targetChanged           = lib_helpers.NotNilOrDefault(options.targetChanged, false)
@@ -65,6 +66,7 @@ else
         mhpNoResize = "",
         mhpNoMove = "",
         mhpTransparentWindow = false,
+        mhpShowStatus = false,
 
         targetEnableWindow = true,
         targetChanged = false,
@@ -105,6 +107,7 @@ local function SaveOptions(options)
         io.write(string.format("    mhpNoResize = \"%s\",\n", options.mhpNoResize))
         io.write(string.format("    mhpNoMove = \"%s\",\n", options.mhpNoMove))
         io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
+        io.write(string.format("    mhpShowStatus = %s,\n", tostring(options.mhpShowStatus)))
         io.write("\n")
         io.write(string.format("    targetEnableWindow = %s,\n", tostring(options.targetEnableWindow)))
         io.write(string.format("    targetChanged = %s,\n", tostring(options.targetChanged)))
@@ -397,7 +400,16 @@ local function PresentMonsters()
     local monsterList = GetMonsterList()
     local monsterListCount = table.getn(monsterList)
 
-    imgui.Columns(2)
+    if options.mhpShowStatus then
+        local windowWidth = imgui.GetWindowSize()
+        local charWidth = 8 * options.fontScale
+        local statusColumnWidth = #"J30 Z30 F P" * charWidth + 10
+        imgui.Columns(3)
+        imgui.SetColumnOffset(1, 16 * charWidth)
+        imgui.SetColumnOffset(2, windowWidth - statusColumnWidth)
+    else
+        imgui.Columns(2)
+    end
 
     local startIndex = 1
     local endIndex = monsterListCount
@@ -410,14 +422,56 @@ local function PresentMonsters()
     end
 
     for i=startIndex, endIndex, step do
-        if monsterList[i].display then
-            local mHP = monsterList[i].HP
-            local mHPMax = monsterList[i].HPMax
+        local monster = monsterList[i]
+        if monster.display then
+            local mHP = monster.HP
+            local mHPMax = monster.HPMax
 
-            lib_helpers.TextC(true, monsterList[i].color, monsterList[i].name)
+            lib_helpers.TextC(true, monster.color, monster.name)
             imgui.NextColumn()
             lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
             imgui.NextColumn()
+            
+            if options.mhpShowStatus then
+                
+                if monster ~= nil then
+                    local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
+                    local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
+                    
+                    if atkTech.type == 0 then
+                        lib_helpers.TextC(true, 0, "    ")
+                    else
+                        lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+                    end
+                    
+                    if defTech.type == 0 then
+                        lib_helpers.TextC(false, 0, "    ")
+                    else
+                        lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                    end
+                    
+                    local frozenOrConfused = pso.read_u8(monster.address + 0x0268)
+                    local frozen = frozenOrConfused == 0x02
+                    local confused = frozenOrConfused == 0x12
+                    
+                    if frozen then
+                        lib_helpers.TextC(false, 0xFF00FFFF, "F ")
+                    elseif confused then
+                        lib_helpers.TextC(false, 0xFFFF00FF, "C ")
+                    else
+                        lib_helpers.TextC(false, 0, "  ")
+                    end
+                    
+                    local paralyzed = pso.read_u8(monster.address + 0x025c) == 0x10
+                    
+                    if paralyzed then
+                        lib_helpers.TextC(false, 0xFFFF4000, "P ")
+                    end
+                end
+                
+                imgui.NextColumn()
+                
+            end
         end
     end
 end
