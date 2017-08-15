@@ -134,6 +134,7 @@ local _Ultimate
 
 local _ID = 0x1C
 local _Room = 0x28
+local _Room2 = 0x2E
 local _PosX = 0x38
 local _PosY = 0x3C
 local _PosZ = 0x40
@@ -329,7 +330,8 @@ local function GetMonsterList()
     end
 
     -- Get player position
-    local playerRoom = pso.read_u16(pAddr + _Room)
+    local playerRoom1 = pso.read_u16(pAddr + _Room)
+    local playerRoom2 = pso.read_u16(pAddr + _Room2)
     local pPosX = pso.read_f32(pAddr + _PosX)
     local pPosZ = pso.read_f32(pAddr + _PosZ)
 
@@ -364,7 +366,7 @@ local function GetMonsterList()
             end
 
             -- Determine whether the player is in the same room as the monster
-            if options.showCurrentRoomOnly and playerRoom ~= monster.room then
+            if options.showCurrentRoomOnly and playerRoom1 ~= monster.room and playerRoom2 ~= monster.room then
                 monster.display = false
             end
 
@@ -578,7 +580,12 @@ local function present()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove }) then
+        local NoInputs = ""
+        if options.mhpTransparentWindow == true and options.mhpNoTitleBar == "NoTitleBar" then
+            NoInputs = "NoInputs"
+        end
+
+        if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove, NoInputs }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
