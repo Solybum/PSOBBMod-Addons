@@ -21,6 +21,7 @@ if optionsLoaded then
     options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
     options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
     options.showMonsterStatus         = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
+    options.showMonsterID             = lib_helpers.NotNilOrDefault(options.showMonsterID, false)
 
     options.mhpEnableWindow      = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
     options.mhpChanged           = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
@@ -55,6 +56,7 @@ else
         invertMonsterList = false,
         showCurrentRoomOnly = false,
         showMonsterStatus = false,
+        showMonsterID = false,
 
         mhpEnableWindow = true,
         mhpChanged = false,
@@ -96,6 +98,7 @@ local function SaveOptions(options)
         io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
         io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
         io.write(string.format("    showMonsterStatus = %s,\n", tostring(options.showMonsterStatus)))
+        io.write(string.format("    showMonsterID = %s,\n", tostring(options.showMonsterID)))
         io.write("\n")
         io.write(string.format("    mhpEnableWindow = %s,\n", tostring(options.mhpEnableWindow)))
         io.write(string.format("    mhpChanged = %s,\n", tostring(options.mhpChanged)))
@@ -241,7 +244,7 @@ local function GetMonsterDataBarbaRay(monster)
 end
 
 local function GetMonsterData(monster)
-    monster.id = pso.read_u32(monster.address + _ID)
+    monster.id = pso.read_u16(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
@@ -405,6 +408,9 @@ local function PresentMonsters()
     local columnCount = 2
 
     -- Get how many columns we'll need
+    if options.showMonsterID == true then
+        columnCount = columnCount + 1
+    end
     if options.showMonsterStatus then
         columnCount = columnCount + 1
     end
@@ -436,9 +442,15 @@ local function PresentMonsters()
 
             lib_helpers.TextC(true, monster.color, monster.name)
             imgui.NextColumn()
+
+            if options.showMonsterID == true then
+                lib_helpers.Text(true, "%04X", monster.id)
+                imgui.NextColumn()
+            end
+
             lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
             imgui.NextColumn()
-            
+
             if options.showMonsterStatus then
                 local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
                 local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
@@ -484,8 +496,12 @@ local function PresentTargetMonster(monster)
         -- I won't rename it because of this, at least not yet
         local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
         local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
-    
+
         lib_helpers.Text(true, monster.name)
+        if options.showMonsterID == true then
+            lib_helpers.Text(false, " - ID: %04X", monster.id)
+        end
+
         lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
         if atkTech.type == 0 then
             lib_helpers.Text(true, "")

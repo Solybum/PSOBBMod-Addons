@@ -46,6 +46,10 @@ local function ConfigurationWindow(configuration)
                 _configuration.showMonsterStatus = not _configuration.showMonsterStatus
                 this.changed = true
             end
+            if imgui.Checkbox("Show monster ID", _configuration.showMonsterID) then
+                _configuration.showMonsterID = not _configuration.showMonsterID
+                this.changed = true
+            end
 
             imgui.TreePop()
         end
