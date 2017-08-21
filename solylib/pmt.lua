@@ -14,7 +14,7 @@ end
 
 local function _GetItemAddress(type, group, index)
     local result = 0
-    if LoadPMTAddress() ~= 0 then
+    if LoadPMTAddress() == true then
         if type == 0 then
             local weaponAddress = pso.read_u32(pmtAddress + pmtWeaponOffset)
             if weaponAddress ~= 0 then
