@@ -623,13 +623,13 @@ end
 
 local function BuildAIOSelection()
     local selectionList = { "Inventory", "Bank", "Floor", "Mags" }
-    local playerList = lib_characters.GetPlayerList()
-    local playerListCount = table.getn(playerList)
 
-    for i=1, playerListCount, 1 do
-        local playerName = lib_characters.GetPlayerName(playerList[i].address)
-        table.insert(selectionList, playerName)
-    end
+    --local playerList = lib_characters.GetPlayerList()
+    --local playerListCount = table.getn(playerList)
+    --for i=1, playerListCount, 1 do
+    --    local playerName = lib_characters.GetPlayerName(playerList[i].address)
+    --    table.insert(selectionList, playerName)
+    --end
 
     return selectionList
 end
