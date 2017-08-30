@@ -63,6 +63,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            success, _configuration.itemNameLength = imgui.InputInt("Max Item Name Length", _configuration.itemNameLength)
+            if success then
+                this.changed = true
+            end
+
             imgui.TreePop()
         end
 

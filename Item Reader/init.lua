@@ -26,6 +26,7 @@ if optionsLoaded then
     options.invertItemList            = lib_helpers.NotNilOrDefault(options.invertItemList, false)
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
+    options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
 
     options.aioEnableWindow         = lib_helpers.NotNilOrDefault(options.aioEnableWindow, true)
     options.aioChanged              = lib_helpers.NotNilOrDefault(options.aioChanged, false)
@@ -77,6 +78,7 @@ else
         invertItemList = false,
         hideMagStats = false,
         hideMagPBs = false,
+        itemNameLength = 0,
 
         aioEnableWindow = true,
         aioChanged = false,
@@ -134,6 +136,7 @@ local function SaveOptions(options)
         io.write(string.format("    invertItemList = %s,\n", tostring(options.invertItemList)))
         io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
+        io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write("\n")
         io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
         io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
@@ -174,6 +177,19 @@ local function SaveOptions(options)
 
         io.close(file)
     end
+end
+
+local function TrimString(text, length)
+    local result = text;
+    if length > 0 then
+        result = string.sub(text, 0, length)
+        local strLength = string.len(text)
+        strLength = strLength - 3
+        if length < strLength then
+            result = result .. "..."
+        end
+    end
+    return result
 end
 
 local function ProcessWeapon(item)
@@ -223,7 +239,7 @@ local function ProcessWeapon(item)
         if item_cfg ~= nil and item_cfg[1] ~= 0 then
             nameColor = item_cfg[1]
         end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
     
         if item.weapon.grind > 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
