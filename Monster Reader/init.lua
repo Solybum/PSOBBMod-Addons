@@ -374,6 +374,11 @@ local function GetMonsterList()
                 monster.display = false
             end
 
+            -- Do not show monsters that have been killed
+            if monster.HP <= 0 then
+                monster.display = false
+            end
+
             -- If we have De Rol Le, make a copy for the body HP
             if monster.unitxtID == 45 and monster.index == 0 then
                 local head = CopyMonster(monster)
