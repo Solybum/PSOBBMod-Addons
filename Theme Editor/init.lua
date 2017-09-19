@@ -132,12 +132,34 @@ local function PresentColorEditor(label, col, col_d)
     imgui.EndGroup()
 end
 
+local exportHex = false
+local exportedHex = false
+local exportHexStr = ""
+
 local function PresentColorEditors()
     local save = false
+
     imgui.SetNextWindowSize(500, 400, 'FirstUseEver')
     if imgui.Begin("Theme Editor") then
         if imgui.Button("Save") then
             save = true
+        end
+
+        if imgui.Button("Export Hex") then
+            exportHex = true
+            exportedHex = false
+            exportHexStr = "[ImGuiIO]\n" ..
+                           "FontGlobalScale         = 1.0\n" ..
+                           "\n" ..
+                           "[ImGuiStyle]\n" ..
+                           "UseCustomTheme          = 1\n" ..
+                           "Alpha                   = 1.0\n"
+        end
+
+        if exportedHex == true then
+            imgui.Text("Exported colors as Hex")
+            imgui.Text("Paste in your theme.ini file")
+            imgui.Text("")
         end
 
         imgui.BeginChild("ColorList", 0)
@@ -146,6 +168,24 @@ local function PresentColorEditors()
             PresentColorEditor(options.styleColors[i].name,
                 options.styleColors[i].color,
                 optionsDefault.styleColors[i].color)
+
+            if exportHex == true then
+                exportHexStr = exportHexStr ..
+                    string.format("%-24s= %08X\n",
+                        options.styleColors[i].name,
+                        bit.lshift(lib_helpers.F32ToInt8(options.styleColors[i].color[4]), 24),
+                        bit.lshift(lib_helpers.F32ToInt8(options.styleColors[i].color[1]), 16),
+                        bit.lshift(lib_helpers.F32ToInt8(options.styleColors[i].color[2]), 8),
+                        bit.lshift(lib_helpers.F32ToInt8(options.styleColors[i].color[3]), 0))
+            end
+        end
+
+        if exportHex == true then
+            imgui.SetClipboardText(exportHexStr)
+            if exportedHex == false then
+                exportedHex = true
+            end
+            exportHex = false
         end
 
         imgui.EndChild()
