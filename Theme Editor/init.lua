@@ -157,8 +157,8 @@ local function PresentColorEditors()
         end
 
         if exportedHex == true then
-            imgui.Text("Exported colors as Hex")
-            imgui.Text("Paste in your theme.ini file")
+            imgui.Text("Copied theme data to clipboard")
+            imgui.Text("Replace the contents of your theme.ini file")
             imgui.Text("")
         end
 
