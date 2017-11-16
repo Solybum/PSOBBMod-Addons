@@ -323,7 +323,7 @@ t[ 0x00A300 ] = { 0xFFFF0000, true } -- RUBY BULLET
 t[ 0x00A400 ] = { 0xFFFF0000, true } -- AMORE ROSE
 -- NO SRANKS
 t[ 0x00AA00 ] = { 0xFFFF0000, true } -- SLICER OF FANATIC
-t[ 0x00AB00 ] = { 0xFFFF0000, true } -- LAME D&'ARGENT
+t[ 0x00AB00 ] = { 0xFFFF0000, true } -- LAME D'ARGENT
 t[ 0x00AC00 ] = { 0xFFFF0000, true } -- EXCALIBUR
 t[ 0x00AD00 ] = { 0xFFFF0000, true } -- RAGE DE FEU
 t[ 0x00AD01 ] = { 0xFFFF0000, true } -- RAGE DE FEU
