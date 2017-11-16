@@ -310,7 +310,7 @@ local function ProcessFrame(item)
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
 
@@ -373,7 +373,7 @@ local function ProcessBarrier(item)
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
 
@@ -445,7 +445,7 @@ local function ProcessUnit(item)
         nameStr = nameStr .. "++"
     end
 
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", nameStr)
+    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(nameStr, options.itemNameLength))
 
     if item.kills ~= 0 then
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
@@ -475,7 +475,7 @@ local function ProcessMag(item)
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
     result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
     result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
@@ -529,7 +529,7 @@ local function ProcessTool(item)
         if item_cfg ~= nil and item_cfg[1] ~= 0 then
             nameColor = item_cfg[1]
         end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. lib_helpers.TextC(false, lib_items_cfg.techLevel, "Lv%i ", item.tool.level)
     else
         local nameColor = lib_items_cfg.toolName
@@ -537,7 +537,7 @@ local function ProcessTool(item)
         if item_cfg ~= nil and item_cfg[1] ~= 0 then
             nameColor = item_cfg[1]
         end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", item.name)
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         if item.tool.count > 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.toolAmount, "x%i ", item.tool.count)
         end
