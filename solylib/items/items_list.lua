@@ -1533,6 +1533,7 @@ elseif server == "Ephinea" then
     t[ 0x03100C ] = { 0xFFFF0000, true } -- 2nd Anniv. Gold Badge
     t[ 0x03100D ] = { 0xFFFF0000, true } -- 2nd Anniv. Platinum Badge
     t[ 0x03100E ] = { 0xFFFF0000, true } -- Halloween Cookie
+    t[ 0x03100F ] = { 0xFFFF0000, true } -- Coal
     t[ 0x03160C ] = { 0xFFFFFF00, true } -- Disk Vol.13 "Get It Up"
     t[ 0x03160D ] = { 0xFFFFFF00, true } -- Disk Vol.14 "Flight"
     t[ 0x03160E ] = { 0xFFFFFF00, true } -- Disk Vol.15 "Space Harrier"
