@@ -4,7 +4,7 @@ local unitxt = require("solylib.unitxt")
 local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820
 
-local _MesetaAddress =  0x00AA70F0
+local _Meseta =  0xE4C
 local _BankPointer =    0x00A95DE0 + 0x18
 
 local _ItemID = 0xD8
@@ -450,6 +450,8 @@ local function GetInventory(playerIndex)
 
     local playerAddr = pso.read_u32(_PlayerArray + 4 * playerIndex)
     if playerAddr ~= 0 then
+        inventory.meseta = pso.read_u32(playerAddr + _Meseta)
+
         local listPtr = pso.read_u32(playerAddr + 0xDF4) 
         if listPtr ~= 0 then
             local listAddr = pso.read_u32(listPtr + 0x1C4)
@@ -460,7 +462,10 @@ local function GetInventory(playerIndex)
     end
 
     local inventory = {}
-    inventory.meseta = pso.read_u32(_MesetaAddress)
+    inventory.meseta = 0
+    if playerAddr ~= 0 then
+        inventory.meseta = pso.read_u32(playerAddr + _Meseta)
+    end
 
     inventory.items = {}
     local itemIndex = 0
