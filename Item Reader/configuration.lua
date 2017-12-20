@@ -42,6 +42,10 @@ local function ConfigurationWindow(configuration)
                 _configuration.showItemIDs = not _configuration.showItemIDs
                 this.changed = true
             end
+            if imgui.Checkbox("Show item data", _configuration.showItemData) then
+                _configuration.showItemData = not _configuration.showItemData
+                this.changed = true
+            end
             if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
                 _configuration.showEquippedItems = not _configuration.showEquippedItems
                 this.changed = true

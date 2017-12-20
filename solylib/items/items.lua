@@ -205,6 +205,20 @@ local function ReadItemData(itemAddr)
     item.data[1] = pso.read_u8(itemAddr + _ItemCode + 0)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
     item.data[3] = pso.read_u8(itemAddr + _ItemCode + 2)
+    item.data[4] = pso.read_u8(itemAddr + _ItemMagPB)
+    item.data[5] = 0
+    item.data[6] = 0
+    item.data[7] = 0
+    item.data[8] = 0
+    item.data[9] = 0
+    item.data[10] = 0
+    item.data[11] = 0
+    item.data[12] = 0
+    item.data[13] = 0
+    item.data[14] = 0 
+    item.data[15] = 0
+    item.data[16] = 0
+
     item.hex = bit.lshift(item.data[1], 16) + bit.lshift(item.data[2],  8) + item.data[3]
     item.kills = 0
 

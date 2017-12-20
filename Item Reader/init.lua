@@ -21,6 +21,7 @@ if optionsLoaded then
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
     options.showItemIDs               = lib_helpers.NotNilOrDefault(options.showItemIDs, false)
+    options.showItemData              = lib_helpers.NotNilOrDefault(options.showItemData, false)
     options.showEquippedItems         = lib_helpers.NotNilOrDefault(options.showEquippedItems, true)
     options.shortPBNames              = lib_helpers.NotNilOrDefault(options.shortPBNames, true)
     options.ignoreMeseta              = lib_helpers.NotNilOrDefault(options.ignoreMeseta, false)
@@ -73,7 +74,8 @@ else
         useCustomTheme = false,
         fontScale = 1.0,
         printItemIndex = true,
-        showItemIDs = false;
+        showItemIDs = false,
+        showItemData = false,
         showEquippedItems = true,
         shortPBNames = true,
         ignoreMeseta = false,
@@ -133,6 +135,7 @@ local function SaveOptions(options)
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
         io.write(string.format("    showItemIDs = %s,\n", tostring(options.showItemIDs)))
+        io.write(string.format("    showItemData = %s,\n", tostring(options.showItemData)))
         io.write(string.format("    showEquippedItems = %s,\n", tostring(options.showEquippedItems)))
         io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
         io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
@@ -201,6 +204,15 @@ local function ProcessWeapon(item)
 
     if options.showItemIDs then
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
     end
 
     if options.printItemIndex then
@@ -306,6 +318,15 @@ local function ProcessFrame(item)
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -374,6 +395,15 @@ local function ProcessBarrier(item)
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -438,6 +468,15 @@ local function ProcessUnit(item)
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -484,6 +523,15 @@ local function ProcessMag(item)
 
     if options.showItemIDs then
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
     end
 
     if options.printItemIndex then
@@ -552,6 +600,15 @@ local function ProcessTool(item)
         lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
+    if options.showItemData then
+        lib_helpers.TextC(false, 0xFFFFFFFF, 
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            item.data[1], item.data[2], item.data[3], item.data[4],
+            item.data[5], item.data[6], item.data[7], item.data[8],
+            item.data[9], item.data[10], item.data[11], item.data[12],
+            item.data[13], item.data[14], item.data[15], item.data[16])
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -585,6 +642,15 @@ local function ProcessMeseta(item)
 
         if options.showItemIDs then
             lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF, 
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
         end
 
         if options.printItemIndex then
@@ -721,7 +787,7 @@ local function PresentAIO()
         end
     end
 
-    imgui.BeginChild("ItemList", 0)
+    imgui.BeginChild("ItemList", 0, 0, false, {'HorizontalScrollbar'})
     imgui.SetWindowFontScale(options.fontScale)
     if aioSelectedInventory == 1 then
         PresentInventory(save, lib_items.Me)
@@ -734,6 +800,7 @@ local function PresentAIO()
     else
         PresentInventory(save, aioSelectedInventory - 5)
     end
+
     imgui.EndChild()
 end
 
