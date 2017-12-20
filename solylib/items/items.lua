@@ -450,8 +450,6 @@ local function GetInventory(playerIndex)
 
     local playerAddr = pso.read_u32(_PlayerArray + 4 * playerIndex)
     if playerAddr ~= 0 then
-        inventory.meseta = pso.read_u32(playerAddr + _Meseta)
-
         local listPtr = pso.read_u32(playerAddr + 0xDF4) 
         if listPtr ~= 0 then
             local listAddr = pso.read_u32(listPtr + 0x1C4)
