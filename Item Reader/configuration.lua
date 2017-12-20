@@ -38,6 +38,10 @@ local function ConfigurationWindow(configuration)
                 _configuration.printItemIndex = not _configuration.printItemIndex
                 this.changed = true
             end
+            if imgui.Checkbox("Show item IDs", _configuration.showItemIDs) then
+                _configuration.showItemIDs = not _configuration.showItemIDs
+                this.changed = true
+            end
             if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
                 _configuration.showEquippedItems = not _configuration.showEquippedItems
                 this.changed = true

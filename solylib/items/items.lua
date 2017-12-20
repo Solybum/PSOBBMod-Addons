@@ -7,6 +7,7 @@ local _ItemArrayCount = 0x00A8D820
 local _MesetaAddress =  0x00AA70F0
 local _BankPointer =    0x00A95DE0 + 0x18
 
+local _ItemID = 0xD8
 local _ItemOwner = 0xE4
 local _ItemCode = 0xF2
 local _ItemEquipped = 0x190
@@ -199,6 +200,8 @@ local function ReadItemData(itemAddr)
 
     item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
 
+    item.id = pso.read_u32(itemAddr + _ItemID)
+
     item.data[1] = pso.read_u8(itemAddr + _ItemCode + 0)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
     item.data[3] = pso.read_u8(itemAddr + _ItemCode + 2)
@@ -308,6 +311,8 @@ local function ReadBankItemData(itemAddr)
     item.address = itemAddr
 
     item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
+
+    item.id = pso.read_u32(itemAddr + 12)
 
     item.data[1] = pso.read_u8(itemAddr + 0)
     item.data[2] = pso.read_u8(itemAddr + 1)

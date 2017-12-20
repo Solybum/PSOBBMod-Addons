@@ -20,6 +20,7 @@ if optionsLoaded then
     options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
+    options.showItemIDs               = lib_helpers.NotNilOrDefault(options.showItemIDs, false)
     options.showEquippedItems         = lib_helpers.NotNilOrDefault(options.showEquippedItems, true)
     options.shortPBNames              = lib_helpers.NotNilOrDefault(options.shortPBNames, true)
     options.ignoreMeseta              = lib_helpers.NotNilOrDefault(options.ignoreMeseta, false)
@@ -72,6 +73,7 @@ else
         useCustomTheme = false,
         fontScale = 1.0,
         printItemIndex = true,
+        showItemIDs = false;
         showEquippedItems = true,
         shortPBNames = true,
         ignoreMeseta = false,
@@ -130,6 +132,7 @@ local function SaveOptions(options)
         io.write(string.format("    useCustomTheme = %s,\n", tostring(options.useCustomTheme)))
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
+        io.write(string.format("    showItemIDs = %s,\n", tostring(options.showItemIDs)))
         io.write(string.format("    showEquippedItems = %s,\n", tostring(options.showEquippedItems)))
         io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
         io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
@@ -195,6 +198,11 @@ end
 local function ProcessWeapon(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -293,6 +301,11 @@ end
 local function ProcessFrame(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -356,6 +369,11 @@ end
 local function ProcessBarrier(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -415,6 +433,11 @@ end
 local function ProcessUnit(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -458,6 +481,11 @@ end
 local function ProcessMag(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -519,6 +547,11 @@ end
 local function ProcessTool(item)
     local result = ""
     imgui.Text("")
+
+    if options.showItemIDs then
+        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+    end
+
     if options.printItemIndex then
         lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
@@ -547,8 +580,13 @@ local function ProcessTool(item)
 end
 local function ProcessMeseta(item)
     local result = ""
-    if not options.ignoreMeseta then
+    if options.showItemIDs == false and options.ignoreMeseta == false then
         imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
         if options.printItemIndex then
             lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
@@ -563,7 +601,8 @@ local function ProcessItem(item, floor, save)
     save = save or false
 
     -- Do not process disabled items when it's floor list
-    if floor == true then
+    -- but only when item IDs are off
+    if options.showItemIDs == false and floor == true then
         local item_cfg = lib_items_list.t[item.hex]
         if item_cfg ~= nil and item_cfg[2] == false then
             return
