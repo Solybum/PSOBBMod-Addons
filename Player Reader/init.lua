@@ -131,7 +131,7 @@ local function PresentPlayers()
         local index = playerList[i].index
         local address = playerList[i].address
 
-        local name = lib_characters.GetPlayerName(address)
+        local name = string.gsub(lib_characters.GetPlayerName(address), "%%", "%%%%")
         local hp = lib_characters.GetPlayerHP(address)
         local mhp = lib_characters.GetPlayerMaxHP(address)
         local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
