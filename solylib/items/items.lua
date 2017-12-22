@@ -87,20 +87,24 @@ local function _ParseItemWeapon(item)
     -- NON SRANK
     else
         item.weapon.stats = {0,0,0,0,0,0}
+        item.weapon.statpresence = {0,0,0,0,0}
         if item.data[7] < 6 then
             item.weapon.stats[item.data[7] + 1] = item.data[8]
+            item.weapon.statpresence[item.data[7]] = 1
             if item.weapon.stats[item.data[7] + 1] > 127 then
                 item.weapon.stats[item.data[7] + 1] = item.weapon.stats[item.data[7] + 1] - 256
             end
         end
         if item.data[9] < 6 then
             item.weapon.stats[item.data[9] + 1] = item.data[10]
+            item.weapon.statpresence[item.data[9]] = 1
             if item.weapon.stats[item.data[9] + 1] > 127 then
                 item.weapon.stats[item.data[9] + 1] = item.weapon.stats[item.data[9] + 1] - 256
             end
         end
         if item.data[11] < 6 then
             item.weapon.stats[item.data[11] + 1] = item.data[12]
+            item.weapon.statpresence[item.data[11]] = 1
             if item.weapon.stats[item.data[11] + 1] > 127 then
                 item.weapon.stats[item.data[11] + 1] = item.weapon.stats[item.data[11] + 1] - 256
             end
