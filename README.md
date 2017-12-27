@@ -22,5 +22,5 @@ Personalize the monster name colors in [monsters.lua](https://github.com/Solybum
 Shows information about players either in a list or specifically for each player (p1, p2, p3, p4).  
   
 [Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
-Lets you easily edit the custom theme to use with all the addon framework
+Lets you easily edit the custom theme to use with all the addon framework  
 This addon is not required.
