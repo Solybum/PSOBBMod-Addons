@@ -1,85 +1,206 @@
+-- Start LIP
+--[[
+    Copyright (c) 2012 Carreras Nicolas
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the Software), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+--]]
+--- Lua INI Parser.
+-- It has never been that simple to use INI files with Lua.
+--@author Dynodzzo
+
+local LIP = {};
+
+--- Returns a table containing all the data from the INI file.
+--@param fileName The name of the INI file to parse. [string]
+--@return The table containing all data from the INI file. [table]
+function LIP.load(fileName)
+    assert(type(fileName) == 'string', 'Parameter fileName must be a string.');
+    local file = assert(io.open(fileName, 'r'), 'Error loading file : ' .. fileName);
+    local data = {};
+    local section;
+    for line in file:lines() do
+        local tempSection = line:match('^%[([^%[%]]+)%]$');
+        if(tempSection)then
+            section = tonumber(tempSection) and tonumber(tempSection) or tempSection;
+            data[section] = data[section] or {};
+        end
+        local param, value = line:match('^([%w|_]+)%s-=%s-(.+)$');
+        if(param and value ~= nil)then
+            if(tonumber(value))then
+                value = tonumber(value);
+            elseif(value == 'true')then
+                value = true;
+            elseif(value == 'false')then
+                value = false;
+            end
+            if(tonumber(param))then
+                param = tonumber(param);
+            end
+            data[section][param] = value;
+        end
+    end
+    file:close();
+    return data;
+end
+
+--- Saves all the data from a table to an INI file.
+--@param fileName The name of the INI file to fill. [string]
+--@param data The table containing all the data to store. [table]
+function LIP.save(fileName, data)
+    assert(type(fileName) == 'string', 'Parameter fileName must be a string.');
+    assert(type(data) == 'table', 'Parameter data must be a table.');
+    local file = assert(io.open(fileName, 'w+b'), 'Error loading file :' .. fileName);
+    local contents = '';
+    for section, param in pairs(data) do
+        contents = contents .. ('[%s]\n'):format(section);
+        for key, value in pairs(param) do
+            contents = contents .. ('%s=%s\n'):format(key, tostring(value));
+        end
+        contents = contents .. '\n';
+    end
+    file:write(contents);
+    file:close();
+end
+-- End LIP
+
+local colorList = {
+    { name = "Text"                   , color = "FFE5E5E5" },
+    { name = "TextDisabled"           , color = "FF999999" },
+    { name = "WindowBg"               , color = "B2000000" },
+    { name = "ChildWindowBg"          , color = "00000000" },
+    { name = "PopupBg"                , color = "E50C0C19" },
+    { name = "Border"                 , color = "A5B2B2B2" },
+    { name = "BorderShadow"           , color = "00000000" },
+    { name = "FrameBg"                , color = "4CCCCCCC" },
+    { name = "FrameBgHovered"         , color = "66E5CCCC" },
+    { name = "FrameBgActive"          , color = "72E5A5A5" },
+    { name = "TitleBg"                , color = "D3444489" },
+    { name = "TitleBgCollapsed"       , color = "336666CC" },
+    { name = "TitleBgActive"          , color = "DD5151A0" },
+    { name = "MenuBarBg"              , color = "CC66668C" },
+    { name = "ScrollbarBg"            , color = "99333F4C" },
+    { name = "ScrollbarGrab"          , color = "4C6666CC" },
+    { name = "ScrollbarGrabHovered"   , color = "666666CC" },
+    { name = "ScrollbarGrabActive"    , color = "66CC7F7F" },
+    { name = "ComboBg"                , color = "FC333333" },
+    { name = "CheckMark"              , color = "7FE5E5E5" },
+    { name = "SliderGrab"             , color = "4CFFFFFF" },
+    { name = "SliderGrabActive"       , color = "FFCC7F7F" },
+    { name = "Button"                 , color = "99AA6666" },
+    { name = "ButtonHovered"          , color = "FFAA6666" },
+    { name = "ButtonActive"           , color = "FFCC7F7F" },
+    { name = "Header"                 , color = "726666E5" },
+    { name = "HeaderHovered"          , color = "CC7272E5" },
+    { name = "HeaderActive"           , color = "CC8787DD" },
+    { name = "Column"                 , color = "FF7F7F7F" },
+    { name = "ColumnHovered"          , color = "FFB29999" },
+    { name = "ColumnActive"           , color = "FFE5B2B2" },
+    { name = "ResizeGrip"             , color = "4CFFFFFF" },
+    { name = "ResizeGripHovered"      , color = "99FFFFFF" },
+    { name = "ResizeGripActive"       , color = "E5FFFFFF" },
+    { name = "CloseButton"            , color = "7F7F7FE5" },
+    { name = "CloseButtonHovered"     , color = "99B2B2E5" },
+    { name = "CloseButtonActive"      , color = "FFB2B2B2" },
+    { name = "PlotLines"              , color = "FFFFFFFF" },
+    { name = "PlotLinesHovered"       , color = "FFE5B200" },
+    { name = "PlotHistogram"          , color = "FFE5B200" },
+    { name = "PlotHistogramHovered"   , color = "FFFF9900" },
+    { name = "TextSelectedBg"         , color = "590000FF" },
+    { name = "ModalWindowDarkening"   , color = "59333333" },
+}
+
 local core_mainmenu = require("core_mainmenu")
 
 local enable = false
-local optionsFileName = "addons/theme.ini"
+local themFileName = "addons/theme.ini"
 local theme = 
 {
-    globalFontScale = 1.0,
-    alpha = 1.0,
-    colors = {
-        { name = "Text"                   , default = 0xFFE6E6E6, custom = 0xFFE6E6E6 },
-        { name = "TextDisabled"           , default = 0xFF999999, custom = 0xFF999999 },
-        { name = "WindowBg"               , default = 0xB3000000, custom = 0xB3000000 },
-        { name = "ChildWindowBg"          , default = 0x00000000, custom = 0x00000000 },
-        { name = "PopupBg"                , default = 0xE60D0D1A, custom = 0xE60D0D1A },
-        { name = "Border"                 , default = 0xA6B3B3B3, custom = 0xA6B3B3B3 },
-        { name = "BorderShadow"           , default = 0x00000000, custom = 0x00000000 },
-        { name = "FrameBg"                , default = 0x4DCCCCCC, custom = 0x4DCCCCCC },
-        { name = "FrameBgHovered"         , default = 0x66E6CCCC, custom = 0x66E6CCCC },
-        { name = "FrameBgActive"          , default = 0x73E6A6A6, custom = 0x73E6A6A6 },
-        { name = "TitleBg"                , default = 0xD445458A, custom = 0xD445458A },
-        { name = "TitleBgCollapsed"       , default = 0x336666CC, custom = 0x336666CC },
-        { name = "TitleBgActive"          , default = 0xDE5252A1, custom = 0xDE5252A1 },
-        { name = "MenuBarBg"              , default = 0xCC66668C, custom = 0xCC66668C },
-        { name = "ScrollbarBg"            , default = 0x9933404D, custom = 0x9933404D },
-        { name = "ScrollbarGrab"          , default = 0x4D6666CC, custom = 0x4D6666CC },
-        { name = "ScrollbarGrabHovered"   , default = 0x666666CC, custom = 0x666666CC },
-        { name = "ScrollbarGrabActive"    , default = 0x66CC8080, custom = 0x66CC8080 },
-        { name = "ComboBg"                , default = 0xFC333333, custom = 0xFC333333 },
-        { name = "CheckMark"              , default = 0x80E6E6E6, custom = 0x80E6E6E6 },
-        { name = "SliderGrab"             , default = 0x4DFFFFFF, custom = 0x4DFFFFFF },
-        { name = "SliderGrabActive"       , default = 0xFFCC8080, custom = 0xFFCC8080 },
-        { name = "Button"                 , default = 0x99AB6666, custom = 0x99AB6666 },
-        { name = "ButtonHovered"          , default = 0xFFAB6666, custom = 0xFFAB6666 },
-        { name = "ButtonActive"           , default = 0xFFCC8080, custom = 0xFFCC8080 },
-        { name = "Header"                 , default = 0x736666E6, custom = 0x736666E6 },
-        { name = "HeaderHovered"          , default = 0xCC7373E6, custom = 0xCC7373E6 },
-        { name = "HeaderActive"           , default = 0xCC8787DE, custom = 0xCC8787DE },
-        { name = "Column"                 , default = 0xFF808080, custom = 0xFF808080 },
-        { name = "ColumnHovered"          , default = 0xFFB39999, custom = 0xFFB39999 },
-        { name = "ColumnActive"           , default = 0xFFE6B3B3, custom = 0xFFE6B3B3 },
-        { name = "ResizeGrip"             , default = 0x4DFFFFFF, custom = 0x4DFFFFFF },
-        { name = "ResizeGripHovered"      , default = 0x99FFFFFF, custom = 0x99FFFFFF },
-        { name = "ResizeGripActive"       , default = 0xE6FFFFFF, custom = 0xE6FFFFFF },
-        { name = "CloseButton"            , default = 0x808080E6, custom = 0x808080E6 },
-        { name = "CloseButtonHovered"     , default = 0x99B3B3E6, custom = 0x99B3B3E6 },
-        { name = "CloseButtonActive"      , default = 0xFFB3B3B3, custom = 0xFFB3B3B3 },
-        { name = "PlotLines"              , default = 0xFFFFFFFF, custom = 0xFFFFFFFF },
-        { name = "PlotLinesHovered"       , default = 0xFFE6B300, custom = 0xFFE6B300 },
-        { name = "PlotHistogram"          , default = 0xFFE6B300, custom = 0xFFE6B300 },
-        { name = "PlotHistogramHovered"   , default = 0xFFFF9900, custom = 0xFFFF9900 },
-        { name = "TextSelectedBg"         , default = 0x590000FF, custom = 0x590000FF },
-        { name = "ModalWindowDarkening"   , default = 0x59333333, custom = 0x59333333 },
+    ImGuiIO = {
+        GlobalFontScale = 1.0,
+    },
+    ImGuiStyle = {
+        Alpha                = 1.0,
+        Text                 = "FFE5E5E5",
+        TextDisabled         = "FF999999",
+        WindowBg             = "B2000000",
+        ChildWindowBg        = "00000000",
+        PopupBg              = "E50C0C19",
+        Border               = "A5B2B2B2",
+        BorderShadow         = "00000000",
+        FrameBg              = "4CCCCCCC",
+        FrameBgHovered       = "66E5CCCC",
+        FrameBgActive        = "72E5A5A5",
+        TitleBg              = "D3444489",
+        TitleBgCollapsed     = "336666CC",
+        TitleBgActive        = "DD5151A0",
+        MenuBarBg            = "CC66668C",
+        ScrollbarBg          = "99333F4C",
+        ScrollbarGrab        = "4C6666CC",
+        ScrollbarGrabHovered = "666666CC",
+        ScrollbarGrabActive  = "66CC7F7F",
+        ComboBg              = "FC333333",
+        CheckMark            = "7FE5E5E5",
+        SliderGrab           = "4CFFFFFF",
+        SliderGrabActive     = "FFCC7F7F",
+        Button               = "99AA6666",
+        ButtonHovered        = "FFAA6666",
+        ButtonActive         = "FFCC7F7F",
+        Header               = "726666E5",
+        HeaderHovered        = "CC7272E5",
+        HeaderActive         = "CC8787DD",
+        Column               = "FF7F7F7F",
+        ColumnHovered        = "FFB29999",
+        ColumnActive         = "FFE5B2B2",
+        ResizeGrip           = "4CFFFFFF",
+        ResizeGripHovered    = "99FFFFFF",
+        ResizeGripActive     = "E5FFFFFF",
+        CloseButton          = "7F7F7FE5",
+        CloseButtonHovered   = "99B2B2E5",
+        CloseButtonActive    = "FFB2B2B2",
+        PlotLines            = "FFFFFFFF",
+        PlotLinesHovered     = "FFE5B200",
+        PlotHistogram        = "FFE5B200",
+        PlotHistogramHovered = "FFFF9900",
+        TextSelectedBg       = "590000FF",
+        ModalWindowDarkening = "59333333",
     }
 }
 
-local function ParseTheme()
+function file_exists(name)
+    local f=io.open(name,"r")
+    if f~=nil then io.close(f) return true else return false end
+ end
 
+local function ParseTheme()
+    if file_exists(themFileName) then
+        local savedTheme = LIP.load(themFileName);
+
+        if savedTheme.ImGuiStyle == nil or savedTheme.ImGuiIO == nil then
+            return;
+        end
+
+        theme = savedTheme
+    end
 end
 
 local function ExportTheme()
-    local file = io.open(optionsFileName, "w")
-    if file ~= nil then
-        io.output(file)
-        io.write('[ImGuiIO]\n')
-        io.write(string.format("%-24s= %f\n", "FontGlobalScale", theme.globalFontScale))
-        io.write(string.format("\n"))
-        io.write('[ImGuiStyle]\n')
-        io.write(string.format("%-24s= %f\n", "Alpha", theme.alpha))
-
-        local startIndex = 1
-        local endIndex = table.getn(theme.colors)
-        local step = 1
-
-        for i=startIndex, endIndex, step do
-            local name = theme.colors[i].name
-            local c = theme.colors[i].custom
-
-            io.write(string.format("%-24s= %08X\n", name, c))
-        end
-
-        io.close(file)
-    end
+    LIP.save(themFileName, theme)
 end
 
 -- UI stuff
@@ -168,8 +289,9 @@ local function PresentColorEditors()
 
         imgui.BeginChild("ColorList", 0)
 
-        for i = 1, table.getn(theme.colors), 1 do
-            theme.colors[i].custom = PresentColorEditor(theme.colors[i].name, theme.colors[i].default, theme.colors[i].custom)
+        for i = 1, table.getn(colorList), 1 do
+            theme.ImGuiStyle[colorList[i].name] = string.format("%08X",
+            PresentColorEditor(colorList[i].name, tonumber("0x" .. colorList[i].color), tonumber("0x" .. theme.ImGuiStyle[colorList[i].name])))
         end
 
         imgui.EndChild()
@@ -188,10 +310,10 @@ end
 local function init()
     local function mainMenuButtonHandler()
         -- Parse theme since we will enable the window
-        if options == false then
+        if enable == false then
             ParseTheme()
         end
-        enable = not options
+        enable = not enable
     end
 
     core_mainmenu.add_button("Theme Editor", mainMenuButtonHandler)
