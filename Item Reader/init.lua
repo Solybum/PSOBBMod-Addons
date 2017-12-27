@@ -915,10 +915,6 @@ local function init()
 
     core_mainmenu.add_button("Item Reader", mainMenuButtonHandler)
 
-    if lib_theme_loaded == false then
-        print("Item Reader: lib_theme couldn't be loaded")
-    end
-
     return
     {
         name = "Item Reader",

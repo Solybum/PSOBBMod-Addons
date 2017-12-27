@@ -619,10 +619,6 @@ local function init()
 
     core_mainmenu.add_button("Monster Reader", mainMenuButtonHandler)
 
-    if lib_theme_loaded == false then
-        print("Monster Reader: lib_theme couldn't be loaded")
-    end
-
     return
     {
         name = "Monster Reader",

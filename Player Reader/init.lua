@@ -250,10 +250,6 @@ local function init()
 
     core_mainmenu.add_button("Player Reader", mainMenuButtonHandler)
 
-    if lib_theme_loaded == false then
-        print("Player Reader: lib_theme couldn't be loaded")
-    end
-
     return
     {
         name = "Players",
