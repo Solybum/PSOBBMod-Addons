@@ -11,10 +11,6 @@ Addons for https://github.com/Solybum/psobbaddonplugin (linking my fork while th
 This addon is required by all my other addons, they contain helper functions shared between different addons.  
 If you are developing addons, feel free to use it.  
   
-[Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
-Lets you easily edit the custom theme to use with all my addons (and other people's addons that use it too).  
-This addon is not required but doesn't hurt to have it there.
-  
 [Item Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Item%20Reader)  
 Configuration of this addon can be done by pressing the button in the main menu  
 Item configuration can be done in solylib's item files.  
@@ -24,3 +20,7 @@ Personalize the monster name colors in [monsters.lua](https://github.com/Solybum
   
 [Player Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Player%20Reader)  
 Shows information about players either in a list or specifically for each player (p1, p2, p3, p4).  
+  
+[Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
+Lets you easily edit the custom theme to use with all the addon framework
+This addon is not required.
