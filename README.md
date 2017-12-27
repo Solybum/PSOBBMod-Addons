@@ -1,8 +1,8 @@
 # PSOBBMod-Addons
-Addons for https://github.com/HybridEidolon/psobbaddonplugin
+Addons for https://github.com/Solybum/psobbaddonplugin (linking my fork while the base merges the theme changes) 
 
 ### Installation  
-1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin#installation)
+1. Install the [base plugin](https://github.com/Solybum/psobbaddonplugin)
 2. Download the [latest version](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip) of this repository
 3. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
 
