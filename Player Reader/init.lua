@@ -1,7 +1,6 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
-local lib_theme_loaded, lib_theme = pcall(require, "Theme Editor.theme")
 local cfg = require("Player Reader.configuration")
 local optionsLoaded, options = pcall(require, "Player Reader.options")
 
@@ -13,7 +12,6 @@ if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
 
     options.playersEnableWindow          = lib_helpers.NotNilOrDefault(options.playersEnableWindow, true)
@@ -47,7 +45,6 @@ else
     {
         configurationEnableWindow = true,
         enable = true,
-        useCustomTheme = false,
         fontScale = 1.0,
 
         playersEnableWindow = true,
@@ -87,7 +84,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.enable)))
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write("\n")
         io.write(string.format("    playersEnableWindow = %s,\n", tostring(options.playersEnableWindow)))
@@ -201,11 +197,6 @@ local function present()
         return
     end
 
-    -- Push custom theme, only if enabled
-    if lib_theme_loaded and options.useCustomTheme then
-        lib_theme.Push()
-    end
-
     if options.playersEnableWindow then
         if firstPresent or options.playersChanged then
             options.playersChanged = false
@@ -243,11 +234,6 @@ local function present()
         if options.p1TransparentWindow == true then
             imgui.PopStyleColor()
         end
-    end
-
-    -- Pop custom theme, only if enabled
-    if lib_theme_loaded and options.useCustomTheme then
-        lib_theme.Pop()
     end
 
     if firstPresent then

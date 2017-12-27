@@ -24,11 +24,6 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Use custom theme", _configuration.useCustomTheme) then
-                _configuration.useCustomTheme = not _configuration.useCustomTheme
-                this.changed = true
-            end
-
             success, _configuration.fontScale = imgui.InputFloat("Font Scale", _configuration.fontScale)
             if success then
                 this.changed = true
@@ -64,6 +59,11 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.playersNoMove = "NoMove"
                 end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Transparent window", _configuration.playersTransparentWindow) then
+                _configuration.playersTransparentWindow = not _configuration.playersTransparentWindow
                 this.changed = true
             end
 

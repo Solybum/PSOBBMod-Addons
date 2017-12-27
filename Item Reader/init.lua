@@ -5,7 +5,6 @@ local lib_unitxt = require("solylib.unitxt")
 local lib_items = require("solylib.items.items")
 local lib_items_list = require("solylib.items.items_list")
 local lib_items_cfg = require("solylib.items.items_configuration")
-local lib_theme_loaded, lib_theme = pcall(require, "Theme Editor.theme")
 local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
@@ -17,7 +16,6 @@ if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.useCustomTheme            = lib_helpers.NotNilOrDefault(options.useCustomTheme, false)
     options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
     options.showItemIDs               = lib_helpers.NotNilOrDefault(options.showItemIDs, false)
@@ -40,38 +38,40 @@ if optionsLoaded then
     options.aioNoTitleBar           = lib_helpers.NotNilOrDefault(options.aioNoTitleBar, "")
     options.aioNoResize             = lib_helpers.NotNilOrDefault(options.aioNoResize, "")
     options.aioNoMove               = lib_helpers.NotNilOrDefault(options.aioNoMove, "")
+    options.aioTransparentWindow    = lib_helpers.NotNilOrDefault(options.aioTransparentWindow, false)
     options.aioShowButtonSaveToFile = lib_helpers.NotNilOrDefault(options.aioShowButtonSaveToFile, true)
     options.aioSaveFileName         = lib_helpers.NotNilOrDefault(options.saveFileName, "addons/saved_inventory.txt")
     options.aioSelectedInventory    = lib_helpers.NotNilOrDefault(options.aioSelectedInventory, 1)
 
-    options.floorEnableWindow = lib_helpers.NotNilOrDefault(options.floorEnableWindow, true)
-    options.floorChanged      = lib_helpers.NotNilOrDefault(options.floorChanged, false)
-    options.floorAnchor       = lib_helpers.NotNilOrDefault(options.floorAnchor, 1)
-    options.floorX            = lib_helpers.NotNilOrDefault(options.floorX, 50)
-    options.floorY            = lib_helpers.NotNilOrDefault(options.floorY, 50)
-    options.floorW            = lib_helpers.NotNilOrDefault(options.floorW, 450)
-    options.floorH            = lib_helpers.NotNilOrDefault(options.floorH, 350)
-    options.floorNoTitleBar   = lib_helpers.NotNilOrDefault(options.floorNoTitleBar, "")
-    options.floorNoResize     = lib_helpers.NotNilOrDefault(options.floorNoResize, "")
-    options.floorNoMove       = lib_helpers.NotNilOrDefault(options.floorNoMove, "")
+    options.floorEnableWindow       = lib_helpers.NotNilOrDefault(options.floorEnableWindow, true)
+    options.floorChanged            = lib_helpers.NotNilOrDefault(options.floorChanged, false)
+    options.floorAnchor             = lib_helpers.NotNilOrDefault(options.floorAnchor, 1)
+    options.floorX                  = lib_helpers.NotNilOrDefault(options.floorX, 50)
+    options.floorY                  = lib_helpers.NotNilOrDefault(options.floorY, 50)
+    options.floorW                  = lib_helpers.NotNilOrDefault(options.floorW, 450)
+    options.floorH                  = lib_helpers.NotNilOrDefault(options.floorH, 350)
+    options.floorNoTitleBar         = lib_helpers.NotNilOrDefault(options.floorNoTitleBar, "")
+    options.floorNoResize           = lib_helpers.NotNilOrDefault(options.floorNoResize, "")
+    options.floorNoMove             = lib_helpers.NotNilOrDefault(options.floorNoMove, "")
+    options.floorTransparentWindow  = lib_helpers.NotNilOrDefault(options.floorTransparentWindow, false)
 
-    options.magsEnableWindow = lib_helpers.NotNilOrDefault(options.magsEnableWindow, true)
-    options.magsChanged      = lib_helpers.NotNilOrDefault(options.magsChanged, false)
-    options.magsAnchor       = lib_helpers.NotNilOrDefault(options.magsAnchor, 1)
-    options.magsX            = lib_helpers.NotNilOrDefault(options.magsX, 50)
-    options.magsY            = lib_helpers.NotNilOrDefault(options.magsY, 50)
-    options.magsW            = lib_helpers.NotNilOrDefault(options.magsW, 450)
-    options.magsH            = lib_helpers.NotNilOrDefault(options.magsH, 350)
-    options.magsNoTitleBar   = lib_helpers.NotNilOrDefault(options.magsNoTitleBar, "")
-    options.magsNoResize     = lib_helpers.NotNilOrDefault(options.magsNoResize, "")
-    options.magsNoMove       = lib_helpers.NotNilOrDefault(options.magsNoMove, "")
+    options.magsEnableWindow        = lib_helpers.NotNilOrDefault(options.magsEnableWindow, true)
+    options.magsChanged             = lib_helpers.NotNilOrDefault(options.magsChanged, false)
+    options.magsAnchor              = lib_helpers.NotNilOrDefault(options.magsAnchor, 1)
+    options.magsX                   = lib_helpers.NotNilOrDefault(options.magsX, 50)
+    options.magsY                   = lib_helpers.NotNilOrDefault(options.magsY, 50)
+    options.magsW                   = lib_helpers.NotNilOrDefault(options.magsW, 450)
+    options.magsH                   = lib_helpers.NotNilOrDefault(options.magsH, 350)
+    options.magsNoTitleBar          = lib_helpers.NotNilOrDefault(options.magsNoTitleBar, "")
+    options.magsNoResize            = lib_helpers.NotNilOrDefault(options.magsNoResize, "")
+    options.magsNoMove              = lib_helpers.NotNilOrDefault(options.magsNoMove, "")
+    options.magsTransparentWindow   = lib_helpers.NotNilOrDefault(options.magsTransparentWindow, false)
 else
     options = 
     {
         configurationEnableWindow = true,
 
         enable = true,
-        useCustomTheme = false,
         fontScale = 1.0,
         printItemIndex = true,
         showItemIDs = false,
@@ -94,7 +94,8 @@ else
         aioNoTitleBar = "",
         aioNoResize = "",
         aioNoMove = "",
-        auiShowButtonSaveToFile = true,
+        aioTransparentWindow = false;
+        aioShowButtonSaveToFile = true,
         aioSaveFileName = "addons/saved_inventory.txt",
         aioSelectedInventory = 1,
 
@@ -108,6 +109,7 @@ else
         floorNoTitleBar = "",
         floorNoResize = "",
         floorNoMove = "",
+        floorTransparentWindow = false;
 
         magsEnableWindow = true,
         magsChanged = false,
@@ -119,6 +121,7 @@ else
         magsNoTitleBar = "",
         magsNoResize = "",
         magsNoMove = "",
+        magsTransparentWindow = false;
     }
 end
 
@@ -131,7 +134,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    useCustomTheme = %s,\n", tostring(options.useCustomTheme)))
         io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
         io.write(string.format("    showItemIDs = %s,\n", tostring(options.showItemIDs)))
@@ -154,6 +156,7 @@ local function SaveOptions(options)
         io.write(string.format("    aioNoTitleBar = \"%s\",\n", options.aioNoTitleBar))
         io.write(string.format("    aioNoResize = \"%s\",\n", options.aioNoResize))
         io.write(string.format("    aioNoMove = \"%s\",\n", options.aioNoMove))
+        io.write(string.format("    aioTransparentWindow = %s,\n", options.aioTransparentWindow))
         io.write(string.format("    aioShowButtonSaveToFile = %s,\n",  tostring(options.aioShowButtonSaveToFile)))
         io.write(string.format("    aioSaveFileName = \"%s\",\n", options.aioSaveFileName))
         io.write(string.format("    aioSelectedInventory = %i,\n", options.aioSelectedInventory))
@@ -168,6 +171,7 @@ local function SaveOptions(options)
         io.write(string.format("    floorNoTitleBar = \"%s\",\n", options.floorNoTitleBar))
         io.write(string.format("    floorNoResize = \"%s\",\n", options.floorNoResize))
         io.write(string.format("    floorNoMove = \"%s\",\n", options.floorNoMove))
+        io.write(string.format("    floorTransparentWindow = %s,\n", options.floorTransparentWindow))
         io.write("\n")
         io.write(string.format("    magsEnableWindow = %s,\n", tostring(options.magsEnableWindow)))
         io.write(string.format("    magsChanged = %s,\n", tostring(options.magsChanged)))
@@ -179,6 +183,7 @@ local function SaveOptions(options)
         io.write(string.format("    magsNoTitleBar = \"%s\",\n", options.magsNoTitleBar))
         io.write(string.format("    magsNoResize = \"%s\",\n", options.magsNoResize))
         io.write(string.format("    magsNoMove = \"%s\",\n", options.magsNoMove))
+        io.write(string.format("    magsTransparentWindow = %s,\n", options.magsTransparentWindow))
         io.write("}\n")
 
         io.close(file)
@@ -823,11 +828,6 @@ local function present()
         return
     end
 
-    -- Push custom theme, only if enabled
-    if lib_theme_loaded and options.useCustomTheme then
-        lib_theme.Push()
-    end
-
     if options.aioEnableWindow then
         if firstPresent or options.aioChanged then
             options.aioChanged = false
@@ -836,11 +836,19 @@ local function present()
             imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
         end
 
+        if options.aioTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
         if imgui.Begin("Item Reader - AIO", nil, { options.aioNoTitleBar, options.aioNoResize, options.aioNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
         end
         imgui.End()
+
+        if options.aioTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
     if options.floorEnableWindow then
         if firstPresent or options.floorChanged then
@@ -850,11 +858,19 @@ local function present()
             imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
         end
 
+        if options.floorTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
         if imgui.Begin("Item Reader - Floor", nil, { options.floorNoTitleBar, options.floorNoResize, options.floorNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
         end
         imgui.End()
+
+        if options.floorTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
     if options.magsEnableWindow then
         if firstPresent or options.magsChanged then
@@ -864,16 +880,19 @@ local function present()
             imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
         end
 
+        if options.magsTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
         if imgui.Begin("Item Reader - Mags", nil, { options.magsNoTitleBar, options.magsNoResize, options.magsNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
         end
         imgui.End()
-    end
 
-    -- Pop custom theme, only if enabled
-    if lib_theme_loaded and options.useCustomTheme then
-        lib_theme.Pop()
+        if options.magsTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
 
     if firstPresent then

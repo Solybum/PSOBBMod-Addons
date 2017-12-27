@@ -24,11 +24,6 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Use custom theme", _configuration.useCustomTheme) then
-                _configuration.useCustomTheme = not _configuration.useCustomTheme
-                this.changed = true
-            end
-
             success, _configuration.fontScale = imgui.InputFloat("Font Scale", _configuration.fontScale)
             if success then
                 this.changed = true
@@ -107,6 +102,11 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.aioNoMove = "NoMove"
                 end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Transparent window", _configuration.aioTransparentWindow) then
+                _configuration.aioTransparentWindow = not _configuration.aioTransparentWindow
                 this.changed = true
             end
 
@@ -198,6 +198,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Transparent window", _configuration.floorTransparentWindow) then
+                _configuration.floorTransparentWindow = not _configuration.floorTransparentWindow
+                this.changed = true
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.floorAnchor = imgui.Combo("Anchor", _configuration.floorAnchor, anchorList, table.getn(anchorList))
@@ -271,6 +276,11 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.magsNoMove = "NoMove"
                 end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Transparent window", _configuration.magsTransparentWindow) then
+                _configuration.magsTransparentWindow = not _configuration.magsTransparentWindow
                 this.changed = true
             end
 
