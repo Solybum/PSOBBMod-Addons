@@ -286,6 +286,9 @@ local function ProcessWeapon(item)
                     statColor = lib_items_cfg.weaponAttributes[i2 + 1]
                 end
             end
+            if item.weapon.statpresence[i - 1] == 1 and item.weapon.stats[i] == 0 then
+                statColor = lib_items_cfg.red
+            end
     
             result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
     
@@ -302,6 +305,9 @@ local function ProcessWeapon(item)
             if stat <= lib_items_cfg.weaponHit[i2] then
                 statColor = lib_items_cfg.weaponHit[i2 + 1]
             end
+        end
+        if item.weapon.statpresence[5] == 1 and item.weapon.stats[6] == 0 then
+            statColor = lib_items_cfg.red
         end
         result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")

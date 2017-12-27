@@ -1,6 +1,7 @@
 -- All colors are 0xAARRGGBB
 local white = 0xFFFFFFFF
 local grey = 0xFFA0A0A0
+local red = 0xFFFF0000
 
 -- Item
 local itemIndex = 0xFFFFFFFF
@@ -131,6 +132,7 @@ return
     -- Colors
     white = white,
     grey = grey,
+    red = red,
     itemIndex = itemIndex,
     itemEquipped = itemEquipped,
     weaponUntekked = weaponUntekked,
