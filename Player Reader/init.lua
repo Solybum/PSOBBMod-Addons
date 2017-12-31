@@ -233,7 +233,7 @@ local function PresentPlayer(address, sd)
     end
     lib_helpers.imguiProgressBar(true, hp/mhp, 130, 5.0 * options.fontScale, hpColor, nil)
 
-    if mtp ~= 0 then
+    if address == lib_characters.GetSelf() and mtp ~= 0 then
         if options.singlePlayersShowBarText then
             lib_helpers.Text(true, "TP: " .. barTextFormat, tp, mtp)
         end

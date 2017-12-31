@@ -1,6 +1,13 @@
 local _PlayerArray = 0x00A94254
 local _MyPlayerIndex = 0x00A9C4F4
 
+local function GetSelf()
+    local myIndex = pso.read_u32(_MyPlayerIndex)
+    local playerAddress = pso.read_u32(_PlayerArray + myIndex * 4)
+
+    return playerAddress
+end
+
 local function GetPlayer(index)
     local playerAddress = pso.read_u32(_PlayerArray + index * 4)
 
@@ -116,6 +123,7 @@ end
 
 return
 {
+    GetSelf = GetSelf,
     GetPlayer = GetPlayer,
     GetPlayerList = GetPlayerList,
     GetPlayerName = GetPlayerName,
