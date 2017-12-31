@@ -65,6 +65,8 @@ end
 local function _ParseItemWeapon(item)
     item.weapon = {}
 
+    pmtW = pmt.GetItemData(item.data)
+
     item.weapon.wrapped = false
     item.weapon.untekked = false
     if item.data[5] > 0xBF then
@@ -78,6 +80,10 @@ local function _ParseItemWeapon(item)
 
     item.weapon.grind = item.data[4]
     item.weapon.special = item.data[5] % 64
+
+    if item.weapon.special == 0 then
+        item.weapon.special = pmtW.weapon.special
+    end
 
     item.weapon.isSRank = (item.data[2] >= 0x70 and item.data[2] < 0x89) or (item.data[2] >= 0xA5 and item.data[2] < 0xAA)
     -- SRANK
