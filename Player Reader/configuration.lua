@@ -28,465 +28,211 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
+
             imgui.TreePop()
         end
 
-        if imgui.TreeNodeEx("Players") then
-            if imgui.Checkbox("Enable", _configuration.playersEnableWindow) then
-                _configuration.playersEnableWindow = not _configuration.playersEnableWindow
+        if imgui.TreeNodeEx("All players") then
+            if imgui.Checkbox("Enable", _configuration.allPlayersEnableWindow) then
+                _configuration.allPlayersEnableWindow = not _configuration.allPlayersEnableWindow
                 this.changed = true
             end
 
-            if imgui.Checkbox("No title bar", _configuration.playersNoTitleBar == "NoTitleBar") then
-                if _configuration.playersNoTitleBar == "NoTitleBar" then
-                    _configuration.playersNoTitleBar = ""
+            if imgui.Checkbox("No title bar", _configuration.allPlayersNoTitleBar == "NoTitleBar") then
+                if _configuration.allPlayersNoTitleBar == "NoTitleBar" then
+                    _configuration.allPlayersNoTitleBar = ""
                 else
-                    _configuration.playersNoTitleBar = "NoTitleBar"
+                    _configuration.allPlayersNoTitleBar = "NoTitleBar"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No resize", _configuration.playersNoResize == "NoResize") then
-                if _configuration.playersNoResize == "NoResize" then
-                    _configuration.playersNoResize = ""
+            if imgui.Checkbox("No resize", _configuration.allPlayersNoResize == "NoResize") then
+                if _configuration.allPlayersNoResize == "NoResize" then
+                    _configuration.allPlayersNoResize = ""
                 else
-                    _configuration.playersNoResize = "NoResize"
+                    _configuration.allPlayersNoResize = "NoResize"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No move", _configuration.playersNoMove == "NoMove") then
-                if _configuration.playersNoMove == "NoMove" then
-                    _configuration.playersNoMove = ""
+            if imgui.Checkbox("No move", _configuration.allPlayersNoMove == "NoMove") then
+                if _configuration.allPlayersNoMove == "NoMove" then
+                    _configuration.allPlayersNoMove = ""
                 else
-                    _configuration.playersNoMove = "NoMove"
+                    _configuration.allPlayersNoMove = "NoMove"
                 end
                 this.changed = true
             end
 
-            if imgui.Checkbox("Transparent window", _configuration.playersTransparentWindow) then
-                _configuration.playersTransparentWindow = not _configuration.playersTransparentWindow
+            if imgui.Checkbox("Transparent window", _configuration.allPlayersTransparentWindow) then
+                _configuration.allPlayersTransparentWindow = not _configuration.allPlayersTransparentWindow
                 this.changed = true
             end
 
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
-            success, _configuration.playersAnchor = imgui.Combo("Anchor", _configuration.playersAnchor, anchorList, table.getn(anchorList))
+            success, _configuration.allPlayersAnchor = imgui.Combo("Anchor", _configuration.allPlayersAnchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.playersChanged = true
+                _configuration.allPlayersChanged = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.playersX = imgui.InputInt("X", _configuration.playersX)
+            success, _configuration.allPlayersX = imgui.InputInt("X", _configuration.allPlayersX)
             imgui.PopItemWidth()
             if success then
-                _configuration.playersChanged = true
+                _configuration.allPlayersChanged = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
-            success, _configuration.playersY = imgui.InputInt("Y", _configuration.playersY)
+            success, _configuration.allPlayersY = imgui.InputInt("Y", _configuration.allPlayersY)
             imgui.PopItemWidth()
             if success then
-                _configuration.playersChanged = true
+                _configuration.allPlayersChanged = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.playersW = imgui.InputInt("Width", _configuration.playersW)
+            success, _configuration.allPlayersW = imgui.InputInt("Width", _configuration.allPlayersW)
             imgui.PopItemWidth()
             if success then
-                _configuration.playersChanged = true
+                _configuration.allPlayersChanged = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
-            success, _configuration.playersH = imgui.InputInt("Height", _configuration.playersH)
+            success, _configuration.allPlayersH = imgui.InputInt("Height", _configuration.allPlayersH)
             imgui.PopItemWidth()
             if success then
-                _configuration.playersChanged = true
+                _configuration.allPlayersChanged = true
                 this.changed = true
             end
             imgui.TreePop()
         end
 
-        if imgui.TreeNodeEx("P1") then
-            if imgui.Checkbox("Enable", _configuration.p1EnableWindow) then
-                _configuration.p1EnableWindow = not _configuration.p1EnableWindow
+        if imgui.TreeNodeEx("Single players") then
+            if imgui.Checkbox("Enable", _configuration.singlePlayersEnableWindow) then
+                _configuration.singlePlayersEnableWindow = not _configuration.singlePlayersEnableWindow
                 this.changed = true
             end
 
-            if imgui.Checkbox("No title bar", _configuration.p1NoTitleBar == "NoTitleBar") then
-                if _configuration.p1NoTitleBar == "NoTitleBar" then
-                    _configuration.p1NoTitleBar = ""
-                else
-                    _configuration.p1NoTitleBar = "NoTitleBar"
+            if imgui.Checkbox("Show HP/TP text", _configuration.singlePlayersShowBarText) then
+                _configuration.singlePlayersShowBarText = not _configuration.singlePlayersShowBarText
+                this.changed = true
+            end
+            if imgui.Checkbox("Show max HP/TP", _configuration.singlePlayersShowBarMaxValue) then
+                _configuration.singlePlayersShowBarMaxValue = not _configuration.singlePlayersShowBarMaxValue
+                this.changed = true
+            end
+
+            for i=1,4,1 do
+                local singlePlayerTitle = string.format("Player %d", i)
+                if imgui.TreeNodeEx(singlePlayerTitle) then
+                    if imgui.Checkbox("Enable", _configuration.players[i].EnableWindow) then
+                        _configuration.players[i].EnableWindow = not _configuration.players[i].EnableWindow
+                        this.changed = true
+                    end
+                
+                    if imgui.Checkbox("No title bar", _configuration.players[i].NoTitleBar == "NoTitleBar") then
+                        if _configuration.players[i].NoTitleBar == "NoTitleBar" then
+                            _configuration.players[i].NoTitleBar = ""
+                        else
+                            _configuration.players[i].NoTitleBar = "NoTitleBar"
+                        end
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("No resize", _configuration.players[i].NoResize == "NoResize") then
+                        if _configuration.players[i].NoResize == "NoResize" then
+                            _configuration.players[i].NoResize = ""
+                        else
+                            _configuration.players[i].NoResize = "NoResize"
+                        end
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("No move", _configuration.players[i].NoMove == "NoMove") then
+                        if _configuration.players[i].NoMove == "NoMove" then
+                            _configuration.players[i].NoMove = ""
+                        else
+                            _configuration.players[i].NoMove = "NoMove"
+                        end
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("No scrollbar", _configuration.players[i].NoScrollbar == "NoScrollbar") then
+                        if _configuration.players[i].NoScrollbar == "NoScrollbar" then
+                            _configuration.players[i].NoScrollbar = ""
+                        else
+                            _configuration.players[i].NoScrollbar = "NoScrollbar"
+                        end
+                        this.changed = true
+                    end
+
+                    if imgui.Checkbox("Always Auto Resize", _configuration.players[i].AlwaysAutoResize == "AlwaysAutoResize") then
+                        if _configuration.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
+                            _configuration.players[i].AlwaysAutoResize = ""
+                        else
+                            _configuration.players[i].AlwaysAutoResize = "AlwaysAutoResize"
+                        end
+                        this.changed = true
+                    end
+
+                    if imgui.Checkbox("Transparent Window", _configuration.players[i].TransparentWindow) then
+                        _configuration.players[i].TransparentWindow = not _configuration.players[i].TransparentWindow
+                        this.changed = true
+                    end
+
+                    imgui.Text("Position and Size")
+                    imgui.PushItemWidth(200)
+                    success, _configuration.players[i].Anchor = imgui.Combo("Anchor", _configuration.players[i].Anchor, anchorList, table.getn(anchorList))
+                    imgui.PopItemWidth()
+                    if success then
+                        _configuration.players[i].Changed = true
+                        this.changed = true
+                    end
+                
+                    imgui.PushItemWidth(100)
+                    success, _configuration.players[i].X = imgui.InputInt("X", _configuration.players[i].X)
+                    imgui.PopItemWidth()
+                    if success then
+                        _configuration.players[i].Changed = true
+                        this.changed = true
+                    end
+                
+                    imgui.SameLine(0, 38)
+                    imgui.PushItemWidth(100)
+                    success, _configuration.players[i].Y = imgui.InputInt("Y", _configuration.players[i].Y)
+                    imgui.PopItemWidth()
+                    if success then
+                        _configuration.players[i].Changed = true
+                        this.changed = true
+                    end
+                
+                    imgui.PushItemWidth(100)
+                    success, _configuration.players[i].W = imgui.InputInt("Width", _configuration.players[i].W)
+                    imgui.PopItemWidth()
+                    if success then
+                        _configuration.players[i].Changed = true
+                        this.changed = true
+                    end
+                
+                    imgui.SameLine(0, 10)
+                    imgui.PushItemWidth(100)
+                    success, _configuration.players[i].H = imgui.InputInt("Height", _configuration.players[i].H)
+                    imgui.PopItemWidth()
+                    if success then
+                        _configuration.players[i].Changed = true
+                        this.changed = true
+                    end
+                
+                    if imgui.Checkbox("S/D (J/Z)", _configuration.players[i].SD) then
+                        _configuration.players[i].SD = not _configuration.players[i].SD
+                        this.changed = true
+                    end
+                    
+                    imgui.TreePop()
                 end
-                this.changed = true
-            end
-            if imgui.Checkbox("No resize", _configuration.p1NoResize == "NoResize") then
-                if _configuration.p1NoResize == "NoResize" then
-                    _configuration.p1NoResize = ""
-                else
-                    _configuration.p1NoResize = "NoResize"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No move", _configuration.p1NoMove == "NoMove") then
-                if _configuration.p1NoMove == "NoMove" then
-                    _configuration.p1NoMove = ""
-                else
-                    _configuration.p1NoMove = "NoMove"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No scrollbar", _configuration.p1NoScrollbar == "NoScrollbar") then
-                if _configuration.p1NoScrollbar == "NoScrollbar" then
-                    _configuration.p1NoScrollbar = ""
-                else
-                    _configuration.p1NoScrollbar = "NoScrollbar"
-                end
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Transparent Window", _configuration.p1TransparentWindow) then
-                _configuration.p1TransparentWindow = not _configuration.p1TransparentWindow
-                this.changed = true
-            end
-
-            imgui.Text("Position and Size")
-            imgui.PushItemWidth(200)
-            success, _configuration.p1Anchor = imgui.Combo("Anchor", _configuration.p1Anchor, anchorList, table.getn(anchorList))
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p1Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p1X = imgui.InputInt("X", _configuration.p1X)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p1Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 38)
-            imgui.PushItemWidth(100)
-            success, _configuration.p1Y = imgui.InputInt("Y", _configuration.p1Y)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p1Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p1W = imgui.InputInt("Width", _configuration.p1W)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p1Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 10)
-            imgui.PushItemWidth(100)
-            success, _configuration.p1H = imgui.InputInt("Height", _configuration.p1H)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p1Changed = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("S/D (J/Z)", _configuration.p1SD) then
-                _configuration.p1SD = not _configuration.p1SD
-                this.changed = true
-            end
-
-            imgui.TreePop()
-        end
-
-        if imgui.TreeNodeEx("P2") then
-            if imgui.Checkbox("Enable", _configuration.p2EnableWindow) then
-                _configuration.p2EnableWindow = not _configuration.p2EnableWindow
-                this.changed = true
-            end
-
-            if imgui.Checkbox("No title bar", _configuration.p2NoTitleBar == "NoTitleBar") then
-                if _configuration.p2NoTitleBar == "NoTitleBar" then
-                    _configuration.p2NoTitleBar = ""
-                else
-                    _configuration.p2NoTitleBar = "NoTitleBar"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No resize", _configuration.p2NoResize == "NoResize") then
-                if _configuration.p2NoResize == "NoResize" then
-                    _configuration.p2NoResize = ""
-                else
-                    _configuration.p2NoResize = "NoResize"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No move", _configuration.p2NoMove == "NoMove") then
-                if _configuration.p2NoMove == "NoMove" then
-                    _configuration.p2NoMove = ""
-                else
-                    _configuration.p2NoMove = "NoMove"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No scrollbar", _configuration.p2NoScrollbar == "NoScrollbar") then
-                if _configuration.p2NoScrollbar == "NoScrollbar" then
-                    _configuration.p2NoScrollbar = ""
-                else
-                    _configuration.p2NoScrollbar = "NoScrollbar"
-                end
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Transparent Window", _configuration.p2TransparentWindow) then
-                _configuration.p2TransparentWindow = not _configuration.p2TransparentWindow
-                this.changed = true
-            end
-
-            imgui.Text("Position and Size")
-            imgui.PushItemWidth(200)
-            success, _configuration.p2Anchor = imgui.Combo("Anchor", _configuration.p2Anchor, anchorList, table.getn(anchorList))
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p2Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p2X = imgui.InputInt("X", _configuration.p2X)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p2Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 38)
-            imgui.PushItemWidth(100)
-            success, _configuration.p2Y = imgui.InputInt("Y", _configuration.p2Y)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p2Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p2W = imgui.InputInt("Width", _configuration.p2W)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p2Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 10)
-            imgui.PushItemWidth(100)
-            success, _configuration.p2H = imgui.InputInt("Height", _configuration.p2H)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p2Changed = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("S/D (J/Z)", _configuration.p2SD) then
-                _configuration.p2SD = not _configuration.p2SD
-                this.changed = true
-            end
-
-            imgui.TreePop()
-        end
-
-        if imgui.TreeNodeEx("P3") then
-            if imgui.Checkbox("Enable", _configuration.p3EnableWindow) then
-                _configuration.p3EnableWindow = not _configuration.p3EnableWindow
-                this.changed = true
-            end
-
-            if imgui.Checkbox("No title bar", _configuration.p3NoTitleBar == "NoTitleBar") then
-                if _configuration.p3NoTitleBar == "NoTitleBar" then
-                    _configuration.p3NoTitleBar = ""
-                else
-                    _configuration.p3NoTitleBar = "NoTitleBar"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No resize", _configuration.p3NoResize == "NoResize") then
-                if _configuration.p3NoResize == "NoResize" then
-                    _configuration.p3NoResize = ""
-                else
-                    _configuration.p3NoResize = "NoResize"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No move", _configuration.p3NoMove == "NoMove") then
-                if _configuration.p3NoMove == "NoMove" then
-                    _configuration.p3NoMove = ""
-                else
-                    _configuration.p3NoMove = "NoMove"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No scrollbar", _configuration.p3NoScrollbar == "NoScrollbar") then
-                if _configuration.p3NoScrollbar == "NoScrollbar" then
-                    _configuration.p3NoScrollbar = ""
-                else
-                    _configuration.p3NoScrollbar = "NoScrollbar"
-                end
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Transparent Window", _configuration.p3TransparentWindow) then
-                _configuration.p3TransparentWindow = not _configuration.p3TransparentWindow
-                this.changed = true
-            end
-
-            imgui.Text("Position and Size")
-            imgui.PushItemWidth(200)
-            success, _configuration.p3Anchor = imgui.Combo("Anchor", _configuration.p3Anchor, anchorList, table.getn(anchorList))
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p3Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p3X = imgui.InputInt("X", _configuration.p3X)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p3Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 38)
-            imgui.PushItemWidth(100)
-            success, _configuration.p3Y = imgui.InputInt("Y", _configuration.p3Y)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p3Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p3W = imgui.InputInt("Width", _configuration.p3W)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p3Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 10)
-            imgui.PushItemWidth(100)
-            success, _configuration.p3H = imgui.InputInt("Height", _configuration.p3H)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p3Changed = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("S/D (J/Z)", _configuration.p3SD) then
-                _configuration.p3SD = not _configuration.p3SD
-                this.changed = true
-            end
-
-            imgui.TreePop()
-        end
-
-        if imgui.TreeNodeEx("P4") then
-            if imgui.Checkbox("Enable", _configuration.p4EnableWindow) then
-                _configuration.p4EnableWindow = not _configuration.p4EnableWindow
-                this.changed = true
-            end
-
-            if imgui.Checkbox("No title bar", _configuration.p4NoTitleBar == "NoTitleBar") then
-                if _configuration.p4NoTitleBar == "NoTitleBar" then
-                    _configuration.p4NoTitleBar = ""
-                else
-                    _configuration.p4NoTitleBar = "NoTitleBar"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No resize", _configuration.p4NoResize == "NoResize") then
-                if _configuration.p4NoResize == "NoResize" then
-                    _configuration.p4NoResize = ""
-                else
-                    _configuration.p4NoResize = "NoResize"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No move", _configuration.p4NoMove == "NoMove") then
-                if _configuration.p4NoMove == "NoMove" then
-                    _configuration.p4NoMove = ""
-                else
-                    _configuration.p4NoMove = "NoMove"
-                end
-                this.changed = true
-            end
-            if imgui.Checkbox("No scrollbar", _configuration.p4NoScrollbar == "NoScrollbar") then
-                if _configuration.p4NoScrollbar == "NoScrollbar" then
-                    _configuration.p4NoScrollbar = ""
-                else
-                    _configuration.p4NoScrollbar = "NoScrollbar"
-                end
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Transparent Window", _configuration.p4TransparentWindow) then
-                _configuration.p4TransparentWindow = not _configuration.p4TransparentWindow
-                this.changed = true
-            end
-
-            imgui.Text("Position and Size")
-            imgui.PushItemWidth(200)
-            success, _configuration.p4Anchor = imgui.Combo("Anchor", _configuration.p4Anchor, anchorList, table.getn(anchorList))
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p4Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p4X = imgui.InputInt("X", _configuration.p4X)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p4Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 38)
-            imgui.PushItemWidth(100)
-            success, _configuration.p4Y = imgui.InputInt("Y", _configuration.p4Y)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p4Changed = true
-                this.changed = true
-            end
-
-            imgui.PushItemWidth(100)
-            success, _configuration.p4W = imgui.InputInt("Width", _configuration.p4W)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p4Changed = true
-                this.changed = true
-            end
-
-            imgui.SameLine(0, 10)
-            imgui.PushItemWidth(100)
-            success, _configuration.p4H = imgui.InputInt("Height", _configuration.p4H)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.p4Changed = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("S/D (J/Z)", _configuration.p4SD) then
-                _configuration.p4SD = not _configuration.p4SD
-                this.changed = true
             end
 
             imgui.TreePop()

@@ -131,7 +131,7 @@ local function imguiProgressBar(newLine, progress, x, y, barColor, textColor, fm
     progress = progress or 0
     x = x or -1.0
     y = y or 0.0
-    fmt = fmt or "nil"
+    fmt = fmt or ""
 
     overlay = string.format(fmt, ...)
 
