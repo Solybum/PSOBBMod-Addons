@@ -205,11 +205,19 @@ local function present()
             imgui.SetNextWindowSize(options.playersW, options.playersH, "Always");
         end
 
+        if options.playersTransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
         if imgui.Begin("Player Reader - Players", nil, { options.playersNoTitleBar, options.playersNoResize, options.playersNoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentPlayers()
         end
         imgui.End()
+
+        if options.playersTransparentWindow == true then
+            imgui.PopStyleColor()
+        end
     end
 
     if options.p1EnableWindow then
@@ -228,7 +236,6 @@ local function present()
             imgui.SetWindowFontScale(options.fontScale)
             PresentPlayer(0)
         end
-
         imgui.End()
 
         if options.p1TransparentWindow == true then
