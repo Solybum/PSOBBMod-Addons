@@ -1,5 +1,5 @@
 # PSOBBMod-Addons
-Addons for https://github.com/HybridEidolon/psobbaddonplugin (linking my fork while the base merges the theme changes) 
+Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
 1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin)
@@ -22,5 +22,5 @@ Personalize the monster name colors in [monsters.lua](https://github.com/Solybum
 Shows information about players either in a list or specifically for each player (p1, p2, p3, p4).  
   
 [Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
-Lets you easily edit the custom theme to use with all the addon framework  
+Lets you easily edit the custom theme in the addons library (probably going to be made a default addon)
 This addon is not required.
