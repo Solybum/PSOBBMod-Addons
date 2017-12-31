@@ -1,5 +1,5 @@
 # PSOBBMod-Addons
-Addons for https://github.com/HybridEidolon/psobbaddonplugin (linking my fork while the base merges the theme changes) 
+Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
 1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin)
