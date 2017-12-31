@@ -43,12 +43,24 @@ local function GetPlayerName(player)
     return playerName
 end
 
+local function GetPlayerLevel(player)
+    return (pso.read_u32(player + 0xE44) + 1)
+end
+
 local function GetPlayerHP(player)
     return pso.read_u16(player + 0x334)
 end
 
 local function GetPlayerMaxHP(player)
     return pso.read_u16(player + 0x2BC)
+end
+
+local function GetPlayerTP(player)
+    return pso.read_u16(player + 0x336)
+end
+
+local function GetPlayerMaxTP(player)
+    return pso.read_u16(player + 0x2BE)
 end
 
 local function GetPlayerTechStatus(player, tech)
@@ -107,8 +119,11 @@ return
     GetPlayer = GetPlayer,
     GetPlayerList = GetPlayerList,
     GetPlayerName = GetPlayerName,
+    GetPlayerLevel = GetPlayerLevel,
     GetPlayerHP = GetPlayerHP,
     GetPlayerMaxHP = GetPlayerMaxHP,
+    GetPlayerTP = GetPlayerTP,
+    GetPlayerMaxTP = GetPlayerMaxTP,
     GetPlayerTechStatus = GetPlayerTechStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,

@@ -449,7 +449,7 @@ local function PresentMonsters()
                 imgui.NextColumn()
             end
 
-            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
+            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
             imgui.NextColumn()
 
             if options.showMonsterStatus then
@@ -503,7 +503,7 @@ local function PresentTargetMonster(monster)
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
 
-        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, mHP, lib_helpers.HPToGreenRedGradient(mHP/mHPMax))
+        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
         if atkTech.type == 0 then
             lib_helpers.Text(true, "")
         else

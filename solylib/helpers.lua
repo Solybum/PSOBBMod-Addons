@@ -126,29 +126,28 @@ local function Text(newLine, fmt, ...)
     return TextC(newLine, 0xFFFFFFFF, fmt, ...)
 end
 
-local function imguiProgressBar(newLine, progress, x, y, overlay, barColor, textColor)
+local function imguiProgressBar(newLine, progress, x, y, barColor, textColor, fmt, ...)
+    newLine = newLine or false
+    progress = progress or 0
     x = x or -1.0
     y = y or 0.0
-    newLine = newLine or false
+    fmt = fmt or "nil"
 
-    if progress == nil then
-        imgui.Text("imguiProgressBar() Invalid progress")
-        return
-    end
+    overlay = string.format(fmt, ...)
 
     if newLine == false then
         imgui.SameLine(0, 0)
     end
 
-    if textColor ~= nil then
-        local c = GetColorAsFloats(textColor)
-        imgui.PushStyleColor("Text", c.r, c.g, c.b, c.a)
-    end
     if barColor ~= nil then
         local c = GetColorAsFloats(barColor)
         imgui.PushStyleColor("PlotHistogram", c.r, c.g, c.b, c.a)
     end
-
+    if textColor ~= nil then
+        local c = GetColorAsFloats(textColor)
+        imgui.PushStyleColor("Text", c.r, c.g, c.b, c.a)
+    end
+    
     imgui.ProgressBar(progress, x, y, overlay)
     
     if textColor ~= nil then
