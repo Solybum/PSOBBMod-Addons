@@ -91,7 +91,63 @@ end
 
 -- Full item data lookup
 local function _GetWeaponData(group, index, itemdata, itemAddress)
+    itemdata.weapon = {}
+    itemdata.weapon._class = 0
+    itemdata.weapon.atpMin = 0
+    itemdata.weapon.atpMax = 0
+    itemdata.weapon.atpReq = 0
+    itemdata.weapon.mstReq = 0
+    itemdata.weapon.ataReq = 0
+    itemdata.weapon.mst = 0
+    itemdata.weapon.grind = 0
+    itemdata.weapon.photonColor = -1
+    itemdata.weapon.special = 0
+    itemdata.weapon.ata = 0
+    itemdata.weapon.statBoost = 0
+    itemdata.weapon.projectile = 0
+    itemdata.weapon.photonTrail1X = -1
+    itemdata.weapon.photonTrail1Y = -1
+    itemdata.weapon.photonTrail2X = -1
+    itemdata.weapon.photonTrail2Y = -1
+    itemdata.weapon.photonType = -1
+    itemdata.weapon.unknown1 = -1
+    itemdata.weapon.unknown2 = -1
+    itemdata.weapon.unknown3 = -1
+    itemdata.weapon.unknown4 = 0
+    itemdata.weapon.unknown5 = 0
+    itemdata.weapon.techBoost = 0
+    itemdata.weapon.attack = 0
+
     if itemAddress ~= 0 then
+        itemdata.id =                   pso.read_u32(itemAddress + 0)
+        itemdata.model =                pso.read_u16(itemAddress + 4)
+        itemdata.texture =              pso.read_u16(itemAddress + 6)
+        itemdata.teampoints =           pso.read_u32(itemAddress + 8)
+        itemdata.weapon._class =        pso.read_u16(itemAddress + 12)
+        itemdata.weapon.atpMin =        pso.read_u16(itemAddress + 14)
+        itemdata.weapon.atpMax =        pso.read_u16(itemAddress + 16)
+        itemdata.weapon.atpReq =        pso.read_u16(itemAddress + 18)
+        itemdata.weapon.mstReq =        pso.read_u16(itemAddress + 20)
+        itemdata.weapon.ataReq =        pso.read_u16(itemAddress + 22)
+        itemdata.weapon.mst =           pso.read_u16(itemAddress + 24)
+        itemdata.weapon.grind =         pso.read_u8(itemAddress + 26)
+        itemdata.weapon.photonColor =   pso.read_i8(itemAddress + 27)
+        itemdata.weapon.special =       pso.read_u8(itemAddress + 28)
+        itemdata.weapon.ata =           pso.read_u8(itemAddress + 29)
+        itemdata.weapon.statBoost =     pso.read_u8(itemAddress + 30)
+        itemdata.weapon.projectile =    pso.read_u8(itemAddress + 31)
+        itemdata.weapon.photonTrail1X = pso.read_i8(itemAddress + 32)
+        itemdata.weapon.photonTrail1Y = pso.read_i8(itemAddress + 33)
+        itemdata.weapon.photonTrail2X = pso.read_i8(itemAddress + 34)
+        itemdata.weapon.photonTrail2Y = pso.read_i8(itemAddress + 35)
+        itemdata.weapon.photonType =    pso.read_i8(itemAddress + 36)
+        itemdata.weapon.unknown1 =      pso.read_i8(itemAddress + 37)
+        itemdata.weapon.unknown2 =      pso.read_i8(itemAddress + 38)
+        itemdata.weapon.unknown3 =      pso.read_i8(itemAddress + 39)
+        itemdata.weapon.unknown4 =      pso.read_i8(itemAddress + 40)
+        itemdata.weapon.unknown5 =      pso.read_i8(itemAddress + 41)
+        itemdata.weapon.techBoost =     pso.read_i8(itemAddress + 42)
+        itemdata.weapon.attack =        pso.read_u8(itemAddress + 43)
 
     end
     return itemdata
