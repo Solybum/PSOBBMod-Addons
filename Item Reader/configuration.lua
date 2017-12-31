@@ -17,6 +17,13 @@ local function ConfigurationWindow(configuration)
             "Top", "Center", "Bottom",
             "Top Right", "Right", "Bottom Right",
         }
+        local serverList =
+        {
+            "Vanilla",
+            "Ultima",
+            "Ephinea",
+            "Schthach",
+        }
 
         if imgui.TreeNodeEx("General", "DefaultOpen") then
             if imgui.Checkbox("Enable", _configuration.enable) then
@@ -67,6 +74,13 @@ local function ConfigurationWindow(configuration)
             end
 
             success, _configuration.itemNameLength = imgui.InputInt("Max Item Name Length", _configuration.itemNameLength)
+            if success then
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(200)
+            success, _configuration.server = imgui.Combo("Server", _configuration.server, serverList, table.getn(serverList))
+            imgui.PopItemWidth()
             if success then
                 this.changed = true
             end
@@ -164,6 +178,7 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
+
             imgui.TreePop()
         end
 

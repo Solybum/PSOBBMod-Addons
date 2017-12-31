@@ -27,6 +27,7 @@ if optionsLoaded then
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
+    options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
 
     options.aioEnableWindow         = lib_helpers.NotNilOrDefault(options.aioEnableWindow, true)
     options.aioChanged              = lib_helpers.NotNilOrDefault(options.aioChanged, false)
@@ -83,6 +84,7 @@ else
         hideMagStats = false,
         hideMagPBs = false,
         itemNameLength = 0,
+        server = 1,
 
         aioEnableWindow = true,
         aioChanged = false,
@@ -125,6 +127,9 @@ else
     }
 end
 
+-- Append server specific items
+lib_items_list.AddServerItems(options.server)
+
 local function SaveOptions(options)
     local file = io.open(optionsFileName, "w")
     if file ~= nil then
@@ -145,6 +150,7 @@ local function SaveOptions(options)
         io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
+        io.write(string.format("    server = %s,\n", tostring(options.server)))
         io.write("\n")
         io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
         io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
