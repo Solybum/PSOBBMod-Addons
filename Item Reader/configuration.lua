@@ -91,6 +91,7 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("AIO") then
             if imgui.Checkbox("Enable", _configuration.aio.EnableWindow) then
                 _configuration.aio.EnableWindow = not _configuration.aio.EnableWindow
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -100,6 +101,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.aio.NoTitleBar = "NoTitleBar"
                 end
+                _configuration.aio.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No resize", _configuration.aio.NoResize == "NoResize") then
@@ -108,6 +110,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.aio.NoResize = "NoResize"
                 end
+                _configuration.aio.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No move", _configuration.aio.NoMove == "NoMove") then
@@ -116,6 +119,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.aio.NoMove = "NoMove"
                 end
+                _configuration.aio.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("Always Auto Resize", _configuration.aio.AlwaysAutoResize == "AlwaysAutoResize") then
@@ -124,11 +128,13 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.aio.AlwaysAutoResize = "AlwaysAutoResize"
                 end
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
             if imgui.Checkbox("Transparent window", _configuration.aio.TransparentWindow) then
                 _configuration.aio.TransparentWindow = not _configuration.aio.TransparentWindow
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -137,7 +143,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.Anchor = imgui.Combo("Anchor", _configuration.aio.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.aio.Changed = true
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -145,7 +151,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.X = imgui.InputInt("X", _configuration.aio.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.aio.Changed = true
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -154,7 +160,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.Y = imgui.InputInt("Y", _configuration.aio.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.aio.Changed = true
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -162,7 +168,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.W = imgui.InputInt("Width", _configuration.aio.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.aio.Changed = true
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -171,12 +177,13 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.H = imgui.InputInt("Height", _configuration.aio.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.aio.Changed = true
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
             if imgui.Checkbox("Show \"Save to file\" button", _configuration.aio.ShowButtonSaveToFile) then
                 _configuration.aio.ShowButtonSaveToFile = not _configuration.aio.ShowButtonSaveToFile
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -184,6 +191,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.aio.SaveFileName = imgui.InputText("Save file path", _configuration.aio.SaveFileName, 255, 0, nil, _configuration.aio.SaveFileName)
             imgui.PopItemWidth()
             if success then
+                _configuration.aio.changed = true
                 this.changed = true
             end
 
@@ -193,6 +201,7 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("Floor") then
             if imgui.Checkbox("Enable", _configuration.floor.EnableWindow) then
                 _configuration.floor.EnableWindow = not _configuration.floor.EnableWindow
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -202,6 +211,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.floor.NoTitleBar = "NoTitleBar"
                 end
+                _configuration.floor.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No resize", _configuration.floor.NoResize == "NoResize") then
@@ -210,6 +220,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.floor.NoResize = "NoResize"
                 end
+                _configuration.floor.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No move", _configuration.floor.NoMove == "NoMove") then
@@ -218,6 +229,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.floor.NoMove = "NoMove"
                 end
+                _configuration.floor.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("Always Auto Resize", _configuration.floor.AlwaysAutoResize == "AlwaysAutoResize") then
@@ -226,6 +238,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.floor.AlwaysAutoResize = "AlwaysAutoResize"
                 end
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -239,7 +252,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.floor.Anchor = imgui.Combo("Anchor", _configuration.floor.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.floor.Changed = true
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -247,7 +260,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.floor.X = imgui.InputInt("X", _configuration.floor.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.floor.Changed = true
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -256,7 +269,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.floor.Y = imgui.InputInt("Y", _configuration.floor.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.floor.Changed = true
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -264,7 +277,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.floor.W = imgui.InputInt("Width", _configuration.floor.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.floor.Changed = true
+                _configuration.floor.changed = true
                 this.changed = true
             end
 
@@ -273,7 +286,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.floor.H = imgui.InputInt("Height", _configuration.floor.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.floor.Changed = true
+                _configuration.floor.changed = true
                 this.changed = true
             end
             imgui.TreePop()
@@ -282,6 +295,7 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("Mags") then
             if imgui.Checkbox("Enable", _configuration.mags.EnableWindow) then
                 _configuration.mags.EnableWindow = not _configuration.mags.EnableWindow
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -291,6 +305,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.mags.NoTitleBar = "NoTitleBar"
                 end
+                _configuration.mags.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No resize", _configuration.mags.NoResize == "NoResize") then
@@ -299,6 +314,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.mags.NoResize = "NoResize"
                 end
+                _configuration.mags.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("No move", _configuration.mags.NoMove == "NoMove") then
@@ -307,6 +323,7 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.mags.NoMove = "NoMove"
                 end
+                _configuration.mags.changed = true
                 this.changed = true
             end
             if imgui.Checkbox("Always Auto Resize", _configuration.mags.AlwaysAutoResize == "AlwaysAutoResize") then
@@ -315,11 +332,13 @@ local function ConfigurationWindow(configuration)
                 else
                     _configuration.mags.AlwaysAutoResize = "AlwaysAutoResize"
                 end
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
             if imgui.Checkbox("Transparent window", _configuration.mags.TransparentWindow) then
                 _configuration.mags.TransparentWindow = not _configuration.mags.TransparentWindow
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -328,7 +347,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.mags.Anchor = imgui.Combo("Anchor", _configuration.mags.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.mags.Changed = true
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -336,7 +355,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.mags.X = imgui.InputInt("X", _configuration.mags.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.mags.Changed = true
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -345,7 +364,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.mags.Y = imgui.InputInt("Y", _configuration.mags.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.mags.Changed = true
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -353,7 +372,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.mags.W = imgui.InputInt("Width", _configuration.mags.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.mags.Changed = true
+                _configuration.mags.changed = true
                 this.changed = true
             end
 
@@ -362,7 +381,7 @@ local function ConfigurationWindow(configuration)
             success, _configuration.mags.H = imgui.InputInt("Height", _configuration.mags.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.mags.Changed = true
+                _configuration.mags.changed = true
                 this.changed = true
             end
             imgui.TreePop()

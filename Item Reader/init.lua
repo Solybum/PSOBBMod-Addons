@@ -9,7 +9,6 @@ local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
 local optionsFileName = "addons/Item Reader/options.lua"
-local firstPresent = true
 local ConfigurationWindow
 
 if optionsLoaded then
@@ -33,7 +32,7 @@ if optionsLoaded then
         options.aio = {}
     end
     options.aio.EnableWindow         = lib_helpers.NotNilOrDefault(options.aio.EnableWindow, true)
-    options.aio.Changed              = lib_helpers.NotNilOrDefault(options.aio.Changed, false)
+    options.aio.changed              = lib_helpers.NotNilOrDefault(options.aio.changed, true)
     options.aio.Anchor               = lib_helpers.NotNilOrDefault(options.aio.Anchor, 1)
     options.aio.X                    = lib_helpers.NotNilOrDefault(options.aio.X, 50)
     options.aio.Y                    = lib_helpers.NotNilOrDefault(options.aio.Y, 5)
@@ -52,7 +51,7 @@ if optionsLoaded then
         options.floor = {}
     end
     options.floor.EnableWindow       = lib_helpers.NotNilOrDefault(options.floor.EnableWindow, true)
-    options.floor.Changed            = lib_helpers.NotNilOrDefault(options.floor.Changed, false)
+    options.floor.changed            = lib_helpers.NotNilOrDefault(options.floor.changed, true)
     options.floor.Anchor             = lib_helpers.NotNilOrDefault(options.floor.Anchor, 1)
     options.floor.X                  = lib_helpers.NotNilOrDefault(options.floor.X, 50)
     options.floor.Y                  = lib_helpers.NotNilOrDefault(options.floor.Y, 50)
@@ -68,7 +67,7 @@ if optionsLoaded then
         options.mags = {}
     end
     options.mags.EnableWindow        = lib_helpers.NotNilOrDefault(options.mags.EnableWindow, true)
-    options.mags.Changed             = lib_helpers.NotNilOrDefault(options.mags.Changed, false)
+    options.mags.changed             = lib_helpers.NotNilOrDefault(options.mags.changed, true)
     options.mags.Anchor              = lib_helpers.NotNilOrDefault(options.mags.Anchor, 1)
     options.mags.X                   = lib_helpers.NotNilOrDefault(options.mags.X, 50)
     options.mags.Y                   = lib_helpers.NotNilOrDefault(options.mags.Y, 50)
@@ -98,7 +97,7 @@ else
         server = 1,
         aio = {
             EnableWindow = true,
-            Changed = false,
+            changed = true,
             Anchor = 1,
             X = 50,
             Y = 50,
@@ -115,7 +114,7 @@ else
         },
         floor = {
             EnableWindow = true,
-            Changed = false,
+            changed = true,
             Anchor = 1,
             X = 50,
             Y = 50,
@@ -129,7 +128,7 @@ else
         },
         mags = {
             EnableWindow = true,
-            Changed = false,
+            changed = true,
             Anchor = 1,
             X = 50,
             Y = 50,
@@ -170,7 +169,6 @@ local function SaveOptions(options)
         io.write(string.format("    server = %s,\n", tostring(options.server)))
         io.write(string.format("    aio = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.aio.EnableWindow)))
-        io.write(string.format("        Changed = %s,\n", tostring(options.aio.Changed)))
         io.write(string.format("        Anchor = %i,\n", options.aio.Anchor))
         io.write(string.format("        X = %i,\n", options.aio.X))
         io.write(string.format("        Y = %i,\n", options.aio.Y))
@@ -187,7 +185,6 @@ local function SaveOptions(options)
         io.write(string.format("    },\n"))
         io.write(string.format("    floor = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.floor.EnableWindow)))
-        io.write(string.format("        Changed = %s,\n", tostring(options.floor.Changed)))
         io.write(string.format("        Anchor = %i,\n", options.floor.Anchor))
         io.write(string.format("        X = %i,\n", options.floor.X))
         io.write(string.format("        Y = %i,\n", options.floor.Y))
@@ -201,7 +198,6 @@ local function SaveOptions(options)
         io.write(string.format("    },\n"))
         io.write(string.format("    mags = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.mags.EnableWindow)))
-        io.write(string.format("        Changed = %s,\n", tostring(options.mags.Changed)))
         io.write(string.format("        Anchor = %i,\n", options.mags.Anchor))
         io.write(string.format("        X = %i,\n", options.mags.X))
         io.write(string.format("        Y = %i,\n", options.mags.Y))
@@ -827,8 +823,9 @@ local function PresentAIO()
         end
     end
 
-    imgui.BeginChild("ItemList", 0, 0, false, {'HorizontalScrollbar'})
-    imgui.SetWindowFontScale(options.fontScale)
+    local childWindowName = "Item Reader - AIO - ItemList"
+    --imgui.BeginChild(childWindowName, 0, 0, false, {"HorizontalScrollbar", "AlwaysAutoResize"})
+    --imgui.SetWindowFontScale(options.fontScale)
     if aioSelectedInventory == 1 then
         PresentInventory(save, lib_items.Me)
     elseif aioSelectedInventory == 2 then
@@ -840,8 +837,7 @@ local function PresentAIO()
     else
         PresentInventory(save, aioSelectedInventory - 5)
     end
-
-    imgui.EndChild()
+    --imgui.EndChild()
 end
 
 local function present()
@@ -864,74 +860,125 @@ local function present()
     end
 
     if options.aio.EnableWindow then
-        if firstPresent or options.aio.Changed then
-            options.aio.Changed = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.aio.X, options.aio.Y, options.aio.W, options.aio.H, options.aio.Anchor)
-            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.aio.W, options.aio.H, "Always");
-        end
+        local windowName = "Item Reader - AIO"
 
         if options.aio.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - AIO", nil, { options.aio.NoTitleBar, options.aio.NoResize, options.aio.NoMove }) then
+        if options.aio.AlwaysAutoResize == "AlwaysAutoResize" then
+            imgui.SetNextWindowSizeConstraints(0, 0, options.aio.W, options.aio.H)
+        end
+
+        if imgui.Begin(windowName,
+            nil,
+            { 
+                options.aio.NoTitleBar,
+                options.aio.NoResize,
+                options.aio.NoMove,
+                options.aio.AlwaysAutoResize,
+            }
+        ) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
+
+            lib_helpers.WindowPositionAndSize(windowName,
+                options.aio.X,
+                options.aio.Y,
+                options.aio.W,
+                options.aio.H,
+                options.aio.Anchor,
+                options.aio.AlwaysAutoResize,
+                options.aio.changed)
         end
         imgui.End()
 
         if options.aio.TransparentWindow == true then
             imgui.PopStyleColor()
         end
+
+        options.aio.changed = false
     end
     if options.floor.EnableWindow then
-        if firstPresent or options.floor.Changed then
-            options.floor.Changed = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.floor.X, options.floor.Y, options.floor.W, options.floor.H, options.floor.Anchor)
-            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.floor.W, options.floor.H, "Always");
-        end
+        local windowName = "Item Reader - Floor"
 
         if options.floor.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - Floor", nil, { options.floor.NoTitleBar, options.floor.NoResize, options.floor.NoMove }) then
+        if options.floor.AlwaysAutoResize == "AlwaysAutoResize" then
+            imgui.SetNextWindowSizeConstraints(0, 0, options.floor.W, options.floor.H)
+        end
+
+        if imgui.Begin(windowName,
+            nil,
+            {
+                options.floor.NoTitleBar,
+                options.floor.NoResize,
+                options.floor.NoMove,
+                options.floor.AlwaysAutoResize,
+            }
+        ) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
+
+            lib_helpers.WindowPositionAndSize(windowName,
+                options.floor.X,
+                options.floor.Y,
+                options.floor.W,
+                options.floor.H,
+                options.floor.Anchor,
+                options.floor.AlwaysAutoResize,
+                options.floor.changed)
         end
         imgui.End()
 
         if options.floor.TransparentWindow == true then
             imgui.PopStyleColor()
         end
+
+        options.floor.changed = false
     end
     if options.mags.EnableWindow then
-        if firstPresent or options.mags.Changed then
-            options.mags.Changed = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.mags.X, options.mags.Y, options.mags.W, options.mags.H, options.mags.Anchor)
-            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.mags.W, options.mags.H, "Always");
-        end
+        local windowName = "Item Reader - Mags"
 
         if options.mags.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - Mags", nil, { options.mags.NoTitleBar, options.mags.NoResize, options.mags.NoMove }) then
+
+        if options.mags.AlwaysAutoResize == "AlwaysAutoResize" then
+            imgui.SetNextWindowSizeConstraints(0, 0, options.mags.W, options.mags.H)
+        end
+
+        if imgui.Begin(windowName,
+            nil,
+            {
+                options.mags.NoTitleBar,
+                options.mags.NoResize,
+                options.mags.NoMove,
+                options.mags.AlwaysAutoResize,
+            }
+        ) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
+
+            lib_helpers.WindowPositionAndSize(windowName,
+                options.mags.X,
+                options.mags.Y,
+                options.mags.W,
+                options.mags.H,
+                options.mags.Anchor,
+                options.mags.AlwaysAutoResize,
+                options.mags.changed)
         end
         imgui.End()
 
         if options.mags.TransparentWindow == true then
             imgui.PopStyleColor()
         end
-    end
 
-    if firstPresent then
-        firstPresent = false
+        options.mags.changed = false
     end
 end
 

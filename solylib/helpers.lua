@@ -62,7 +62,33 @@ local function GetPosBySizeAndAnchor(_x, _y, _w, _h, _anchor)
     return { x, y }
 end
 
-function Round(num, numDecimalPlaces)
+local function WindowPositionAndSize(windowName, X, Y, W, H, Anchor, AlwaysAutoResize, setSizeFromParams)
+    local setSize = false
+    local windowW = imgui.GetWindowWidth()
+    local windowH = imgui.GetWindowHeight()
+
+    if setSizeFromParams then
+        windowW = W
+        windowH = H
+        if AlwaysAutoResize ~= "AlwaysAutoResize" then
+            setSize = true
+        end
+    end
+
+    if setSize then
+        imgui.SetWindowSize(windowName, windowW, windowH, "Always");
+    end
+
+    local ps = GetPosBySizeAndAnchor(
+        X,
+        Y,
+        windowW,
+        windowH,
+        Anchor)
+    imgui.SetWindowPos(windowName, ps[1], ps[2], "Always");
+end
+
+local function Round(num, numDecimalPlaces)
     return tonumber(string.format("%." .. (numDecimalPlaces or 0) .. "f", num))
 end
 
@@ -161,6 +187,7 @@ end
 return
 {
     GetPosBySizeAndAnchor = GetPosBySizeAndAnchor,
+    WindowPositionAndSize = WindowPositionAndSize,
     Round = Round,
     F32ToInt8 = F32ToInt8,
     GetColorAsFloats = GetColorAsFloats,
