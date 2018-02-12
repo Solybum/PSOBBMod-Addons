@@ -89,91 +89,99 @@ local function ConfigurationWindow(configuration)
         end
 
         if imgui.TreeNodeEx("AIO") then
-            if imgui.Checkbox("Enable", _configuration.aioEnableWindow) then
-                _configuration.aioEnableWindow = not _configuration.aioEnableWindow
+            if imgui.Checkbox("Enable", _configuration.aio.EnableWindow) then
+                _configuration.aio.EnableWindow = not _configuration.aio.EnableWindow
                 this.changed = true
             end
 
-            if imgui.Checkbox("No title bar", _configuration.aioNoTitleBar == "NoTitleBar") then
-                if _configuration.aioNoTitleBar == "NoTitleBar" then
-                    _configuration.aioNoTitleBar = ""
+            if imgui.Checkbox("No title bar", _configuration.aio.NoTitleBar == "NoTitleBar") then
+                if _configuration.aio.NoTitleBar == "NoTitleBar" then
+                    _configuration.aio.NoTitleBar = ""
                 else
-                    _configuration.aioNoTitleBar = "NoTitleBar"
+                    _configuration.aio.NoTitleBar = "NoTitleBar"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No resize", _configuration.aioNoResize == "NoResize") then
-                if _configuration.aioNoResize == "NoResize" then
-                    _configuration.aioNoResize = ""
+            if imgui.Checkbox("No resize", _configuration.aio.NoResize == "NoResize") then
+                if _configuration.aio.NoResize == "NoResize" then
+                    _configuration.aio.NoResize = ""
                 else
-                    _configuration.aioNoResize = "NoResize"
+                    _configuration.aio.NoResize = "NoResize"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No move", _configuration.aioNoMove == "NoMove") then
-                if _configuration.aioNoMove == "NoMove" then
-                    _configuration.aioNoMove = ""
+            if imgui.Checkbox("No move", _configuration.aio.NoMove == "NoMove") then
+                if _configuration.aio.NoMove == "NoMove" then
+                    _configuration.aio.NoMove = ""
                 else
-                    _configuration.aioNoMove = "NoMove"
+                    _configuration.aio.NoMove = "NoMove"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("Always Auto Resize", _configuration.aio.AlwaysAutoResize == "AlwaysAutoResize") then
+                if _configuration.aio.AlwaysAutoResize == "AlwaysAutoResize" then
+                    _configuration.aio.AlwaysAutoResize = ""
+                else
+                    _configuration.aio.AlwaysAutoResize = "AlwaysAutoResize"
                 end
                 this.changed = true
             end
 
-            if imgui.Checkbox("Transparent window", _configuration.aioTransparentWindow) then
-                _configuration.aioTransparentWindow = not _configuration.aioTransparentWindow
+            if imgui.Checkbox("Transparent window", _configuration.aio.TransparentWindow) then
+                _configuration.aio.TransparentWindow = not _configuration.aio.TransparentWindow
                 this.changed = true
             end
 
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
-            success, _configuration.aioAnchor = imgui.Combo("Anchor", _configuration.aioAnchor, anchorList, table.getn(anchorList))
+            success, _configuration.aio.Anchor = imgui.Combo("Anchor", _configuration.aio.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.aioChanged = true
+                _configuration.aio.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.aioX = imgui.InputInt("X", _configuration.aioX)
+            success, _configuration.aio.X = imgui.InputInt("X", _configuration.aio.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.aioChanged = true
+                _configuration.aio.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
-            success, _configuration.aioY = imgui.InputInt("Y", _configuration.aioY)
+            success, _configuration.aio.Y = imgui.InputInt("Y", _configuration.aio.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.aioChanged = true
+                _configuration.aio.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.aioW = imgui.InputInt("Width", _configuration.aioW)
+            success, _configuration.aio.W = imgui.InputInt("Width", _configuration.aio.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.aioChanged = true
+                _configuration.aio.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
-            success, _configuration.aioH = imgui.InputInt("Height", _configuration.aioH)
+            success, _configuration.aio.H = imgui.InputInt("Height", _configuration.aio.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.aioChanged = true
+                _configuration.aio.Changed = true
                 this.changed = true
             end
 
-            if imgui.Checkbox("Show \"Save to file\" button", _configuration.aioShowButtonSaveToFile) then
-                _configuration.aioShowButtonSaveToFile = not _configuration.aioShowButtonSaveToFile
+            if imgui.Checkbox("Show \"Save to file\" button", _configuration.aio.ShowButtonSaveToFile) then
+                _configuration.aio.ShowButtonSaveToFile = not _configuration.aio.ShowButtonSaveToFile
                 this.changed = true
             end
 
             imgui.PushItemWidth(200)
-            success, _configuration.aioSaveFileName = imgui.InputText("Save file path", _configuration.aioSaveFileName, 255, 0, nil, _configuration.aioSaveFileName)
+            success, _configuration.aio.SaveFileName = imgui.InputText("Save file path", _configuration.aio.SaveFileName, 255, 0, nil, _configuration.aio.SaveFileName)
             imgui.PopItemWidth()
             if success then
                 this.changed = true
@@ -183,162 +191,178 @@ local function ConfigurationWindow(configuration)
         end
 
         if imgui.TreeNodeEx("Floor") then
-            if imgui.Checkbox("Enable", _configuration.floorEnableWindow) then
-                _configuration.floorEnableWindow = not _configuration.floorEnableWindow
+            if imgui.Checkbox("Enable", _configuration.floor.EnableWindow) then
+                _configuration.floor.EnableWindow = not _configuration.floor.EnableWindow
                 this.changed = true
             end
 
-            if imgui.Checkbox("No title bar", _configuration.floorNoTitleBar == "NoTitleBar") then
-                if _configuration.floorNoTitleBar == "NoTitleBar" then
-                    _configuration.floorNoTitleBar = ""
+            if imgui.Checkbox("No title bar", _configuration.floor.NoTitleBar == "NoTitleBar") then
+                if _configuration.floor.NoTitleBar == "NoTitleBar" then
+                    _configuration.floor.NoTitleBar = ""
                 else
-                    _configuration.floorNoTitleBar = "NoTitleBar"
+                    _configuration.floor.NoTitleBar = "NoTitleBar"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No resize", _configuration.floorNoResize == "NoResize") then
-                if _configuration.floorNoResize == "NoResize" then
-                    _configuration.floorNoResize = ""
+            if imgui.Checkbox("No resize", _configuration.floor.NoResize == "NoResize") then
+                if _configuration.floor.NoResize == "NoResize" then
+                    _configuration.floor.NoResize = ""
                 else
-                    _configuration.floorNoResize = "NoResize"
+                    _configuration.floor.NoResize = "NoResize"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No move", _configuration.floorNoMove == "NoMove") then
-                if _configuration.floorNoMove == "NoMove" then
-                    _configuration.floorNoMove = ""
+            if imgui.Checkbox("No move", _configuration.floor.NoMove == "NoMove") then
+                if _configuration.floor.NoMove == "NoMove" then
+                    _configuration.floor.NoMove = ""
                 else
-                    _configuration.floorNoMove = "NoMove"
+                    _configuration.floor.NoMove = "NoMove"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("Always Auto Resize", _configuration.floor.AlwaysAutoResize == "AlwaysAutoResize") then
+                if _configuration.floor.AlwaysAutoResize == "AlwaysAutoResize" then
+                    _configuration.floor.AlwaysAutoResize = ""
+                else
+                    _configuration.floor.AlwaysAutoResize = "AlwaysAutoResize"
                 end
                 this.changed = true
             end
 
-            if imgui.Checkbox("Transparent window", _configuration.floorTransparentWindow) then
-                _configuration.floorTransparentWindow = not _configuration.floorTransparentWindow
+            if imgui.Checkbox("Transparent window", _configuration.floor.TransparentWindow) then
+                _configuration.floor.TransparentWindow = not _configuration.floor.TransparentWindow
                 this.changed = true
             end
 
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
-            success, _configuration.floorAnchor = imgui.Combo("Anchor", _configuration.floorAnchor, anchorList, table.getn(anchorList))
+            success, _configuration.floor.Anchor = imgui.Combo("Anchor", _configuration.floor.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.floorChanged = true
+                _configuration.floor.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.floorX = imgui.InputInt("X", _configuration.floorX)
+            success, _configuration.floor.X = imgui.InputInt("X", _configuration.floor.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.floorChanged = true
+                _configuration.floor.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
-            success, _configuration.floorY = imgui.InputInt("Y", _configuration.floorY)
+            success, _configuration.floor.Y = imgui.InputInt("Y", _configuration.floor.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.floorChanged = true
+                _configuration.floor.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.floorW = imgui.InputInt("Width", _configuration.floorW)
+            success, _configuration.floor.W = imgui.InputInt("Width", _configuration.floor.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.floorChanged = true
+                _configuration.floor.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
-            success, _configuration.floorH = imgui.InputInt("Height", _configuration.floorH)
+            success, _configuration.floor.H = imgui.InputInt("Height", _configuration.floor.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.floorChanged = true
+                _configuration.floor.Changed = true
                 this.changed = true
             end
             imgui.TreePop()
         end
 
         if imgui.TreeNodeEx("Mags") then
-            if imgui.Checkbox("Enable", _configuration.magsEnableWindow) then
-                _configuration.magsEnableWindow = not _configuration.magsEnableWindow
+            if imgui.Checkbox("Enable", _configuration.mags.EnableWindow) then
+                _configuration.mags.EnableWindow = not _configuration.mags.EnableWindow
                 this.changed = true
             end
 
-            if imgui.Checkbox("No title bar", _configuration.magsNoTitleBar == "NoTitleBar") then
-                if _configuration.magsNoTitleBar == "NoTitleBar" then
-                    _configuration.magsNoTitleBar = ""
+            if imgui.Checkbox("No title bar", _configuration.mags.NoTitleBar == "NoTitleBar") then
+                if _configuration.mags.NoTitleBar == "NoTitleBar" then
+                    _configuration.mags.NoTitleBar = ""
                 else
-                    _configuration.magsNoTitleBar = "NoTitleBar"
+                    _configuration.mags.NoTitleBar = "NoTitleBar"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No resize", _configuration.magsNoResize == "NoResize") then
-                if _configuration.magsNoResize == "NoResize" then
-                    _configuration.magsNoResize = ""
+            if imgui.Checkbox("No resize", _configuration.mags.NoResize == "NoResize") then
+                if _configuration.mags.NoResize == "NoResize" then
+                    _configuration.mags.NoResize = ""
                 else
-                    _configuration.magsNoResize = "NoResize"
+                    _configuration.mags.NoResize = "NoResize"
                 end
                 this.changed = true
             end
-            if imgui.Checkbox("No move", _configuration.magsNoMove == "NoMove") then
-                if _configuration.magsNoMove == "NoMove" then
-                    _configuration.magsNoMove = ""
+            if imgui.Checkbox("No move", _configuration.mags.NoMove == "NoMove") then
+                if _configuration.mags.NoMove == "NoMove" then
+                    _configuration.mags.NoMove = ""
                 else
-                    _configuration.magsNoMove = "NoMove"
+                    _configuration.mags.NoMove = "NoMove"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("Always Auto Resize", _configuration.mags.AlwaysAutoResize == "AlwaysAutoResize") then
+                if _configuration.mags.AlwaysAutoResize == "AlwaysAutoResize" then
+                    _configuration.mags.AlwaysAutoResize = ""
+                else
+                    _configuration.mags.AlwaysAutoResize = "AlwaysAutoResize"
                 end
                 this.changed = true
             end
 
-            if imgui.Checkbox("Transparent window", _configuration.magsTransparentWindow) then
-                _configuration.magsTransparentWindow = not _configuration.magsTransparentWindow
+            if imgui.Checkbox("Transparent window", _configuration.mags.TransparentWindow) then
+                _configuration.mags.TransparentWindow = not _configuration.mags.TransparentWindow
                 this.changed = true
             end
 
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
-            success, _configuration.magsAnchor = imgui.Combo("Anchor", _configuration.magsAnchor, anchorList, table.getn(anchorList))
+            success, _configuration.mags.Anchor = imgui.Combo("Anchor", _configuration.mags.Anchor, anchorList, table.getn(anchorList))
             imgui.PopItemWidth()
             if success then
-                _configuration.magsChanged = true
+                _configuration.mags.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.magsX = imgui.InputInt("X", _configuration.magsX)
+            success, _configuration.mags.X = imgui.InputInt("X", _configuration.mags.X)
             imgui.PopItemWidth()
             if success then
-                _configuration.magsChanged = true
+                _configuration.mags.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
-            success, _configuration.magsY = imgui.InputInt("Y", _configuration.magsY)
+            success, _configuration.mags.Y = imgui.InputInt("Y", _configuration.mags.Y)
             imgui.PopItemWidth()
             if success then
-                _configuration.magsChanged = true
+                _configuration.mags.Changed = true
                 this.changed = true
             end
 
             imgui.PushItemWidth(100)
-            success, _configuration.magsW = imgui.InputInt("Width", _configuration.magsW)
+            success, _configuration.mags.W = imgui.InputInt("Width", _configuration.mags.W)
             imgui.PopItemWidth()
             if success then
-                _configuration.magsChanged = true
+                _configuration.mags.Changed = true
                 this.changed = true
             end
 
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
-            success, _configuration.magsH = imgui.InputInt("Height", _configuration.magsH)
+            success, _configuration.mags.H = imgui.InputInt("Height", _configuration.mags.H)
             imgui.PopItemWidth()
             if success then
-                _configuration.magsChanged = true
+                _configuration.mags.Changed = true
                 this.changed = true
             end
             imgui.TreePop()

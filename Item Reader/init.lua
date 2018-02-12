@@ -29,44 +29,55 @@ if optionsLoaded then
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
     options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
 
-    options.aioEnableWindow         = lib_helpers.NotNilOrDefault(options.aioEnableWindow, true)
-    options.aioChanged              = lib_helpers.NotNilOrDefault(options.aioChanged, false)
-    options.aioAnchor               = lib_helpers.NotNilOrDefault(options.aioAnchor, 1)
-    options.aioX                    = lib_helpers.NotNilOrDefault(options.aioX, 50)
-    options.aioY                    = lib_helpers.NotNilOrDefault(options.aioY, 5)
-    options.aioW                    = lib_helpers.NotNilOrDefault(options.aioW, 450)
-    options.aioH                    = lib_helpers.NotNilOrDefault(options.aioH, 350)
-    options.aioNoTitleBar           = lib_helpers.NotNilOrDefault(options.aioNoTitleBar, "")
-    options.aioNoResize             = lib_helpers.NotNilOrDefault(options.aioNoResize, "")
-    options.aioNoMove               = lib_helpers.NotNilOrDefault(options.aioNoMove, "")
-    options.aioTransparentWindow    = lib_helpers.NotNilOrDefault(options.aioTransparentWindow, false)
-    options.aioShowButtonSaveToFile = lib_helpers.NotNilOrDefault(options.aioShowButtonSaveToFile, true)
-    options.aioSaveFileName         = lib_helpers.NotNilOrDefault(options.saveFileName, "addons/saved_inventory.txt")
-    options.aioSelectedInventory    = lib_helpers.NotNilOrDefault(options.aioSelectedInventory, 1)
+    if options.aio == nil or type(options.aio) ~= "table" then
+        options.aio = {}
+    end
+    options.aio.EnableWindow         = lib_helpers.NotNilOrDefault(options.aio.EnableWindow, true)
+    options.aio.Changed              = lib_helpers.NotNilOrDefault(options.aio.Changed, false)
+    options.aio.Anchor               = lib_helpers.NotNilOrDefault(options.aio.Anchor, 1)
+    options.aio.X                    = lib_helpers.NotNilOrDefault(options.aio.X, 50)
+    options.aio.Y                    = lib_helpers.NotNilOrDefault(options.aio.Y, 5)
+    options.aio.W                    = lib_helpers.NotNilOrDefault(options.aio.W, 450)
+    options.aio.H                    = lib_helpers.NotNilOrDefault(options.aio.H, 350)
+    options.aio.NoTitleBar           = lib_helpers.NotNilOrDefault(options.aio.NoTitleBar, "")
+    options.aio.NoResize             = lib_helpers.NotNilOrDefault(options.aio.NoResize, "")
+    options.aio.NoMove               = lib_helpers.NotNilOrDefault(options.aio.NoMove, "")
+    options.aio.AlwaysAutoResize     = lib_helpers.NotNilOrDefault(options.aio.AlwaysAutoResize, "")
+    options.aio.TransparentWindow    = lib_helpers.NotNilOrDefault(options.aio.TransparentWindow, false)
+    options.aio.ShowButtonSaveToFile = lib_helpers.NotNilOrDefault(options.aio.ShowButtonSaveToFile, true)
+    options.aio.SaveFileName         = lib_helpers.NotNilOrDefault(options.aio.saveFileName, "addons/saved_inventory.txt")
+    options.aio.SelectedInventory    = lib_helpers.NotNilOrDefault(options.aio.SelectedInventory, 1)
 
-    options.floorEnableWindow       = lib_helpers.NotNilOrDefault(options.floorEnableWindow, true)
-    options.floorChanged            = lib_helpers.NotNilOrDefault(options.floorChanged, false)
-    options.floorAnchor             = lib_helpers.NotNilOrDefault(options.floorAnchor, 1)
-    options.floorX                  = lib_helpers.NotNilOrDefault(options.floorX, 50)
-    options.floorY                  = lib_helpers.NotNilOrDefault(options.floorY, 50)
-    options.floorW                  = lib_helpers.NotNilOrDefault(options.floorW, 450)
-    options.floorH                  = lib_helpers.NotNilOrDefault(options.floorH, 350)
-    options.floorNoTitleBar         = lib_helpers.NotNilOrDefault(options.floorNoTitleBar, "")
-    options.floorNoResize           = lib_helpers.NotNilOrDefault(options.floorNoResize, "")
-    options.floorNoMove             = lib_helpers.NotNilOrDefault(options.floorNoMove, "")
-    options.floorTransparentWindow  = lib_helpers.NotNilOrDefault(options.floorTransparentWindow, false)
+    if options.floor == nil or type(options.floor) ~= "table" then
+        options.floor = {}
+    end
+    options.floor.EnableWindow       = lib_helpers.NotNilOrDefault(options.floor.EnableWindow, true)
+    options.floor.Changed            = lib_helpers.NotNilOrDefault(options.floor.Changed, false)
+    options.floor.Anchor             = lib_helpers.NotNilOrDefault(options.floor.Anchor, 1)
+    options.floor.X                  = lib_helpers.NotNilOrDefault(options.floor.X, 50)
+    options.floor.Y                  = lib_helpers.NotNilOrDefault(options.floor.Y, 50)
+    options.floor.W                  = lib_helpers.NotNilOrDefault(options.floor.W, 450)
+    options.floor.H                  = lib_helpers.NotNilOrDefault(options.floor.H, 350)
+    options.floor.NoTitleBar         = lib_helpers.NotNilOrDefault(options.floor.NoTitleBar, "")
+    options.floor.NoResize           = lib_helpers.NotNilOrDefault(options.floor.NoResize, "")
+    options.floor.NoMove             = lib_helpers.NotNilOrDefault(options.floor.NoMove, "")
+    options.floor.AlwaysAutoResize   = lib_helpers.NotNilOrDefault(options.floor.AlwaysAutoResize, "")
+    options.floor.TransparentWindow  = lib_helpers.NotNilOrDefault(options.floor.TransparentWindow, false)
 
-    options.magsEnableWindow        = lib_helpers.NotNilOrDefault(options.magsEnableWindow, true)
-    options.magsChanged             = lib_helpers.NotNilOrDefault(options.magsChanged, false)
-    options.magsAnchor              = lib_helpers.NotNilOrDefault(options.magsAnchor, 1)
-    options.magsX                   = lib_helpers.NotNilOrDefault(options.magsX, 50)
-    options.magsY                   = lib_helpers.NotNilOrDefault(options.magsY, 50)
-    options.magsW                   = lib_helpers.NotNilOrDefault(options.magsW, 450)
-    options.magsH                   = lib_helpers.NotNilOrDefault(options.magsH, 350)
-    options.magsNoTitleBar          = lib_helpers.NotNilOrDefault(options.magsNoTitleBar, "")
-    options.magsNoResize            = lib_helpers.NotNilOrDefault(options.magsNoResize, "")
-    options.magsNoMove              = lib_helpers.NotNilOrDefault(options.magsNoMove, "")
-    options.magsTransparentWindow   = lib_helpers.NotNilOrDefault(options.magsTransparentWindow, false)
+    if options.mags == nil or type(options.mags) ~= "table" then
+        options.mags = {}
+    end
+    options.mags.EnableWindow        = lib_helpers.NotNilOrDefault(options.mags.EnableWindow, true)
+    options.mags.Changed             = lib_helpers.NotNilOrDefault(options.mags.Changed, false)
+    options.mags.Anchor              = lib_helpers.NotNilOrDefault(options.mags.Anchor, 1)
+    options.mags.X                   = lib_helpers.NotNilOrDefault(options.mags.X, 50)
+    options.mags.Y                   = lib_helpers.NotNilOrDefault(options.mags.Y, 50)
+    options.mags.W                   = lib_helpers.NotNilOrDefault(options.mags.W, 450)
+    options.mags.H                   = lib_helpers.NotNilOrDefault(options.mags.H, 350)
+    options.mags.NoTitleBar          = lib_helpers.NotNilOrDefault(options.mags.NoTitleBar, "")
+    options.mags.NoResize            = lib_helpers.NotNilOrDefault(options.mags.NoResize, "")
+    options.mags.NoMove              = lib_helpers.NotNilOrDefault(options.mags.NoMove, "")
+    options.mags.TransparentWindow   = lib_helpers.NotNilOrDefault(options.mags.TransparentWindow, false)
 else
     options = 
     {
@@ -85,45 +96,51 @@ else
         hideMagPBs = false,
         itemNameLength = 0,
         server = 1,
-
-        aioEnableWindow = true,
-        aioChanged = false,
-        aioAnchor = 1,
-        aioX = 50,
-        aioY = 50,
-        aioW = 450,
-        aioH = 350,
-        aioNoTitleBar = "",
-        aioNoResize = "",
-        aioNoMove = "",
-        aioTransparentWindow = false;
-        aioShowButtonSaveToFile = true,
-        aioSaveFileName = "addons/saved_inventory.txt",
-        aioSelectedInventory = 1,
-
-        floorEnableWindow = true,
-        floorChanged = false,
-        floorAnchor = 1,
-        floorX = 50,
-        floorY = 50,
-        floorW = 450,
-        floorH = 350,
-        floorNoTitleBar = "",
-        floorNoResize = "",
-        floorNoMove = "",
-        floorTransparentWindow = false;
-
-        magsEnableWindow = true,
-        magsChanged = false,
-        magsAnchor = 1,
-        magsX = 50,
-        magsY = 50,
-        magsW = 450,
-        magsH = 350,
-        magsNoTitleBar = "",
-        magsNoResize = "",
-        magsNoMove = "",
-        magsTransparentWindow = false;
+        aio = {
+            EnableWindow = true,
+            Changed = false,
+            Anchor = 1,
+            X = 50,
+            Y = 50,
+            W = 450,
+            H = 350,
+            NoTitleBar = "",
+            NoResize = "",
+            NoMove = "",
+            AlwaysAutoResize = "",
+            TransparentWindow = false;
+            ShowButtonSaveToFile = true,
+            SaveFileName = "addons/saved_inventory.txt",
+            SelectedInventory = 1,
+        },
+        floor = {
+            EnableWindow = true,
+            Changed = false,
+            Anchor = 1,
+            X = 50,
+            Y = 50,
+            W = 450,
+            H = 350,
+            NoTitleBar = "",
+            NoResize = "",
+            NoMove = "",
+            AlwaysAutoResize = "",
+            TransparentWindow = false;
+        },
+        mags = {
+            EnableWindow = true,
+            Changed = false,
+            Anchor = 1,
+            X = 50,
+            Y = 50,
+            W = 450,
+            H = 350,
+            NoTitleBar = "",
+            NoResize = "",
+            NoMove = "",
+            AlwaysAutoResize = "",
+            TransparentWindow = false;
+        }
     }
 end
 
@@ -151,45 +168,51 @@ local function SaveOptions(options)
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write(string.format("    server = %s,\n", tostring(options.server)))
-        io.write("\n")
-        io.write(string.format("    aioEnableWindow = %s,\n", tostring(options.aioEnableWindow)))
-        io.write(string.format("    aioChanged = %s,\n", tostring(options.aioChanged)))
-        io.write(string.format("    aioAnchor = %i,\n", options.aioAnchor))
-        io.write(string.format("    aioX = %i,\n", options.aioX))
-        io.write(string.format("    aioY = %i,\n", options.aioY))
-        io.write(string.format("    aioW = %i,\n", options.aioW))
-        io.write(string.format("    aioH = %i,\n", options.aioH))
-        io.write(string.format("    aioNoTitleBar = \"%s\",\n", options.aioNoTitleBar))
-        io.write(string.format("    aioNoResize = \"%s\",\n", options.aioNoResize))
-        io.write(string.format("    aioNoMove = \"%s\",\n", options.aioNoMove))
-        io.write(string.format("    aioTransparentWindow = %s,\n", options.aioTransparentWindow))
-        io.write(string.format("    aioShowButtonSaveToFile = %s,\n",  tostring(options.aioShowButtonSaveToFile)))
-        io.write(string.format("    aioSaveFileName = \"%s\",\n", options.aioSaveFileName))
-        io.write(string.format("    aioSelectedInventory = %i,\n", options.aioSelectedInventory))
-        io.write("\n")
-        io.write(string.format("    floorEnableWindow = %s,\n", tostring(options.floorEnableWindow)))
-        io.write(string.format("    floorChanged = %s,\n", tostring(options.floorChanged)))
-        io.write(string.format("    floorAnchor = %i,\n", options.floorAnchor))
-        io.write(string.format("    floorX = %i,\n", options.floorX))
-        io.write(string.format("    floorY = %i,\n", options.floorY))
-        io.write(string.format("    floorW = %i,\n", options.floorW))
-        io.write(string.format("    floorH = %i,\n", options.floorH))
-        io.write(string.format("    floorNoTitleBar = \"%s\",\n", options.floorNoTitleBar))
-        io.write(string.format("    floorNoResize = \"%s\",\n", options.floorNoResize))
-        io.write(string.format("    floorNoMove = \"%s\",\n", options.floorNoMove))
-        io.write(string.format("    floorTransparentWindow = %s,\n", options.floorTransparentWindow))
-        io.write("\n")
-        io.write(string.format("    magsEnableWindow = %s,\n", tostring(options.magsEnableWindow)))
-        io.write(string.format("    magsChanged = %s,\n", tostring(options.magsChanged)))
-        io.write(string.format("    magsAnchor = %i,\n", options.magsAnchor))
-        io.write(string.format("    magsX = %i,\n", options.magsX))
-        io.write(string.format("    magsY = %i,\n", options.magsY))
-        io.write(string.format("    magsW = %i,\n", options.magsW))
-        io.write(string.format("    magsH = %i,\n", options.magsH))
-        io.write(string.format("    magsNoTitleBar = \"%s\",\n", options.magsNoTitleBar))
-        io.write(string.format("    magsNoResize = \"%s\",\n", options.magsNoResize))
-        io.write(string.format("    magsNoMove = \"%s\",\n", options.magsNoMove))
-        io.write(string.format("    magsTransparentWindow = %s,\n", options.magsTransparentWindow))
+        io.write(string.format("    aio = {\n"))
+        io.write(string.format("        EnableWindow = %s,\n", tostring(options.aio.EnableWindow)))
+        io.write(string.format("        Changed = %s,\n", tostring(options.aio.Changed)))
+        io.write(string.format("        Anchor = %i,\n", options.aio.Anchor))
+        io.write(string.format("        X = %i,\n", options.aio.X))
+        io.write(string.format("        Y = %i,\n", options.aio.Y))
+        io.write(string.format("        W = %i,\n", options.aio.W))
+        io.write(string.format("        H = %i,\n", options.aio.H))
+        io.write(string.format("        NoTitleBar = \"%s\",\n", options.aio.NoTitleBar))
+        io.write(string.format("        NoResize = \"%s\",\n", options.aio.NoResize))
+        io.write(string.format("        NoMove = \"%s\",\n", options.aio.NoMove))
+        io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.aio.AlwaysAutoResize))
+        io.write(string.format("        TransparentWindow = %s,\n", options.aio.TransparentWindow))
+        io.write(string.format("        ShowButtonSaveToFile = %s,\n",  tostring(options.aio.ShowButtonSaveToFile)))
+        io.write(string.format("        SaveFileName = \"%s\",\n", options.aio.SaveFileName))
+        io.write(string.format("        SelectedInventory = %i,\n", options.aio.SelectedInventory))
+        io.write(string.format("    },\n"))
+        io.write(string.format("    floor = {\n"))
+        io.write(string.format("        EnableWindow = %s,\n", tostring(options.floor.EnableWindow)))
+        io.write(string.format("        Changed = %s,\n", tostring(options.floor.Changed)))
+        io.write(string.format("        Anchor = %i,\n", options.floor.Anchor))
+        io.write(string.format("        X = %i,\n", options.floor.X))
+        io.write(string.format("        Y = %i,\n", options.floor.Y))
+        io.write(string.format("        W = %i,\n", options.floor.W))
+        io.write(string.format("        H = %i,\n", options.floor.H))
+        io.write(string.format("        NoTitleBar = \"%s\",\n", options.floor.NoTitleBar))
+        io.write(string.format("        NoResize = \"%s\",\n", options.floor.NoResize))
+        io.write(string.format("        NoMove = \"%s\",\n", options.floor.NoMove))
+        io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.floor.AlwaysAutoResize))
+        io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
+        io.write(string.format("    },\n"))
+        io.write(string.format("    mags = {\n"))
+        io.write(string.format("        EnableWindow = %s,\n", tostring(options.mags.EnableWindow)))
+        io.write(string.format("        Changed = %s,\n", tostring(options.mags.Changed)))
+        io.write(string.format("        Anchor = %i,\n", options.mags.Anchor))
+        io.write(string.format("        X = %i,\n", options.mags.X))
+        io.write(string.format("        Y = %i,\n", options.mags.Y))
+        io.write(string.format("        W = %i,\n", options.mags.W))
+        io.write(string.format("        H = %i,\n", options.mags.H))
+        io.write(string.format("        NoTitleBar = \"%s\",\n", options.mags.NoTitleBar))
+        io.write(string.format("        NoResize = \"%s\",\n", options.mags.NoResize))
+        io.write(string.format("        NoMove = \"%s\",\n", options.mags.NoMove))
+        io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.mags.AlwaysAutoResize))
+        io.write(string.format("        TransparentWindow = %s,\n", options.mags.TransparentWindow))
+        io.write(string.format("    },\n"))
         io.write("}\n")
 
         io.close(file)
@@ -712,7 +735,7 @@ local function ProcessItem(item, floor, save)
     end
 
     if save then
-        local file = io.open(options.aioSaveFileName, "a")
+        local file = io.open(options.aio.SaveFileName, "a")
         io.output(file)
         io.write(itemStr .. "\n")
         io.close(file)
@@ -773,7 +796,7 @@ local function BuildAIOSelection()
 end
 
 local aioStatus = true
-local aioSelectedInventory = options.aioSelectedInventory
+local aioSelectedInventory = options.aio.SelectedInventory
 local function PresentAIO()
     local save = false
 
@@ -787,17 +810,17 @@ local function PresentAIO()
     aioStatus, aioSelectedInventory = imgui.Combo(" ", aioSelectedInventory, selectionList, selectionListCount)
     imgui.PopItemWidth()
 
-    if aioSelectedInventory < 4 and aioSelectedInventory ~= options.aioSelectedInventory then
-        options.aioSelectedInventory = aioSelectedInventory
+    if aioSelectedInventory < 4 and aioSelectedInventory ~= options.aio.SelectedInventory then
+        options.aio.SelectedInventory = aioSelectedInventory
         SaveOptions(options)
     end
 
-    if options.aioShowButtonSaveToFile then
+    if options.aio.ShowButtonSaveToFile then
         imgui.SameLine(0, 20)
         if imgui.Button("Save to file") then
             save = true
             -- Write nothing to it so its cleared works for appending
-            local file = io.open(options.aioSaveFileName, "w")
+            local file = io.open(options.aio.SaveFileName, "w")
             io.output(file)
             io.write("")
             io.close(file)
@@ -840,69 +863,69 @@ local function present()
         return
     end
 
-    if options.aioEnableWindow then
-        if firstPresent or options.aioChanged then
-            options.aioChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.aioX, options.aioY, options.aioW, options.aioH, options.aioAnchor)
+    if options.aio.EnableWindow then
+        if firstPresent or options.aio.Changed then
+            options.aio.Changed = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.aio.X, options.aio.Y, options.aio.W, options.aio.H, options.aio.Anchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.aioW, options.aioH, "Always");
+            imgui.SetNextWindowSize(options.aio.W, options.aio.H, "Always");
         end
 
-        if options.aioTransparentWindow == true then
+        if options.aio.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - AIO", nil, { options.aioNoTitleBar, options.aioNoResize, options.aioNoMove }) then
+        if imgui.Begin("Item Reader - AIO", nil, { options.aio.NoTitleBar, options.aio.NoResize, options.aio.NoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
         end
         imgui.End()
 
-        if options.aioTransparentWindow == true then
+        if options.aio.TransparentWindow == true then
             imgui.PopStyleColor()
         end
     end
-    if options.floorEnableWindow then
-        if firstPresent or options.floorChanged then
-            options.floorChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.floorX, options.floorY, options.floorW, options.floorH, options.floorAnchor)
+    if options.floor.EnableWindow then
+        if firstPresent or options.floor.Changed then
+            options.floor.Changed = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.floor.X, options.floor.Y, options.floor.W, options.floor.H, options.floor.Anchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.floorW, options.floorH, "Always");
+            imgui.SetNextWindowSize(options.floor.W, options.floor.H, "Always");
         end
 
-        if options.floorTransparentWindow == true then
+        if options.floor.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - Floor", nil, { options.floorNoTitleBar, options.floorNoResize, options.floorNoMove }) then
+        if imgui.Begin("Item Reader - Floor", nil, { options.floor.NoTitleBar, options.floor.NoResize, options.floor.NoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
         end
         imgui.End()
 
-        if options.floorTransparentWindow == true then
+        if options.floor.TransparentWindow == true then
             imgui.PopStyleColor()
         end
     end
-    if options.magsEnableWindow then
-        if firstPresent or options.magsChanged then
-            options.magsChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.magsX, options.magsY, options.magsW, options.magsH, options.magsAnchor)
+    if options.mags.EnableWindow then
+        if firstPresent or options.mags.Changed then
+            options.mags.Changed = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.mags.X, options.mags.Y, options.mags.W, options.mags.H, options.mags.Anchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-            imgui.SetNextWindowSize(options.magsW, options.magsH, "Always");
+            imgui.SetNextWindowSize(options.mags.W, options.mags.H, "Always");
         end
 
-        if options.magsTransparentWindow == true then
+        if options.mags.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Item Reader - Mags", nil, { options.magsNoTitleBar, options.magsNoResize, options.magsNoMove }) then
+        if imgui.Begin("Item Reader - Mags", nil, { options.mags.NoTitleBar, options.mags.NoResize, options.mags.NoMove }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
         end
         imgui.End()
 
-        if options.magsTransparentWindow == true then
+        if options.mags.TransparentWindow == true then
             imgui.PopStyleColor()
         end
     end
