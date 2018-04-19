@@ -207,6 +207,8 @@ end
 
 -- UI stuff
 local function PresentColorEditor(label, default, custom)
+    custom = custom or 0xFFFFFFFF
+
     local changed = false
     local i_default =
     {
