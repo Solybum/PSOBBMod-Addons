@@ -42,6 +42,7 @@ if optionsLoaded then
     options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
     options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
     options.targetNoMove            = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
+    options.targetNoScrollbar       = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
     options.targetTransparentWindow = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
 else
     options = 
@@ -76,6 +77,7 @@ else
         targetNoTitleBar = "NoTitleBar",
         targetNoResize = "NoResize",
         targetNoMove = "NoMove",
+        targetNoScrollbar = "NoScrollbar",
         targetTransparentWindow = false,
     }
 end
@@ -117,6 +119,7 @@ local function SaveOptions(options)
         io.write(string.format("    targetNoTitleBar = \"%s\",\n", options.targetNoTitleBar))
         io.write(string.format("    targetNoResize = \"%s\",\n", options.targetNoResize))
         io.write(string.format("    targetNoMove = \"%s\",\n", options.targetNoMove))
+        io.write(string.format("    targetNoScrollbar = \"%s\",\n", options.targetNoScrollbar))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
         io.write("}\n")
 
@@ -549,7 +552,7 @@ local function PresentTargetMonsterWindow()
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
 
-        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove }) then
+        if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove, options.targetNoScrollbar }) then
             imgui.SetWindowFontScale(options.fontScale)
             PresentTargetMonster(monster)
         end

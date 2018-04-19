@@ -161,6 +161,14 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
+            if imgui.Checkbox("No scrollbar", _configuration.targetNoScrollbar == "NoScrollbar") then
+                if _configuration.targetNoScrollbar == "NoScrollbar" then
+                    _configuration.targetNoScrollbar = ""
+                else
+                    _configuration.targetNoScrollbar = "NoScrollbar"
+                end
+                this.changed = true
+            end
 
             if imgui.Checkbox("Transparent window", _configuration.targetTransparentWindow) then
                 _configuration.targetTransparentWindow = not _configuration.targetTransparentWindow
