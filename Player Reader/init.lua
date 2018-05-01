@@ -58,6 +58,8 @@ if optionsLoaded then
         options.players[i].AlwaysAutoResize      = lib_helpers.NotNilOrDefault(options.players[i].AlwaysAutoResize, "AlwaysAutoResize")
         options.players[i].TransparentWindow     = lib_helpers.NotNilOrDefault(options.players[i].TransparentWindow, false)
         options.players[i].SD                    = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
+        options.players[i].Invulnerability       = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
+    
     end
 else
     options = 
@@ -101,6 +103,7 @@ else
         options.players[i].AlwaysAutoResize = "AlwaysAutoResize"
         options.players[i].TransparentWindow = false
         options.players[i].SD = true
+        options.players[i].Invulnerability = true
     end
 end
 
@@ -149,6 +152,7 @@ local function SaveOptions(options)
             io.write(string.format("            AlwaysAutoResize = \"%s\",\n", options.players[i].AlwaysAutoResize))
             io.write(string.format("            TransparentWindow = %s,\n", tostring(options.players[i].TransparentWindow)))
             io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
+            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnterability)))
             io.write(string.format("        },\n"))
         end
         io.write(string.format("    },\n"))
@@ -174,6 +178,7 @@ local function PresentPlayers()
         local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
         local atkTech = lib_characters.GetPlayerTechStatus(address, 0)
         local defTech = lib_characters.GetPlayerTechStatus(address, 1)
+        local invuln = lib_characters.GetPlayerInvulnStatus(address)
 
         lib_helpers.Text(true, "%2i", index)
         imgui.NextColumn()
@@ -191,11 +196,16 @@ local function PresentPlayers()
         else
             lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
+        if invuln.name ~= "I" then
+            lib_helpers.Text(true, "---")
+        else
+            lib_helpers.Text(true, "%s: %s", invuln.name, os.date("!%M:%S", invuln.time))
+        end
         imgui.NextColumn()
     end
 end
 
-local function PresentPlayer(address, sd)
+local function PresentPlayer(address, sd, inv)
     if address == 0 then
         return
     end
@@ -208,6 +218,7 @@ local function PresentPlayer(address, sd)
     local mtp = lib_characters.GetPlayerMaxTP(address)
     local atkTech = lib_characters.GetPlayerTechStatus(address, 0)
     local defTech = lib_characters.GetPlayerTechStatus(address, 1)
+    local invuln = lib_characters.GetPlayerInvulnStatus(address)
 
     local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
     local tpColor = lib_helpers.HPToGreenRedGradient(tp/mtp)
@@ -251,6 +262,14 @@ local function PresentPlayer(address, sd)
             --lib_helpers.Text(true, "")
         else
             lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+        end
+    end
+    
+    if inv == true then
+        if invuln.name ~= "I" then
+            --lib_helpers.Text(true, "")
+        else
+            lib_helpers.Text(true, "%s: %s", invuln.name, os.date("!%M:%S", invuln.time))
         end
     end
 end
@@ -334,7 +353,7 @@ local function present()
                             }
                         ) then
                             imgui.SetWindowFontScale(options.fontScale)
-                            PresentPlayer(address, options.players[i].SD)
+                            PresentPlayer(address, options.players[i].SD, options.players[i].Invulnerability)
 
                             if options.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
                                 if options.players[i].Anchor == 3 or options.players[i].Anchor == 6 or options.players[i].Anchor == 9 then

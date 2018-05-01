@@ -231,6 +231,11 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
                     
+                    if imgui.Checkbox("Invulnerability", _configuration.players[i].Invulnerability) then
+                        _configuration.players[i].Invulnerability = not _configuration.players[i].Invulnerability
+                        this.changed = true
+                    end
+                    
                     imgui.TreePop()
                 end
             end
