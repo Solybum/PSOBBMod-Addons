@@ -114,19 +114,11 @@ end
 local function GetPlayerInvulnerabilityStatus(player)
     local frames = pso.read_u32(player + 0x720)
     local time = tonumber(string.format("%.0f", frames / 30))
-    local totalTime = 30
-    
-    local name = "?"
-    if frames ~= 0 then
-        name = "I"
-    end
-    
+
     return
     {
         frames = frames,
-        name = name,
         time = time,
-        totalTime = totalTime
     }
 end
 

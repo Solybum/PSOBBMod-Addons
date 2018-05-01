@@ -256,20 +256,18 @@ local function PresentPlayer(address, sd, inv)
         if atkTech.type == 0 then
             --lib_helpers.Text(true, "")
         else
-            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+            lib_helpers.Text(true, "%s %02i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
         end
         if defTech.type == 0 then
             --lib_helpers.Text(true, "")
         else
-            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+            lib_helpers.Text(true, "%s %02i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
     end
     
     if inv == true then
-        if invuln.name ~= "I" then
-            --lib_helpers.Text(true, "")
-        else
-            lib_helpers.Text(true, "%s: %s", invuln.name, os.date("!%M:%S", invuln.time))
+        if invuln.time > 0 then
+            lib_helpers.Text(true, "%-4s: %s", "Inv.", os.date("!%M:%S", invuln.time))
         end
     end
 end
