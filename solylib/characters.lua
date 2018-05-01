@@ -70,7 +70,7 @@ local function GetPlayerMaxTP(player)
     return pso.read_u16(player + 0x2BE)
 end
 
-local function GetPlayerTechStatus(player, tech)
+local function GetPlayerTechniqueStatus(player, tech)
     tech = tech or 0
     if tech ~= 0 then
         tech = 1
@@ -111,7 +111,7 @@ local function GetPlayerTechStatus(player, tech)
     }
 end
 
-local function GetPlayerInvulnStatus(player)
+local function GetPlayerInvulnerabilityStatus(player)
     local frames = pso.read_u32(player + 0x720)
     local time = tonumber(string.format("%.0f", frames / 30))
     local totalTime = 30
@@ -151,8 +151,8 @@ return
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
     GetPlayerMaxTP = GetPlayerMaxTP,
-    GetPlayerTechStatus = GetPlayerTechStatus,
-	GetPlayerInvulnStatus = GetPlayerInvulnStatus,
+    GetPlayerTechniqueStatus = GetPlayerTechniqueStatus,
+    GetPlayerInvulnerabilityStatus = GetPlayerInvulnerabilityStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,

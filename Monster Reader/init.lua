@@ -456,8 +456,8 @@ local function PresentMonsters()
             imgui.NextColumn()
 
             if options.showMonsterStatus then
-                local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
-                local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
+                local atkTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 0)
+                local defTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 1)
                 
                 if atkTech.type == 0 then
                     lib_helpers.TextC(true, 0, "    ")
@@ -496,10 +496,9 @@ local function PresentTargetMonster(monster)
     if monster ~= nil then
         local mHP = monster.HP
         local mHPMax = monster.HPMax
-    
-        -- I won't rename it because of this, at least not yet
-        local atkTech = lib_characters.GetPlayerTechStatus(monster.address, 0)
-        local defTech = lib_characters.GetPlayerTechStatus(monster.address, 1)
+
+        local atkTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 0)
+        local defTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 1)
 
         lib_helpers.Text(true, monster.name)
         if options.showMonsterID == true then
