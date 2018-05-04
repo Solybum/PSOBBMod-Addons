@@ -1,6 +1,6 @@
 local t = {}
 
--- Settings the color to something different than 0 will make the addon use the selected
+-- Set the color to something different than 0 will make the addon use the selected
 -- color for the item.
 -- Setting the flag to false, will make the addon NOT print the item when its on the floor
 
