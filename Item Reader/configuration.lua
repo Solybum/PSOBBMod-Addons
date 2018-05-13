@@ -22,7 +22,7 @@ local function ConfigurationWindow(configuration)
             "Vanilla",
             "Ultima",
             "Ephinea",
-            "Schthach",
+            "Schthack",
         }
 
         if imgui.TreeNodeEx("General", "DefaultOpen") then
