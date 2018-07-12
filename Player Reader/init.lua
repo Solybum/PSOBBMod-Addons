@@ -152,7 +152,7 @@ local function SaveOptions(options)
             io.write(string.format("            AlwaysAutoResize = \"%s\",\n", options.players[i].AlwaysAutoResize))
             io.write(string.format("            TransparentWindow = %s,\n", tostring(options.players[i].TransparentWindow)))
             io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
-            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnterability)))
+            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnerability)))
             io.write(string.format("        },\n"))
         end
         io.write(string.format("    },\n"))
