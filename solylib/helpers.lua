@@ -85,7 +85,10 @@ local function WindowPositionAndSize(windowName, X, Y, W, H, Anchor, AlwaysAutoR
         windowW,
         windowH,
         Anchor)
-    imgui.SetWindowPos(windowName, ps[1], ps[2], "Always");
+
+    if Anchor ~= 1 then
+        imgui.SetWindowPos(windowName, ps[1], ps[2], "Always");
+    end
 end
 
 local function Round(num, numDecimalPlaces)
