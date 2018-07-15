@@ -196,7 +196,7 @@ local function PresentPlayers()
         else
             lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
-		if invuln.time == 0 then
+        if invuln.time == 0 then
             lib_helpers.Text(true, "---")
         else
             lib_helpers.Text(true, "%s: %s", "Inv.", os.date("!%M:%S", invuln.time))
