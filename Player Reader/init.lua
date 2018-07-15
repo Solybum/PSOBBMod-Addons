@@ -196,10 +196,10 @@ local function PresentPlayers()
         else
             lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
-        if invuln.name ~= "I" then
+		if invuln.time == 0 then
             lib_helpers.Text(true, "---")
         else
-            lib_helpers.Text(true, "%s: %s", invuln.name, os.date("!%M:%S", invuln.time))
+            lib_helpers.Text(true, "%s: %s", "Inv.", os.date("!%M:%S", invuln.time))
         end
         imgui.NextColumn()
     end
