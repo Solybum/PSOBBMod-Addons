@@ -17,6 +17,13 @@ local function ConfigurationWindow(configuration)
             "Top", "Center", "Bottom",
             "Top Right", "Right", "Bottom Right",
         }
+        local activationRateList =
+        {
+            "None",
+            "Hell Only",
+            "Hell and T1 - broken",         -- TODO: Remove '- broken'
+            "Hell, T1, and T2 - broken",    -- TODO: Remove '- broken'
+        }
 
         if imgui.TreeNodeEx("General", "DefaultOpen") then
             if imgui.Checkbox("Enable", _configuration.enable) then
@@ -134,6 +141,36 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("Target") then
             if imgui.Checkbox("Enable", _configuration.targetEnableWindow) then
                 _configuration.targetEnableWindow = not _configuration.targetEnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show Monster Stats", _configuration.targetShowMonsterStats) then
+                _configuration.targetShowMonsterStats = not _configuration.targetShowMonsterStats
+                this.changed = true
+            end
+            
+            if imgui.Checkbox("Show Accuracy Assist", _configuration.targetShowAccuracyAssist) then
+                _configuration.targetShowAccuracyAssist = not _configuration.targetShowAccuracyAssist
+                this.changed = true
+            end
+            
+            imgui.PushItemWidth(100)
+            success, _configuration.targetAccuracyThreshold = imgui.InputInt("Accuracy Threshold %", _configuration.targetAccuracyThreshold)
+            imgui.PopItemWidth()
+            if success then
+                if _configuration.targetAccuracyThreshold < 50 then
+                    _configuration.targetAccuracyThreshold = 50
+                end
+                if _configuration.targetAccuracyThreshold > 100 then
+                    _configuration.targetAccuracyThreshold = 100
+                end
+                this.changed = true
+            end
+            
+            imgui.PushItemWidth(200)  -- TODO: change back to 150 when '- broken' is removed
+            success, _configuration.targetShowActivationRates = imgui.Combo("Show Activation Rates", _configuration.targetShowActivationRates, activationRateList, table.getn(activationRateList))
+            imgui.PopItemWidth()
+            if success then
                 this.changed = true
             end
             
