@@ -711,8 +711,7 @@ local function PresentTargetMonster(monster)
             if lib_characters.GetPlayerIsCast(playerAddr) == true then
                 androidBoost = 30
             end
-            monster.Esp = 999
-            
+
             -- Calculate Rates of success of differing attack types
             local hellRate = (93 - monster.Edk)*(v50xHellBoost)  
             lib_helpers.Text(true, "Activation Rates:")
