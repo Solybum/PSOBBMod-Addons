@@ -576,16 +576,8 @@ local function PresentTargetMonster(monster)
                                    monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt) -- , monster.Esp) -- TODO: Display ESP when found
         end        
 
-        -- Seperate the next row into 1 or 2 columns
-        local columnCount = 1
-        if options.showMonsterStatus then
-            columnCount = columnCount + 1
-        end
-        imgui.Columns(columnCount)
-    
         -- Draw enemy HP bar
         lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
-        imgui.NextColumn()
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
         if options.showMonsterStatus then                
@@ -615,9 +607,6 @@ local function PresentTargetMonster(monster)
             imgui.NextColumn()
         end   
 
-        -- Remove columns
-        imgui.Columns(1)
-                   
         -- Determine if we have v501/v502 equip for it's bonuses     
         local inventory = lib_items.GetInventory(lib_items.Me)
         local itemCount = table.getn(inventory.items)
