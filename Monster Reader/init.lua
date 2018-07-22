@@ -454,17 +454,32 @@ local function PresentMonsters()
     if options.showMonsterID == true then
         columnCount = columnCount + 1
     end
-    if options.showMonsterStatus then
+    if options.showMonsterStatus == true then
         columnCount = columnCount + 1
     end
     imgui.Columns(columnCount)
 
-    if options.showMonsterStatus then
+    if options.showMonsterID == true or options.showMonsterStatus == true then
         local windowWidth = imgui.GetWindowSize()
         local charWidth = 8 * options.fontScale
+
+        local nameColumnWidth = #"XXXXXXXX" * charWidth + 10
+        local idColumnWidth = #"XXXX" * charWidth + 10
         local statusColumnWidth = #"J30 Z30 F P" * charWidth + 10
-        imgui.SetColumnOffset(1, 16 * charWidth)
-        imgui.SetColumnOffset(2, windowWidth - statusColumnWidth)
+
+        if options.showMonsterID == true and options.showMonsterStatus == true then
+            imgui.SetColumnOffset(1, nameColumnWidth)
+            imgui.SetColumnOffset(2, nameColumnWidth + idColumnWidth)
+            imgui.SetColumnOffset(3, windowWidth - statusColumnWidth)
+        elseif options.showMonsterID == true then
+            imgui.SetColumnOffset(1, nameColumnWidth)
+            imgui.SetColumnOffset(2, nameColumnWidth + idColumnWidth)
+        elseif options.showMonsterStatus == true then
+            imgui.SetColumnOffset(1, nameColumnWidth)
+            imgui.SetColumnOffset(2, windowWidth - statusColumnWidth)
+        else
+            imgui.SetColumnOffset(1, nameColumnWidth)
+        end
     end
 
     local startIndex = 1
