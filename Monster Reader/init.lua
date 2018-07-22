@@ -173,8 +173,17 @@ local _MonsterEth = 0x2F8
 local _MonsterEic = 0x2FA
 local _MonsterEdk = 0x2FC
 local _MonsterElt = 0x2FE
-local _MonsterEsp = 0x000   -- TODO: Find location of monster ESP values
-            
+
+local _MonsterBpPtr = 0x2B4
+local _MonsterBpAtp = 0x0
+local _MonsterBpMst = 0x2
+local _MonsterBpEvp = 0x4
+local _MonsterBpHp  = 0x6
+local _MonsterBpDfp = 0x8
+local _MonsterBpAta = 0xA
+local _MonsterBpLck = 0xC
+local _MonsterBpEsp = 0xE
+
 -- Special addresses for De Rol Le
 local _BPDeRolLeData = 0x00A43CC8
 local _MonsterDeRolLeHP = 0x6B4
@@ -272,20 +281,31 @@ local function GetMonsterData(monster)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
-    
-    monster.Atp = pso.read_u16(monster.address + _MonsterAtp)
-    monster.Dfp = pso.read_u16(monster.address + _MonsterDfp)
-    monster.Evp = pso.read_u16(monster.address + _MonsterEvp)
-    monster.Mst = pso.read_u16(monster.address + _MonsterMst)
-    monster.Ata = pso.read_u16(monster.address + _MonsterAta)
-    monster.Lck = pso.read_u16(monster.address + _MonsterLck)
-    
+
+    local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
+    if bpPointer ~= 0 then
+        monster.Atp = pso.read_u16(bpPointer + _MonsterBpAtp)
+        monster.Mst = pso.read_u16(bpPointer + _MonsterBpMst)
+        monster.Evp = pso.read_u16(bpPointer + _MonsterBpEvp)
+        monster.Dfp = pso.read_u16(bpPointer + _MonsterBpDfp)
+        monster.Ata = pso.read_u16(bpPointer + _MonsterBpAta)
+        monster.Lck = pso.read_u16(bpPointer + _MonsterBpLck)
+        monster.Esp = pso.read_u16(bpPointer + _MonsterBpEsp)
+    else
+        monster.Atp = pso.read_u16(monster.address + _MonsterAtp)
+        monster.Dfp = pso.read_u16(monster.address + _MonsterDfp)
+        monster.Evp = pso.read_u16(monster.address + _MonsterEvp)
+        monster.Mst = pso.read_u16(monster.address + _MonsterMst)
+        monster.Ata = pso.read_u16(monster.address + _MonsterAta)
+        monster.Lck = pso.read_u16(monster.address + _MonsterLck)
+        monster.Esp = 0
+    end
+
     monster.Efr = pso.read_u16(monster.address + _MonsterEfr)
     monster.Eth = pso.read_u16(monster.address + _MonsterEth)
     monster.Eic = pso.read_u16(monster.address + _MonsterEic)
     monster.Edk = pso.read_u16(monster.address + _MonsterEdk)
     monster.Elt = pso.read_u16(monster.address + _MonsterElt)
-    monster.Esp = pso.read_u16(monster.address + _MonsterEsp)
     
     monster.room = pso.read_u16(monster.address + _Room)
     monster.posX = pso.read_f32(monster.address + _PosX)
@@ -572,9 +592,9 @@ local function PresentTargetMonster(monster)
         if options.targetShowMonsterStats then
             lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
                                    monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
-            lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i]", --, ESP: %i]", -- TODO: Display ESP when found
-                                   monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt) -- , monster.Esp) -- TODO: Display ESP when found
-        end        
+            lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i, ESP: %i]",
+                                   monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt, monster.Esp)
+        end
 
         -- Draw enemy HP bar
         lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
@@ -640,7 +660,7 @@ local function PresentTargetMonster(monster)
             end 
         
             -- Calculate all 9 types of attack combinations
-            local myAta = pso.read_u16(lib_characters.GetSelf() + 0x2D4)  
+            local myAta = lib_characters.GetPlayerATA(playerAddr)
             local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
             local hardAtk1_Acc = (myAta * 0.7 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
             local specAtk1_Acc = (myAta * 0.5 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
@@ -699,14 +719,13 @@ local function PresentTargetMonster(monster)
             if options.targetShowActivationRates == 2 then   
                 lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
             else
-                lib_helpers.Text(true, "Hell: %i%%%%", hellRate)    -- TODO: Remove this line when we have ESP Values
                 local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                --lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)  -- TODO: Add when have ESP
+                lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)
                 if options.targetShowActivationRates > 3 then 
                     local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
                     local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
                     local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                    --lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)  -- TODO: Add when have ESP
+                    lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)
                 end
             end
         end
