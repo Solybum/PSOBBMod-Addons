@@ -284,7 +284,7 @@ local function GetMonsterData(monster)
     monster.Eth = pso.read_u16(monster.address + _MonsterEth)
     monster.Eic = pso.read_u16(monster.address + _MonsterEic)
     monster.Edk = pso.read_u16(monster.address + _MonsterEdk)
-    monster.Elt = pso.read_u16(monster.address + _MonsterElt)     
+    monster.Elt = pso.read_u16(monster.address + _MonsterElt)
     monster.Esp = pso.read_u16(monster.address + _MonsterEsp)
     
     monster.room = pso.read_u16(monster.address + _Room)
@@ -315,7 +315,6 @@ local function GetTargetMonster()
     local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
     -- If we don't have address (maybe warping or something)
-    -- return the empty list
     if pAddr == 0 then
         return nil
     end
@@ -729,7 +728,7 @@ local function PresentTargetMonsterWindow()
         targetCache = monster
     end
     
-    if options.targetEnableWindow then
+    if options.targetEnableWindow and monster.unitxtID ~= 0 then
         if firstPresent or options.targetChanged then
           options.targetChanged = false
           local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)
