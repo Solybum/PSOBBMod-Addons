@@ -201,8 +201,7 @@ end
 
 local function ExportTheme()
     LIP.save(themFileName, theme)
-    -- TODO enable once merged
-    --pso.reload_custom_theme()
+    pso.reload_custom_theme()
 end
 
 -- UI stuff
