@@ -2,6 +2,7 @@ local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
 local lib_unitxt = require("solylib.unitxt")
+local lib_items = require("solylib.items.items")
 local cfg = require("Monster Reader.configuration")
 local cfgMonsters = require("Monster Reader.monsters")
 local optionsLoaded, options = pcall(require, "Monster Reader.options")
@@ -32,18 +33,22 @@ if optionsLoaded then
     options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
-    options.targetEnableWindow      = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
-    options.targetChanged           = lib_helpers.NotNilOrDefault(options.targetChanged, false)
-    options.targetAnchor            = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
-    options.targetX                 = lib_helpers.NotNilOrDefault(options.targetX, 150)
-    options.targetY                 = lib_helpers.NotNilOrDefault(options.targetY, -45)
-    options.targetW                 = lib_helpers.NotNilOrDefault(options.targetW, 120)
-    options.targetH                 = lib_helpers.NotNilOrDefault(options.targetH, 85)
-    options.targetNoTitleBar        = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
-    options.targetNoResize          = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
-    options.targetNoMove            = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
-    options.targetNoScrollbar       = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
-    options.targetTransparentWindow = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
+    options.targetEnableWindow        = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
+    options.targetChanged             = lib_helpers.NotNilOrDefault(options.targetChanged, false)
+    options.targetAnchor              = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
+    options.targetX                   = lib_helpers.NotNilOrDefault(options.targetX, 150)
+    options.targetY                   = lib_helpers.NotNilOrDefault(options.targetY, -45)
+    options.targetW                   = lib_helpers.NotNilOrDefault(options.targetW, 120)
+    options.targetH                   = lib_helpers.NotNilOrDefault(options.targetH, 85)
+    options.targetNoTitleBar          = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
+    options.targetNoResize            = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
+    options.targetNoMove              = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
+    options.targetNoScrollbar         = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
+    options.targetTransparentWindow   = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
+    options.targetShowMonsterStats    = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
+    options.targetShowAccuracyAssist  = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
+    options.targetAccuracyThreshold   = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
+    options.targetShowActivationRates = lib_helpers.NotNilOrDefault(options.targetShowActivationRates, 1)
 else
     options = 
     {
@@ -79,6 +84,10 @@ else
         targetNoMove = "NoMove",
         targetNoScrollbar = "NoScrollbar",
         targetTransparentWindow = false,
+        targetShowMonsterStats = false,
+        targetShowAccuracyAssist = false,
+        targetAccuracyThreshold = 90,
+        targetShowActivationRates = 1,
     }
 end
 
@@ -121,6 +130,10 @@ local function SaveOptions(options)
         io.write(string.format("    targetNoMove = \"%s\",\n", options.targetNoMove))
         io.write(string.format("    targetNoScrollbar = \"%s\",\n", options.targetNoScrollbar))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
+        io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))      
+        io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
+        io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
+        io.write(string.format("    targetShowActivationRates = %s,\n", tostring(options.targetShowActivationRates)))  
         io.write("}\n")
 
         io.close(file)
@@ -149,7 +162,19 @@ local _EntityArray = 0x00AAD720
 local _MonsterUnitxtID = 0x378
 local _MonsterHP = 0x334
 local _MonsterHPMax = 0x2BC
-
+local _MonsterEvp = 0x2D0
+local _MonsterAtp = 0x2CC
+local _MonsterDfp = 0x2D2
+local _MonsterMst = 0x2BE
+local _MonsterAta = 0x2D4
+local _MonsterLck = 0x2D6
+local _MonsterEfr = 0x2F6
+local _MonsterEth = 0x2F8
+local _MonsterEic = 0x2FA
+local _MonsterEdk = 0x2FC
+local _MonsterElt = 0x2FE
+local _MonsterEsp = 0x000   -- TODO: Find location of monster ESP values
+            
 -- Special addresses for De Rol Le
 local _BPDeRolLeData = 0x00A43CC8
 local _MonsterDeRolLeHP = 0x6B4
@@ -247,6 +272,21 @@ local function GetMonsterData(monster)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+    
+    monster.Atp = pso.read_u16(monster.address + _MonsterAtp)
+    monster.Dfp = pso.read_u16(monster.address + _MonsterDfp)
+    monster.Evp = pso.read_u16(monster.address + _MonsterEvp)
+    monster.Mst = pso.read_u16(monster.address + _MonsterMst)
+    monster.Ata = pso.read_u16(monster.address + _MonsterAta)
+    monster.Lck = pso.read_u16(monster.address + _MonsterLck)
+    
+    monster.Efr = pso.read_u16(monster.address + _MonsterEfr)
+    monster.Eth = pso.read_u16(monster.address + _MonsterEth)
+    monster.Eic = pso.read_u16(monster.address + _MonsterEic)
+    monster.Edk = pso.read_u16(monster.address + _MonsterEdk)
+    monster.Elt = pso.read_u16(monster.address + _MonsterElt)     
+    monster.Esp = pso.read_u16(monster.address + _MonsterEsp)
+    
     monster.room = pso.read_u16(monster.address + _Room)
     monster.posX = pso.read_f32(monster.address + _PosX)
     monster.posY = pso.read_f32(monster.address + _PosY)
@@ -500,21 +540,171 @@ local function PresentTargetMonster(monster)
         local atkTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 0)
         local defTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 1)
 
+        local frozen = lib_characters.GetPlayerFrozenStatus(monster.address)
+        local confused = lib_characters.GetPlayerConfusedStatus(monster.address)
+        local paralyzed = lib_characters.GetPlayerParalyzedStatus(monster.address)
+
         lib_helpers.Text(true, monster.name)
         if options.showMonsterID == true then
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
 
-        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
-        if atkTech.type == 0 then
-            lib_helpers.Text(true, "")
-        else
-            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
-        end
-        if defTech.type == 0 then
-            lib_helpers.Text(true, "")
-        else
-            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+        -- This is to stop showing info about npcs
+        if mHP > 0 then 
+            -- Show target enemies stats if feature enabled
+            if options.targetShowMonsterStats then
+                lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
+                                       monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
+                lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i]", --, ESP: %i]", -- TODO: Display ESP when found
+                                       monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt) -- , monster.Esp) -- TODO: Display ESP when found
+            end        
+
+            -- Seperate the next row into 1 or 2 columns
+            local columnCount = 1
+            if options.showMonsterStatus then
+                columnCount = columnCount + 1
+            end
+            imgui.Columns(columnCount)
+    
+            -- Draw enemy HP bar
+            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+            imgui.NextColumn()
+
+            -- Show J/Z status and Frozen, Confuse, or Paralyzed status
+            if options.showMonsterStatus then                
+                if atkTech.type == 0 then
+                    lib_helpers.TextC(true, 0, "    ")
+                else
+                    lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+                end
+                
+                if defTech.type == 0 then
+                    lib_helpers.TextC(false, 0, "    ")
+                else
+                    lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                end
+
+                if frozen then
+                    lib_helpers.TextC(false, 0xFF00FFFF, "F ")
+                elseif confused then
+                    lib_helpers.TextC(false, 0xFFFF00FF, "C ")
+                else
+                    lib_helpers.TextC(false, 0, "  ")
+                end
+                if paralyzed then
+                    lib_helpers.TextC(false, 0xFFFF4000, "P ")
+                end
+
+                imgui.NextColumn()
+            end   
+
+            -- Remove columns
+            imgui.Columns(1)
+                       
+            -- Determine if we have v501/v502 equip for it's bonuses     
+            local inventory = lib_items.GetInventory(lib_items.Me)
+            local itemCount = table.getn(inventory.items)
+            local v50xHellBoost = 1.0
+            local v50xStatusBoost = 1.0
+            for i=1,itemCount,1 do
+                item = inventory.items[i]
+                if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then 
+                    -- V501
+                    if item.data[3] == 0x4A then
+                        v50xHellBoost = 1.5   
+                        v50xStatusBoost = 1.5
+                    -- V502
+                    elseif item.data[3] == 0x4B then
+                        v50xHellBoost = 2.0
+                        v50xStatusBoost = 1.5
+                        break
+                    end
+                end
+            end     
+            
+            -- Show accuracy assistance if feature is enabled
+            if options.targetShowAccuracyAssist then  
+                -- Determine if player gets a bonus due to enemy status          
+                local badStatusReduc = 1.0
+                if frozen then
+                    badStatusReduc = badStatusReduc - 0.3
+                end
+                if paralyzed then
+                    badStatusReduc = badStatusReduc - 0.15
+                end 
+            
+                -- Calculate all 9 types of attack combinations
+                local myAta = pso.read_u16(lib_characters.GetSelf() + 0x2D4)  
+                local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local hardAtk1_Acc = (myAta * 0.7 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local specAtk1_Acc = (myAta * 0.5 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local normAtk2_Acc = (myAta * 1.0 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local hardAtk2_Acc = (myAta * 0.7 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local specAtk2_Acc = (myAta * 0.5 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+                local normAtk3_Acc = (myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+                local hardAtk3_Acc = (myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+                local specAtk3_Acc = (myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+                
+                -- Display best first attack
+                lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
+                lib_helpers.Text(true, "[")
+                if specAtk1_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%% ", specAtk1_Acc)
+                elseif hardAtk1_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%% ", hardAtk1_Acc)
+                else
+                    lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%% ", normAtk1_Acc)
+                end
+                
+                -- Display best second attack
+                lib_helpers.Text(false, "> ")            
+                if specAtk2_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%%%% ", specAtk2_Acc)
+                elseif hardAtk2_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard2: %i%%%% ", hardAtk2_Acc)
+                else
+                    lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%%%% ", normAtk2_Acc)
+                end
+                
+                -- Display best third attack
+                lib_helpers.Text(false, "> ")            
+                if specAtk3_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%%", specAtk3_Acc)
+                elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
+                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%%", hardAtk3_Acc)
+                else
+                    lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%%", normAtk3_Acc)
+                end            
+                lib_helpers.Text(false, "]")            
+            end           
+               
+            -- Show special activation rate if feature is enabled
+            if options.targetShowActivationRates > 1 then   
+                -- Determine if the Android Boost Applies
+                equipFlags = pso.read_u8(lib_characters.GetSelf() + 0x964)           
+                local androidBoost = 0
+                if bit.band(equipFlags, 0x08) > 0 then
+                    androidBoost = 30
+                end
+                monster.Esp = 999
+                
+                -- Calculate Rates of success of differing attack types
+                local hellRate = (93 - monster.Edk)*(v50xHellBoost)  
+                lib_helpers.Text(true, "Activation Rates:")
+                if options.targetShowActivationRates == 2 then   
+                    lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
+                else
+                    lib_helpers.Text(true, "Hell: %i%%%%", hellRate)    -- TODO: Remove this line when we have ESP Values
+                    local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                    --lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)  -- TODO: Add when have ESP
+                    if options.targetShowActivationRates > 3 then 
+                        local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                        local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                        local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                        --lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)  -- TODO: Add when have ESP
+                    end
+                end
+            end      
         end
     end
 end
