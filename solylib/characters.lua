@@ -70,6 +70,10 @@ local function GetPlayerMaxTP(player)
     return pso.read_u16(player + 0x2BE)
 end
 
+local function GetPlayerATA(player)
+    return pso.read_u16(player + 0x2D4)
+end
+
 local function GetPlayerTechniqueStatus(player, tech)
     tech = tech or 0
     if tech ~= 0 then
@@ -152,6 +156,7 @@ return
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
     GetPlayerMaxTP = GetPlayerMaxTP,
+    GetPlayerATA = GetPlayerATA,
     GetPlayerTechniqueStatus = GetPlayerTechniqueStatus,
     GetPlayerInvulnerabilityStatus = GetPlayerInvulnerabilityStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
