@@ -132,6 +132,15 @@ local function GetPlayerParalyzedStatus(player)
     return pso.read_u32(player + 0x25C) == 0x10
 end
 
+local function GetPlayerIsCast(player)
+    local result = false
+    local equipFlags = pso.read_u8(player + 0x964)
+    if bit.band(equipFlags, 0x08) > 0 then
+        result = true
+    end
+    return result
+end
+
 return
 {
     GetSelf = GetSelf,
@@ -148,4 +157,5 @@ return
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
+    GetPlayerIsCast = GetPlayerIsCast,
 }
