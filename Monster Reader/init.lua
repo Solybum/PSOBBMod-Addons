@@ -548,6 +548,11 @@ end
 
 local function PresentTargetMonster(monster)
     if monster ~= nil then
+        local playerAddr = lib_characters.GetSelf()
+        if playerAddr == 0 then
+            return
+        end
+
         local mHP = monster.HP
         local mHPMax = monster.HPMax
 
@@ -563,162 +568,158 @@ local function PresentTargetMonster(monster)
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
 
-        -- This is to stop showing info about npcs
-        if mHP > 0 then 
-            -- Show target enemies stats if feature enabled
-            if options.targetShowMonsterStats then
-                lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
-                                       monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
-                lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i]", --, ESP: %i]", -- TODO: Display ESP when found
-                                       monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt) -- , monster.Esp) -- TODO: Display ESP when found
-            end        
+        -- Show target enemies stats if feature enabled
+        if options.targetShowMonsterStats then
+            lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
+                                   monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
+            lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i]", --, ESP: %i]", -- TODO: Display ESP when found
+                                   monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt) -- , monster.Esp) -- TODO: Display ESP when found
+        end        
 
-            -- Seperate the next row into 1 or 2 columns
-            local columnCount = 1
-            if options.showMonsterStatus then
-                columnCount = columnCount + 1
-            end
-            imgui.Columns(columnCount)
+        -- Seperate the next row into 1 or 2 columns
+        local columnCount = 1
+        if options.showMonsterStatus then
+            columnCount = columnCount + 1
+        end
+        imgui.Columns(columnCount)
     
-            -- Draw enemy HP bar
-            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        -- Draw enemy HP bar
+        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        imgui.NextColumn()
+
+        -- Show J/Z status and Frozen, Confuse, or Paralyzed status
+        if options.showMonsterStatus then                
+            if atkTech.type == 0 then
+                lib_helpers.TextC(true, 0, "    ")
+            else
+                lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+            end
+            
+            if defTech.type == 0 then
+                lib_helpers.TextC(false, 0, "    ")
+            else
+                lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+            end
+
+            if frozen then
+                lib_helpers.TextC(false, 0xFF00FFFF, "F ")
+            elseif confused then
+                lib_helpers.TextC(false, 0xFFFF00FF, "C ")
+            else
+                lib_helpers.TextC(false, 0, "  ")
+            end
+            if paralyzed then
+                lib_helpers.TextC(false, 0xFFFF4000, "P ")
+            end
+
             imgui.NextColumn()
+        end   
 
-            -- Show J/Z status and Frozen, Confuse, or Paralyzed status
-            if options.showMonsterStatus then                
-                if atkTech.type == 0 then
-                    lib_helpers.TextC(true, 0, "    ")
-                else
-                    lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+        -- Remove columns
+        imgui.Columns(1)
+                   
+        -- Determine if we have v501/v502 equip for it's bonuses     
+        local inventory = lib_items.GetInventory(lib_items.Me)
+        local itemCount = table.getn(inventory.items)
+        local v50xHellBoost = 1.0
+        local v50xStatusBoost = 1.0
+        for i=1,itemCount,1 do
+            item = inventory.items[i]
+            if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then 
+                -- V501
+                if item.data[3] == 0x4A then
+                    v50xHellBoost = 1.5   
+                    v50xStatusBoost = 1.5
+                -- V502
+                elseif item.data[3] == 0x4B then
+                    v50xHellBoost = 2.0
+                    v50xStatusBoost = 1.5
+                    break
                 end
-                
-                if defTech.type == 0 then
-                    lib_helpers.TextC(false, 0, "    ")
-                else
-                    lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
-                end
-
-                if frozen then
-                    lib_helpers.TextC(false, 0xFF00FFFF, "F ")
-                elseif confused then
-                    lib_helpers.TextC(false, 0xFFFF00FF, "C ")
-                else
-                    lib_helpers.TextC(false, 0, "  ")
-                end
-                if paralyzed then
-                    lib_helpers.TextC(false, 0xFFFF4000, "P ")
-                end
-
-                imgui.NextColumn()
-            end   
-
-            -- Remove columns
-            imgui.Columns(1)
-                       
-            -- Determine if we have v501/v502 equip for it's bonuses     
-            local inventory = lib_items.GetInventory(lib_items.Me)
-            local itemCount = table.getn(inventory.items)
-            local v50xHellBoost = 1.0
-            local v50xStatusBoost = 1.0
-            for i=1,itemCount,1 do
-                item = inventory.items[i]
-                if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then 
-                    -- V501
-                    if item.data[3] == 0x4A then
-                        v50xHellBoost = 1.5   
-                        v50xStatusBoost = 1.5
-                    -- V502
-                    elseif item.data[3] == 0x4B then
-                        v50xHellBoost = 2.0
-                        v50xStatusBoost = 1.5
-                        break
-                    end
-                end
-            end     
+            end
+        end     
+        
+        -- Show accuracy assistance if feature is enabled
+        if options.targetShowAccuracyAssist then  
+            -- Determine if player gets a bonus due to enemy status          
+            local badStatusReduc = 1.0
+            if frozen then
+                badStatusReduc = badStatusReduc - 0.3
+            end
+            if paralyzed then
+                badStatusReduc = badStatusReduc - 0.15
+            end 
+        
+            -- Calculate all 9 types of attack combinations
+            local myAta = pso.read_u16(lib_characters.GetSelf() + 0x2D4)  
+            local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local hardAtk1_Acc = (myAta * 0.7 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local specAtk1_Acc = (myAta * 0.5 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local normAtk2_Acc = (myAta * 1.0 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local hardAtk2_Acc = (myAta * 0.7 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local specAtk2_Acc = (myAta * 0.5 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
+            local normAtk3_Acc = (myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+            local hardAtk3_Acc = (myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+            local specAtk3_Acc = (myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
             
-            -- Show accuracy assistance if feature is enabled
-            if options.targetShowAccuracyAssist then  
-                -- Determine if player gets a bonus due to enemy status          
-                local badStatusReduc = 1.0
-                if frozen then
-                    badStatusReduc = badStatusReduc - 0.3
-                end
-                if paralyzed then
-                    badStatusReduc = badStatusReduc - 0.15
-                end 
+            -- Display best first attack
+            lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
+            lib_helpers.Text(true, "[")
+            if specAtk1_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%% ", specAtk1_Acc)
+            elseif hardAtk1_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%% ", hardAtk1_Acc)
+            else
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%% ", normAtk1_Acc)
+            end
             
-                -- Calculate all 9 types of attack combinations
-                local myAta = pso.read_u16(lib_characters.GetSelf() + 0x2D4)  
-                local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local hardAtk1_Acc = (myAta * 0.7 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local specAtk1_Acc = (myAta * 0.5 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local normAtk2_Acc = (myAta * 1.0 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local hardAtk2_Acc = (myAta * 0.7 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local specAtk2_Acc = (myAta * 0.5 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-                local normAtk3_Acc = (myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-                local hardAtk3_Acc = (myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-                local specAtk3_Acc = (myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-                
-                -- Display best first attack
-                lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
-                lib_helpers.Text(true, "[")
-                if specAtk1_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%% ", specAtk1_Acc)
-                elseif hardAtk1_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%% ", hardAtk1_Acc)
-                else
-                    lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%% ", normAtk1_Acc)
+            -- Display best second attack
+            lib_helpers.Text(false, "> ")            
+            if specAtk2_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%%%% ", specAtk2_Acc)
+            elseif hardAtk2_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard2: %i%%%% ", hardAtk2_Acc)
+            else
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%%%% ", normAtk2_Acc)
+            end
+            
+            -- Display best third attack
+            lib_helpers.Text(false, "> ")            
+            if specAtk3_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%%", specAtk3_Acc)
+            elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%%", hardAtk3_Acc)
+            else
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%%", normAtk3_Acc)
+            end            
+            lib_helpers.Text(false, "]")            
+        end           
+           
+        -- Show special activation rate if feature is enabled
+        if options.targetShowActivationRates > 1 then
+            -- Determine if the Android Boost Applies
+            local androidBoost = 0
+            if lib_characters.GetPlayerIsCast(playerAddr) == true then
+                androidBoost = 30
+            end
+            monster.Esp = 999
+            
+            -- Calculate Rates of success of differing attack types
+            local hellRate = (93 - monster.Edk)*(v50xHellBoost)  
+            lib_helpers.Text(true, "Activation Rates:")
+            if options.targetShowActivationRates == 2 then   
+                lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
+            else
+                lib_helpers.Text(true, "Hell: %i%%%%", hellRate)    -- TODO: Remove this line when we have ESP Values
+                local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                --lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)  -- TODO: Add when have ESP
+                if options.targetShowActivationRates > 3 then 
+                    local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                    local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                    local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
+                    --lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)  -- TODO: Add when have ESP
                 end
-                
-                -- Display best second attack
-                lib_helpers.Text(false, "> ")            
-                if specAtk2_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%%%% ", specAtk2_Acc)
-                elseif hardAtk2_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard2: %i%%%% ", hardAtk2_Acc)
-                else
-                    lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%%%% ", normAtk2_Acc)
-                end
-                
-                -- Display best third attack
-                lib_helpers.Text(false, "> ")            
-                if specAtk3_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%%", specAtk3_Acc)
-                elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
-                    lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%%", hardAtk3_Acc)
-                else
-                    lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%%", normAtk3_Acc)
-                end            
-                lib_helpers.Text(false, "]")            
-            end           
-               
-            -- Show special activation rate if feature is enabled
-            if options.targetShowActivationRates > 1 then   
-                -- Determine if the Android Boost Applies
-                equipFlags = pso.read_u8(lib_characters.GetSelf() + 0x964)           
-                local androidBoost = 0
-                if bit.band(equipFlags, 0x08) > 0 then
-                    androidBoost = 30
-                end
-                monster.Esp = 999
-                
-                -- Calculate Rates of success of differing attack types
-                local hellRate = (93 - monster.Edk)*(v50xHellBoost)  
-                lib_helpers.Text(true, "Activation Rates:")
-                if options.targetShowActivationRates == 2 then   
-                    lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
-                else
-                    lib_helpers.Text(true, "Hell: %i%%%%", hellRate)    -- TODO: Remove this line when we have ESP Values
-                    local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                    --lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)  -- TODO: Add when have ESP
-                    if options.targetShowActivationRates > 3 then 
-                        local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                        local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                        local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                        --lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)  -- TODO: Add when have ESP
-                    end
-                end
-            end      
+            end
         end
     end
 end
