@@ -1528,6 +1528,10 @@ local function AddServerItems(server)
         t[ 0x03100B ] = { 0xFFFF0000, true } -- 2nd Anniv. Silver Badge
         t[ 0x03100C ] = { 0xFFFF0000, true } -- 2nd Anniv. Gold Badge
         t[ 0x03100D ] = { 0xFFFF0000, true } -- 2nd Anniv. Platinum Badge
+        t[ 0x031010 ] = { 0xFFFF0000, true } -- 3rd Anniv. Bronze Badge
+        t[ 0x031011 ] = { 0xFFFF0000, true } -- 3rd Anniv. Silver Badge
+        t[ 0x031012 ] = { 0xFFFF0000, true } -- 3rd Anniv. Gold Badge
+        t[ 0x031013 ] = { 0xFFFF0000, true } -- 3rd Anniv. Platinum Badge
         t[ 0x03100E ] = { 0xFFFF0000, true } -- Halloween Cookie
         t[ 0x03100F ] = { 0xFFFF0000, true } -- Coal
         t[ 0x03160C ] = { 0xFFFFFF00, true } -- Disk Vol.13 "Get It Up"
