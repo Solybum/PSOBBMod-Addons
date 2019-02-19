@@ -142,7 +142,15 @@ local stopwatch = {
     startTime = 0,
     stopTime = 0,
     lastTime = 0,
+    lastSplit = 0,
 }
+-- Template
+local split = {
+    name = "",
+    delta = 0,
+}
+local splitsCount = 0
+local splits = {}
 
 local function PresentStopwatch()
     local currentTime = os.time()
@@ -155,6 +163,11 @@ local function PresentStopwatch()
 
     ellapsed = stopwatch.stopTime - stopwatch.startTime
 
+    -- Splits first
+    for k, v in pairs(splits) do
+        imgui.Text(string.format("% 5s: %s", v.name, secondsToTime(v.delta)))
+    end
+
     imgui.SetWindowFontScale(options.fontScale * 3)
     imgui.Text(secondsToTime(ellapsed))
     imgui.SetWindowFontScale(options.fontScale)
@@ -162,9 +175,11 @@ local function PresentStopwatch()
     if stopwatch.isRunning == false then
         if imgui.Button("Start") then
             if stopwatch.startTime == 0 then
-                stopwatch.startTime = os.time()
-                stopwatch.stopTime = stopwatch.startTime
-                stopwatch.lastTime = stopwatch.lastTime
+                local currentTime = os.time()
+                stopwatch.startTime = currentTime
+                stopwatch.stopTime = currentTime
+                stopwatch.lastTime = currentTime
+                stopwatch.lastSplit = currentTime
             end
             stopwatch.isRunning = true
         end
@@ -176,6 +191,15 @@ local function PresentStopwatch()
     if stopwatch.isRunning == true then
         imgui.SameLine(0)
         if imgui.Button("Split") then
+            local split = {
+                name = "",
+                delta = 0,
+            }
+            split.name = ""..splitsCount + 1
+            split.delta = stopwatch.stopTime - stopwatch.lastSplit
+            table.insert(splits, split)
+            splitsCount = splitsCount + 1
+            stopwatch.lastSplit = stopwatch.stopTime
         end
     end
     if stopwatch.isRunning == false then
@@ -186,6 +210,7 @@ local function PresentStopwatch()
                 stopwatch.stopTime = 0
                 stopwatch.lastTime = 0
                 stopwatch.isRunning = false
+                splits = {}
             end
         end
     end
