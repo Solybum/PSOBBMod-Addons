@@ -4,7 +4,4 @@
 
 /.vs
 /.vscode
-/Item Reader/options.lua
-/Monster Reader/options.lua
-/Player Reader/options.lua
-/Theme Editor/theme_custom.lua
+/*/options.lua
