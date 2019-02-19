@@ -126,13 +126,14 @@ local function SaveOptions(options)
     end
 end
 
-local function secondsToTime(seconds)
+local function secondsToTime(milliseconds)
     local result = ""
-    local h = math.floor(seconds / 3600)
-    local m = math.floor(seconds / 60) % 60
-    local s = seconds % 60
+    local h = math.floor(milliseconds / 3600000)
+    local m = math.floor(milliseconds / 60000) % 60
+    local s = math.floor(milliseconds / 1000) % 60
+    local f = milliseconds % 1000
 
-    result = string.format("%02d:%02d:%02d", h, m, s)
+    result = string.format("%02d:%02d:%02d:%03d", h, m, s, f)
 
     return result
 end
@@ -142,6 +143,7 @@ local stopwatch = {
     startTime = 0,
     stopTime = 0,
     lastTime = 0,
+    currentTime = 0,
     lastSplit = 0,
 }
 -- Template
@@ -153,12 +155,10 @@ local splitsCount = 0
 local splits = {}
 
 local function PresentStopwatch()
-    local currentTime = os.time()
+    local currentTime = pso.get_tick_count()
     if stopwatch.isRunning == true then
-        if stopwatch.lastTime < currentTime then
-            stopwatch.stopTime = stopwatch.stopTime + 1
-            stopwatch.lastTime = currentTime
-        end
+        stopwatch.stopTime = stopwatch.stopTime + currentTime - stopwatch.lastTime
+        stopwatch.lastTime = currentTime
     end
 
     ellapsed = stopwatch.stopTime - stopwatch.startTime
@@ -173,15 +173,19 @@ local function PresentStopwatch()
     imgui.SetWindowFontScale(options.fontScale)
 
     if stopwatch.isRunning == false then
-        if imgui.Button("Start") then
-            if stopwatch.startTime == 0 then
-                local currentTime = os.time()
+        if stopwatch.startTime == 0 then
+            if imgui.Button("Start") then
                 stopwatch.startTime = currentTime
                 stopwatch.stopTime = currentTime
                 stopwatch.lastTime = currentTime
                 stopwatch.lastSplit = currentTime
+                stopwatch.isRunning = true
             end
-            stopwatch.isRunning = true
+        else
+            if imgui.Button("Resume") then
+                stopwatch.lastTime = currentTime
+                stopwatch.isRunning = true
+            end
         end
     else
         if imgui.Button("Stop") then
@@ -225,12 +229,10 @@ local countdown = {
 }
 
 local function PresentCountdown()
-    local currentTime = os.time()
+    local currentTime = pso.get_tick_count()
     if countdown.isRunning == true then
-        if countdown.lastTime < currentTime then
-            countdown.stopTime = countdown.stopTime + 1
-            countdown.lastTime = currentTime
-        end
+        countdown.stopTime = countdown.stopTime + currentTime - countdown.lastTime
+        countdown.lastTime = currentTime
     end
 
     ellapsed = countdown.startTime - countdown.stopTime
@@ -247,29 +249,36 @@ local function PresentCountdown()
     end
 
     if countdown.isRunning == false then
-        if imgui.Button("Start") then
-            if countdown.startTime == 0 then
-                countdown.startTime = os.time()
-                countdown.stopTime = countdown.startTime
-                countdown.lastTime = countdown.lastTime
+        if countdown.startTime == 0 then
+            if imgui.Button("Start") then
+                countdown.startTime = currentTime
+                countdown.stopTime = currentTime
+                countdown.lastTime = currentTime
+                countdown.lastSplit = currentTime
+                countdown.isRunning = true
 
-                -- TODO get seconds from input, prolly accept formatted time string
-                countdown.startTime = countdown.startTime + 300
+                countdown.startTime = countdown.startTime + 300000
             end
-            countdown.isRunning = true
+        else
+            if imgui.Button("Resume") then
+                countdown.lastTime = currentTime
+                countdown.isRunning = true
+            end
         end
     else
         if imgui.Button("Stop") then
-            countdown.isRunning = false
+        countdown.isRunning = false
         end
     end
-    if countdown.isRunning then
-        imgui.SameLine(0)
-        if imgui.Button("Reset") then
-            countdown.startTime = 0
-            countdown.stopTime = 0
-            countdown.lastTime = 0
-            countdown.isRunning = false
+    if countdown.isRunning == false then
+        if countdown.startTime ~= 0 then
+            imgui.SameLine(0)
+            if imgui.Button("Reset") then
+                countdown.startTime = 0
+                countdown.stopTime = 0
+                countdown.lastTime = 0
+                countdown.isRunning = false
+            end
         end
     end
 end
