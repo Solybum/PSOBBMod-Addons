@@ -64,6 +64,11 @@ if optionsLoaded then
     options.countdownNoScrollbar          = lib_helpers.NotNilOrDefault(options.countdownNoScrollbar, "")
     options.countdownAlwaysAutoResize     = lib_helpers.NotNilOrDefault(options.countdownAlwaysAutoResize, "")
     options.countdownTransparentWindow    = lib_helpers.NotNilOrDefault(options.countdownTransparentWindow, false)
+    options.countdownHotkeysStart         = lib_helpers.NotNilOrDefault(options.countdownHotkeysStart, -1)
+    options.countdownHotkeysStop          = lib_helpers.NotNilOrDefault(options.countdownHotkeysStop, -1)
+    options.countdownHotkeysResume        = lib_helpers.NotNilOrDefault(options.countdownHotkeysResume, -1)
+    options.countdownHotkeysReset         = lib_helpers.NotNilOrDefault(options.countdownHotkeysReset, -1)
+    options.countdownHotkeysAdd30         = lib_helpers.NotNilOrDefault(options.countdownHotkeysAdd30, -1)
 else
     options =
     {
@@ -103,6 +108,11 @@ else
         countdownNoScrollbar = "",
         countdownAlwaysAutoResize = "",
         countdownTransparentWindow = false,
+        countdownhHotkeysStart = 0,
+        countdownhHotkeysStop = 0,
+        countdownhHotkeysResume = 0,
+        countdownhHotkeysReset = 0,
+        countdownhHotkeysAdd30 = 0,
     }
 end
 
@@ -149,6 +159,11 @@ local function SaveOptions(options)
         io.write(string.format("    countdownNoScrollbar = \"%s\",\n", options.countdownNoScrollbar))
         io.write(string.format("    countdownAlwaysAutoResize = \"%s\",\n", options.countdownAlwaysAutoResize))
         io.write(string.format("    countdownTransparentWindow = %s,\n", tostring(options.countdownTransparentWindow)))
+        io.write(string.format("    countdownHotkeysStart = %i,\n", tostring(options.countdownHotkeysStart)))
+        io.write(string.format("    countdownHotkeysStop = %i,\n", tostring(options.countdownHotkeysStop)))
+        io.write(string.format("    countdownHotkeysResume = %i,\n", tostring(options.countdownHotkeysResume)))
+        io.write(string.format("    countdownHotkeysReset = %i,\n", tostring(options.countdownHotkeysReset)))
+        io.write(string.format("    countdownHotkeysAdd30 = %i,\n", tostring(options.countdownHotkeysAdd30)))
         io.write("}\n")
 
         io.close(file)
@@ -170,11 +185,17 @@ end
 key_pressed = function(key)
     -- Only save the last key pressed when
     -- It's one of the ones we have setup
-    if keys.getKeyID(options.stopwatchHotkeysStart) == key or
+    if
+        keys.getKeyID(options.stopwatchHotkeysStart) == key or
         keys.getKeyID(options.stopwatchHotkeysStop) == key or
         keys.getKeyID(options.stopwatchHotkeysResume) == key or
         keys.getKeyID(options.stopwatchHotkeysReset) == key or
-        keys.getKeyID(options.stopwatchHotkeysSplit) == key
+        keys.getKeyID(options.stopwatchHotkeysSplit) == key or
+        keys.getKeyID(options.countdownHotkeysStart) == key or
+        keys.getKeyID(options.countdownHotkeysStop) == key or
+        keys.getKeyID(options.countdownHotkeysResume) == key or
+        keys.getKeyID(options.countdownHotkeysReset) == key or
+        keys.getKeyID(options.countdownHotkeysAdd30) == key
     then
         last_key_pressed = key
     end
@@ -295,9 +316,15 @@ local function PresentCountdown()
         imgui.SetWindowFontScale(options.fontScale)
     end
 
+    if countdown.startTime ~= 0 and keys.getKeyID(options.countdownHotkeysAdd30) == last_key_pressed then
+        last_key_pressed = 0;
+        countdown.startTime = countdown.startTime + 30000
+    end
+
     if countdown.isRunning == false then
         if countdown.startTime == 0 then
-            if imgui.Button("Start") then
+            if imgui.Button("Start") or keys.getKeyID(options.countdownHotkeysStart) == last_key_pressed then
+                last_key_pressed = 0;
                 countdown.startTime = currentTime
                 countdown.stopTime = currentTime
                 countdown.lastTime = currentTime
@@ -307,20 +334,23 @@ local function PresentCountdown()
                 countdown.startTime = countdown.startTime + 300000
             end
         else
-            if imgui.Button("Resume") then
+            if imgui.Button("Resume") or keys.getKeyID(options.countdownHotkeysResume) == last_key_pressed then
+                last_key_pressed = 0;
                 countdown.lastTime = currentTime
                 countdown.isRunning = true
             end
         end
     else
-        if imgui.Button("Stop") then
-        countdown.isRunning = false
+        if imgui.Button("Stop") or keys.getKeyID(options.countdownHotkeysStop) == last_key_pressed then
+            last_key_pressed = 0;
+            countdown.isRunning = false
         end
     end
     if countdown.isRunning == false then
         if countdown.startTime ~= 0 then
             imgui.SameLine(0)
-            if imgui.Button("Reset") then
+            if imgui.Button("Reset") or keys.getKeyID(options.countdownHotkeysReset) == last_key_pressed then
+                last_key_pressed = 0;
                 countdown.startTime = 0
                 countdown.stopTime = 0
                 countdown.lastTime = 0

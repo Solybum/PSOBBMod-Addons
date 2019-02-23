@@ -268,6 +268,49 @@ local function ConfigurationWindow(configuration)
                 _configuration.countdownChanged = true
                 this.changed = true
             end
+
+            if keysLoaded and imgui.TreeNodeEx("Hotkeys") then
+                imgui.PushItemWidth(200)
+                success, _configuration.countdownHotkeysStart = imgui.Combo("Start", _configuration.countdownHotkeysStart, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.countdownChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.countdownHotkeysStop = imgui.Combo("Stop", _configuration.countdownHotkeysStop, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.countdownChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.countdownHotkeysResume = imgui.Combo("Resume", _configuration.countdownHotkeysResume, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.countdownChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.countdownHotkeysReset = imgui.Combo("Reset", _configuration.countdownHotkeysReset, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.countdownChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.countdownHotkeysAdd30 = imgui.Combo("Add 30 Seconds", _configuration.countdownHotkeysAdd30, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.countdownChanged = true
+                    this.changed = true
+                end
+                imgui.TreePop()
+            end
             imgui.TreePop()
         end
     end
