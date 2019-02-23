@@ -2,10 +2,24 @@ local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local cfg = require("Timer.configuration")
 local optionsLoaded, options = pcall(require, "Timer.options")
+local keysLoaded, keys = pcall(require, "solylib.keys")
 
 local optionsFileName = "addons/Timer/options.lua"
 local firstPresent = true
 local ConfigurationWindow
+
+local key_pressed
+local last_key_pressed = 0
+
+if keysLoaded == false then
+    local function getKeyID(keyName)
+        return 0
+    end
+
+    keys = {
+        getKeyID = getKeyID,
+    }
+end
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
@@ -31,6 +45,11 @@ if optionsLoaded then
     options.stopwatchNoScrollbar          = lib_helpers.NotNilOrDefault(options.stopwatchNoScrollbar, "")
     options.stopwatchAlwaysAutoResize     = lib_helpers.NotNilOrDefault(options.stopwatchAlwaysAutoResize, "")
     options.stopwatchTransparentWindow    = lib_helpers.NotNilOrDefault(options.stopwatchTransparentWindow, false)
+    options.stopwatchHotkeysStart         = lib_helpers.NotNilOrDefault(options.stopwatchHotkeysStart, -1)
+    options.stopwatchHotkeysStop          = lib_helpers.NotNilOrDefault(options.stopwatchHotkeysStop, -1)
+    options.stopwatchHotkeysResume        = lib_helpers.NotNilOrDefault(options.stopwatchHotkeysResume, -1)
+    options.stopwatchHotkeysReset         = lib_helpers.NotNilOrDefault(options.stopwatchHotkeysReset, -1)
+    options.stopwatchHotkeysSplit         = lib_helpers.NotNilOrDefault(options.stopwatchHotkeysSplit, -1)
 
     options.countdownEnableWindow         = lib_helpers.NotNilOrDefault(options.countdownEnableWindow, true)
     options.countdownChanged              = lib_helpers.NotNilOrDefault(options.countdownChanged, false)
@@ -65,6 +84,11 @@ else
         stopwatchNoScrollbar = "",
         stopwatchAlwaysAutoResize = "",
         stopwatchTransparentWindow = false,
+        stopwatchHotkeysStart = 0,
+        stopwatchHotkeysStop = 0,
+        stopwatchHotkeysResume = 0,
+        stopwatchHotkeysReset = 0,
+        stopwatchHotkeysSplit = 0,
 
         countdownEnableWindow = true,
         countdownChanged = false,
@@ -106,6 +130,11 @@ local function SaveOptions(options)
         io.write(string.format("    stopwatchNoScrollbar = \"%s\",\n", options.stopwatchNoScrollbar))
         io.write(string.format("    stopwatchAlwaysAutoResize = \"%s\",\n", options.stopwatchAlwaysAutoResize))
         io.write(string.format("    stopwatchTransparentWindow = %s,\n", tostring(options.stopwatchTransparentWindow)))
+        io.write(string.format("    stopwatchHotkeysStart = %i,\n", tostring(options.stopwatchHotkeysStart)))
+        io.write(string.format("    stopwatchHotkeysStop = %i,\n", tostring(options.stopwatchHotkeysStop)))
+        io.write(string.format("    stopwatchHotkeysResume = %i,\n", tostring(options.stopwatchHotkeysResume)))
+        io.write(string.format("    stopwatchHotkeysReset = %i,\n", tostring(options.stopwatchHotkeysReset)))
+        io.write(string.format("    stopwatchHotkeysSplit = %i,\n", tostring(options.stopwatchHotkeysSplit)))
         io.write("\n")
         io.write(string.format("    countdownEnableWindow = %s,\n", tostring(options.countdownEnableWindow)))
         io.write(string.format("    countdownChanged = %s,\n", tostring(options.countdownChanged)))
@@ -136,6 +165,19 @@ local function secondsToTime(milliseconds)
     result = string.format("%02d:%02d:%02d:%03d", h, m, s, f)
 
     return result
+end
+
+key_pressed = function(key)
+    -- Only save the last key pressed when
+    -- It's one of the ones we have setup
+    if keys.getKeyID(options.stopwatchHotkeysStart) == key or
+        keys.getKeyID(options.stopwatchHotkeysStop) == key or
+        keys.getKeyID(options.stopwatchHotkeysResume) == key or
+        keys.getKeyID(options.stopwatchHotkeysReset) == key or
+        keys.getKeyID(options.stopwatchHotkeysSplit) == key
+    then
+        last_key_pressed = key
+    end
 end
 
 local stopwatch = {
@@ -174,7 +216,8 @@ local function PresentStopwatch()
 
     if stopwatch.isRunning == false then
         if stopwatch.startTime == 0 then
-            if imgui.Button("Start") then
+            if imgui.Button("Start") or keys.getKeyID(options.stopwatchHotkeysStart) == last_key_pressed then
+                last_key_pressed = 0;
                 stopwatch.startTime = currentTime
                 stopwatch.stopTime = currentTime
                 stopwatch.lastTime = currentTime
@@ -182,19 +225,22 @@ local function PresentStopwatch()
                 stopwatch.isRunning = true
             end
         else
-            if imgui.Button("Resume") then
+            if imgui.Button("Resume") or keys.getKeyID(options.stopwatchHotkeysResume) == last_key_pressed then
+                last_key_pressed = 0;
                 stopwatch.lastTime = currentTime
                 stopwatch.isRunning = true
             end
         end
     else
-        if imgui.Button("Stop") then
+        if imgui.Button("Stop") or keys.getKeyID(options.stopwatchHotkeysStop) == last_key_pressed then
+            last_key_pressed = 0;
             stopwatch.isRunning = false
         end
     end
     if stopwatch.isRunning == true then
         imgui.SameLine(0)
-        if imgui.Button("Split") then
+        if imgui.Button("Split") or keys.getKeyID(options.stopwatchHotkeysSplit) == last_key_pressed then
+            last_key_pressed = 0;
             local split = {
                 name = "",
                 delta = 0,
@@ -209,7 +255,8 @@ local function PresentStopwatch()
     if stopwatch.isRunning == false then
         if stopwatch.startTime ~= 0 then
             imgui.SameLine(0)
-            if imgui.Button("Reset") then
+            if imgui.Button("Reset") or keys.getKeyID(options.stopwatchHotkeysReset) == last_key_pressed then
+                last_key_pressed = 0;
                 stopwatch.startTime = 0
                 stopwatch.stopTime = 0
                 stopwatch.lastTime = 0
@@ -421,6 +468,7 @@ local function init()
         author = "Solybum",
         description = "Countdown timer and stopwatch",
         present = present,
+        key_pressed = key_pressed,
     }
 end
 

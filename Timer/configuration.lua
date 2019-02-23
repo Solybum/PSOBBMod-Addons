@@ -7,6 +7,8 @@ local function ConfigurationWindow(configuration)
         changed = false,
     }
 
+    local keysLoaded, keys = pcall(require, "solylib.keys")
+
     local _configuration = configuration
 
     local _showWindowSettings = function()
@@ -125,6 +127,49 @@ local function ConfigurationWindow(configuration)
             if success then
                 _configuration.stopwatchChanged = true
                 this.changed = true
+            end
+
+            if keysLoaded and imgui.TreeNodeEx("Hotkeys") then
+                imgui.PushItemWidth(200)
+                success, _configuration.stopwatchHotkeysStart = imgui.Combo("Start", _configuration.stopwatchHotkeysStart, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.stopwatchChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.stopwatchHotkeysStop = imgui.Combo("Stop", _configuration.stopwatchHotkeysStop, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.stopwatchChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.stopwatchHotkeysResume = imgui.Combo("Resume", _configuration.stopwatchHotkeysResume, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.stopwatchChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.stopwatchHotkeysReset = imgui.Combo("Reset", _configuration.stopwatchHotkeysReset, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.stopwatchChanged = true
+                    this.changed = true
+                end
+
+                imgui.PushItemWidth(200)
+                success, _configuration.stopwatchHotkeysSplit = imgui.Combo("Split", _configuration.stopwatchHotkeysSplit, keys.keys, table.getn(keys.keys))
+                imgui.PopItemWidth()
+                if success then
+                    _configuration.stopwatchChanged = true
+                    this.changed = true
+                end
+                imgui.TreePop()
             end
             imgui.TreePop()
         end
