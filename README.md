@@ -20,6 +20,9 @@ Personalize the monster name colors in [monsters.lua](https://github.com/Solybum
   
 [Player Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Player%20Reader)  
 Shows information about players either in a list or specifically for each player (p1, p2, p3, p4).  
+
+[Timer](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Timer)  
+Add stopwatch and timer windows, can be controlled through hotkeys. The stopwatch has a split function.  
   
 [Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
 Lets you easily edit the custom theme in the addons library (probably going to be made a default addon)
