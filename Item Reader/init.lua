@@ -83,7 +83,6 @@ else
         configurationEnableWindow = true,
 
         enable = true,
-        fontScale = 1.0,
         printItemIndex = true,
         showItemIDs = false,
         showItemData = false,
