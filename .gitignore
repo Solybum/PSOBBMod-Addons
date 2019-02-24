@@ -1,7 +1,6 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs
+﻿/.vs
 /.vscode
 /*/options.lua
+
+/Item Reader/inventory/*
+!/Item Reader/inventory/.keep

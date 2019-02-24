@@ -10,6 +10,8 @@ local optionsLoaded, options = pcall(require, "Item Reader.options")
 
 local optionsFileName = "addons/Item Reader/options.lua"
 local ConfigurationWindow
+local inventoryDirectory = "addons/Item Reader/inventory/"
+local currentInventoryFile = ""
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
@@ -44,7 +46,6 @@ if optionsLoaded then
     options.aio.AlwaysAutoResize     = lib_helpers.NotNilOrDefault(options.aio.AlwaysAutoResize, "")
     options.aio.TransparentWindow    = lib_helpers.NotNilOrDefault(options.aio.TransparentWindow, false)
     options.aio.ShowButtonSaveToFile = lib_helpers.NotNilOrDefault(options.aio.ShowButtonSaveToFile, true)
-    options.aio.SaveFileName         = lib_helpers.NotNilOrDefault(options.aio.saveFileName, "addons/saved_inventory.txt")
     options.aio.SelectedInventory    = lib_helpers.NotNilOrDefault(options.aio.SelectedInventory, 1)
 
     if options.floor == nil or type(options.floor) ~= "table" then
@@ -78,7 +79,7 @@ if optionsLoaded then
     options.mags.NoMove              = lib_helpers.NotNilOrDefault(options.mags.NoMove, "")
     options.mags.TransparentWindow   = lib_helpers.NotNilOrDefault(options.mags.TransparentWindow, false)
 else
-    options = 
+    options =
     {
         configurationEnableWindow = true,
 
@@ -109,7 +110,6 @@ else
             AlwaysAutoResize = "",
             TransparentWindow = false;
             ShowButtonSaveToFile = true,
-            SaveFileName = "addons/saved_inventory.txt",
             SelectedInventory = 1,
         },
         floor = {
@@ -180,7 +180,6 @@ local function SaveOptions(options)
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.aio.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.aio.TransparentWindow))
         io.write(string.format("        ShowButtonSaveToFile = %s,\n",  tostring(options.aio.ShowButtonSaveToFile)))
-        io.write(string.format("        SaveFileName = \"%s\",\n", options.aio.SaveFileName))
         io.write(string.format("        SelectedInventory = %i,\n", options.aio.SelectedInventory))
         io.write(string.format("    },\n"))
         io.write(string.format("    floor = {\n"))
@@ -237,8 +236,8 @@ local function ProcessWeapon(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -277,7 +276,7 @@ local function ProcessWeapon(item)
         if item.weapon.grind > 0 then
              result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
         end
-        
+
         if item.weapon.specialSRank ~= 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial, lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
@@ -290,21 +289,21 @@ local function ProcessWeapon(item)
             nameColor = item_cfg[1]
         end
         result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-    
+
         if item.weapon.grind > 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
         end
-    
+
         if item.weapon.special ~= 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSpecial[item.weapon.special + 1], lib_unitxt.GetSpecialName(item.weapon.special))
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
         end
-    
+
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
         for i=2,5,1 do
             local stat = item.weapon.stats[i]
-    
+
             local statColor = lib_items_cfg.grey
             for i2=1,table.getn(lib_items_cfg.weaponAttributes),2 do
                 if stat <= lib_items_cfg.weaponAttributes[i2] then
@@ -314,16 +313,16 @@ local function ProcessWeapon(item)
             if item.weapon.statpresence[i - 1] == 1 and item.weapon.stats[i] == 0 then
                 statColor = lib_items_cfg.red
             end
-    
+
             result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
-    
+
             if i < 5 then
                 result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
             else
                 result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
             end
         end
-    
+
         local stat = item.weapon.stats[6]
         local statColor = lib_items_cfg.grey
         for i2=1,table.getn(lib_items_cfg.weaponHit),2 do
@@ -336,7 +335,7 @@ local function ProcessWeapon(item)
         end
         result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-    
+
         if item.kills ~= 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
@@ -355,8 +354,8 @@ local function ProcessFrame(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -432,8 +431,8 @@ local function ProcessBarrier(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -505,8 +504,8 @@ local function ProcessUnit(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -562,8 +561,8 @@ local function ProcessMag(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -637,8 +636,8 @@ local function ProcessTool(item)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF, 
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+        lib_helpers.TextC(false, 0xFFFFFFFF,
+            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
             item.data[9], item.data[10], item.data[11], item.data[12],
@@ -681,8 +680,8 @@ local function ProcessMeseta(item)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF, 
-                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ", 
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
                 item.data[9], item.data[10], item.data[11], item.data[12],
@@ -731,7 +730,7 @@ local function ProcessItem(item, floor, save)
     end
 
     if save then
-        local file = io.open(options.aio.SaveFileName, "a")
+        local file = io.open(currentInventoryFile, "a")
         io.output(file)
         io.write(itemStr .. "\n")
         io.close(file)
@@ -742,9 +741,9 @@ local function PresentInventory(save, index)
     index = index or lib_items.Me
     local inventory = lib_items.GetInventory(index)
     local itemCount = table.getn(inventory.items)
-    
+
     lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i", inventory.meseta)
-    
+
     for i=1,itemCount,1 do
         ProcessItem(inventory.items[i], false, save)
     end
@@ -815,8 +814,9 @@ local function PresentAIO()
         imgui.SameLine(0, 20)
         if imgui.Button("Save to file") then
             save = true
-            -- Write nothing to it so its cleared works for appending
-            local file = io.open(options.aio.SaveFileName, "w")
+            currentInventoryFile = inventoryDirectory..os.date('%Y%m%d_%H%M%S').."_saved_inventory.txt"
+            -- Create file
+            local file = io.open(currentInventoryFile, "w")
             io.output(file)
             io.write("")
             io.close(file)
@@ -872,7 +872,7 @@ local function present()
 
         if imgui.Begin(windowName,
             nil,
-            { 
+            {
                 options.aio.NoTitleBar,
                 options.aio.NoResize,
                 options.aio.NoMove,

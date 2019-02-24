@@ -187,14 +187,6 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            imgui.PushItemWidth(200)
-            success, _configuration.aio.SaveFileName = imgui.InputText("Save file path", _configuration.aio.SaveFileName, 255, 0, nil, _configuration.aio.SaveFileName)
-            imgui.PopItemWidth()
-            if success then
-                _configuration.aio.changed = true
-                this.changed = true
-            end
-
             imgui.TreePop()
         end
 
