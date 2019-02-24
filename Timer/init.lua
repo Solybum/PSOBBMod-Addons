@@ -30,7 +30,6 @@ if optionsLoaded then
 
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
 
     options.stopwatchEnableWindow         = lib_helpers.NotNilOrDefault(options.stopwatchEnableWindow, true)
     options.stopwatchChanged              = lib_helpers.NotNilOrDefault(options.stopwatchChanged, false)
@@ -74,7 +73,6 @@ else
     {
         configurationEnableWindow = true,
         enable = true,
-        fontScale = 1.0,
 
         stopwatchEnableWindow = true,
         stopwatchChanged = false,
@@ -125,7 +123,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write("\n")
         io.write(string.format("    stopwatchEnableWindow = %s,\n", tostring(options.stopwatchEnableWindow)))
         io.write(string.format("    stopwatchChanged = %s,\n", tostring(options.stopwatchChanged)))
@@ -231,9 +228,9 @@ local function PresentStopwatch()
         imgui.Text(string.format("% 5s: %s", v.name, secondsToTime(v.delta)))
     end
 
-    imgui.SetWindowFontScale(options.fontScale * 3)
+    imgui.SetWindowFontScale(3)
     imgui.Text(secondsToTime(ellapsed))
-    imgui.SetWindowFontScale(options.fontScale)
+    imgui.SetWindowFontScale(1)
 
     if stopwatch.isRunning == false then
         if stopwatch.startTime == 0 then
@@ -308,13 +305,13 @@ local function PresentCountdown()
         ellapsed = 0
     end
 
+    imgui.SetWindowFontScale(3)
     if countdown.isRunning == false and ellapsed == 0 then
         imgui.Text("TODO Countdown input, default 5 min")
     else
-        imgui.SetWindowFontScale(options.fontScale * 3)
         imgui.Text(secondsToTime(ellapsed))
-        imgui.SetWindowFontScale(options.fontScale)
     end
+    imgui.SetWindowFontScale(1)
 
     if countdown.startTime ~= 0 and keys.getKeyID(options.countdownHotkeysAdd30) == last_key_pressed then
         last_key_pressed = 0;
@@ -407,7 +404,6 @@ local function present()
                 options.stopwatchAlwaysAutoResize,
             }
         ) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentStopwatch()
 
             if options.stopwatchAlwaysAutoResize == "AlwaysAutoResize" then
@@ -456,7 +452,6 @@ local function present()
                 options.countdownAlwaysAutoResize,
             }
         ) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentCountdown()
 
             if options.countdownAlwaysAutoResize == "AlwaysAutoResize" then
