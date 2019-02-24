@@ -50,7 +50,7 @@ if optionsLoaded then
     options.targetAccuracyThreshold   = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
     options.targetShowActivationRates = lib_helpers.NotNilOrDefault(options.targetShowActivationRates, 1)
 else
-    options = 
+    options =
     {
         configurationEnableWindow = true,
         enable = true,
@@ -130,10 +130,10 @@ local function SaveOptions(options)
         io.write(string.format("    targetNoMove = \"%s\",\n", options.targetNoMove))
         io.write(string.format("    targetNoScrollbar = \"%s\",\n", options.targetNoScrollbar))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
-        io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))      
+        io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
-        io.write(string.format("    targetShowActivationRates = %s,\n", tostring(options.targetShowActivationRates)))  
+        io.write(string.format("    targetShowActivationRates = %s,\n", tostring(options.targetShowActivationRates)))
         io.write("}\n")
 
         io.close(file)
@@ -306,7 +306,7 @@ local function GetMonsterData(monster)
     monster.Eic = pso.read_u16(monster.address + _MonsterEic)
     monster.Edk = pso.read_u16(monster.address + _MonsterEdk)
     monster.Elt = pso.read_u16(monster.address + _MonsterElt)
-    
+
     monster.room = pso.read_u16(monster.address + _Room)
     monster.posX = pso.read_f32(monster.address + _PosX)
     monster.posY = pso.read_f32(monster.address + _PosY)
@@ -455,7 +455,7 @@ local function GetMonsterList()
                 monster.name = monster.name .. " Skull"
             end
 
-        
+
             table.insert(monsterList, monster)
         end
         i = i + 1
@@ -532,13 +532,13 @@ local function PresentMonsters()
             if options.showMonsterStatus then
                 local atkTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 0)
                 local defTech = lib_characters.GetPlayerTechniqueStatus(monster.address, 1)
-                
+
                 if atkTech.type == 0 then
                     lib_helpers.TextC(true, 0, "    ")
                 else
                     lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
                 end
-                
+
                 if defTech.type == 0 then
                     lib_helpers.TextC(false, 0, "    ")
                 else
@@ -600,13 +600,13 @@ local function PresentTargetMonster(monster)
         lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
-        if options.showMonsterStatus then                
+        if options.showMonsterStatus then
             if atkTech.type == 0 then
                 lib_helpers.TextC(true, 0, "    ")
             else
                 lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
             end
-            
+
             if defTech.type == 0 then
                 lib_helpers.TextC(false, 0, "    ")
             else
@@ -625,19 +625,19 @@ local function PresentTargetMonster(monster)
             end
 
             imgui.NextColumn()
-        end   
+        end
 
-        -- Determine if we have v501/v502 equip for it's bonuses     
+        -- Determine if we have v501/v502 equip for it's bonuses
         local inventory = lib_items.GetInventory(lib_items.Me)
         local itemCount = table.getn(inventory.items)
         local v50xHellBoost = 1.0
         local v50xStatusBoost = 1.0
         for i=1,itemCount,1 do
             item = inventory.items[i]
-            if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then 
+            if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then
                 -- V501
                 if item.data[3] == 0x4A then
-                    v50xHellBoost = 1.5   
+                    v50xHellBoost = 1.5
                     v50xStatusBoost = 1.5
                 -- V502
                 elseif item.data[3] == 0x4B then
@@ -646,19 +646,19 @@ local function PresentTargetMonster(monster)
                     break
                 end
             end
-        end     
-        
+        end
+
         -- Show accuracy assistance if feature is enabled
-        if options.targetShowAccuracyAssist then  
-            -- Determine if player gets a bonus due to enemy status          
+        if options.targetShowAccuracyAssist then
+            -- Determine if player gets a bonus due to enemy status
             local badStatusReduc = 1.0
             if frozen then
                 badStatusReduc = badStatusReduc - 0.3
             end
             if paralyzed then
                 badStatusReduc = badStatusReduc - 0.15
-            end 
-        
+            end
+
             -- Calculate all 9 types of attack combinations
             local myAta = lib_characters.GetPlayerATA(playerAddr)
             local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
@@ -670,7 +670,7 @@ local function PresentTargetMonster(monster)
             local normAtk3_Acc = (myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
             local hardAtk3_Acc = (myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
             local specAtk3_Acc = (myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-            
+
             -- Display best first attack
             lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
             lib_helpers.Text(true, "[")
@@ -681,9 +681,9 @@ local function PresentTargetMonster(monster)
             else
                 lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%% ", normAtk1_Acc)
             end
-            
+
             -- Display best second attack
-            lib_helpers.Text(false, "> ")            
+            lib_helpers.Text(false, "> ")
             if specAtk2_Acc >= options.targetAccuracyThreshold then
                 lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%%%% ", specAtk2_Acc)
             elseif hardAtk2_Acc >= options.targetAccuracyThreshold then
@@ -691,19 +691,19 @@ local function PresentTargetMonster(monster)
             else
                 lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%%%% ", normAtk2_Acc)
             end
-            
+
             -- Display best third attack
-            lib_helpers.Text(false, "> ")            
+            lib_helpers.Text(false, "> ")
             if specAtk3_Acc >= options.targetAccuracyThreshold then
                 lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%%", specAtk3_Acc)
             elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
                 lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%%", hardAtk3_Acc)
             else
                 lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%%", normAtk3_Acc)
-            end            
-            lib_helpers.Text(false, "]")            
-        end           
-           
+            end
+            lib_helpers.Text(false, "]")
+        end
+
         -- Show special activation rate if feature is enabled
         if options.targetShowActivationRates > 1 then
             -- Determine if the Android Boost Applies
@@ -713,14 +713,14 @@ local function PresentTargetMonster(monster)
             end
 
             -- Calculate Rates of success of differing attack types
-            local hellRate = (93 - monster.Edk)*(v50xHellBoost)  
+            local hellRate = (93 - monster.Edk)*(v50xHellBoost)
             lib_helpers.Text(true, "Activation Rates:")
-            if options.targetShowActivationRates == 2 then   
+            if options.targetShowActivationRates == 2 then
                 lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
             else
                 local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
                 lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)
-                if options.targetShowActivationRates > 3 then 
+                if options.targetShowActivationRates > 3 then
                     local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
                     local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
                     local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
@@ -746,11 +746,11 @@ local function PresentTargetMonsterWindow()
         if targetWindowTimeOut <= 0 then
             return
         end
-    else 
+    else
         targetWindowTimeOut = 90
         targetCache = monster
     end
-    
+
     if options.targetEnableWindow and monster.unitxtID ~= 0 then
         if firstPresent or options.targetChanged then
           options.targetChanged = false
@@ -768,7 +768,7 @@ local function PresentTargetMonsterWindow()
             PresentTargetMonster(monster)
         end
         imgui.End()
-    
+
         if options.targetTransparentWindow == true then
           imgui.PopStyleColor()
         end

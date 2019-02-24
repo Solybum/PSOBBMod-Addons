@@ -1,17 +1,17 @@
 -- Start LIP
 --[[
     Copyright (c) 2012 Carreras Nicolas
-    
+
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the Software), to deal
     in the Software without restriction, including without limitation the rights
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-    
+
     The above copyright notice and this permission notice shall be included in all
     copies or substantial portions of the Software.
-    
+
     THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -79,6 +79,7 @@ function LIP.save(fileName, data)
 end
 -- End LIP
 
+local fontGlobalScale = 1.0
 local colorList = {
     { name = "Text"                   , color = "FFE5E5E5" },
     { name = "TextDisabled"           , color = "FF999999" },
@@ -129,10 +130,10 @@ local core_mainmenu = require("core_mainmenu")
 
 local enable = false
 local themFileName = "addons/theme.ini"
-local theme = 
+local theme =
 {
     ImGuiIO = {
-        GlobalFontScale = 1.0,
+        FontGlobalScale = 1.0,
     },
     ImGuiStyle = {
         Alpha                = 1.0,
@@ -236,7 +237,7 @@ local function PresentColorEditor(label, default, custom)
         if n ~= 1 then
             imgui.SameLine(0, 5)
         end
-        
+
         changedDragInt, i_custom[n] = imgui.DragInt(ids[n], i_custom[n], 1.0, 0, 255, fmt[n])
     end
     imgui.PopItemWidth()
@@ -258,13 +259,13 @@ local function PresentColorEditor(label, default, custom)
     imgui.SameLine(0, 5)
     imgui.Text(label)
 
-    default = 
+    default =
     bit.lshift(i_default[1], 24) +
     bit.lshift(i_default[2], 16) +
     bit.lshift(i_default[3], 8) +
     bit.lshift(i_default[4], 0)
 
-    custom = 
+    custom =
     bit.lshift(i_custom[1], 24) +
     bit.lshift(i_custom[2], 16) +
     bit.lshift(i_custom[3], 8) +
@@ -290,13 +291,27 @@ local function PresentColorEditors()
             ExportTheme()
         end
 
-        imgui.BeginChild("ColorList", 0)
-
-        for i = 1, table.getn(colorList), 1 do
-            theme.ImGuiStyle[colorList[i].name] = string.format("%08X",
-            PresentColorEditor(colorList[i].name, tonumber("0x" .. colorList[i].color), tonumber("0x" .. theme.ImGuiStyle[colorList[i].name])))
+        local success = false
+        if theme.ImGuiIO['FontGlobalScale'] == nil then
+            theme.ImGuiIO['FontGlobalScale'] = fontGlobalScale
         end
 
+        imgui.PushItemWidth(150)
+        success, theme.ImGuiIO['FontGlobalScale'] = imgui.DragFloat("Font Global Scale", theme.ImGuiIO['FontGlobalScale'], 0.1)
+        imgui.PopItemWidth()
+
+        if fontGlobalScale ~= theme.ImGuiIO['FontGlobalScale'] then
+            imgui.SameLine(0, 5)
+            if imgui.Button("Revert") then
+                theme.ImGuiIO['FontGlobalScale'] = fontGlobalScale
+            end
+        end
+
+        imgui.BeginChild("ColorList", 0)
+        for i = 1, table.getn(colorList), 1 do
+            theme.ImGuiStyle[colorList[i].name] = string.format("%08X",
+                PresentColorEditor(colorList[i].name, tonumber("0x" .. colorList[i].color), tonumber("0x" .. theme.ImGuiStyle[colorList[i].name])))
+        end
         imgui.EndChild()
     end
     imgui.End()

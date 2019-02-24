@@ -59,10 +59,10 @@ if optionsLoaded then
         options.players[i].TransparentWindow     = lib_helpers.NotNilOrDefault(options.players[i].TransparentWindow, false)
         options.players[i].SD                    = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
         options.players[i].Invulnerability       = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
-    
+
     end
 else
-    options = 
+    options =
     {
         configurationEnableWindow = true,
         enable = true,
@@ -264,7 +264,7 @@ local function PresentPlayer(address, sd, inv)
             lib_helpers.Text(true, "%s %02i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
         end
     end
-    
+
     if inv == true then
         if invuln.time > 0 then
             lib_helpers.Text(true, "%-4s: %s", "Inv.", os.date("!%M:%S", invuln.time))
