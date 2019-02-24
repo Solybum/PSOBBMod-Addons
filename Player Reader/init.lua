@@ -17,7 +17,6 @@ if optionsLoaded then
 
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
 
     options.allPlayersEnableWindow          = lib_helpers.NotNilOrDefault(options.allPlayersEnableWindow, true)
     options.allPlayersChanged               = lib_helpers.NotNilOrDefault(options.allPlayersChanged, false)
@@ -66,7 +65,6 @@ else
     {
         configurationEnableWindow = true,
         enable = true,
-        fontScale = 1.0,
 
         allPlayersEnableWindow = true,
         allPlayersChanged = false,
@@ -116,7 +114,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write("\n")
         io.write(string.format("    allPlayersEnableWindow = %s,\n", tostring(options.allPlayersEnableWindow)))
         io.write(string.format("    allPlayersChanged = %s,\n", tostring(options.allPlayersChanged)))
@@ -184,7 +181,7 @@ local function PresentPlayers()
         imgui.NextColumn()
         lib_helpers.Text(true, name)
         imgui.NextColumn()
-        lib_helpers.imguiProgressBar(true, hp/mhp, -1.0, 13.0 * options.fontScale, hpColor, nil, hp)
+        lib_helpers.imguiProgressBar(true, hp/mhp, -1.0, imgui.GetFontSize(), hpColor, nil, hp)
         imgui.NextColumn()
         if atkTech.type == 0 then
             lib_helpers.Text(true, "---")
@@ -243,13 +240,13 @@ local function PresentPlayer(address, sd, inv)
     if options.singlePlayersShowBarText then
         lib_helpers.Text(true, "HP: " .. barTextFormat, hp, mhp)
     end
-    lib_helpers.imguiProgressBar(true, hp/mhp, 130, 5.0 * options.fontScale, hpColor, nil)
+    lib_helpers.imguiProgressBar(true, hp/mhp, 130, imgui.GetFontSize() * 0.5, hpColor, nil)
 
     --if address == lib_characters.GetSelf() and mtp ~= 0 then
     --    if options.singlePlayersShowBarText then
     --        lib_helpers.Text(true, "TP: " .. barTextFormat, tp, mtp)
     --    end
-    --    lib_helpers.imguiProgressBar(true, tp/mtp, 130, 5.0 * options.fontScale, tpColor, nil)
+    --    lib_helpers.imguiProgressBar(true, tp/mtp, 130, imgui.GetFontSize() * 0.5, tpColor, nil)
     --end
 
     if sd == true then
@@ -304,7 +301,6 @@ local function present()
         end
 
         if imgui.Begin("Player Reader - All Players", nil, { options.allPlayersNoTitleBar, options.allPlayersNoResize, options.allPlayersNoMove }) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentPlayers()
         end
         imgui.End()
@@ -350,7 +346,6 @@ local function present()
                                 options.players[i].AlwaysAutoResize,
                             }
                         ) then
-                            imgui.SetWindowFontScale(options.fontScale)
                             PresentPlayer(address, options.players[i].SD, options.players[i].Invulnerability)
 
                             if options.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
