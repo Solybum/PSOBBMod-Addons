@@ -2,7 +2,6 @@ local function ConfigurationWindow(configuration)
     local this =
     {
         title = "Item Reader - Configuration",
-        fontScale = 1.0,
         open = false,
         changed = false,
     }
@@ -28,11 +27,6 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("General", "DefaultOpen") then
             if imgui.Checkbox("Enable", _configuration.enable) then
                 _configuration.enable = not _configuration.enable
-                this.changed = true
-            end
-
-            success, _configuration.fontScale = imgui.InputFloat("Font Scale", _configuration.fontScale)
-            if success then
                 this.changed = true
             end
 
@@ -389,7 +383,6 @@ local function ConfigurationWindow(configuration)
 
         imgui.SetNextWindowSize(500, 400, 'FirstUseEver')
         success, this.open = imgui.Begin(this.title, this.open)
-        imgui.SetWindowFontScale(this.fontScale)
 
         _showWindowSettings()
 

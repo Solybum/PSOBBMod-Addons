@@ -17,7 +17,6 @@ if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
     options.showItemIDs               = lib_helpers.NotNilOrDefault(options.showItemIDs, false)
     options.showItemData              = lib_helpers.NotNilOrDefault(options.showItemData, false)
@@ -155,7 +154,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
         io.write(string.format("    showItemIDs = %s,\n", tostring(options.showItemIDs)))
         io.write(string.format("    showItemData = %s,\n", tostring(options.showItemData)))
@@ -825,7 +823,6 @@ local function PresentAIO()
 
     local childWindowName = "Item Reader - AIO - ItemList"
     --imgui.BeginChild(childWindowName, 0, 0, false, {"HorizontalScrollbar", "AlwaysAutoResize"})
-    --imgui.SetWindowFontScale(options.fontScale)
     if aioSelectedInventory == 1 then
         PresentInventory(save, lib_items.Me)
     elseif aioSelectedInventory == 2 then
@@ -879,7 +876,6 @@ local function present()
                 options.aio.AlwaysAutoResize,
             }
         ) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentAIO()
 
             lib_helpers.WindowPositionAndSize(windowName,
@@ -919,7 +915,6 @@ local function present()
                 options.floor.AlwaysAutoResize,
             }
         ) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentFloor()
 
             lib_helpers.WindowPositionAndSize(windowName,
@@ -960,7 +955,6 @@ local function present()
                 options.mags.AlwaysAutoResize,
             }
         ) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentMags()
 
             lib_helpers.WindowPositionAndSize(windowName,
