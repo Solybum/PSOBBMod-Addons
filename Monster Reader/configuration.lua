@@ -1,8 +1,7 @@
 local function ConfigurationWindow(configuration)
-    local this = 
+    local this =
     {
         title = "Monster Reader - Configuration",
-        fontScale = 1.0,
         open = false,
         changed = false,
     }
@@ -31,11 +30,6 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            success, _configuration.fontScale = imgui.InputFloat("Font Scale", _configuration.fontScale)
-            if success then
-                this.changed = true
-            end
-
             if imgui.Checkbox("Invert monster list", _configuration.invertMonsterList) then
                 _configuration.invertMonsterList = not _configuration.invertMonsterList
                 this.changed = true
@@ -61,7 +55,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpEnableWindow = not _configuration.mhpEnableWindow
                 this.changed = true
             end
-            
+
             if imgui.Checkbox("No title bar", _configuration.mhpNoTitleBar == "NoTitleBar") then
                 if _configuration.mhpNoTitleBar == "NoTitleBar" then
                     _configuration.mhpNoTitleBar = ""
@@ -100,7 +94,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.mhpX = imgui.InputInt("X", _configuration.mhpX)
             imgui.PopItemWidth()
@@ -108,7 +102,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
             success, _configuration.mhpY = imgui.InputInt("Y", _configuration.mhpY)
@@ -117,7 +111,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.mhpW = imgui.InputInt("Width", _configuration.mhpW)
             imgui.PopItemWidth()
@@ -125,7 +119,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.mhpChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
             success, _configuration.mhpH = imgui.InputInt("Height", _configuration.mhpH)
@@ -144,16 +138,21 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Show Monster Name", _configuration.targetShowMonsterName) then
+                _configuration.targetShowMonsterName = not _configuration.targetShowMonsterName
+                this.changed = true
+            end
+
             if imgui.Checkbox("Show Monster Stats", _configuration.targetShowMonsterStats) then
                 _configuration.targetShowMonsterStats = not _configuration.targetShowMonsterStats
                 this.changed = true
             end
-            
+
             if imgui.Checkbox("Show Accuracy Assist", _configuration.targetShowAccuracyAssist) then
                 _configuration.targetShowAccuracyAssist = not _configuration.targetShowAccuracyAssist
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.targetAccuracyThreshold = imgui.InputInt("Accuracy Threshold %", _configuration.targetAccuracyThreshold)
             imgui.PopItemWidth()
@@ -166,14 +165,14 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(200)  -- TODO: change back to 150 when '- broken' is removed
             success, _configuration.targetShowActivationRates = imgui.Combo("Show Activation Rates", _configuration.targetShowActivationRates, activationRateList, table.getn(activationRateList))
             imgui.PopItemWidth()
             if success then
                 this.changed = true
             end
-            
+
             if imgui.Checkbox("No title bar", _configuration.targetNoTitleBar == "NoTitleBar") then
                 if _configuration.targetNoTitleBar == "NoTitleBar" then
                     _configuration.targetNoTitleBar = ""
@@ -220,7 +219,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.targetChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.targetX = imgui.InputInt("X", _configuration.targetX)
             imgui.PopItemWidth()
@@ -228,7 +227,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.targetChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 38)
             imgui.PushItemWidth(100)
             success, _configuration.targetY = imgui.InputInt("Y", _configuration.targetY)
@@ -237,7 +236,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.targetChanged = true
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.targetW = imgui.InputInt("Width", _configuration.targetW)
             imgui.PopItemWidth()
@@ -245,7 +244,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.targetChanged = true
                 this.changed = true
             end
-            
+
             imgui.SameLine(0, 10)
             imgui.PushItemWidth(100)
             success, _configuration.targetH = imgui.InputInt("Height", _configuration.targetH)
@@ -268,7 +267,6 @@ local function ConfigurationWindow(configuration)
 
         imgui.SetNextWindowSize(500, 400, 'FirstUseEver')
         success, this.open = imgui.Begin(this.title, this.open)
-        imgui.SetWindowFontScale(this.fontScale)
 
         _showWindowSettings()
 
@@ -278,7 +276,7 @@ local function ConfigurationWindow(configuration)
     return this
 end
 
-return 
+return
 {
     ConfigurationWindow = ConfigurationWindow,
 }

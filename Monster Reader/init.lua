@@ -15,7 +15,6 @@ if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.fontScale                 = lib_helpers.NotNilOrDefault(options.fontScale, 1.0)
     options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
     options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
     options.showMonsterStatus         = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
@@ -45,6 +44,7 @@ if optionsLoaded then
     options.targetNoMove              = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
     options.targetNoScrollbar         = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
     options.targetTransparentWindow   = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
+    options.targetShowMonsterName     = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
     options.targetShowMonsterStats    = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
     options.targetShowAccuracyAssist  = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
     options.targetAccuracyThreshold   = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
@@ -54,7 +54,6 @@ else
     {
         configurationEnableWindow = true,
         enable = true,
-        fontScale = 1.0,
         invertMonsterList = false,
         showCurrentRoomOnly = false,
         showMonsterStatus = false,
@@ -84,7 +83,8 @@ else
         targetNoMove = "NoMove",
         targetNoScrollbar = "NoScrollbar",
         targetTransparentWindow = false,
-        targetShowMonsterStats = false,
+        targetShowMonsterName = true,
+        targetShowMonsterStats = true,
         targetShowAccuracyAssist = false,
         targetAccuracyThreshold = 90,
         targetShowActivationRates = 1,
@@ -100,7 +100,6 @@ local function SaveOptions(options)
         io.write("{\n")
         io.write(string.format("    configurationEnableWindow = %s,\n", tostring(options.configurationEnableWindow)))
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
-        io.write(string.format("    fontScale = %s,\n", tostring(options.fontScale)))
         io.write(string.format("    invertMonsterList = %s,\n", tostring(options.invertMonsterList)))
         io.write(string.format("    showCurrentRoomOnly = %s,\n", tostring(options.showCurrentRoomOnly)))
         io.write(string.format("    showMonsterStatus = %s,\n", tostring(options.showMonsterStatus)))
@@ -130,6 +129,7 @@ local function SaveOptions(options)
         io.write(string.format("    targetNoMove = \"%s\",\n", options.targetNoMove))
         io.write(string.format("    targetNoScrollbar = \"%s\",\n", options.targetNoScrollbar))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
+        io.write(string.format("    targetShowMonsterName = %s,\n", tostring(options.targetShowMonsterName)))
         io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
@@ -481,7 +481,7 @@ local function PresentMonsters()
 
     if options.showMonsterID == true or options.showMonsterStatus == true then
         local windowWidth = imgui.GetWindowSize()
-        local charWidth = 8 * options.fontScale
+        local charWidth = 0.7 * imgui.GetFontSize()
 
         local nameColumnWidth = #"XXXXXXXX" * charWidth + 10
         local idColumnWidth = #"XXXX" * charWidth + 10
@@ -526,7 +526,7 @@ local function PresentMonsters()
                 imgui.NextColumn()
             end
 
-            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
             imgui.NextColumn()
 
             if options.showMonsterStatus then
@@ -583,7 +583,9 @@ local function PresentTargetMonster(monster)
         local confused = lib_characters.GetPlayerConfusedStatus(monster.address)
         local paralyzed = lib_characters.GetPlayerParalyzedStatus(monster.address)
 
-        lib_helpers.Text(true, monster.name)
+        if options.targetShowMonsterName then
+            lib_helpers.Text(true, monster.name)
+        end
         if options.showMonsterID == true then
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
@@ -597,7 +599,7 @@ local function PresentTargetMonster(monster)
         end
 
         -- Draw enemy HP bar
-        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, 13.0 * options.fontScale, lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
         if options.showMonsterStatus then
@@ -764,7 +766,6 @@ local function PresentTargetMonsterWindow()
         end
 
         if imgui.Begin("Monster Reader - Target", nil, { options.targetNoTitleBar, options.targetNoResize, options.targetNoMove, options.targetNoScrollbar }) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentTargetMonster(monster)
         end
         imgui.End()
@@ -807,7 +808,6 @@ local function present()
         end
 
         if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove }) then
-            imgui.SetWindowFontScale(options.fontScale)
             PresentMonsters()
         end
         imgui.End()
