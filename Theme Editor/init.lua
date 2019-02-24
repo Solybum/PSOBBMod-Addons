@@ -297,7 +297,7 @@ local function PresentColorEditors()
         end
 
         imgui.PushItemWidth(150)
-        success, theme.ImGuiIO['FontGlobalScale'] = imgui.DragFloat("Font Global Scale", theme.ImGuiIO['FontGlobalScale'], 0.1)
+        success, theme.ImGuiIO['FontGlobalScale'] = imgui.DragFloat("Font Global Scale", theme.ImGuiIO['FontGlobalScale'], 0.01, 0.1, 10)
         imgui.PopItemWidth()
 
         if fontGlobalScale ~= theme.ImGuiIO['FontGlobalScale'] then
