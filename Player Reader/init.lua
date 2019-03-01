@@ -1,6 +1,7 @@
 local core_mainmenu = require("core_mainmenu")
 local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
+local lib_menu = require("solylib.menu")
 local cfg = require("Player Reader.configuration")
 local optionsLoaded, options = pcall(require, "Player Reader.options")
 
@@ -19,6 +20,9 @@ if optionsLoaded then
     options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
 
     options.allPlayersEnableWindow          = lib_helpers.NotNilOrDefault(options.allPlayersEnableWindow, true)
+    options.allHideWhenMenu                 = lib_helpers.NotNilOrDefault(options.allHideWhenMenu, true)
+    options.allHideWhenSymbolChat           = lib_helpers.NotNilOrDefault(options.allHideWhenSymbolChat, true)
+    options.allHideWhenMenuUnavailable      = lib_helpers.NotNilOrDefault(options.allHideWhenMenuUnavailable, true)
     options.allPlayersChanged               = lib_helpers.NotNilOrDefault(options.allPlayersChanged, false)
     options.allPlayersAnchor                = lib_helpers.NotNilOrDefault(options.allPlayersAnchor, 1)
     options.allPlayersX                     = lib_helpers.NotNilOrDefault(options.allPlayersX, 50)
@@ -67,6 +71,9 @@ else
         enable = true,
 
         allPlayersEnableWindow = true,
+        allHideWhenMenu = false,
+        allHideWhenSymbolChat = false,
+        allHideWhenMenuUnavailable = false,
         allPlayersChanged = false,
         allPlayersAnchor = 1,
         allPlayersX = 50,
@@ -116,6 +123,9 @@ local function SaveOptions(options)
         io.write(string.format("    enable = %s,\n", tostring(options.enable)))
         io.write("\n")
         io.write(string.format("    allPlayersEnableWindow = %s,\n", tostring(options.allPlayersEnableWindow)))
+        io.write(string.format("    allHideWhenMenu = %s,\n", tostring(options.allHideWhenMenu)))
+        io.write(string.format("    allHideWhenSymbolChat = %s,\n", tostring(options.allHideWhenSymbolChat)))
+        io.write(string.format("    allHideWhenMenuUnavailable = %s,\n", tostring(options.allHideWhenMenuUnavailable)))
         io.write(string.format("    allPlayersChanged = %s,\n", tostring(options.allPlayersChanged)))
         io.write(string.format("    allPlayersAnchor = %i,\n", options.allPlayersAnchor))
         io.write(string.format("    allPlayersX = %i,\n", options.allPlayersX))
@@ -288,23 +298,24 @@ local function present()
         return
     end
 
-    if options.allPlayersEnableWindow then
+    if (options.allPlayersEnableWindow == true)
+        and (options.allHideWhenMenu == false or lib_menu.IsMenuOpen() == false)
+        and (options.allHideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
+        and (options.allHideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
+    then
         if firstPresent or options.allPlayersChanged then
             options.allPlayersChanged = false
             local ps = lib_helpers.GetPosBySizeAndAnchor(options.allPlayersX, options.allPlayersY, options.allPlayersW, options.allPlayersH, options.allPlayersAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.allPlayersW, options.allPlayersH, "Always");
         end
-
         if options.allPlayersTransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
-
         if imgui.Begin("Player Reader - All Players", nil, { options.allPlayersNoTitleBar, options.allPlayersNoResize, options.allPlayersNoMove }) then
             PresentPlayers()
         end
         imgui.End()
-
         if options.allPlayersTransparentWindow == true then
             imgui.PopStyleColor()
         end
