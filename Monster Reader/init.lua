@@ -202,6 +202,10 @@ local _MonsterBarbaRaySkullHPMax = 0x20
 local _MonsterBarbaRayShellHP = 0x7AC
 local _MonsterBarbaRayShellHPMax = 0x1C
 
+-- Special address for Ephinea
+local _ephineaMonsterArrayPointer = 0x00B5F800
+local _ephineaMonsterHPScale = 0x00B5F804
+
 local function CopyMonster(monster)
     local copy = {}
 
@@ -229,10 +233,17 @@ local function GetMonsterDataDeRolLe(monster)
     local skullMaxHP = 0
     local shellMaxHP = 0
     local newName = monster.name
-
+	local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
+	local ephineaHPScale = 1.0
+	
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
+		if ephineaMonsters ~= 0 then
+			ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+			skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+			shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+		end
     end
 
     if monster.index == 0 then
@@ -255,10 +266,17 @@ local function GetMonsterDataBarbaRay(monster)
     local skullMaxHP = 0
     local shellMaxHP = 0
     local newName = monster.name
+	local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
+	local ephineaHPScale = 1.0
 
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRaySkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRayShellHPMax)
+		if ephineaMonsters ~= 0 then
+			ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+			skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+			shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+		end
     end
 
     if monster.index == 0 then
@@ -277,11 +295,22 @@ local function GetMonsterDataBarbaRay(monster)
 end
 
 local function GetMonsterData(monster)
+    local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
+	
     monster.id = pso.read_u16(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
-    monster.HP = pso.read_u16(monster.address + _MonsterHP)
-    monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
 
+	monster.HP = 0
+	monster.HPMax = 0
+	
+	if ephineaMonsters ~= 0 then
+		monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
+		monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
+	else
+		monster.HP = pso.read_u16(monster.address + _MonsterHP)
+		monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+	end	
+	
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
     if bpPointer ~= 0 then
         monster.Atp = pso.read_u16(bpPointer + _MonsterBpAtp)
