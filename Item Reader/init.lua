@@ -276,7 +276,7 @@ local function ProcessWeapon(item)
 
         if item.weapon.specialSRank ~= 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial, lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial[item.weapon.specialSRank], lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
         end
     else
