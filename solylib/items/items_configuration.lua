@@ -14,7 +14,25 @@ local weaponGrind = 0xFF28CC66
 local weaponSRankTitle = 0xFFFF0000
 local weaponSRankName = 0xFF2D98B7
 local weaponSRankCustomName = 0xFFB060B0
-local weaponSRankSpecial = 0xFF2D98B7
+local weaponSRankSpecial = 
+{
+    0xFFFF2031, -- Jellen
+    0xFF0065FF, -- Zalure
+    0xFF00F714, -- HP Regeneration
+    0xFF0088F4, -- TP Regeneration
+    0xFFFF7734, -- Burning
+    0xFFEFEE00, -- Tempest
+    0xFF31CBFF, -- Blizzard
+    0xFFE75521, -- Arrest
+    0xFFF91F98, -- Chaos
+    0xFFCB11FF, -- Hell
+    0xFFF7BB13, -- Spirit
+    0xFFEAF718, -- Berserk
+    0xFFA67FE0, -- Demon's
+    0xFF00F714, -- Gush
+    0xFF0088F4, -- Geist
+    0xFFFF2BFF, -- King's
+}
 local weaponKills = 0xFFFFFF00
 local weaponSpecial =
 {
