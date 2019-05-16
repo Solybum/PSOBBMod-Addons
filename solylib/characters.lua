@@ -54,6 +54,14 @@ local function GetPlayerLevel(player)
     return (pso.read_u32(player + 0xE44) + 1)
 end
 
+local function GetPlayerSectionID(player)
+    return pso.read_u8(player + 0x960)
+end
+
+local function GetPlayerClass(player)
+    return pso.read_u8(player + 0x961)
+end
+
 local function GetPlayerHP(player)
     return pso.read_u16(player + 0x334)
 end
@@ -152,6 +160,8 @@ return
     GetPlayerList = GetPlayerList,
     GetPlayerName = GetPlayerName,
     GetPlayerLevel = GetPlayerLevel,
+    GetPlayerClass = GetPlayerClass,
+    GetPlayerSectionID = GetPlayerSectionID,
     GetPlayerHP = GetPlayerHP,
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
