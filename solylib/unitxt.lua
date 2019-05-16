@@ -85,6 +85,11 @@ local function GetClassName(id)
     return _Read(8, id)
 end
 
+-- Reads section ID names based on the section ID
+local function GetSectionIDName(id)
+    return _Read(72, id)
+end
+
 -- Reads photon blast names based on it's id
 -- If shortName is true, only the first character
 -- of the name will be read
@@ -168,6 +173,7 @@ return
     GetMonsterName = GetMonsterName,
     GetTechniqueName = GetTechniqueName,
     GetClassName = GetClassName,
+    GetSectionIDName = GetSectionIDName,
     GetPhotonBlastName = GetPhotonBlastName,
 
     -- Not actually related to unitxt
