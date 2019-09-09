@@ -14,7 +14,7 @@ local weaponGrind = 0xFF28CC66
 local weaponSRankTitle = 0xFFFF0000
 local weaponSRankName = 0xFF2D98B7
 local weaponSRankCustomName = 0xFFB060B0
-local weaponSRankSpecial = 
+local weaponSRankSpecial =
 {
     0xFFFF2031, -- Jellen
     0xFF0065FF, -- Zalure
@@ -113,7 +113,6 @@ local weaponHit =
 -- ARMOR (Frame and Barrier)
 local armorName = 0xFFB060B0
 local armorStats = 0xFF28CC66
-local armorStatsMax = 0xFF28CC66
 local armorSlots = 0xFFFFFF00
 
 -- ARMOR (Unit)
