@@ -1651,6 +1651,7 @@ local function AddServerItems(server)
         t[ 0x031611 ] = { 0xFFFFFF00, true } -- Disk Vol.18 "Puyo Puyo"
         t[ 0x031612 ] = { 0xFFFFFF00, true } -- Disk Vol.19 "Rhythm And Balance"
         t[ 0x031613 ] = { 0xFFFFFF00, true } -- Disk Vol.20 "The Party Must Go On"
+        t[ 0x031614 ] = { 0xFFFFFF00, true } -- Disk Vol.21 "Armada Battle"
         t[ 0x031705 ] = { 0xFFFF0000, true } -- Viridia Badge
         t[ 0x031706 ] = { 0xFFFF0000, true } -- Greenill Badge
         t[ 0x031707 ] = { 0xFFFF0000, true } -- Skyly Badge
