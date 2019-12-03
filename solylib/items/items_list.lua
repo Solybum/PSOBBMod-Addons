@@ -757,7 +757,7 @@ t[ 0x01035F ] = { 0xFFFF0000, true } -- Heavenly/Resist
 t[ 0x010360 ] = { 0xFFFF0000, true } -- Heavenly/Technique
 t[ 0x010361 ] = { 0xFFFF0000, true } -- HP/Ressurection
 t[ 0x010362 ] = { 0xFFFF0000, true } -- TP/Ressurection
-t[ 0x010363 ] = { 0xFFFF0000, true } -- PB/trease
+t[ 0x010363 ] = { 0xFFFF0000, true } -- PB/Increase
 t[ 0x010364 ] = { 0x00000000, true } -- ????
 ---------------- Mag
 t[ 0x020000 ] = { 0x00000000, true } -- Mag
