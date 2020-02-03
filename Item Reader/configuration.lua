@@ -71,6 +71,13 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
+            
+            imgui.PushItemWidth(100)
+            success, _configuration.updateThrottle = imgui.InputInt("Update time (milliseconds)", _configuration.updateThrottle)
+            imgui.PopItemWidth()
+            if success then
+                this.changed = true
+            end
 
             imgui.PushItemWidth(200)
             success, _configuration.server = imgui.Combo("Server", _configuration.server, serverList, table.getn(serverList))

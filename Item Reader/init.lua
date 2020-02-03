@@ -27,6 +27,7 @@ if optionsLoaded then
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
+    options.updateThrottle            = lib_helpers.NotNilOrDefault(options.updateThrottle, 0)
     options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
 
     if options.aio == nil or type(options.aio) ~= "table" then
@@ -93,6 +94,7 @@ else
         hideMagStats = false,
         hideMagPBs = false,
         itemNameLength = 0,
+        updateThrottle = 0,
         server = 1,
         aio = {
             EnableWindow = true,
@@ -164,6 +166,7 @@ local function SaveOptions(options)
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write(string.format("    server = %s,\n", tostring(options.server)))
+        io.write(string.format("    updateThrottle = %i,\n", tostring(options.updateThrottle)))
         io.write(string.format("    aio = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.aio.EnableWindow)))
         io.write(string.format("        Anchor = %i,\n", options.aio.Anchor))
@@ -734,42 +737,64 @@ local function ProcessItem(item, floor, save)
     end
 end
 
+local last_update = 0
+local current_time = 0
+local last_inventory_index = -1
+local cache_inventory = nil
+local cache_bank = nil
+local cache_floor = nil
+local cache_mags = nil
+
 local function PresentInventory(save, index)
     index = index or lib_items.Me
-    local inventory = lib_items.GetInventory(index)
-    local itemCount = table.getn(inventory.items)
+    
+    if last_update + options.updateThrottle < current_time or last_inventory_index ~= index or cache_inventory == nil then
+        cache_inventory = lib_items.GetInventory(index)
+        last_inventory_index = index
+        last_update = current_time
+    end
+    local itemCount = table.getn(cache_inventory.items)
 
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i", inventory.meseta)
+    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i", cache_inventory.meseta)
 
     for i=1,itemCount,1 do
-        ProcessItem(inventory.items[i], false, save)
+        ProcessItem(cache_inventory.items[i], false, save)
     end
 end
 local function PresentBank(save)
-    local bank = lib_items.GetBank()
-    local itemCount = table.getn(bank.items)
+    if last_update + options.updateThrottle < current_time or cache_bank == nil then
+        cache_bank = lib_items.GetBank()
+        last_update = current_time
+    end
+    local itemCount = table.getn(cache_bank.items)
 
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Count: %i", bank.meseta, itemCount)
+    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Count: %i", cache_bank.meseta, itemCount)
 
     for i=1,itemCount,1 do
-        ProcessItem(bank.items[i], false, save)
+        ProcessItem(cache_bank.items[i], false, save)
     end
 end
 local function PresentFloor()
-    local itemList = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
-    local itemCount = table.getn(itemList)
+    if last_update + options.updateThrottle < current_time or cache_floor == nil then
+        cache_floor = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
+        last_update = current_time
+    end
+    local itemCount = table.getn(cache_floor)
 
     for i=1,itemCount,1 do
-        ProcessItem(itemList[i], true, false)
+        ProcessItem(cache_floor[i], true, false)
     end
 end
 local function PresentMags()
-    local itemList = lib_items.GetItemList(lib_items.Me, false)
-    local itemCount = table.getn(itemList)
+    if last_update + options.updateThrottle < current_time or cache_mags == nil then
+        cache_mags = lib_items.GetItemList(lib_items.Me, false)
+        last_update = current_time
+    end
+    local itemCount = table.getn(cache_mags)
 
     for i=1,itemCount,1 do
-        if itemList[i].mag ~= nil then
-            ProcessItem(itemList[i], false, false)
+        if cache_mags[i].mag ~= nil then
+            ProcessItem(cache_mags[i], false, false)
         end
     end
 end
@@ -854,7 +879,10 @@ local function present()
     if options.enable == false then
         return
     end
-
+    
+    --- Update timer for update throttle
+    current_time = pso.get_tick_count()
+    
     if options.aio.EnableWindow then
         local windowName = "Item Reader - AIO"
 
