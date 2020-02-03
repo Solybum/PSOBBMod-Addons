@@ -737,21 +737,25 @@ local function ProcessItem(item, floor, save)
     end
 end
 
-local last_update = 0
+local update_delay = (options.updateThrottle * 1000)
 local current_time = 0
 local last_inventory_index = -1
+local last_inventory_time = 0
 local cache_inventory = nil
+local last_bank_time = 0
 local cache_bank = nil
+local last_floor_time = 0
 local cache_floor = nil
+local last_mags_time = 0
 local cache_mags = nil
 
 local function PresentInventory(save, index)
     index = index or lib_items.Me
     
-    if last_update + options.updateThrottle < current_time or last_inventory_index ~= index or cache_inventory == nil then
+    if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
         cache_inventory = lib_items.GetInventory(index)
         last_inventory_index = index
-        last_update = current_time
+        last_inventory_time = current_time
     end
     local itemCount = table.getn(cache_inventory.items)
 
@@ -762,9 +766,9 @@ local function PresentInventory(save, index)
     end
 end
 local function PresentBank(save)
-    if last_update + options.updateThrottle < current_time or cache_bank == nil then
+    if last_bank_time + update_delay < current_time or cache_bank == nil then
         cache_bank = lib_items.GetBank()
-        last_update = current_time
+        last_bank_time = current_time
     end
     local itemCount = table.getn(cache_bank.items)
 
@@ -775,9 +779,9 @@ local function PresentBank(save)
     end
 end
 local function PresentFloor()
-    if last_update + options.updateThrottle < current_time or cache_floor == nil then
+    if last_floor_time + update_delay < current_time or cache_floor == nil then
         cache_floor = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
-        last_update = current_time
+        last_floor_time = current_time
     end
     local itemCount = table.getn(cache_floor)
 
@@ -786,9 +790,9 @@ local function PresentFloor()
     end
 end
 local function PresentMags()
-    if last_update + options.updateThrottle < current_time or cache_mags == nil then
+    if last_mags_time + update_delay < current_time or cache_mags == nil then
         cache_mags = lib_items.GetItemList(lib_items.Me, false)
-        last_update = current_time
+        last_mags_time = current_time
     end
     local itemCount = table.getn(cache_mags)
 
@@ -873,6 +877,8 @@ local function present()
     if ConfigurationWindow.changed then
         ConfigurationWindow.changed = false
         SaveOptions(options)
+        -- Update the delay too
+        update_delay = (options.updateThrottle * 1000)
     end
 
     -- Global enable here to let the configuration window work

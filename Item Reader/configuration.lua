@@ -73,7 +73,7 @@ local function ConfigurationWindow(configuration)
             end
             
             imgui.PushItemWidth(100)
-            success, _configuration.updateThrottle = imgui.InputInt("Update time (milliseconds)", _configuration.updateThrottle)
+            success, _configuration.updateThrottle = imgui.InputInt("Delay Update (seconds)", _configuration.updateThrottle)
             imgui.PopItemWidth()
             if success then
                 this.changed = true
