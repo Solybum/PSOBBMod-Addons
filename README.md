@@ -2,11 +2,12 @@
 Addons for https://github.com/HybridEidolon/psobbaddonplugin
 
 ### Installation  
-1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin)
+1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin) | [updated](https://github.com/Solybum/psobbaddonplugin/releases/latest)
+Currently Eidolon's latest release is outdated, use Solybum's one for now
 2. Download the [latest version](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip) of this repository
 3. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
 
-### Notes  
+### Addons  
 [SolyLib](https://github.com/Solybum/PSOBBMod-Addons/tree/master/solylib)  
 This addon is required by all my other addons, they contain helper functions shared between different addons.  
 If you are developing addons, feel free to use it.  
@@ -24,6 +25,5 @@ Shows information about players either in a list or specifically for each player
 [Timer](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Timer)  
 Add stopwatch and timer windows, can be controlled through hotkeys. The stopwatch has a split function.  
   
-[Theme Editor](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Theme%20Editor)  
-Lets you easily edit the custom theme in the addons library (probably going to be made a default addon)
-This addon is not required.
+### Notes  
+Theme editor was integrated as base addons
