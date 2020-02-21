@@ -41,7 +41,7 @@ local function GetPlayerCoordinates(player)
 end
 
 local function GetPlayerName(player)
-    local playerName = pso.read_wstr(player + 0x428, 12)
+    local playerName = pso.read_wstr(player + 0x428, 24)
 
     if string.sub(playerName, 1, 1) == "\t" then
         playerName = string.sub(playerName, 3, string.len(playerName))
