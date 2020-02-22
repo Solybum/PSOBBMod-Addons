@@ -1,6 +1,28 @@
 local _PlayerArray = 0x00A94254
 local _MyPlayerIndex = 0x00A9C4F4
 
+local Techniques = {
+    Foie = 0,
+    Gifoie = 1,
+    Rafoie = 2,
+    Barta = 3,
+    Gibarta = 4,
+    Rabarta = 5,
+    Zonde = 6,
+    Gizonde = 7,
+    Razonde = 8,
+    Grants = 9,
+    Deband = 10,
+    Jellen = 11,
+    Zalure = 12,
+    Shifta = 13,
+    Ryuker = 14,
+    Resta = 15,
+    Anti = 16,
+    Reverser = 17,
+    Megid = 18,
+}
+
 local function GetSelf()
     local myIndex = pso.read_u32(_MyPlayerIndex)
     local playerAddress = pso.read_u32(_PlayerArray + myIndex * 4)
@@ -80,6 +102,10 @@ end
 
 local function GetPlayerATA(player)
     return pso.read_u16(player + 0x2D4)
+end
+
+local function GetPlayerTechniqueLevel(player, tech)
+    return (pso.read_i8(player + 0x4A8 + tech) + 1)
 end
 
 local function GetPlayerTechniqueStatus(player, tech)
@@ -167,10 +193,13 @@ return
     GetPlayerTP = GetPlayerTP,
     GetPlayerMaxTP = GetPlayerMaxTP,
     GetPlayerATA = GetPlayerATA,
+    GetPlayerTechniqueLevel = GetPlayerTechniqueLevel,
     GetPlayerTechniqueStatus = GetPlayerTechniqueStatus,
     GetPlayerInvulnerabilityStatus = GetPlayerInvulnerabilityStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
     GetPlayerIsCast = GetPlayerIsCast,
+    
+    Techniques = Techniques,
 }
