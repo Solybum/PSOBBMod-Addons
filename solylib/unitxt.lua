@@ -37,7 +37,7 @@ local function _Read(group, index)
         return nil
     end
 
-    return pso.read_wstr(address, 256)
+    return pso.read_wstr(address, -1)
 end
 
 -- Public function to read a string from a
