@@ -64,6 +64,31 @@ if optionsLoaded then
         options.players[i].Invulnerability       = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
 
     end
+
+    if options.myself == nil or type(options.myself) ~= "table" then
+        options.myself = {}
+    end
+
+    options.myself.EnableWindow          = lib_helpers.NotNilOrDefault(options.myself.EnableWindow, false)
+    options.myself.ShowName              = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
+    options.myself.ShowBarText           = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
+    options.myself.ShowBarMaxValue       = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)    
+    options.myself.Changed               = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
+    options.myself.Anchor                = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
+    options.myself.X                     = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
+    options.myself.Y                     = lib_helpers.NotNilOrDefault(options.myself.Y, -5)
+    options.myself.W                     = lib_helpers.NotNilOrDefault(options.myself.W, 150)
+    options.myself.H                     = lib_helpers.NotNilOrDefault(options.myself.H, 45)
+    options.myself.NoTitleBar            = lib_helpers.NotNilOrDefault(options.myself.NoTitleBar, "NoTitleBar")
+    options.myself.NoResize              = lib_helpers.NotNilOrDefault(options.myself.NoResize, "NoResize")
+    options.myself.NoMove                = lib_helpers.NotNilOrDefault(options.myself.NoMove, "NoMove")
+    options.myself.NoScrollbar           = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
+    options.myself.AlwaysAutoResize      = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize, "AlwaysAutoResize")
+    options.myself.TransparentWindow     = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
+    options.myself.SD                    = lib_helpers.NotNilOrDefault(options.myself.SD, true)
+    options.myself.Invulnerability       = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
+    options.myself.ShowHPBar             = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
+
 else
     options =
     {
@@ -87,7 +112,7 @@ else
 
         singlePlayersEnableWindow = true,
         singlePlayersShowBarText = false,
-        singlePlayersShowBarMaxValue = true,
+        singlePlayersShowBarMaxValue = true, 
     }
 
     options.players = {}
@@ -110,6 +135,27 @@ else
         options.players[i].SD = true
         options.players[i].Invulnerability = true
     end
+
+    options.myself = {}
+    options.myself.EnableWindow          = false
+    options.myself.ShowName              = false
+    options.myself.ShowBarText           = false
+    options.myself.ShowBarMaxValue       = false
+    options.myself.Changed               = false
+    options.myself.Anchor                = 3
+    options.myself.X                     = (5 * 1)
+    options.myself.Y                     = -5
+    options.myself.W                     = -150
+    options.myself.H                     = 45
+    options.myself.NoTitleBar            = "NoTitleBar"
+    options.myself.NoResize              = "NoResize"
+    options.myself.NoMove                = "NoMove"
+    options.myself.NoScrollbar           = "NoScrollbar"
+    options.myself.AlwaysAutoResize      = "AlwaysAutoResize"
+    options.myself.TransparentWindow     = false
+    options.myself.SD                    = true
+    options.myself.Invulnerability       = true
+    options.myself.ShowHPBar             = false
 end
 
 local function SaveOptions(options)
@@ -163,6 +209,29 @@ local function SaveOptions(options)
             io.write(string.format("        },\n"))
         end
         io.write(string.format("    },\n"))
+
+        io.write(string.format("   myself = {\n"))
+        io.write(string.format("        EnableWindow = %s,\n", tostring(options.myself.EnableWindow)))
+        io.write(string.format("        ShowName = %s,\n", tostring(options.myself.ShowName)))
+        io.write(string.format("        ShowBarText = %s,\n", tostring(options.myself.ShowBarText)))
+        io.write(string.format("        ShowBarMaxValue = %s,\n", tostring(options.myself.ShowBarMaxValue)))
+        io.write(string.format("        Changed = %s,\n", tostring(options.myself.Changed)))
+        io.write(string.format("        Anchor = %i,\n", options.myself.Anchor))
+        io.write(string.format("        X = %i,\n", options.myself.X))
+        io.write(string.format("        Y = %i,\n", options.myself.Y))
+        io.write(string.format("        W = %i,\n", options.myself.W))
+        io.write(string.format("        H = %i,\n", options.myself.H))
+        io.write(string.format("        NoTitleBar = \"%s\",\n", options.myself.NoTitleBar))
+        io.write(string.format("        NoResize = \"%s\",\n", options.myself.NoResize))
+        io.write(string.format("        NoMove = \"%s\",\n", options.myself.NoMove))
+        io.write(string.format("        NoScrollbar = \"%s\",\n", options.myself.NoScrollbar))
+        io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.myself.AlwaysAutoResize))
+        io.write(string.format("        TransparentWindow = %s,\n", tostring(options.myself.TransparentWindow)))
+        io.write(string.format("        SD = %s,\n", tostring(options.myself.SD)))
+        io.write(string.format("        Invulnerability = %s,\n", tostring(options.myself.Invulnerability)))
+        io.write(string.format("        ShowHPBar = %s,\n", tostring(options.myself.ShowHPBar)))
+        io.write(string.format("   },\n"))
+
         io.write("}\n")
 
         io.close(file)
@@ -212,7 +281,7 @@ local function PresentPlayers()
     end
 end
 
-local function PresentPlayer(address, sd, inv)
+local function PresentPlayer(address, sd, inv, showName, HPbar, showBarMaxValue, showHPTPText)
     if address == 0 then
         return
     end
@@ -242,15 +311,21 @@ local function PresentPlayer(address, sd, inv)
     end
 
     barTextFormat = "%d"
-    if options.singlePlayersShowBarMaxValue then
+    if showBarMaxValue then
         barTextFormat = "%d / %d"
     end
 
-    lib_helpers.Text(true, "%s Lv%d", name, level)
-    if options.singlePlayersShowBarText then
+    if showName == true then
+        lib_helpers.Text(true, "%s Lv%d", name, level)
+    end
+
+    if showHPTPText == true then
         lib_helpers.Text(true, "HP: " .. barTextFormat, hp, mhp)
     end
-    lib_helpers.imguiProgressBar(true, hp/mhp, 130, imgui.GetFontSize() * 0.5, hpColor, nil)
+
+    if HPbar == true then
+        lib_helpers.imguiProgressBar(true, hp/mhp, 130, imgui.GetFontSize() * 0.5, hpColor, nil)
+    end
 
     --if address == lib_characters.GetSelf() and mtp ~= 0 then
     --    if options.singlePlayersShowBarText then
@@ -357,7 +432,14 @@ local function present()
                                 options.players[i].AlwaysAutoResize,
                             }
                         ) then
-                            PresentPlayer(address, options.players[i].SD, options.players[i].Invulnerability)
+                            PresentPlayer(
+                                address, 
+                                options.players[i].SD, 
+                                options.players[i].Invulnerability, 
+                                true, --show name
+                                true, --show HP bar
+                                options.singlePlayersShowBarMaxValue, 
+                                options.singlePlayersShowBarText)
 
                             if options.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
                                 if options.players[i].Anchor == 3 or options.players[i].Anchor == 6 or options.players[i].Anchor == 9 then
@@ -380,6 +462,65 @@ local function present()
                     end
                 end
             end
+        end
+    end
+
+    if options.myself.EnableWindow then
+        local myselfWindowTitle = "Player Reader - Myself"
+        if firstPresent or options.myself.Changed then
+            options.myself.Changed = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(
+                options.myself.X,
+                options.myself.Y,
+                options.myself.W,
+                options.myself.H,
+                options.myself.Anchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            if options.myself.AlwaysAutoResize ~= "AlwaysAutoResize" then
+                imgui.SetNextWindowSize(options.myself.W, options.myself.H, "Always");
+            end
+        end
+
+        if options.myself.TransparentWindow == true then
+            imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
+        end
+
+        if imgui.Begin(myselfWindowTitle, nil,
+            {
+                options.myself.NoTitleBar,
+                options.myself.NoResize,
+                options.myself.NoMove,
+                options.myself.NoScrollbar,
+                options.myself.AlwaysAutoResize,
+            }
+        ) then
+
+            PresentPlayer(
+                lib_characters.GetSelf(), 
+                options.myself.SD, 
+                options.myself.Invulnerability, 
+                options.myself.ShowName, 
+                options.myself.ShowHPBar,
+                options.myself.ShowBarMaxValue,
+                options.myself.ShowBarText)
+
+            if options.myself.AlwaysAutoResize == "AlwaysAutoResize" then
+                if options.myself.Anchor == 3 or options.myself.Anchor == 6 or options.myself.Anchor == 9 then
+                    options.myself.H = imgui.GetWindowHeight()
+                    local ps = lib_helpers.GetPosBySizeAndAnchor(
+                        options.myself.X,
+                        options.myself.Y,
+                        options.myself.W,
+                        options.myself.H,
+                        options.myself.Anchor)
+                    imgui.SetWindowPos(myselfWindowTitle, ps[1], ps[2], "Always");
+                end
+            end
+        end
+        imgui.End()
+
+        if options.myself.TransparentWindow == true then
+            imgui.PopStyleColor()
         end
     end
 
