@@ -249,6 +249,135 @@ local function ConfigurationWindow(configuration)
 
             imgui.TreePop()
         end
+
+        if imgui.TreeNodeEx("Myself") then
+            if imgui.Checkbox("Enable", _configuration.myself.EnableWindow) then
+                _configuration.myself.EnableWindow = not _configuration.myself.EnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show Name", _configuration.myself.ShowName) then
+                _configuration.myself.ShowName = not _configuration.myself.ShowName
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show HP/TP text", _configuration.myself.ShowBarText) then
+                _configuration.myself.ShowBarText = not _configuration.myself.ShowBarText
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show max HP/TP", _configuration.myself.ShowBarMaxValue) then
+                _configuration.myself.ShowBarMaxValue = not _configuration.myself.ShowBarMaxValue
+                this.changed = true
+            end
+
+            if imgui.Checkbox("No title bar", _configuration.myself.NoTitleBar == "NoTitleBar") then
+                if _configuration.myself.NoTitleBar == "NoTitleBar" then
+                    _configuration.myself.NoTitleBar = ""
+                else
+                    _configuration.myself.NoTitleBar = "NoTitleBar"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No resize", _configuration.myself.NoResize == "NoResize") then
+                if _configuration.myself.NoResize == "NoResize" then
+                    _configuration.myself.NoResize = ""
+                else
+                    _configuration.myself.NoResize = "NoResize"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No move", _configuration.myself.NoMove == "NoMove") then
+                if _configuration.myself.NoMove == "NoMove" then
+                    _configuration.myself.NoMove = ""
+                else
+                    _configuration.myself.NoMove = "NoMove"
+                end
+                this.changed = true
+            end
+            if imgui.Checkbox("No scrollbar", _configuration.myself.NoScrollbar == "NoScrollbar") then
+                if _configuration.myself.NoScrollbar == "NoScrollbar" then
+                    _configuration.myself.NoScrollbar = ""
+                else
+                    _configuration.myself.NoScrollbar = "NoScrollbar"
+                end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Always Auto Resize", _configuration.myself.AlwaysAutoResize == "AlwaysAutoResize") then
+                if _configuration.myself.AlwaysAutoResize == "AlwaysAutoResize" then
+                    _configuration.myself.AlwaysAutoResize = ""
+                else
+                    _configuration.myself.AlwaysAutoResize = "AlwaysAutoResize"
+                end
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Transparent Window", _configuration.myself.TransparentWindow) then
+                _configuration.myself.TransparentWindow = not _configuration.myself.TransparentWindow
+                this.changed = true
+            end
+
+            imgui.Text("Position and Size")
+            imgui.PushItemWidth(200)
+            success, _configuration.myself.Anchor = imgui.Combo("Anchor", _configuration.myself.Anchor, anchorList, table.getn(anchorList))
+            imgui.PopItemWidth()
+            if success then
+                _configuration.myself.Changed = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.myself.X = imgui.InputInt("X", _configuration.myself.X)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.myself.Changed = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 38)
+            imgui.PushItemWidth(100)
+            success, _configuration.myself.Y = imgui.InputInt("Y", _configuration.myself.Y)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.myself.Changed = true
+                this.changed = true
+            end
+
+            imgui.PushItemWidth(100)
+            success, _configuration.myself.W = imgui.InputInt("Width", _configuration.myself.W)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.myself.Changed = true
+                this.changed = true
+            end
+
+            imgui.SameLine(0, 10)
+            imgui.PushItemWidth(100)
+            success, _configuration.myself.H = imgui.InputInt("Height", _configuration.myself.H)
+            imgui.PopItemWidth()
+            if success then
+                _configuration.myself.Changed = true
+                this.changed = true
+            end
+
+            if imgui.Checkbox("S/D (J/Z)", _configuration.myself.SD) then
+                _configuration.myself.SD = not _configuration.myself.SD
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Invulnerability", _configuration.myself.Invulnerability) then
+                _configuration.myself.Invulnerability = not _configuration.myself.Invulnerability
+                this.changed = true
+            end
+            
+            if imgui.Checkbox("HP Bar", _configuration.myself.ShowHPBar) then
+                _configuration.myself.ShowHPBar = not _configuration.myself.ShowHPBar
+                this.changed = true
+            end
+            
+            imgui.TreePop()
+        end
     end
 
     this.Update = function()
