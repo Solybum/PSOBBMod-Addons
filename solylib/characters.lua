@@ -173,7 +173,8 @@ end
 local function GetPlayerIsCast(player)
     local result = false
     local equipFlags = pso.read_u8(player + 0x964)
-    if bit.band(equipFlags, 0x08) > 0 then
+    -- if bit.band(equipFlags, 0x08) > 0 then
+    if bit.band(equipFlags, 0x10) > 0 then
         result = true
     end
     return result
@@ -199,7 +200,6 @@ return
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
-    GetPlayerIsCast = GetPlayerIsCast,
-    
+    GetPlayerIsCast = GetPlayerIsCast,    
     Techniques = Techniques,
 }
