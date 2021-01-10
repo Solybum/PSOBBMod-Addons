@@ -87,35 +87,80 @@ local weaponSpecial =
     0xFFA67FE0, -- Demon's
 }
 local weaponAttributesEnabled = true
-local weaponAttributes =
+local weaponAttributesNative =
 {
     100, 0xFFFFFFFF,
-    90, 0xFFFFFFFF,
-    80, 0xFFFFFFFF,
-    70, 0xFFFFFFFF,
-    60, 0xFFFFFFFF,
-    50, 0xFFFFFFFF,
-    40, 0xFFFFFFFF,
-    30, 0xFFFFFFFF,
-    20, 0xFFFFFFFF,
-    10, 0xFFFFFFFF,
-    0, 0xFFA0A0A0,
-    -1, 0xFFA0A0A0,
+     90, 0xFFFFFFFF,
+     80, 0xFFFFFFFF,
+     70, 0xFFFFFFFF,
+     60, 0xFFFFFFFF,
+     50, 0xFFFFFFFF,
+     40, 0xFFFFFFFF,
+     30, 0xFFFFFFFF,
+     20, 0xFFFFFFFF,
+     10, 0xFFFFFFFF,
+      0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0,
+}
+local weaponAttributesABeast =
+{
+    100, 0xFFFFFFFF,
+     90, 0xFFFFFFFF,
+     80, 0xFFFFFFFF,
+     70, 0xFFFFFFFF,
+     60, 0xFFFFFFFF,
+     50, 0xFFFFFFFF,
+     40, 0xFFFFFFFF,
+     30, 0xFFFFFFFF,
+     20, 0xFFFFFFFF,
+     10, 0xFFFFFFFF,
+      0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0,
+}
+local weaponAttributesMachine =
+{
+    100, 0xFFFFFFFF,
+     90, 0xFFFFFFFF,
+     80, 0xFFFFFFFF,
+     70, 0xFFFFFFFF,
+     60, 0xFFFFFFFF,
+     50, 0xFFFFFFFF,
+     40, 0xFFFFFFFF,
+     30, 0xFFFFFFFF,
+     20, 0xFFFFFFFF,
+     10, 0xFFFFFFFF,
+      0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0,
+}
+local weaponAttributesDark =
+{
+    100, 0xFFFFFFFF,
+     90, 0xFFFFFFFF,
+     80, 0xFFFFFFFF,
+     70, 0xFFFFFFFF,
+     60, 0xFFFFFFFF,
+     50, 0xFFFFFFFF,
+     40, 0xFFFFFFFF,
+     30, 0xFFFFFFFF,
+     20, 0xFFFFFFFF,
+     10, 0xFFFFFFFF,
+      0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0,
 }
 local weaponHit =
 {
     100, 0xFFFF0000,
-    90, 0xFFFF3800,
-    80, 0xFFFF7100,
-    70, 0xFFFFAA00,
-    60, 0xFFFFE200,
-    50, 0xFFE2FF00,
-    40, 0xFFAAFF00,
-    30, 0xFF71FF00,
-    20, 0xFF38FF00,
-    10, 0xFF00FF00,
-    0, 0xFFFFFFFF,
-    -1, 0xFFA0A0A0,
+     90, 0xFFFF3800,
+     80, 0xFFFF7100,
+     70, 0xFFFFAA00,
+     60, 0xFFFFE200,
+     50, 0xFFE2FF00,
+     40, 0xFFAAFF00,
+     30, 0xFF71FF00,
+     20, 0xFF38FF00,
+     10, 0xFF00FF00,
+      0, 0xFFFFFFFF,
+     -1, 0xFFA0A0A0,
 }
 
 -- ARMOR (Frame and Barrier)
@@ -178,7 +223,10 @@ return
     weaponKills = weaponKills,
     weaponSpecial = weaponSpecial,
     weaponAttributesEnabled = weaponAttributesEnabled,
-    weaponAttributes = weaponAttributes,
+    weaponAttributesNative = weaponAttributesNative,
+    weaponAttributesABeast = weaponAttributesABeast,
+    weaponAttributesMachine = weaponAttributesMachine,
+    weaponAttributesDark = weaponAttributesDark,
     weaponHit = weaponHit,
     armorName = armorName,
     armorStats = armorStats,
