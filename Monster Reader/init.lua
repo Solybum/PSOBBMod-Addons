@@ -32,23 +32,34 @@ if optionsLoaded then
     options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
     options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
-    options.targetEnableWindow        = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
-    options.targetChanged             = lib_helpers.NotNilOrDefault(options.targetChanged, false)
-    options.targetAnchor              = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
-    options.targetX                   = lib_helpers.NotNilOrDefault(options.targetX, 150)
-    options.targetY                   = lib_helpers.NotNilOrDefault(options.targetY, -45)
-    options.targetW                   = lib_helpers.NotNilOrDefault(options.targetW, 120)
-    options.targetH                   = lib_helpers.NotNilOrDefault(options.targetH, 85)
-    options.targetNoTitleBar          = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
-    options.targetNoResize            = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
-    options.targetNoMove              = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
-    options.targetNoScrollbar         = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
-    options.targetTransparentWindow   = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
-    options.targetShowMonsterName     = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
-    options.targetShowMonsterStats    = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
-    options.targetShowAccuracyAssist  = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
-    options.targetAccuracyThreshold   = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
-    options.targetShowActivationRates = lib_helpers.NotNilOrDefault(options.targetShowActivationRates, 1)
+    options.targetEnableWindow          = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
+    options.targetChanged               = lib_helpers.NotNilOrDefault(options.targetChanged, false)
+    options.targetAnchor                = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
+    options.targetX                     = lib_helpers.NotNilOrDefault(options.targetX, 150)
+    options.targetY                     = lib_helpers.NotNilOrDefault(options.targetY, -45)
+    options.targetW                     = lib_helpers.NotNilOrDefault(options.targetW, 120)
+    options.targetH                     = lib_helpers.NotNilOrDefault(options.targetH, 85)
+    options.targetNoTitleBar            = lib_helpers.NotNilOrDefault(options.targetNoTitleBar, "NoTitleBar")
+    options.targetNoResize              = lib_helpers.NotNilOrDefault(options.targetNoResize, "NoResize")
+    options.targetNoMove                = lib_helpers.NotNilOrDefault(options.targetNoMove, "NoMove")
+    options.targetNoScrollbar           = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
+    options.targetTransparentWindow     = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
+    options.targetShowMonsterName       = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
+    options.targetShowMonsterStats      = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
+    options.targetShowAccuracyAssist    = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
+    options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)              
+    options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
+    
+    if options.tEAR == nil or type(options.tEAR) ~= "table" then
+        options.tEAR = {}
+    end
+    options.tEAR.showHellRate     = lib_helpers.NotNilOrDefault(options.tEAR.showHellRate, false)
+    options.tEAR.showDarkRate     = lib_helpers.NotNilOrDefault(options.tEAR.showDarkRate, false)
+    options.tEAR.showBlizzardRate = lib_helpers.NotNilOrDefault(options.tEAR.showBlizzardRate, false)
+    options.tEAR.showArrestRate   = lib_helpers.NotNilOrDefault(options.tEAR.showArrestRate, false)
+    options.tEAR.showSeizeRate    = lib_helpers.NotNilOrDefault(options.tEAR.showSeizeRate, false)
+    options.tEAR.showChaosRate    = lib_helpers.NotNilOrDefault(options.tEAR.showChaosRate, false)
+    options.tEAR.showHavocRate    = lib_helpers.NotNilOrDefault(options.tEAR.showHavocRate, false)
 else
     options =
     {
@@ -87,7 +98,16 @@ else
         targetShowMonsterStats = true,
         targetShowAccuracyAssist = false,
         targetAccuracyThreshold = 90,
-        targetShowActivationRates = 1,
+        targetEnableActivationRates = false,
+        tEAR = {
+            showHellRate = false,
+            showDarkRate = false,
+            showBlizzardRate = false,
+            showArrestRate = false,
+            showSeizeRate = false,
+            showChaosRate = false,
+            showHavocRate = false,
+        },          
     }
 end
 
@@ -133,7 +153,16 @@ local function SaveOptions(options)
         io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
-        io.write(string.format("    targetShowActivationRates = %s,\n", tostring(options.targetShowActivationRates)))
+        io.write(string.format("    targetEnableActivationRates = %s,\n", tostring(options.targetEnableActivationRates)))  
+        io.write(string.format("        tEAR = {\n"))   
+        io.write(string.format("            showHellRate = %s,\n", options.tEAR.showHellRate))  
+        io.write(string.format("            showDarkRate = %s,\n", options.tEAR.showDarkRate))   
+        io.write(string.format("            showBlizzardRate = %s,\n", options.tEAR.showBlizzardRate))    
+        io.write(string.format("            showArrestRate = %s,\n", options.tEAR.showArrestRate))   
+        io.write(string.format("            showSeizeRate = %s,\n", options.tEAR.showSeizeRate))        
+        io.write(string.format("            showChaosRate = %s,\n", options.tEAR.showChaosRate))        
+        io.write(string.format("            showHavocRate = %s,\n", options.tEAR.showHavocRate))   
+        io.write(string.format("        },\n"))
         io.write("}\n")
 
         io.close(file)
@@ -239,11 +268,11 @@ local function GetMonsterDataDeRolLe(monster)
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
-		if ephineaMonsters ~= 0 then
-			ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-			skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-			shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-		end
+	if ephineaMonsters ~= 0 then
+		ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+		skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+		shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+	end
     end
 
     if monster.index == 0 then
@@ -266,17 +295,17 @@ local function GetMonsterDataBarbaRay(monster)
     local skullMaxHP = 0
     local shellMaxHP = 0
     local newName = monster.name
-	local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
-	local ephineaHPScale = 1.0
+    local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
+    local ephineaHPScale = 1.0
 
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRaySkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRayShellHPMax)
-		if ephineaMonsters ~= 0 then
-			ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-			skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-			shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-		end
+	if ephineaMonsters ~= 0 then
+		ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+		skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+		shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+	end
     end
 
     if monster.index == 0 then
@@ -300,16 +329,16 @@ local function GetMonsterData(monster)
     monster.id = pso.read_u16(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
 
-	monster.HP = 0
-	monster.HPMax = 0
+    monster.HP = 0
+    monster.HPMax = 0
 	
-	if ephineaMonsters ~= 0 then
-		monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
-		monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
-	else
-		monster.HP = pso.read_u16(monster.address + _MonsterHP)
-		monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
-	end	
+    if ephineaMonsters ~= 0 then
+	monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
+	monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
+    else
+	monster.HP = pso.read_u16(monster.address + _MonsterHP)
+	monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+    end	
 	
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
     if bpPointer ~= 0 then
@@ -736,7 +765,7 @@ local function PresentTargetMonster(monster)
         end
 
         -- Show special activation rate if feature is enabled
-        if options.targetShowActivationRates > 1 then
+        if options.targetEnableActivationRates == true then
             -- Determine if the Android Boost Applies
             local androidBoost = 0
             if lib_characters.GetPlayerIsCast(playerAddr) == true then
@@ -744,18 +773,54 @@ local function PresentTargetMonster(monster)
             end
 
             -- Calculate Rates of success of differing attack types
-            local hellRate = (93 - monster.Edk)*(v50xHellBoost)
-            lib_helpers.Text(true, "Activation Rates:")
-            if options.targetShowActivationRates == 2 then
-                lib_helpers.Text(true, "Hell: %i%%%%", hellRate)
-            else
-                local arrestRate = (80 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                lib_helpers.Text(true, "Hell: %i%%%%, Arrest/Blizzard: %i%%%%", hellRate, arrestRate)
-                if options.targetShowActivationRates > 3 then
-                    local seizeRate = (64 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                    local chaosRate = (76 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                    local havocRate = (60 + androidBoost - monster.Esp)*(v50xStatusBoost)
-                    lib_helpers.Text(true, "Seize: %i%%%%, Chaos: %i%%%%, Havoc: %i%%%%", seizeRate, chaosRate, havocRate)
+            local rate_list = {}
+            
+            -- Add Hell rate if enabled
+            if options.tEAR.showHellRate == true then
+                local str = string.format("Hell: %i", (93 - monster.Edk)*(v50xHellBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Dark rate if enabled
+            if options.tEAR.showDarkRate == true then
+                local str = string.format("Dark: %i", (78 - monster.Edk)*(v50xHellBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Arrest rate if enabled
+            if options.tEAR.showArrestRate == true then
+                local str = string.format("Arrest: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Blizzard rate if enabled
+            if options.tEAR.showBlizzardRate == true then
+                local str = string.format("Blizzard: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Seize rate if enabled
+            if options.tEAR.showSeizeRate == true then
+                local str = string.format("Seize: %i", (64 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Chaos rate if enabled
+            if options.tEAR.showChaosRate == true then
+                local str = string.format("Chaos: %i", (76 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                table.insert(rate_list, str)
+            end
+            -- Add Havoc rate if enabled
+            if options.tEAR.showHavocRate == true then
+                local str = string.format("Havoc: %i", (60 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                table.insert(rate_list, str)
+            end
+            
+            -- Display all of the specials selected, only allow 3 per row
+            if table.getn(rate_list) > 0 then
+                lib_helpers.Text(true, "Activation Rates:")
+                for i, str in ipairs(rate_list) do
+                    if math.mod(i-1, 3) == 0 then
+                        lib_helpers.Text(true, str)
+                    else
+                        lib_helpers.Text(false, ", ")
+                        lib_helpers.Text(false, str)
+                    end    
                 end
             end
         end

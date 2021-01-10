@@ -15,7 +15,7 @@ local magColor =
 {
     "Red", "Blue", "Yellow", "Green", "Purple", "Black", "White",
     "Cyan", "Brown", "Orange", "Slate Blue", "Olive", "Turquoise",
-    "Fuschia", "Grey", "Cream", "Pink", "Dark Green",
+    "Fuchsia", "Grey", "Cream", "Pink", "Dark Green",
 }
 
 -- Internal function to read text from the unitxt
