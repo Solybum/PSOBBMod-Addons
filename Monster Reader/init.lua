@@ -50,16 +50,16 @@ if optionsLoaded then
     options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)              
     options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
     
-    if options.tEAR == nil or type(options.tEAR) ~= "table" then
-        options.tEAR = {}
+    if options.targetEnableActivationRateItems == nil or type(options.targetEnableActivationRateItems) ~= "table" then
+        options.targetEnableActivationRateItems = {}
     end
-    options.tEAR.showHellRate     = lib_helpers.NotNilOrDefault(options.tEAR.showHellRate, false)
-    options.tEAR.showDarkRate     = lib_helpers.NotNilOrDefault(options.tEAR.showDarkRate, false)
-    options.tEAR.showBlizzardRate = lib_helpers.NotNilOrDefault(options.tEAR.showBlizzardRate, false)
-    options.tEAR.showArrestRate   = lib_helpers.NotNilOrDefault(options.tEAR.showArrestRate, false)
-    options.tEAR.showSeizeRate    = lib_helpers.NotNilOrDefault(options.tEAR.showSeizeRate, false)
-    options.tEAR.showChaosRate    = lib_helpers.NotNilOrDefault(options.tEAR.showChaosRate, false)
-    options.tEAR.showHavocRate    = lib_helpers.NotNilOrDefault(options.tEAR.showHavocRate, false)
+    options.targetEnableActivationRateItems.Hell     = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.hell, false)
+    options.targetEnableActivationRateItems.Dark     = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.dark, false)
+    options.targetEnableActivationRateItems.Blizzard = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.blizzard, false)
+    options.targetEnableActivationRateItems.Arrest   = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.arrest, false)
+    options.targetEnableActivationRateItems.Seize    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.seize, false)
+    options.targetEnableActivationRateItems.Chaos    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.chaos, false)
+    options.targetEnableActivationRateItems.Havoc    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.havoc, false)
 else
     options =
     {
@@ -99,14 +99,14 @@ else
         targetShowAccuracyAssist = false,
         targetAccuracyThreshold = 90,
         targetEnableActivationRates = false,
-        tEAR = {
-            showHellRate = false,
-            showDarkRate = false,
-            showBlizzardRate = false,
-            showArrestRate = false,
-            showSeizeRate = false,
-            showChaosRate = false,
-            showHavocRate = false,
+        targetEnableActivationRateItems = {
+            hell = false,
+            dark = false,
+            blizzard = false,
+            arrest = false,
+            seize = false,
+            chaos = false,
+            havoc = false,
         },          
     }
 end
@@ -154,14 +154,14 @@ local function SaveOptions(options)
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
         io.write(string.format("    targetEnableActivationRates = %s,\n", tostring(options.targetEnableActivationRates)))  
-        io.write(string.format("        tEAR = {\n"))   
-        io.write(string.format("            showHellRate = %s,\n", options.tEAR.showHellRate))  
-        io.write(string.format("            showDarkRate = %s,\n", options.tEAR.showDarkRate))   
-        io.write(string.format("            showBlizzardRate = %s,\n", options.tEAR.showBlizzardRate))    
-        io.write(string.format("            showArrestRate = %s,\n", options.tEAR.showArrestRate))   
-        io.write(string.format("            showSeizeRate = %s,\n", options.tEAR.showSeizeRate))        
-        io.write(string.format("            showChaosRate = %s,\n", options.tEAR.showChaosRate))        
-        io.write(string.format("            showHavocRate = %s,\n", options.tEAR.showHavocRate))   
+        io.write(string.format("        targetEnableActivationRateItems = {\n"))   
+        io.write(string.format("            hell = %s,\n", options.targetEnableActivationRateItems.hell))  
+        io.write(string.format("            dark = %s,\n", options.targetEnableActivationRateItems.dark))   
+        io.write(string.format("            blizzard = %s,\n", options.targetEnableActivationRateItems.blizzard))    
+        io.write(string.format("            arrest = %s,\n", options.targetEnableActivationRateItems.arrest))   
+        io.write(string.format("            seize = %s,\n", options.targetEnableActivationRateItems.seize))        
+        io.write(string.format("            chaos = %s,\n", options.targetEnableActivationRateItems.chaos))        
+        io.write(string.format("            havoc = %s,\n", options.targetEnableActivationRateItems.havoc))   
         io.write(string.format("        },\n"))
         io.write("}\n")
 
@@ -776,37 +776,37 @@ local function PresentTargetMonster(monster)
             local rate_list = {}
             
             -- Add Hell rate if enabled
-            if options.tEAR.showHellRate == true then
+            if options.targetEnableActivationRateItems.hell == true then
                 local str = string.format("Hell: %i", (93 - monster.Edk)*(v50xHellBoost))
                 table.insert(rate_list, str)
             end
             -- Add Dark rate if enabled
-            if options.tEAR.showDarkRate == true then
+            if options.targetEnableActivationRateItems.dark == true then
                 local str = string.format("Dark: %i", (78 - monster.Edk)*(v50xHellBoost))
                 table.insert(rate_list, str)
             end
             -- Add Arrest rate if enabled
-            if options.tEAR.showArrestRate == true then
+            if options.targetEnableActivationRateItems.arrest == true then
                 local str = string.format("Arrest: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
             -- Add Blizzard rate if enabled
-            if options.tEAR.showBlizzardRate == true then
+            if options.targetEnableActivationRateItems.blizzard == true then
                 local str = string.format("Blizzard: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
             -- Add Seize rate if enabled
-            if options.tEAR.showSeizeRate == true then
+            if options.targetEnableActivationRateItems.seize == true then
                 local str = string.format("Seize: %i", (64 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
             -- Add Chaos rate if enabled
-            if options.tEAR.showChaosRate == true then
+            if options.targetEnableActivationRateItems.chaos == true then
                 local str = string.format("Chaos: %i", (76 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
             -- Add Havoc rate if enabled
-            if options.tEAR.showHavocRate == true then
+            if options.targetEnableActivationRateItems.havoc == true then
                 local str = string.format("Havoc: %i", (60 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
