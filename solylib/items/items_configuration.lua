@@ -1,7 +1,15 @@
 -- All colors are 0xAARRGGBB
-local white = 0xFFFFFFFF
+local blue = 0xFF0088F4
+local blue_light = 0xFF00DDF4
+local brown = 0xFF9A6020
 local grey = 0xFFA0A0A0
+local green = 0xFF00FF00
+local lavender = 0xFFDDB6F5
+local orange = 0xFFFFAA00
+local pink = 0xFFFF3898
 local red = 0xFFFF0000
+local white = 0xFFFFFFFF
+local yellow = 0xFFEAF718
 
 -- Item
 local itemIndex = 0xFFFFFFFF
@@ -147,9 +155,17 @@ local mesetaAmount = 0xFFFFFF00
 return
 {
     -- Colors
-    white = white,
+    blue = blue,
+    blue_light = blue_light,
+    brown = brown,
     grey = grey,
+    green = green,
+    lavender = lavender,
+    orange = orange,
+    pink = pink,
     red = red,
+    white = white,
+    yellow = yellow,
     itemIndex = itemIndex,
     itemEquipped = itemEquipped,
     weaponUntekked = weaponUntekked,
