@@ -1,9 +1,10 @@
 # PSOBBMod-Addons
-Addons for https://github.com/HybridEidolon/psobbaddonplugin
+Addons for https://github.com/Solybum/psobbaddonplugin
+
+[Eidolon](https://github.com/HybridEidolon) is the orignal developer of the addon system, however his repository is currently out of date, so I am referencing my own fork for now.
 
 ### Installation  
-1. Install the [base plugin](https://github.com/HybridEidolon/psobbaddonplugin) | [updated](https://github.com/Solybum/psobbaddonplugin/releases/latest)
-Currently Eidolon's latest release is outdated, use Solybum's one for now
+1. Install the [base plugin](https://github.com/Solybum/psobbaddonplugin/releases/latest)
 2. Download the [latest version](https://github.com/Solybum/PSOBBMod-Addons/archive/master.zip) of this repository
 3. Copy each addon directory that you want to use into into the ./addons directory in your PSOBB folder.
 
@@ -16,8 +17,8 @@ If you are developing addons, feel free to use it.
 Configuration of this addon can be done by pressing the button in the main menu  
 Item configuration can be done in solylib's item files.  
   
-[Monster HP](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Monster%20HP)  
-Personalize the monster name colors in [monsters.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Monster%20HP/monsters.lua)  
+[Monster HP](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Monster%20Reader)  
+Personalize the monster name colors in [monsters.lua](https://github.com/Solybum/PSOBBMod-Addons/blob/master/Monster%20Reader/monsters.lua)  
   
 [Player Reader](https://github.com/Solybum/PSOBBMod-Addons/tree/master/Player%20Reader)  
 Shows information about players either in a list or specifically for each player (p1, p2, p3, p4).  
