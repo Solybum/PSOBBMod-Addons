@@ -63,6 +63,37 @@ if optionsLoaded then
     options.floor.NoMove             = lib_helpers.NotNilOrDefault(options.floor.NoMove, "")
     options.floor.AlwaysAutoResize   = lib_helpers.NotNilOrDefault(options.floor.AlwaysAutoResize, "")
     options.floor.TransparentWindow  = lib_helpers.NotNilOrDefault(options.floor.TransparentWindow, false)
+    options.floor.EnableFilters      = lib_helpers.NotNilOrDefault(options.floor.EnableFilters, false)
+
+    if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
+        options.floor.filter = {}
+    end
+    options.floor.filter.HideLowHitWeapons  = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowHitWeapons, false)
+    options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
+    options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
+    options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
+    options.floor.filter.HideMonomates      = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonomates, false)
+    options.floor.filter.HideDimates        = lib_helpers.NotNilOrDefault(options.floor.filter.HideDimates, false)
+    options.floor.filter.HideTrimates       = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrimates, false)
+    options.floor.filter.HideMonofluids     = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonofluids, false)
+    options.floor.filter.HideDifluids       = lib_helpers.NotNilOrDefault(options.floor.filter.HideDifluids, false)
+    options.floor.filter.HideTrifluids      = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrifluids, false)
+    options.floor.filter.HideSolAtomizers   = lib_helpers.NotNilOrDefault(options.floor.filter.HideSolAtomizers, false)
+    options.floor.filter.HideMoonAtomizers  = lib_helpers.NotNilOrDefault(options.floor.filter.HideMoonAtomizers, false)
+    options.floor.filter.HideStarAtomizers  = lib_helpers.NotNilOrDefault(options.floor.filter.HideStarAtomizers, false)
+    options.floor.filter.HideAntidotes      = lib_helpers.NotNilOrDefault(options.floor.filter.HideAntidotes, false)
+    options.floor.filter.HideAntiparalysis  = lib_helpers.NotNilOrDefault(options.floor.filter.HideAntiparalysis, false)
+    options.floor.filter.HideTelepipes      = lib_helpers.NotNilOrDefault(options.floor.filter.HideTelepipes, false)
+    options.floor.filter.HideTrapVisions    = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrapVisions, false)
+	options.floor.filter.HideMonogrinders	= lib_helpers.NotNilOrDefault(options.floor.filter.HideMonogrinders, false)
+	options.floor.filter.HideDigrinders  	= lib_helpers.NotNilOrDefault(options.floor.filter.HideDigrinders, false)
+	options.floor.filter.HideTrigrinders 	= lib_helpers.NotNilOrDefault(options.floor.filter.HideTrigrinders, false)
+	options.floor.filter.HideHPMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideHPMats, false)
+	options.floor.filter.HidePowerMats  	= lib_helpers.NotNilOrDefault(options.floor.filter.HidePowerMats, false)
+	options.floor.filter.HideLuckMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideLuckMats, false)
+	options.floor.filter.HideMindMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideMindMats, false)
+	options.floor.filter.HideDefenseMats  	= lib_helpers.NotNilOrDefault(options.floor.filter.HideDefenseMats, false)
+	options.floor.filter.HideEvadeMats   	= lib_helpers.NotNilOrDefault(options.floor.filter.HideEvadeMats, false)
 
     if options.mags == nil or type(options.mags) ~= "table" then
         options.mags = {}
@@ -124,7 +155,36 @@ else
             NoResize = "",
             NoMove = "",
             AlwaysAutoResize = "",
-            TransparentWindow = false;
+            TransparentWindow = false,
+            EnableFilters = false,
+            filter = {
+                HideLowHitWeapons = false,
+                HideLowSocketArmor = false,
+                HideUselessUnits = false,
+                HideUselessTechs = false,
+                HideMonomates = false,
+                HideDimates = false,
+                HideTrimates = false,
+                HideMonofluids = false,
+                HideDifluids = false,
+                HideTrifluids = false,
+                HideSolAtomizers = false,
+                HideMoonAtomizers = false,
+                HideStarAtomizers = false,
+                HideAntidotes = false,
+                HideAntiparalysis = false,
+                HideTelepipes = false,
+                HideTrapVisions = false,
+				HideMonogrinders = false,
+				HideDigrinders = false,
+				HideTrigrinders = false,
+				HideHPMats = false,
+				HidePowerMats = false,
+				HideLuckMats = false,
+				HideMindMats = false,
+				HideDefenseMats = false,
+				HideEvadeMats = false,
+            },
         },
         mags = {
             EnableWindow = true,
@@ -194,6 +254,35 @@ local function SaveOptions(options)
         io.write(string.format("        NoMove = \"%s\",\n", options.floor.NoMove))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.floor.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
+        io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
+        io.write(string.format("        filter = {\n"))
+        io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
+        io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
+        io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
+        io.write(string.format("            HideUselessTechs = %s,\n", options.floor.filter.HideUselessTechs))
+        io.write(string.format("            HideMonomates = %s,\n", options.floor.filter.HideMonomates))
+        io.write(string.format("            HideDimates = %s,\n", options.floor.filter.HideDimates))
+        io.write(string.format("            HideTrimates = %s,\n", options.floor.filter.HideTrimates))
+        io.write(string.format("            HideMonofluids = %s,\n", options.floor.filter.HideMonofluids))
+        io.write(string.format("            HideDifluids = %s,\n", options.floor.filter.HideDifluids))
+        io.write(string.format("            HideTrifluids = %s,\n", options.floor.filter.HideTrifluids))
+        io.write(string.format("            HideSolAtomizers = %s,\n", options.floor.filter.HideSolAtomizers))
+        io.write(string.format("            HideMoonAtomizers = %s,\n", options.floor.filter.HideMoonAtomizers))
+        io.write(string.format("            HideStarAtomizers = %s,\n", options.floor.filter.HideStarAtomizers))
+        io.write(string.format("            HideAntidotes = %s,\n", options.floor.filter.HideAntidotes))
+        io.write(string.format("            HideAntiparalysis = %s,\n", options.floor.filter.HideAntiparalysis))
+        io.write(string.format("            HideTelepipes = %s,\n", options.floor.filter.HideTelepipes))
+        io.write(string.format("            HideTrapVisions = %s,\n", options.floor.filter.HideTrapVisions))
+        io.write(string.format("            HideMonogrinders = %s,\n", options.floor.filter.HideMonogrinders))
+        io.write(string.format("            HideDigrinders = %s,\n", options.floor.filter.HideDigrinders))
+        io.write(string.format("            HideTrigrinders = %s,\n", options.floor.filter.HideTrigrinders))
+        io.write(string.format("            HideHPMats = %s,\n", options.floor.filter.HideHPMats))
+        io.write(string.format("            HidePowerMats = %s,\n", options.floor.filter.HidePowerMats))
+        io.write(string.format("            HideLuckMats = %s,\n", options.floor.filter.HideLuckMats))
+        io.write(string.format("            HideMindMats = %s,\n", options.floor.filter.HideMindMats))
+        io.write(string.format("            HideDefenseMats = %s,\n", options.floor.filter.HideDefenseMats))
+        io.write(string.format("            HideEvadeMats = %s,\n", options.floor.filter.HideEvadeMats))
+        io.write(string.format("        },\n"))
         io.write(string.format("    },\n"))
         io.write(string.format("    mags = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.mags.EnableWindow)))
@@ -227,327 +316,346 @@ local function TrimString(text, length)
     return result
 end
 
-local function ProcessWeapon(item)
+local function writeArmorStats(item, floor)
     local result = ""
-    imgui.Text("")
 
-    if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
-    end
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
 
-    if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
-            item.data[1], item.data[2], item.data[3], item.data[4],
-            item.data[5], item.data[6], item.data[7], item.data[8],
-            item.data[9], item.data[10], item.data[11], item.data[12],
-            item.data[13], item.data[14], item.data[15], item.data[16])
-    end
-
-    if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
-    end
-
-    if options.showEquippedItems then
-        if item.equipped then
-            lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-            lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-        end
-    end
-
-    if item.weapon.wrapped or item.weapon.untekked then
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        if item.weapon.wrapped and item.weapon.untekked then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W|U")
-        elseif item.weapon.wrapped then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W")
-        elseif item.weapon.untekked then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "U")
-        end
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-    end
-
-    if item.weapon.isSRank then
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankTitle, "S-RANK ")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankName, "%s ", item.name)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankCustomName, "%s ", item.weapon.nameSrank)
-
-        if item.weapon.grind > 0 then
-             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
-        end
-
-        if item.weapon.specialSRank ~= 0 then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial[item.weapon.specialSRank], lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-        end
+    local statColor
+    if item.armor.dfp == 0 then
+        statColor = lib_items_cfg.grey
     else
-        local nameColor = lib_items_cfg.weaponName
-        local item_cfg = lib_items_list.t[item.hex]
+        statColor = lib_items_cfg.armorStats
+    end
+    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfp)
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+    if item.armor.dfpMax == 0 then
+        statColor = lib_items_cfg.grey
+    else
+        statColor = lib_items_cfg.armorStats
+    end
+    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfpMax)
+
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, " | ")
+
+    if item.armor.evp == 0 then
+        statColor = lib_items_cfg.grey
+    else
+        statColor = lib_items_cfg.armorStats
+    end
+    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evp)
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+    if item.armor.evpMax == 0 then
+        statColor = lib_items_cfg.grey
+    else
+        statColor = lib_items_cfg.armorStats
+    end
+    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evpMax)
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+
+    return result
+end
+
+local function ProcessWeapon(item, floor)
+    local result = ""
+
+    local nameColor = lib_items_cfg.weaponName
+    local item_cfg = lib_items_list.t[item.hex]
+    local show_item = true
+
+    if item.weapon.isSRank == false then
+        nameColor = C_WEAPON
         if item_cfg ~= nil and item_cfg[1] ~= 0 then
             nameColor = item_cfg[1]
+        elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowHitWeapons then
+            show_item = false
+            -- Hide weapon drops with less then 40h untekked
+            if item.weapon.stats[6] >= 40 then
+                show_item = true
+            end
         end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+    end
 
-        if item.weapon.grind > 0 then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+    if show_item then
+        imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
-        if item.weapon.special ~= 0 then
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
+        end
+
+        if options.printItemIndex then
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        end
+
+        if options.showEquippedItems then
+            if item.equipped then
+                lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
+                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+        end
+
+        if item.weapon.wrapped or item.weapon.untekked then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSpecial[item.weapon.special + 1], lib_unitxt.GetSpecialName(item.weapon.special))
+            if item.weapon.wrapped and item.weapon.untekked then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W|U")
+            elseif item.weapon.wrapped then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W")
+            elseif item.weapon.untekked then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "U")
+            end
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
         end
 
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        for i=2,5,1 do
-            local stat = item.weapon.stats[i]
+        if item.weapon.isSRank then
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankTitle, "S-RANK ")
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankName, "%s ", item.name)
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankCustomName, "%s ", item.weapon.nameSrank)
 
-            local statColor = lib_items_cfg.grey
-            for i2=1,table.getn(lib_items_cfg.weaponAttributes),2 do
-                if stat <= lib_items_cfg.weaponAttributes[i2] then
-                    statColor = lib_items_cfg.weaponAttributes[i2 + 1]
+            if item.weapon.grind > 0 then
+                 result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+            end
+
+            if item.weapon.specialSRank ~= 0 then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial[item.weapon.specialSRank], lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+        else
+            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+
+            if item.weapon.grind > 0 then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+            end
+
+            if item.weapon.special ~= 0 then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSpecial[item.weapon.special + 1], lib_unitxt.GetSpecialName(item.weapon.special))
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+            for i=2,5,1 do
+                local stat = item.weapon.stats[i]
+
+                local statColor = lib_items_cfg.grey
+            	for i2=1,table.getn(lib_items_cfg.weaponAttributes),2 do
+                    if stat <= lib_items_cfg.weaponAttributes[i2] then
+                    	statColor = lib_items_cfg.weaponAttributes[i2 + 1]
+                    end
+                end
+                if item.weapon.statpresence[i - 1] == 1 and item.weapon.stats[i] == 0 then
+                    statColor = lib_items_cfg.red
+                end
+
+                result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
+
+                if i < 5 then
+                    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+                else
+                    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
                 end
             end
-            if item.weapon.statpresence[i - 1] == 1 and item.weapon.stats[i] == 0 then
+
+            local stat = item.weapon.stats[6]
+            local statColor = lib_items_cfg.grey
+            for i2=1,table.getn(lib_items_cfg.weaponHit),2 do
+                if stat <= lib_items_cfg.weaponHit[i2] then
+                    statColor = lib_items_cfg.weaponHit[i2 + 1]
+                end
+            end
+            if item.weapon.statpresence[5] == 1 and item.weapon.stats[6] == 0 then
                 statColor = lib_items_cfg.red
             end
-
             result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
-            if i < 5 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-            else
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
+            if item.kills ~= 0 then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+        end
+    end
+
+    return result
+end
+local function ProcessFrame(item, floor)
+    local result = ""
+
+    local nameColor = lib_items_cfg.armorName
+    local item_cfg = lib_items_list.t[item.hex]
+    local show_item = true
+
+    nameColor = C_ARMOR
+    if item_cfg ~= nil and item_cfg[1] ~= 0 then
+        nameColor = item_cfg[1]
+    elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
+        show_item = false
+        -- Show 4 socket armors
+        if item.armor.slots == 4 then
+            show_item = true
+        end
+    end
+
+    if show_item then
+        imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
+        end
+
+        if options.printItemIndex then
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        end
+
+        if options.showEquippedItems then
+            if item.equipped then
+                lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
+                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
             end
         end
 
-        local stat = item.weapon.stats[6]
-        local statColor = lib_items_cfg.grey
-        for i2=1,table.getn(lib_items_cfg.weaponHit),2 do
-            if stat <= lib_items_cfg.weaponHit[i2] then
-                statColor = lib_items_cfg.weaponHit[i2 + 1]
-            end
-        end
-        if item.weapon.statpresence[5] == 1 and item.weapon.stats[6] == 0 then
-            statColor = lib_items_cfg.red
-        end
-        result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+        result = result .. writeArmorStats(item)
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+        result = result .. lib_helpers.TextC(false, lib_items_cfg.armorSlots, "%iS", item.armor.slots)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    end
+
+    return result
+end
+local function ProcessBarrier(item, floor)
+    local result = ""
+
+    local nameColor = lib_items_cfg.armorName
+    local item_cfg = lib_items_list.t[item.hex]
+    local show_item = true
+
+    nameColor = C_ARMOR
+    if item_cfg ~= nil and item_cfg[1] ~= 0 then
+        nameColor = item_cfg[1]
+    elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
+        show_item = false
+        -- No exceptions at the moment
+    end
+
+    if show_item then
+        imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
+        end
+
+        if options.printItemIndex then
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        end
+
+        if options.showEquippedItems then
+            if item.equipped then
+                lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
+                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+        end
+
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+        writeArmorStats(item)
+    end
+
+    return result
+end
+local function ProcessUnit(item, floor)
+    local result = ""
+
+    local nameColor = lib_items_cfg.unitName
+    local item_cfg = lib_items_list.t[item.hex]
+    local show_item = true
+
+    nameColor = C_UNIT
+    if item_cfg ~= nil and item_cfg[1] ~= 0 then
+        nameColor = item_cfg[1]
+    elseif floor and options.floor.EnableFilters and options.floor.filter.HideUselessUnits then
+        show_item = false
+        -- No exceptions at the moment
+    end
+
+    if show_item then
+        imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
+        end
+
+        if options.printItemIndex then
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        end
+
+        if options.showEquippedItems then
+            if item.equipped then
+                lib_helpers.TextC(false, lib_items_cfg.white, "[")
+                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
+                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            end
+        end
+
+        local nameStr = item.name
+
+        if item.unit.mod == 0 then
+        elseif item.unit.mod == -2 then
+            nameStr = nameStr .. "--"
+        elseif item.unit.mod == -1 then
+            nameStr = nameStr .. "-"
+        elseif item.unit.mod == 1 then
+            nameStr = nameStr .. "+"
+        elseif item.unit.mod == 2 then
+            nameStr = nameStr .. "++"
+        end
+
+        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(nameStr, options.itemNameLength))
 
         if item.kills ~= 0 then
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
             result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
         end
-    end
-
-    return result
-end
-local function ProcessFrame(item)
-    local result = ""
-    imgui.Text("")
-
-    if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
-    end
-
-    if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
-            item.data[1], item.data[2], item.data[3], item.data[4],
-            item.data[5], item.data[6], item.data[7], item.data[8],
-            item.data[9], item.data[10], item.data[11], item.data[12],
-            item.data[13], item.data[14], item.data[15], item.data[16])
-    end
-
-    if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
-    end
-
-    if options.showEquippedItems then
-        if item.equipped then
-            lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-            lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-        end
-    end
-
-    local nameColor = lib_items_cfg.armorName
-    local item_cfg = lib_items_list.t[item.hex]
-    if item_cfg ~= nil and item_cfg[1] ~= 0 then
-        nameColor = item_cfg[1]
-    end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-
-    local statColor
-    if item.armor.dfp == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    if item.armor.dfpMax == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfpMax)
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, " | ")
-
-    if item.armor.evp == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    if item.armor.evpMax == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evpMax)
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.armorSlots, "%iS", item.armor.slots)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-
-    return result
-end
-local function ProcessBarrier(item)
-    local result = ""
-    imgui.Text("")
-
-    if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
-    end
-
-    if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
-            item.data[1], item.data[2], item.data[3], item.data[4],
-            item.data[5], item.data[6], item.data[7], item.data[8],
-            item.data[9], item.data[10], item.data[11], item.data[12],
-            item.data[13], item.data[14], item.data[15], item.data[16])
-    end
-
-    if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
-    end
-
-    if options.showEquippedItems then
-        if item.equipped then
-            lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-            lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-        end
-    end
-
-    local nameColor = lib_items_cfg.armorName
-    local item_cfg = lib_items_list.t[item.hex]
-    if item_cfg ~= nil and item_cfg[1] ~= 0 then
-        nameColor = item_cfg[1]
-    end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-
-    local statColor
-    if item.armor.dfp == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    if item.armor.dfpMax == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfpMax)
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, " | ")
-
-    if item.armor.evp == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-    if item.armor.evpMax == 0 then
-        statColor = lib_items_cfg.grey
-    else
-        statColor = lib_items_cfg.armorStats
-    end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evpMax)
-
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-
-    return result
-end
-local function ProcessUnit(item)
-    local result = ""
-    imgui.Text("")
-
-    if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
-    end
-
-    if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
-            item.data[1], item.data[2], item.data[3], item.data[4],
-            item.data[5], item.data[6], item.data[7], item.data[8],
-            item.data[9], item.data[10], item.data[11], item.data[12],
-            item.data[13], item.data[14], item.data[15], item.data[16])
-    end
-
-    if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
-    end
-
-    if options.showEquippedItems then
-        if item.equipped then
-            lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-            lib_helpers.TextC(false, lib_items_cfg.white, "] ")
-        end
-    end
-
-    local nameStr = item.name
-    local nameColor = lib_items_cfg.unitName
-    local item_cfg = lib_items_list.t[item.hex]
-    if item_cfg ~= nil and item_cfg[1] ~= 0 then
-        nameColor = item_cfg[1]
-    end
-
-    if item.unit.mod == 0 then
-    elseif item.unit.mod == -2 then
-        nameStr = nameStr .. "--"
-    elseif item.unit.mod == -1 then
-        nameStr = nameStr .. "-"
-    elseif item.unit.mod == 1 then
-        nameStr = nameStr .. "+"
-    elseif item.unit.mod == 2 then
-        nameStr = nameStr .. "++"
-    end
-
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(nameStr, options.itemNameLength))
-
-    if item.kills ~= 0 then
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
     end
 
     return result
@@ -588,9 +696,16 @@ local function ProcessMag(item)
     end
     result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    local timerColor = lib_items_cfg.white
+    for i=1,table.getn(lib_items_cfg.magFeedTimer),2 do
+        if item.mag.timer < lib_items_cfg.magFeedTimer[i] then
+            timerColor = lib_items_cfg.magFeedTimer[i + 1]
+        end
+    end
+
+    lib_helpers.TextC(false, lib_items_cfg.white, "[")
+    lib_helpers.TextC(false, timerColor, os.date("!%M:%S", item.mag.timer))
+    lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
     if options.hideMagStats == false then
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
@@ -614,57 +729,111 @@ local function ProcessMag(item)
         result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
     end
 
-    local timerColor = lib_items_cfg.white
-    for i=1,table.getn(lib_items_cfg.magFeedTimer),2 do
-        if item.mag.timer < lib_items_cfg.magFeedTimer[i] then
-            timerColor = lib_items_cfg.magFeedTimer[i + 1]
-        end
-    end
-
-    lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    lib_helpers.TextC(false, timerColor, os.date("!%M:%S", item.mag.timer))
-    lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
 
     return result
 end
-local function ProcessTool(item)
+local function ProcessTool(item, floor)
     local result = ""
-    imgui.Text("")
 
-    if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
-    end
-
-    if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
-            "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
-            item.data[1], item.data[2], item.data[3], item.data[4],
-            item.data[5], item.data[6], item.data[7], item.data[8],
-            item.data[9], item.data[10], item.data[11], item.data[12],
-            item.data[13], item.data[14], item.data[15], item.data[16])
-    end
-
-    if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
-    end
+    local nameColor
+    local item_cfg = lib_items_list.t[item.hex]
+    local show_item = true
 
     if item.data[2] == 2 then
-        local nameColor = lib_items_cfg.techName
-        local item_cfg = lib_items_list.t[item.hex]
-        if item_cfg ~= nil and item_cfg[1] ~= 0 then
-            nameColor = item_cfg[1]
-        end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.techLevel, "Lv%i ", item.tool.level)
+        nameColor = lib_items_cfg.techName
     else
-        local nameColor = lib_items_cfg.toolName
-        local item_cfg = lib_items_list.t[item.hex]
-        if item_cfg ~= nil and item_cfg[1] ~= 0 then
-            nameColor = item_cfg[1]
+        nameColor = lib_items_cfg.toolName
+    end
+
+    if item_cfg ~= nil and item_cfg[1] ~= 0 then
+        nameColor = item_cfg[1]
+    end
+
+    if floor then
+        -- Process Technique Disks
+        if options.floor.EnableFilters and options.floor.filter.HideUselessTechs and item.data[2] == 0x02 then
+            show_item = false
+            -- Is Reverser/Ryuker
+            if item.data[5] == 0x11 or item.data[5] == 0x0E then
+                show_item = true
+            -- Is Good Anti?
+            elseif item.data[5] == 0x10 then
+                if item.tool.level == 5 or item.tool.level >= 7 then
+                    show_item = true
+                end
+            -- Is Good Megid/Grants
+            elseif item.data[5] == 0x12 or item.data[5] == 0x09 then
+                if item.tool.level >= 26 then
+                    show_item = true
+                end
+            -- Is good support spell
+            elseif item.data[5] == 0x0A or item.data[5] == 0x0B or item.data[5] == 0x0C or item.data[5] == 0x0D or item.data[5] == 0x0F then
+                if item.tool.level == 15 or item.tool.level == 20 or item.tool.level >= 30 then
+                    show_item = true
+                end
+            -- Is a max tier tech?
+            elseif item.tool.level == 15 or item.tool.level == 20 or item.tool.level >= 29 then
+                show_item = true
+            end
+        -- Hide Monomates, Dimates, Monofluids, Difluids, Antidotes, Antiparalysis, Telepipe, and Trap Visions
+        elseif options.floor.EnableFilters and
+                ((options.floor.filter.HideMonomates     and item.data[2] == 0x00 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideDimates       and item.data[2] == 0x00 and item.data[3] == 0x01) or
+                 (options.floor.filter.HideTrimates      and item.data[2] == 0x00 and item.data[3] == 0x02) or
+                 (options.floor.filter.HideMonofluids    and item.data[2] == 0x01 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideDifluids      and item.data[2] == 0x01 and item.data[3] == 0x01) or
+                 (options.floor.filter.HideTrifluids     and item.data[2] == 0x01 and item.data[3] == 0x02) or
+                 (options.floor.filter.HideSolAtomizers  and item.data[2] == 0x03 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideMoonAtomizers and item.data[2] == 0x04 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideStarAtomizers and item.data[2] == 0x05 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideAntidotes     and item.data[2] == 0x06 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideAntiparalysis and item.data[2] == 0x06 and item.data[3] == 0x01) or
+                 (options.floor.filter.HideTelepipes     and item.data[2] == 0x07 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideTrapVisions   and item.data[2] == 0x08 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideMonogrinders  and item.data[2] == 0x0A and item.data[3] == 0x00) or
+                 (options.floor.filter.HideDigrinders    and item.data[2] == 0x0A and item.data[3] == 0x01) or
+                 (options.floor.filter.HideTrigrinders   and item.data[2] == 0x0A and item.data[3] == 0x02) or
+                 (options.floor.filter.HidePowerMats     and item.data[2] == 0x0B and item.data[3] == 0x00) or
+                 (options.floor.filter.HideMindMats      and item.data[2] == 0x0B and item.data[3] == 0x01) or
+                 (options.floor.filter.HideEvadeMats     and item.data[2] == 0x0B and item.data[3] == 0x02) or
+                 (options.floor.filter.HideHPMats        and item.data[2] == 0x0B and item.data[3] == 0x03) or
+                 (options.floor.filter.HideDefenseMats   and item.data[2] == 0x0B and item.data[3] == 0x05) or
+                 (options.floor.filter.HideLuckMats      and item.data[2] == 0x0B and item.data[3] == 0x06)) then
+            show_item = false
         end
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-        if item.tool.count > 0 then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.toolAmount, "x%i ", item.tool.count)
+    end
+
+    if show_item then
+        imgui.Text("")
+
+        if options.showItemIDs then
+            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        end
+
+        if options.showItemData then
+            lib_helpers.TextC(false, 0xFFFFFFFF,
+                "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
+                item.data[1], item.data[2], item.data[3], item.data[4],
+                item.data[5], item.data[6], item.data[7], item.data[8],
+                item.data[9], item.data[10], item.data[11], item.data[12],
+                item.data[13], item.data[14], item.data[15], item.data[16])
+        end
+
+        if options.printItemIndex then
+            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        end
+
+        if item.data[2] == 2 then
+            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            result = result .. lib_helpers.TextC(false, lib_items_cfg.techLevel, "Lv%i ", item.tool.level)
+        else
+            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            if item.tool.count > 0 then
+                result = result .. lib_helpers.TextC(false, lib_items_cfg.toolAmount, "x%i ", item.tool.count)
+            end
         end
     end
 
@@ -712,19 +881,19 @@ local function ProcessItem(item, floor, save)
 
     local itemStr = ""
     if item.data[1] == 0 then
-        itemStr = ProcessWeapon(item)
+        itemStr = ProcessWeapon(item, floor)
     elseif item.data[1] == 1 then
         if item.data[2] == 1 then
-            itemStr = ProcessFrame(item)
+            itemStr = ProcessFrame(item, floor)
         elseif item.data[2] == 2 then
-            itemStr = ProcessBarrier(item)
+            itemStr = ProcessBarrier(item, floor)
         elseif item.data[2] == 3 then
-            itemStr = ProcessUnit(item)
+            itemStr = ProcessUnit(item, floor)
         end
     elseif item.data[1] == 2 then
         itemStr = ProcessMag(item)
     elseif item.data[1] == 3 then
-        itemStr = ProcessTool(item)
+        itemStr = ProcessTool(item, floor)
     elseif item.data[1] == 4 then
         itemStr = ProcessMeseta(item)
     end
@@ -751,7 +920,7 @@ local cache_mags = nil
 
 local function PresentInventory(save, index)
     index = index or lib_items.Me
-    
+
     if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
         cache_inventory = lib_items.GetInventory(index)
         last_inventory_index = index
@@ -885,10 +1054,10 @@ local function present()
     if options.enable == false then
         return
     end
-    
+
     --- Update timer for update throttle
     current_time = pso.get_tick_count()
-    
+
     if options.aio.EnableWindow then
         local windowName = "Item Reader - AIO"
 
