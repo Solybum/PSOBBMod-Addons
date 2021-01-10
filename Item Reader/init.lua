@@ -364,7 +364,6 @@ local function ProcessWeapon(item, floor)
     local show_item = true
 
     if item.weapon.isSRank == false then
-        nameColor = C_WEAPON
         if item_cfg ~= nil and item_cfg[1] ~= 0 then
             nameColor = item_cfg[1]
         elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowHitWeapons then
@@ -496,7 +495,6 @@ local function ProcessFrame(item, floor)
     local item_cfg = lib_items_list.t[item.hex]
     local show_item = true
 
-    nameColor = C_ARMOR
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
@@ -551,7 +549,6 @@ local function ProcessBarrier(item, floor)
     local item_cfg = lib_items_list.t[item.hex]
     local show_item = true
 
-    nameColor = C_ARMOR
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
@@ -600,7 +597,6 @@ local function ProcessUnit(item, floor)
     local item_cfg = lib_items_list.t[item.hex]
     local show_item = true
 
-    nameColor = C_UNIT
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideUselessUnits then
