@@ -16,13 +16,6 @@ local function ConfigurationWindow(configuration)
             "Top", "Center", "Bottom",
             "Top Right", "Right", "Bottom Right",
         }
-        local activationRateList =
-        {
-            "None",
-            "Hell Only",
-            "Hell and T1 - broken",         -- TODO: Remove '- broken'
-            "Hell, T1, and T2 - broken",    -- TODO: Remove '- broken'
-        }
 
         if imgui.TreeNodeEx("General", "DefaultOpen") then
             if imgui.Checkbox("Enable", _configuration.enable) then
@@ -164,15 +157,57 @@ local function ConfigurationWindow(configuration)
                     _configuration.targetAccuracyThreshold = 100
                 end
                 this.changed = true
-            end
-
-            imgui.PushItemWidth(200)  -- TODO: change back to 150 when '- broken' is removed
-            success, _configuration.targetShowActivationRates = imgui.Combo("Show Activation Rates", _configuration.targetShowActivationRates, activationRateList, table.getn(activationRateList))
-            imgui.PopItemWidth()
-            if success then
+            end   
+            
+            if imgui.Checkbox("Enable Activation Rates", _configuration.targetEnableActivationRates) then
+                _configuration.targetEnableActivationRates = not _configuration.targetEnableActivationRates
                 this.changed = true
-            end
-
+            end            
+            if _configuration.targetEnableActivationRates then
+                if imgui.TreeNodeEx("Specials to Display") then 
+                    if imgui.Checkbox("Hell", _configuration.targetEnableActivationRateItems.hell) then
+                        _configuration.targetEnableActivationRateItems.hell = not _configuration.targetEnableActivationRateItems.hell
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 43)
+                    if imgui.Checkbox("Dark", _configuration.targetEnableActivationRateItems.dark) then
+                        _configuration.targetEnableActivationRateItems.dark = not _configuration.targetEnableActivationRateItems.dark
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Blizzard", _configuration.targetEnableActivationRateItems.blizzard) then
+                        _configuration.targetEnableActivationRateItems.blizzard = not _configuration.targetEnableActivationRateItems.blizzard
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 15)
+                    if imgui.Checkbox("Arrest", _configuration.targetEnableActivationRateItems.arrest) then
+                        _configuration.targetEnableActivationRateItems.arrest = not _configuration.targetEnableActivationRateItems.arrest
+                        _configuration.changed = true
+                        this.changed = true
+                    end                    
+                    imgui.SameLine(0, 15)
+                    if imgui.Checkbox("Seize", _configuration.targetEnableActivationRateItems.seize) then
+                        _configuration.targetEnableActivationRateItems.seize = not _configuration.targetEnableActivationRateItems.seize
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Chaos", _configuration.targetEnableActivationRateItems.chaos) then
+                        _configuration.targetEnableActivationRateItems.chaos = not _configuration.targetEnableActivationRateItems.chaos
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 36)
+                    if imgui.Checkbox("Havoc", _configuration.targetEnableActivationRateItems.havoc) then
+                        _configuration.targetEnableActivationRateItems.havoc = not _configuration.targetEnableActivationRateItems.havoc
+                        _configuration.changed = true
+                        this.changed = true
+                    end
+                    imgui.TreePop()
+                end
+            end 
+            
             if imgui.Checkbox("No title bar", _configuration.targetNoTitleBar == "NoTitleBar") then
                 if _configuration.targetNoTitleBar == "NoTitleBar" then
                     _configuration.targetNoTitleBar = ""
