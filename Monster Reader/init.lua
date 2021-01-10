@@ -47,7 +47,7 @@ if optionsLoaded then
     options.targetShowMonsterName       = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
     options.targetShowMonsterStats      = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
     options.targetShowAccuracyAssist    = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
-    options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)              
+    options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
     options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
     
     if options.targetEnableActivationRateItems == nil or type(options.targetEnableActivationRateItems) ~= "table" then
@@ -107,7 +107,7 @@ else
             seize = false,
             chaos = false,
             havoc = false,
-        },          
+        },
     }
 end
 
@@ -153,16 +153,16 @@ local function SaveOptions(options)
         io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
-        io.write(string.format("    targetEnableActivationRates = %s,\n", tostring(options.targetEnableActivationRates)))  
-        io.write(string.format("        targetEnableActivationRateItems = {\n"))   
-        io.write(string.format("            hell = %s,\n", options.targetEnableActivationRateItems.hell))  
-        io.write(string.format("            dark = %s,\n", options.targetEnableActivationRateItems.dark))   
-        io.write(string.format("            blizzard = %s,\n", options.targetEnableActivationRateItems.blizzard))    
-        io.write(string.format("            arrest = %s,\n", options.targetEnableActivationRateItems.arrest))   
-        io.write(string.format("            seize = %s,\n", options.targetEnableActivationRateItems.seize))        
-        io.write(string.format("            chaos = %s,\n", options.targetEnableActivationRateItems.chaos))        
-        io.write(string.format("            havoc = %s,\n", options.targetEnableActivationRateItems.havoc))   
-        io.write(string.format("        },\n"))
+        io.write(string.format("    targetEnableActivationRates = %s,\n", tostring(options.targetEnableActivationRates)))
+        io.write(string.format("    targetEnableActivationRateItems = {\n"))
+        io.write(string.format("        hell = %s,\n", options.targetEnableActivationRateItems.hell))
+        io.write(string.format("        dark = %s,\n", options.targetEnableActivationRateItems.dark))
+        io.write(string.format("        blizzard = %s,\n", options.targetEnableActivationRateItems.blizzard))
+        io.write(string.format("        arrest = %s,\n", options.targetEnableActivationRateItems.arrest))
+        io.write(string.format("        seize = %s,\n", options.targetEnableActivationRateItems.seize))
+        io.write(string.format("        chaos = %s,\n", options.targetEnableActivationRateItems.chaos))
+        io.write(string.format("        havoc = %s,\n", options.targetEnableActivationRateItems.havoc))
+        io.write(string.format("    },\n"))
         io.write("}\n")
 
         io.close(file)
@@ -262,17 +262,17 @@ local function GetMonsterDataDeRolLe(monster)
     local skullMaxHP = 0
     local shellMaxHP = 0
     local newName = monster.name
-	local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
-	local ephineaHPScale = 1.0
-	
+    local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
+    local ephineaHPScale = 1.0
+    
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
-	if ephineaMonsters ~= 0 then
-		ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-		skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-		shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-	end
+    if ephineaMonsters ~= 0 then
+        ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+        skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+        shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+    end
     end
 
     if monster.index == 0 then
@@ -301,11 +301,11 @@ local function GetMonsterDataBarbaRay(monster)
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRaySkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRayShellHPMax)
-	if ephineaMonsters ~= 0 then
-		ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-		skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-		shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-	end
+    if ephineaMonsters ~= 0 then
+        ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+        skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+        shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+    end
     end
 
     if monster.index == 0 then
@@ -325,21 +325,21 @@ end
 
 local function GetMonsterData(monster)
     local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
-	
+    
     monster.id = pso.read_u16(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
 
     monster.HP = 0
     monster.HPMax = 0
-	
+    
     if ephineaMonsters ~= 0 then
-	monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
-	monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
+    monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
+    monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
     else
-	monster.HP = pso.read_u16(monster.address + _MonsterHP)
-	monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
-    end	
-	
+    monster.HP = pso.read_u16(monster.address + _MonsterHP)
+    monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+    end
+    
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
     if bpPointer ~= 0 then
         monster.Atp = pso.read_u16(bpPointer + _MonsterBpAtp)
@@ -820,7 +820,7 @@ local function PresentTargetMonster(monster)
                     else
                         lib_helpers.Text(false, ", ")
                         lib_helpers.Text(false, str)
-                    end    
+                    end
                 end
             end
         end
