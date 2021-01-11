@@ -87,65 +87,21 @@ local weaponSpecial =
     0xFFA67FE0, -- Demon's
 }
 local weaponAttributesEnabled = true
-local weaponAttributesNative =
+local weaponAttributes =
 {
-    100, 0xFFFFFFFF,
-     90, 0xFFFFFFFF,
-     80, 0xFFFFFFFF,
-     70, 0xFFFFFFFF,
-     60, 0xFFFFFFFF,
-     50, 0xFFFFFFFF,
-     40, 0xFFFFFFFF,
-     30, 0xFFFFFFFF,
-     20, 0xFFFFFFFF,
-     10, 0xFFFFFFFF,
-      0, 0xFFA0A0A0,
-     -1, 0xFFA0A0A0,
-}
-local weaponAttributesABeast =
-{
-    100, 0xFFFFFFFF,
-     90, 0xFFFFFFFF,
-     80, 0xFFFFFFFF,
-     70, 0xFFFFFFFF,
-     60, 0xFFFFFFFF,
-     50, 0xFFFFFFFF,
-     40, 0xFFFFFFFF,
-     30, 0xFFFFFFFF,
-     20, 0xFFFFFFFF,
-     10, 0xFFFFFFFF,
-      0, 0xFFA0A0A0,
-     -1, 0xFFA0A0A0,
-}
-local weaponAttributesMachine =
-{
-    100, 0xFFFFFFFF,
-     90, 0xFFFFFFFF,
-     80, 0xFFFFFFFF,
-     70, 0xFFFFFFFF,
-     60, 0xFFFFFFFF,
-     50, 0xFFFFFFFF,
-     40, 0xFFFFFFFF,
-     30, 0xFFFFFFFF,
-     20, 0xFFFFFFFF,
-     10, 0xFFFFFFFF,
-      0, 0xFFA0A0A0,
-     -1, 0xFFA0A0A0,
-}
-local weaponAttributesDark =
-{
-    100, 0xFFFFFFFF,
-     90, 0xFFFFFFFF,
-     80, 0xFFFFFFFF,
-     70, 0xFFFFFFFF,
-     60, 0xFFFFFFFF,
-     50, 0xFFFFFFFF,
-     40, 0xFFFFFFFF,
-     30, 0xFFFFFFFF,
-     20, 0xFFFFFFFF,
-     10, 0xFFFFFFFF,
-      0, 0xFFA0A0A0,
-     -1, 0xFFA0A0A0,
+--Value, Native,     A Beast,    Machine,    Dark
+    100, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     90, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     80, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     70, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     60, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     50, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     40, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     30, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     20, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     10, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+      0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0,
 }
 local weaponHit =
 {
@@ -223,10 +179,7 @@ return
     weaponKills = weaponKills,
     weaponSpecial = weaponSpecial,
     weaponAttributesEnabled = weaponAttributesEnabled,
-    weaponAttributesNative = weaponAttributesNative,
-    weaponAttributesABeast = weaponAttributesABeast,
-    weaponAttributesMachine = weaponAttributesMachine,
-    weaponAttributesDark = weaponAttributesDark,
+    weaponAttributes = weaponAttributes,
     weaponHit = weaponHit,
     armorName = armorName,
     armorStats = armorStats,

@@ -443,14 +443,13 @@ local function ProcessWeapon(item, floor)
             end
 
             result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            local tables = { lib_items_cfg.weaponAttributesNative, lib_items_cfg.weaponAttributesABeast, lib_items_cfg.weaponAttributesMachine, lib_items_cfg.weaponAttributesDark }
             for i=2,5,1 do
                 local stat = item.weapon.stats[i]
 
                 local statColor = lib_items_cfg.grey
-                for i2=1,table.getn(tables[i-1]),2 do
-                    if stat <= tables[i-1][i2] then
-                        statColor = tables[i-1][i2 + 1]
+                for i2=1,table.getn(lib_items_cfg.weaponAttributes),5 do
+                    if stat <= lib_items_cfg.weaponAttributes[i2] then
+                        statColor = lib_items_cfg.weaponAttributes[i2 + (i-1)]
                     end
                 end
                 if item.weapon.statpresence[i - 1] == 1 and item.weapon.stats[i] == 0 then
