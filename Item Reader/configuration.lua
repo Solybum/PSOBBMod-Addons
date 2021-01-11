@@ -239,7 +239,180 @@ local function ConfigurationWindow(configuration)
                 _configuration.floor.TransparentWindow = not _configuration.floor.TransparentWindow
                 this.changed = true
             end
-
+            
+            if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
+                _configuration.floor.EnableFilters = not _configuration.floor.EnableFilters
+                this.changed = true
+            end            
+            if _configuration.floor.EnableFilters then
+                if imgui.TreeNodeEx("Filter Drops") then 
+                    imgui.Text("Non-Rares")
+                    if imgui.Checkbox("Hide <40h Weapons", _configuration.floor.filter.HideLowHitWeapons) then
+                        _configuration.floor.filter.HideLowHitWeapons = not _configuration.floor.filter.HideLowHitWeapons
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 9)
+                    --imgui.SameLine(0, 25)
+                    if imgui.Checkbox("Hide <4s Armor & Barriers", _configuration.floor.filter.HideLowSocketArmor) then
+                        _configuration.floor.filter.HideLowSocketArmor = not _configuration.floor.filter.HideLowSocketArmor
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Useless Units", _configuration.floor.filter.HideUselessUnits) then
+                        _configuration.floor.filter.HideUselessUnits = not _configuration.floor.filter.HideUselessUnits
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 15)
+                    if imgui.Checkbox("Hide Useless Techs", _configuration.floor.filter.HideUselessTechs) then
+                        _configuration.floor.filter.HideUselessTechs = not _configuration.floor.filter.HideUselessTechs
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    
+                    imgui.Text("Consumables")
+                    if imgui.Checkbox("Hide Monomates", _configuration.floor.filter.HideMonomates) then
+                        _configuration.floor.filter.HideMonomates = not _configuration.floor.filter.HideMonomates
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 30)
+                    --imgui.SameLine(0, 58)
+                    if imgui.Checkbox("Hide Dimates", _configuration.floor.filter.HideDimates) then
+                        _configuration.floor.filter.HideDimates = not _configuration.floor.filter.HideDimates
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 65)
+                    --imgui.SameLine(0, 93)
+                    if imgui.Checkbox("Hide Trimates", _configuration.floor.filter.HideTrimates) then
+                        _configuration.floor.filter.HideTrimates = not _configuration.floor.filter.HideTrimates
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Monofluids", _configuration.floor.filter.HideMonofluids) then
+                        _configuration.floor.filter.HideMonofluids = not _configuration.floor.filter.HideMonofluids
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 31)
+                    --imgui.SameLine(0, 47)
+                    if imgui.Checkbox("Hide Difluids", _configuration.floor.filter.HideDifluids) then
+                        _configuration.floor.filter.HideDifluids = not _configuration.floor.filter.HideDifluids
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 66)
+                    --imgui.SameLine(0, 83)
+                    if imgui.Checkbox("Hide Trifluids", _configuration.floor.filter.HideTrifluids) then
+                        _configuration.floor.filter.HideTrifluids = not _configuration.floor.filter.HideTrifluids
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Sol Atomizers", _configuration.floor.filter.HideSolAtomizers) then
+                        _configuration.floor.filter.HideSolAtomizers = not _configuration.floor.filter.HideSolAtomizers
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 15)
+                    if imgui.Checkbox("Hide Moon Atomizers", _configuration.floor.filter.HideMoonAtomizers) then
+                        _configuration.floor.filter.HideMoonAtomizers = not _configuration.floor.filter.HideMoonAtomizers
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 18)
+                    if imgui.Checkbox("Hide Star Atomizers", _configuration.floor.filter.HideStarAtomizers) then
+                        _configuration.floor.filter.HideStarAtomizers = not _configuration.floor.filter.HideStarAtomizers
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Antidotes", _configuration.floor.filter.HideAntidotes) then
+                        _configuration.floor.filter.HideAntidotes = not _configuration.floor.filter.HideAntidotes
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 38)
+                    --imgui.SameLine(0, 58)
+                    if imgui.Checkbox("Hide Antiparalysis", _configuration.floor.filter.HideAntiparalysis) then
+                        _configuration.floor.filter.HideAntiparalysis = not _configuration.floor.filter.HideAntiparalysis
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Telepipes", _configuration.floor.filter.HideTelepipes) then
+                        _configuration.floor.filter.HideTelepipes = not _configuration.floor.filter.HideTelepipes
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 41)
+                    --imgui.SameLine(0, 58)
+                    if imgui.Checkbox("Hide Trap Visions", _configuration.floor.filter.HideTrapVisions) then
+                        _configuration.floor.filter.HideTrapVisions = not _configuration.floor.filter.HideTrapVisions
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+					
+                    imgui.Text("Grinders/Materials")
+                    if imgui.Checkbox("Hide Monogrinders", _configuration.floor.filter.HideMonogrinders) then
+                        _configuration.floor.filter.HideMonogrinders = not _configuration.floor.filter.HideMonogrinders
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 17)
+                    --imgui.SameLine(0, 24)
+                    if imgui.Checkbox("Hide Digrinders", _configuration.floor.filter.HideDigrinders) then
+                        _configuration.floor.filter.HideDigrinders = not _configuration.floor.filter.HideDigrinders
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 51)
+                    --imgui.SameLine(0, 62)
+                    if imgui.Checkbox("Hide Trigrinders", _configuration.floor.filter.HideTrigrinders) then
+                        _configuration.floor.filter.HideTrigrinders = not _configuration.floor.filter.HideTrigrinders
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide HP Materials", _configuration.floor.filter.HideHPMats) then
+                        _configuration.floor.filter.HideHPMats = not _configuration.floor.filter.HideHPMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 21)
+                    if imgui.Checkbox("Hide Power Mats", _configuration.floor.filter.HidePowerMats) then
+                        _configuration.floor.filter.HidePowerMats = not _configuration.floor.filter.HidePowerMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 44)
+                    --imgui.SameLine(0, 62)
+                    if imgui.Checkbox("Hide Luck Mats", _configuration.floor.filter.HideLuckMats) then
+                        _configuration.floor.filter.HideLuckMats = not _configuration.floor.filter.HideLuckMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide Mind Mats", _configuration.floor.filter.HideMindMats) then
+                        _configuration.floor.filter.HideMindMats = not _configuration.floor.filter.HideMindMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 36)
+                    --imgui.SameLine(0, 57)
+                    if imgui.Checkbox("Hide Defense Mats", _configuration.floor.filter.HideDefenseMats) then
+                        _configuration.floor.filter.HideDefenseMats = not _configuration.floor.filter.HideDefenseMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.SameLine(0, 32)
+                    --imgui.SameLine(0, 40)
+                    if imgui.Checkbox("Hide Evade Mats", _configuration.floor.filter.HideEvadeMats) then
+                        _configuration.floor.filter.HideEvadeMats = not _configuration.floor.filter.HideEvadeMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.TreePop()
+                end
+            end 
+            
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.floor.Anchor = imgui.Combo("Anchor", _configuration.floor.Anchor, anchorList, table.getn(anchorList))

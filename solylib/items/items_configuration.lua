@@ -1,7 +1,15 @@
 -- All colors are 0xAARRGGBB
-local white = 0xFFFFFFFF
+local blue = 0xFF0088F4
+local blue_light = 0xFF00DDF4
+local brown = 0xFF9A6020
 local grey = 0xFFA0A0A0
+local green = 0xFF00FF00
+local lavender = 0xFFDDB6F5
+local orange = 0xFFFFAA00
+local pink = 0xFFFF3898
 local red = 0xFFFF0000
+local white = 0xFFFFFFFF
+local yellow = 0xFFEAF718
 
 -- Item
 local itemIndex = 0xFFFFFFFF
@@ -81,33 +89,34 @@ local weaponSpecial =
 local weaponAttributesEnabled = true
 local weaponAttributes =
 {
-    100, 0xFFFFFFFF,
-    90, 0xFFFFFFFF,
-    80, 0xFFFFFFFF,
-    70, 0xFFFFFFFF,
-    60, 0xFFFFFFFF,
-    50, 0xFFFFFFFF,
-    40, 0xFFFFFFFF,
-    30, 0xFFFFFFFF,
-    20, 0xFFFFFFFF,
-    10, 0xFFFFFFFF,
-    0, 0xFFA0A0A0,
-    -1, 0xFFA0A0A0,
+--Value, Native,     A Beast,    Machine,    Dark
+    100, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     90, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     80, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     70, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     60, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     50, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     40, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     30, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     20, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+     10, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+      0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0,
+     -1, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0, 0xFFA0A0A0,
 }
 local weaponHit =
 {
     100, 0xFFFF0000,
-    90, 0xFFFF3800,
-    80, 0xFFFF7100,
-    70, 0xFFFFAA00,
-    60, 0xFFFFE200,
-    50, 0xFFE2FF00,
-    40, 0xFFAAFF00,
-    30, 0xFF71FF00,
-    20, 0xFF38FF00,
-    10, 0xFF00FF00,
-    0, 0xFFFFFFFF,
-    -1, 0xFFA0A0A0,
+     90, 0xFFFF3800,
+     80, 0xFFFF7100,
+     70, 0xFFFFAA00,
+     60, 0xFFFFE200,
+     50, 0xFFE2FF00,
+     40, 0xFFAAFF00,
+     30, 0xFF71FF00,
+     20, 0xFF38FF00,
+     10, 0xFF00FF00,
+      0, 0xFFFFFFFF,
+     -1, 0xFFA0A0A0,
 }
 
 -- ARMOR (Frame and Barrier)
@@ -147,9 +156,17 @@ local mesetaAmount = 0xFFFFFF00
 return
 {
     -- Colors
-    white = white,
+    blue = blue,
+    blue_light = blue_light,
+    brown = brown,
     grey = grey,
+    green = green,
+    lavender = lavender,
+    orange = orange,
+    pink = pink,
     red = red,
+    white = white,
+    yellow = yellow,
     itemIndex = itemIndex,
     itemEquipped = itemEquipped,
     weaponUntekked = weaponUntekked,
