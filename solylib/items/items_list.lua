@@ -1609,6 +1609,7 @@ local function AddServerItems(server)
         t[ 0x0102B1 ] = { COLOR_RARE, true } -- Bruce Banner
         t[ 0x0102B2 ] = { COLOR_RARE, true } -- AK-47
         t[ 0x0102B3 ] = { COLOR_RARE, true } --	Girl Scout Cookies
+        t[ 0x0102B4 ] = { COLOR_RARE, true } -- Ganondorf Shield
         t[ 0x010364 ] = { COLOR_RARE, true } --	Centurion/Battle
         t[ 0x010365 ] = { COLOR_RARE, true } -- Trap Search
         t[ 0x010366 ] = { COLOR_RARE, true } -- Centurion/Resist
