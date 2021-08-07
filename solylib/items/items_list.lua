@@ -1711,6 +1711,10 @@ local function AddServerItems(server)
         t[ 0x031016 ] = { COLOR_RARE, true } -- 4th Anniv. Silver Badge
         t[ 0x031017 ] = { COLOR_RARE, true } -- 4th Anniv. Gold Badge
         t[ 0x031018 ] = { COLOR_RARE, true } -- 4th Anniv. Platinum Badge
+	t[ 0x031019 ] = { COLOR_RARE, true } -- Anniv. Bronze Badge
+	t[ 0x03101A ] = { COLOR_RARE, true } -- Anniv. Silver Badge
+	t[ 0x03101B ] = { COLOR_RARE, true } -- Anniv. Gold Badge
+	t[ 0x03101C ] = { COLOR_RARE, true } -- Anniv. Platinum Badge
         t[ 0x03100E ] = { COLOR_RARE, true } -- Halloween Cookie
         t[ 0x03100F ] = { COLOR_RARE, true } -- Coal
         t[ 0x03160C ] = { COLOR_MUSIC, true } -- Disk Vol.13 "Get It Up"
