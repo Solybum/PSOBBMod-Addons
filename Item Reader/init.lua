@@ -585,7 +585,7 @@ local function ProcessBarrier(item, floor)
         end
 
         result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-        writeArmorStats(item)
+        result = result .. writeArmorStats(item)
     end
 
     return result
