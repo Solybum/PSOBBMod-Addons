@@ -85,15 +85,15 @@ if optionsLoaded then
     options.floor.filter.HideAntiparalysis  = lib_helpers.NotNilOrDefault(options.floor.filter.HideAntiparalysis, false)
     options.floor.filter.HideTelepipes      = lib_helpers.NotNilOrDefault(options.floor.filter.HideTelepipes, false)
     options.floor.filter.HideTrapVisions    = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrapVisions, false)
-	options.floor.filter.HideMonogrinders	= lib_helpers.NotNilOrDefault(options.floor.filter.HideMonogrinders, false)
-	options.floor.filter.HideDigrinders  	= lib_helpers.NotNilOrDefault(options.floor.filter.HideDigrinders, false)
-	options.floor.filter.HideTrigrinders 	= lib_helpers.NotNilOrDefault(options.floor.filter.HideTrigrinders, false)
-	options.floor.filter.HideHPMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideHPMats, false)
-	options.floor.filter.HidePowerMats  	= lib_helpers.NotNilOrDefault(options.floor.filter.HidePowerMats, false)
-	options.floor.filter.HideLuckMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideLuckMats, false)
-	options.floor.filter.HideMindMats  	    = lib_helpers.NotNilOrDefault(options.floor.filter.HideMindMats, false)
-	options.floor.filter.HideDefenseMats  	= lib_helpers.NotNilOrDefault(options.floor.filter.HideDefenseMats, false)
-	options.floor.filter.HideEvadeMats   	= lib_helpers.NotNilOrDefault(options.floor.filter.HideEvadeMats, false)
+    options.floor.filter.HideMonogrinders   = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonogrinders, false)
+    options.floor.filter.HideDigrinders     = lib_helpers.NotNilOrDefault(options.floor.filter.HideDigrinders, false)
+    options.floor.filter.HideTrigrinders    = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrigrinders, false)
+    options.floor.filter.HideHPMats         = lib_helpers.NotNilOrDefault(options.floor.filter.HideHPMats, false)
+    options.floor.filter.HidePowerMats      = lib_helpers.NotNilOrDefault(options.floor.filter.HidePowerMats, false)
+    options.floor.filter.HideLuckMats       = lib_helpers.NotNilOrDefault(options.floor.filter.HideLuckMats, false)
+    options.floor.filter.HideMindMats       = lib_helpers.NotNilOrDefault(options.floor.filter.HideMindMats, false)
+    options.floor.filter.HideDefenseMats    = lib_helpers.NotNilOrDefault(options.floor.filter.HideDefenseMats, false)
+    options.floor.filter.HideEvadeMats      = lib_helpers.NotNilOrDefault(options.floor.filter.HideEvadeMats, false)
 
     if options.mags == nil or type(options.mags) ~= "table" then
         options.mags = {}
@@ -304,6 +304,8 @@ local function SaveOptions(options)
 end
 
 local function TrimString(text, length)
+    -- default to "???" to prevent crashing for techniques when doing Alt+Backspace
+    text = text or "???"
     local result = text;
     if length > 0 then
         result = string.sub(text, 0, length)
