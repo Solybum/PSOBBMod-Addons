@@ -926,7 +926,7 @@ local function PresentInventory(save, index)
     end
     local itemCount = table.getn(cache_inventory.items)
 
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i", cache_inventory.meseta, itemCount)
+    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
 
     for i=1,itemCount,1 do
         ProcessItem(cache_inventory.items[i], false, save)
@@ -939,7 +939,7 @@ local function PresentBank(save)
     end
     local itemCount = table.getn(cache_bank.items)
 
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i", cache_bank.meseta, itemCount)
+    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
 
     for i=1,itemCount,1 do
         ProcessItem(cache_bank.items[i], false, save)
@@ -951,6 +951,15 @@ local function PresentFloor()
         last_floor_time = current_time
     end
     local itemCount = table.getn(cache_floor)
+
+    index = index or lib_items.Me
+    if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
+        cache_inventory = lib_items.GetInventory(index)
+        last_inventory_index = index
+        last_inventory_time = current_time
+    end
+    local invItemCount = table.getn(cache_inventory.items)
+    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
 
     for i=1,itemCount,1 do
         ProcessItem(cache_floor[i], true, false)
