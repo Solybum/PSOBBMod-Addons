@@ -205,6 +205,7 @@ end
 
 -- Append server specific items
 lib_items_list.AddServerItems(options.server)
+lib_unitxt.AddServerMagColors(options.server)
 
 local function SaveOptions(options)
     local file = io.open(optionsFileName, "w")

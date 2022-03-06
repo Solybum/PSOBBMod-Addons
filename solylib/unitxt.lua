@@ -165,6 +165,30 @@ local function GetMagColor(index)
     return magColor[index]
 end
 
+local function AddServerMagColors(server)
+    if server == 1 then -- Vanilla
+
+    elseif server == 2 then -- Ultima
+
+    elseif server == 3 then -- Ephinea
+
+        local ephineaNewMagColors = {
+            "Chartreuse", "Azure", "Royal Purple",
+            "Ruby", "Sapphire", "Emerald",
+            "Gold", "Silver", "Bronze",
+            "Plum", "Violet", "Goldenrod"
+        }
+
+        for i=1,table.getn(ephineaNewMagColors) do
+            -- 1 based indexes...
+            magColor[table.getn(magColor) + 1] = ephineaNewMagColors[i]
+        end
+
+    elseif server == 4 then -- Schthack
+
+    end
+end
+
 return
 {
     Read = Read,
@@ -180,4 +204,5 @@ return
     GetSRankName = GetSRankName,
     GetSRankSpecialName = GetSRankSpecialName,
     GetMagColor = GetMagColor,
+    AddServerMagColors = AddServerMagColors,
 }
