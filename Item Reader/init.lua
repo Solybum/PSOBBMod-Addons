@@ -63,6 +63,7 @@ if optionsLoaded then
     options.floor.NoMove             = lib_helpers.NotNilOrDefault(options.floor.NoMove, "")
     options.floor.AlwaysAutoResize   = lib_helpers.NotNilOrDefault(options.floor.AlwaysAutoResize, "")
     options.floor.TransparentWindow  = lib_helpers.NotNilOrDefault(options.floor.TransparentWindow, false)
+    options.floor.ShowInvMesetaAndItemCount = lib_helpers.NotNilOrDefault(options.floor.ShowInvMesetaAndItemCount, false)
     options.floor.EnableFilters      = lib_helpers.NotNilOrDefault(options.floor.EnableFilters, false)
 
     if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
@@ -255,6 +256,7 @@ local function SaveOptions(options)
         io.write(string.format("        NoMove = \"%s\",\n", options.floor.NoMove))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.floor.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
+        io.write(string.format("        ShowInvMesetaAndItemCount = %s,\n", options.floor.ShowInvMesetaAndItemCount))
         io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
         io.write(string.format("        filter = {\n"))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
@@ -925,8 +927,8 @@ local function PresentInventory(save, index)
         last_inventory_index = index
         last_inventory_time = current_time
     end
-    local itemCount = table.getn(cache_inventory.items)
 
+    local itemCount = table.getn(cache_inventory.items)
     lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
 
     for i=1,itemCount,1 do
@@ -959,8 +961,11 @@ local function PresentFloor()
         last_inventory_index = index
         last_inventory_time = current_time
     end
-    local invItemCount = table.getn(cache_inventory.items)
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+
+    if options.floor.ShowInvMesetaAndItemCount then
+        local invItemCount = table.getn(cache_inventory.items)
+        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+    end
 
     for i=1,itemCount,1 do
         ProcessItem(cache_floor[i], true, false)
