@@ -240,6 +240,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
             
+            if imgui.Checkbox("Show inventory meseta and item count", _configuration.floor.ShowInvMesetaAndItemCount) then
+                _configuration.floor.ShowInvMesetaAndItemCount = not _configuration.floor.ShowInvMesetaAndItemCount
+                this.changed = true
+            end
+
             if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
                 _configuration.floor.EnableFilters = not _configuration.floor.EnableFilters
                 this.changed = true
