@@ -3,6 +3,7 @@ local lib_helpers = require("solylib.helpers")
 local lib_characters = require("solylib.characters")
 local lib_unitxt = require("solylib.unitxt")
 local lib_items = require("solylib.items.items")
+local lib_menu = require("solylib.menu")
 local cfg = require("Monster Reader.configuration")
 local cfgMonsters = require("Monster Reader.monsters")
 local optionsLoaded, options = pcall(require, "Monster Reader.options")
@@ -20,17 +21,20 @@ if optionsLoaded then
     options.showMonsterStatus         = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
     options.showMonsterID             = lib_helpers.NotNilOrDefault(options.showMonsterID, false)
 
-    options.mhpEnableWindow      = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
-    options.mhpChanged           = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
-    options.mhpAnchor            = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
-    options.mhpX                 = lib_helpers.NotNilOrDefault(options.mhpX, 50)
-    options.mhpY                 = lib_helpers.NotNilOrDefault(options.mhpY, 50)
-    options.mhpW                 = lib_helpers.NotNilOrDefault(options.mhpW, 450)
-    options.mhpH                 = lib_helpers.NotNilOrDefault(options.mhpH, 350)
-    options.mhpNoTitleBar        = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
-    options.mhpNoResize          = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
-    options.mhpNoMove            = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
-    options.mhpTransparentWindow = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
+    options.mhpEnableWindow            = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
+    options.mhpHideWhenMenu            = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenu, true)
+    options.mhpHideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.mhpHideWhenSymbolChat, true)
+    options.mhpHideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenuUnavailable, true)
+    options.mhpChanged                 = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
+    options.mhpAnchor                  = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
+    options.mhpX                       = lib_helpers.NotNilOrDefault(options.mhpX, 50)
+    options.mhpY                       = lib_helpers.NotNilOrDefault(options.mhpY, 50)
+    options.mhpW                       = lib_helpers.NotNilOrDefault(options.mhpW, 450)
+    options.mhpH                       = lib_helpers.NotNilOrDefault(options.mhpH, 350)
+    options.mhpNoTitleBar              = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
+    options.mhpNoResize                = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
+    options.mhpNoMove                  = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
+    options.mhpTransparentWindow       = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
     options.targetEnableWindow          = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
     options.targetChanged               = lib_helpers.NotNilOrDefault(options.targetChanged, false)
@@ -71,6 +75,9 @@ else
         showMonsterID = false,
 
         mhpEnableWindow = true,
+        mhpHideWhenMenu = false,
+        mhpHideWhenSymbolChat = false,
+        mhpHideWhenMenuUnavailable = false,
         mhpChanged = false,
         mhpAnchor = 1,
         mhpX = 50,
@@ -126,6 +133,9 @@ local function SaveOptions(options)
         io.write(string.format("    showMonsterID = %s,\n", tostring(options.showMonsterID)))
         io.write("\n")
         io.write(string.format("    mhpEnableWindow = %s,\n", tostring(options.mhpEnableWindow)))
+        io.write(string.format("    mhpHideWhenMenu = %s,\n", tostring(options.mhpHideWhenMenu)))
+        io.write(string.format("    mhpHideWhenSymbolChat = %s,\n", tostring(options.mhpHideWhenSymbolChat)))
+        io.write(string.format("    mhpHideWhenMenuUnavailable = %s,\n", tostring(options.mhpHideWhenMenuUnavailable)))
         io.write(string.format("    mhpChanged = %s,\n", tostring(options.mhpChanged)))
         io.write(string.format("    mhpAnchor = %i,\n", options.mhpAnchor))
         io.write(string.format("    mhpX = %i,\n", options.mhpX))
@@ -889,23 +899,24 @@ local function present()
         return
     end
 
-    if options.mhpEnableWindow then
+    if (options.mhpEnableWindow == true)
+        and (options.mhpHideWhenMenu == false or lib_menu.IsMenuOpen() == false)
+        and (options.mhpHideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
+        and (options.mhpHideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
+    then
         if firstPresent or options.mhpChanged then
             options.mhpChanged = false
             local ps = lib_helpers.GetPosBySizeAndAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH, options.mhpAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
         end
-
         if options.mhpTransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
-
         if imgui.Begin("Monster Reader - HP", nil, { options.mhpNoTitleBar, options.mhpNoResize, options.mhpNoMove }) then
             PresentMonsters()
         end
         imgui.End()
-
         if options.mhpTransparentWindow == true then
             imgui.PopStyleColor()
         end

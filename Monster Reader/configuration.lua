@@ -49,6 +49,19 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Hide when menus are open", _configuration.mhpHideWhenMenu) then
+                _configuration.mhpHideWhenMenu = not _configuration.mhpHideWhenMenu
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.mhpHideWhenSymbolChat) then
+                _configuration.mhpHideWhenSymbolChat = not _configuration.mhpHideWhenSymbolChat
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.mhpHideWhenMenuUnavailable) then
+                _configuration.mhpHideWhenMenuUnavailable = not _configuration.mhpHideWhenMenuUnavailable
+                this.changed = true
+            end
+
             if imgui.Checkbox("No title bar", _configuration.mhpNoTitleBar == "NoTitleBar") then
                 if _configuration.mhpNoTitleBar == "NoTitleBar" then
                     _configuration.mhpNoTitleBar = ""
