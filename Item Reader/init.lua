@@ -64,6 +64,8 @@ if optionsLoaded then
     options.floor.AlwaysAutoResize   = lib_helpers.NotNilOrDefault(options.floor.AlwaysAutoResize, "")
     options.floor.TransparentWindow  = lib_helpers.NotNilOrDefault(options.floor.TransparentWindow, false)
     options.floor.ShowInvMesetaAndItemCount = lib_helpers.NotNilOrDefault(options.floor.ShowInvMesetaAndItemCount, false)
+    options.floor.ShowMultiFloor     = lib_helpers.NotNilOrDefault(options.floor.ShowMultiFloor, false)
+    options.floor.OtherFloorsBrightnessPercent = lib_helpers.NotNilOrDefault(options.floor.OtherFloorsBrightnessPercent, 100)
     options.floor.EnableFilters      = lib_helpers.NotNilOrDefault(options.floor.EnableFilters, false)
 
     if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
@@ -157,6 +159,8 @@ else
             NoMove = "",
             AlwaysAutoResize = "",
             TransparentWindow = false,
+            ShowMultiFloor = false,
+            OtherFloorsBrightnessPercent = 100,
             EnableFilters = false,
             filter = {
                 HideLowHitWeapons = false,
@@ -257,6 +261,8 @@ local function SaveOptions(options)
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.floor.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
         io.write(string.format("        ShowInvMesetaAndItemCount = %s,\n", options.floor.ShowInvMesetaAndItemCount))
+        io.write(string.format("        ShowMultiFloor = %s,\n", options.floor.ShowMultiFloor))
+        io.write(string.format("        OtherFloorsBrightnessPercent = %i,\n", options.floor.OtherFloorsBrightnessPercent))        
         io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
         io.write(string.format("        filter = {\n"))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
@@ -306,6 +312,30 @@ local function SaveOptions(options)
     end
 end
 
+local overrideAlphaPercent = 1
+
+-- Wrapper function to simplify color changes
+local function TextCWrapper(newLine, col, fmt, ...)
+    -- Update the color if one was specified here.
+    col = col or 0xFFFFFFFF
+
+    local rgb = bit.band(col, 0x00FFFFFF)
+    local oldAlpha = bit.rshift(col, 24)
+    local newAlpha = math.floor(oldAlpha * overrideAlphaPercent)
+    col = bit.bor(bit.lshift(newAlpha, 24), rgb)
+
+    return lib_helpers.TextC(newLine, col, fmt, ...)
+end
+
+-- Function to set or reset the overrideAlphaPercent for TextC
+local function SetTextCAlphaPercent(alphaOpt)
+    if not alphaOpt then
+        overrideAlphaPercent = 1 -- default
+    elseif alphaOpt and alphaOpt >= 0 and alphaOpt <= 1 then
+        overrideAlphaPercent = alphaOpt
+    end
+end
+
 local function TrimString(text, length)
     -- default to "???" to prevent crashing for techniques when doing Alt+Backspace
     text = text or "???"
@@ -324,7 +354,7 @@ end
 local function writeArmorStats(item, floor)
     local result = ""
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
 
     local statColor
     if item.armor.dfp == 0 then
@@ -332,31 +362,31 @@ local function writeArmorStats(item, floor)
     else
         statColor = lib_items_cfg.armorStats
     end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+    result = result .. TextCWrapper(false, statColor, "%i", item.armor.dfp)
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
     if item.armor.dfpMax == 0 then
         statColor = lib_items_cfg.grey
     else
         statColor = lib_items_cfg.armorStats
     end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.dfpMax)
+    result = result .. TextCWrapper(false, statColor, "%i", item.armor.dfpMax)
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, " | ")
+    result = result .. TextCWrapper(false, lib_items_cfg.white, " | ")
 
     if item.armor.evp == 0 then
         statColor = lib_items_cfg.grey
     else
         statColor = lib_items_cfg.armorStats
     end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evp)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+    result = result .. TextCWrapper(false, statColor, "%i", item.armor.evp)
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
     if item.armor.evpMax == 0 then
         statColor = lib_items_cfg.grey
     else
         statColor = lib_items_cfg.armorStats
     end
-    result = result .. lib_helpers.TextC(false, statColor, "%i", item.armor.evpMax)
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    result = result .. TextCWrapper(false, statColor, "%i", item.armor.evpMax)
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
 
     return result
 end
@@ -384,11 +414,11 @@ local function ProcessWeapon(item, floor)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -397,57 +427,57 @@ local function ProcessWeapon(item, floor)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
         if options.showEquippedItems then
             if item.equipped then
-                lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                TextCWrapper(false, lib_items_cfg.white, "[")
+                TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
+                TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
 
         if item.weapon.wrapped or item.weapon.untekked then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
             if item.weapon.wrapped and item.weapon.untekked then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W|U")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponUntekked, "W|U")
             elseif item.weapon.wrapped then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "W")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponUntekked, "W")
             elseif item.weapon.untekked then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponUntekked, "U")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponUntekked, "U")
             end
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
         end
 
         if item.weapon.isSRank then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankTitle, "S-RANK ")
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankName, "%s ", item.name)
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankCustomName, "%s ", item.weapon.nameSrank)
+            result = result .. TextCWrapper(false, lib_items_cfg.weaponSRankTitle, "S-RANK ")
+            result = result .. TextCWrapper(false, lib_items_cfg.weaponSRankName, "%s ", item.name)
+            result = result .. TextCWrapper(false, lib_items_cfg.weaponSRankCustomName, "%s ", item.weapon.nameSrank)
 
             if item.weapon.grind > 0 then
-                 result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+                 result = result .. TextCWrapper(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
             end
 
             if item.weapon.specialSRank ~= 0 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSRankSpecial[item.weapon.specialSRank], lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponSRankSpecial[item.weapon.specialSRank], lib_unitxt.GetSRankSpecialName(item.weapon.specialSRank))
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         else
-            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
             if item.weapon.grind > 0 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
             end
 
             if item.weapon.special ~= 0 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponSpecial[item.weapon.special + 1], lib_unitxt.GetSpecialName(item.weapon.special))
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponSpecial[item.weapon.special + 1], lib_unitxt.GetSpecialName(item.weapon.special))
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
             end
 
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
             for i=2,5,1 do
                 local stat = item.weapon.stats[i]
 
@@ -461,12 +491,12 @@ local function ProcessWeapon(item, floor)
                     statColor = lib_items_cfg.red
                 end
 
-                result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
+                result = result .. TextCWrapper(false, statColor, "%i", stat)
 
                 if i < 5 then
-                    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
+                    result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
                 else
-                    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
+                    result = result .. TextCWrapper(false, lib_items_cfg.white, "|")
                 end
             end
 
@@ -480,13 +510,13 @@ local function ProcessWeapon(item, floor)
             if item.weapon.statpresence[5] == 1 and item.weapon.stats[6] == 0 then
                 statColor = lib_items_cfg.red
             end
-            result = result .. lib_helpers.TextC(false, statColor, "%i", stat)
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            result = result .. TextCWrapper(false, statColor, "%i", stat)
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
 
             if item.kills ~= 0 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+                result = result .. TextCWrapper(false, lib_items_cfg.weaponKills, "%iK", item.kills)
+                result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
     end
@@ -514,11 +544,11 @@ local function ProcessFrame(item, floor)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -527,22 +557,22 @@ local function ProcessFrame(item, floor)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
         if options.showEquippedItems then
             if item.equipped then
-                lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                TextCWrapper(false, lib_items_cfg.white, "[")
+                TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
+                TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
 
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+        result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.armorSlots, "%iS", item.armor.slots)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+        result = result .. TextCWrapper(false, lib_items_cfg.armorSlots, "%iS", item.armor.slots)
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
     return result
@@ -565,11 +595,11 @@ local function ProcessBarrier(item, floor)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -578,18 +608,18 @@ local function ProcessBarrier(item, floor)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
         if options.showEquippedItems then
             if item.equipped then
-                lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                TextCWrapper(false, lib_items_cfg.white, "[")
+                TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
+                TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
 
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+        result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)
     end
 
@@ -613,11 +643,11 @@ local function ProcessUnit(item, floor)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -626,14 +656,14 @@ local function ProcessUnit(item, floor)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
         if options.showEquippedItems then
             if item.equipped then
-                lib_helpers.TextC(false, lib_items_cfg.white, "[")
-                lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-                lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+                TextCWrapper(false, lib_items_cfg.white, "[")
+                TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
+                TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
 
@@ -650,12 +680,12 @@ local function ProcessUnit(item, floor)
             nameStr = nameStr .. "++"
         end
 
-        result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(nameStr, options.itemNameLength))
+        result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(nameStr, options.itemNameLength))
 
         if item.kills ~= 0 then
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.weaponKills, "%iK", item.kills)
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+            result = result .. TextCWrapper(false, lib_items_cfg.weaponKills, "%iK", item.kills)
+            result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
         end
     end
 
@@ -666,11 +696,11 @@ local function ProcessMag(item)
     imgui.Text("")
 
     if options.showItemIDs then
-        lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+        TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
     if options.showItemData then
-        lib_helpers.TextC(false, 0xFFFFFFFF,
+        TextCWrapper(false, 0xFFFFFFFF,
             "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
             item.data[5], item.data[6], item.data[7], item.data[8],
@@ -679,14 +709,14 @@ local function ProcessMag(item)
     end
 
     if options.printItemIndex then
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+        TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
     if options.showEquippedItems then
         if item.equipped then
-            lib_helpers.TextC(false, lib_items_cfg.white, "[")
-            lib_helpers.TextC(false, lib_items_cfg.itemEquipped, "E")
-            lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+            TextCWrapper(false, lib_items_cfg.white, "[")
+            TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
+            TextCWrapper(false, lib_items_cfg.white, "] ")
         end
     end
 
@@ -695,7 +725,7 @@ local function ProcessMag(item)
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     end
-    result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+    result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
     local timerColor = lib_items_cfg.white
     for i=1,table.getn(lib_items_cfg.magFeedTimer),2 do
@@ -704,35 +734,35 @@ local function ProcessMag(item)
         end
     end
 
-    lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    lib_helpers.TextC(false, timerColor, os.date("!%M:%S", item.mag.timer))
-    lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    TextCWrapper(false, lib_items_cfg.white, "[")
+    TextCWrapper(false, timerColor, os.date("!%M:%S", item.mag.timer))
+    TextCWrapper(false, lib_items_cfg.white, "] ")
 
     if options.hideMagStats == false then
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.pow)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.dex)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "/")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magStats, "%.2f", item.mag.mind)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+        result = result .. TextCWrapper(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
+        result = result .. TextCWrapper(false, lib_items_cfg.magStats, "%.2f", item.mag.pow)
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
+        result = result .. TextCWrapper(false, lib_items_cfg.magStats, "%.2f", item.mag.dex)
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
+        result = result .. TextCWrapper(false, lib_items_cfg.magStats, "%.2f", item.mag.mind)
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
     if options.hideMagPBs == false then
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, options.shortPBNames))
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "|")
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, options.shortPBNames))
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+        result = result .. TextCWrapper(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "|")
+        result = result .. TextCWrapper(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbC, options.shortPBNames))
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "|")
+        result = result .. TextCWrapper(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbR, options.shortPBNames))
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "[")
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
-    result = result .. lib_helpers.TextC(false, lib_items_cfg.white, "] ")
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+    result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+    result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
 
     return result
 end
@@ -811,11 +841,11 @@ local function ProcessTool(item, floor)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -824,16 +854,16 @@ local function ProcessTool(item, floor)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
         if item.data[2] == 2 then
-            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
-            result = result .. lib_helpers.TextC(false, lib_items_cfg.techLevel, "Lv%i ", item.tool.level)
+            result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            result = result .. TextCWrapper(false, lib_items_cfg.techLevel, "Lv%i ", item.tool.level)
         else
-            result = result .. lib_helpers.TextC(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
             if item.tool.count > 0 then
-                result = result .. lib_helpers.TextC(false, lib_items_cfg.toolAmount, "x%i ", item.tool.count)
+                result = result .. TextCWrapper(false, lib_items_cfg.toolAmount, "x%i ", item.tool.count)
             end
         end
     end
@@ -846,11 +876,11 @@ local function ProcessMeseta(item)
         imgui.Text("")
 
         if options.showItemIDs then
-            lib_helpers.TextC(false, 0xFFFFFFFF, "%08X ", item.id)
+            TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
         end
 
         if options.showItemData then
-            lib_helpers.TextC(false, 0xFFFFFFFF,
+            TextCWrapper(false, 0xFFFFFFFF,
                 "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
                 item.data[1], item.data[2], item.data[3], item.data[4],
                 item.data[5], item.data[6], item.data[7], item.data[8],
@@ -859,11 +889,11 @@ local function ProcessMeseta(item)
         end
 
         if options.printItemIndex then
-            lib_helpers.TextC(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
+            TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
         end
 
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.mesetaName, "%s ", item.name)
-        result = result .. lib_helpers.TextC(false, lib_items_cfg.mesetaAmount, "%i ", item.meseta)
+        result = result .. TextCWrapper(false, lib_items_cfg.mesetaName, "%s ", item.name)
+        result = result .. TextCWrapper(false, lib_items_cfg.mesetaAmount, "%i ", item.meseta)
     end
     return result
 end
@@ -920,6 +950,7 @@ local last_mags_time = 0
 local cache_mags = nil
 
 local function PresentInventory(save, index)
+    SetTextCAlphaPercent()
     index = index or lib_items.Me
 
     if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
@@ -929,28 +960,34 @@ local function PresentInventory(save, index)
     end
 
     local itemCount = table.getn(cache_inventory.items)
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
+    TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
 
     for i=1,itemCount,1 do
         ProcessItem(cache_inventory.items[i], false, save)
     end
 end
 local function PresentBank(save)
+    SetTextCAlphaPercent()
     if last_bank_time + update_delay < current_time or cache_bank == nil then
         cache_bank = lib_items.GetBank()
         last_bank_time = current_time
     end
     local itemCount = table.getn(cache_bank.items)
 
-    lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
+    TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
 
     for i=1,itemCount,1 do
         ProcessItem(cache_bank.items[i], false, save)
     end
 end
 local function PresentFloor()
+    SetTextCAlphaPercent()
     if last_floor_time + update_delay < current_time or cache_floor == nil then
-        cache_floor = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
+        if options.floor.ShowMultiFloor then
+            cache_floor = lib_items.GetMultiFloorItemList(options.invertItemList)
+        else
+            cache_floor = lib_items.GetItemList(lib_items.NoOwner, options.invertItemList)
+        end
         last_floor_time = current_time
     end
     local itemCount = table.getn(cache_floor)
@@ -964,14 +1001,23 @@ local function PresentFloor()
 
     if options.floor.ShowInvMesetaAndItemCount then
         local invItemCount = table.getn(cache_inventory.items)
-        lib_helpers.TextC(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+        TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
     end
 
+    local myFloor = lib_characters.GetPlayerFloor(lib_characters.GetSelf())
     for i=1,itemCount,1 do
+        local item = cache_floor[i]
+        -- If item isn't on the same floor, then it's from multifloor selection.
+        if item.floorNumber and item.floorNumber ~= myFloor then
+            SetTextCAlphaPercent(options.floor.OtherFloorsBrightnessPercent / 100)
+        else
+            SetTextCAlphaPercent()
+        end
         ProcessItem(cache_floor[i], true, false)
     end
 end
 local function PresentMags()
+    SetTextCAlphaPercent()
     if last_mags_time + update_delay < current_time or cache_mags == nil then
         cache_mags = lib_items.GetItemList(lib_items.Me, false)
         last_mags_time = current_time
@@ -1032,7 +1078,6 @@ local function PresentAIO()
     end
 
     local childWindowName = "Item Reader - AIO - ItemList"
-    --imgui.BeginChild(childWindowName, 0, 0, false, {"HorizontalScrollbar", "AlwaysAutoResize"})
     if aioSelectedInventory == 1 then
         PresentInventory(save, lib_items.Me)
     elseif aioSelectedInventory == 2 then
@@ -1044,7 +1089,6 @@ local function PresentAIO()
     else
         PresentInventory(save, aioSelectedInventory - 5)
     end
-    --imgui.EndChild()
 end
 
 local function present()

@@ -85,7 +85,7 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
-
+            
             imgui.TreePop()
         end
 
@@ -237,12 +237,27 @@ local function ConfigurationWindow(configuration)
 
             if imgui.Checkbox("Transparent window", _configuration.floor.TransparentWindow) then
                 _configuration.floor.TransparentWindow = not _configuration.floor.TransparentWindow
+                _configuration.floor.changed = true
                 this.changed = true
             end
             
             if imgui.Checkbox("Show inventory meseta and item count", _configuration.floor.ShowInvMesetaAndItemCount) then
                 _configuration.floor.ShowInvMesetaAndItemCount = not _configuration.floor.ShowInvMesetaAndItemCount
+                _configuration.floor.changed = true
                 this.changed = true
+            end
+
+            if imgui.Checkbox("Show items on all floors", _configuration.floor.ShowMultiFloor) then
+                _configuration.floor.ShowMultiFloor = not _configuration.floor.ShowMultiFloor
+                _configuration.floor.changed = true
+                this.changed = true
+            end
+            if _configuration.floor.ShowMultiFloor then
+                success, _configuration.floor.OtherFloorsBrightnessPercent = imgui.SliderInt("Text alpha percent", _configuration.floor.OtherFloorsBrightnessPercent, 0, 100)
+                if success then
+                    _configuration.floor.changed = true
+                    this.changed = true
+                end
             end
 
             if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
