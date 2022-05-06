@@ -253,11 +253,17 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
             if _configuration.floor.ShowMultiFloor then
-                success, _configuration.floor.OtherFloorsBrightnessPercent = imgui.SliderInt("Text alpha percent", _configuration.floor.OtherFloorsBrightnessPercent, 0, 100)
+                imgui.PushItemWidth(100)
+                local enteredValue
+                success, enteredValue = imgui.InputInt("Brightness percent for other floors", _configuration.floor.OtherFloorsBrightnessPercent)
                 if success then
+                    if enteredValue >= 0 and enteredValue <= 100 then
+                        _configuration.floor.OtherFloorsBrightnessPercent = enteredValue
+                    end
                     _configuration.floor.changed = true
                     this.changed = true
                 end
+                imgui.PopItemWidth()
             end
 
             if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
