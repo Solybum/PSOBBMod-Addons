@@ -170,6 +170,10 @@ local function GetPlayerParalyzedStatus(player)
     return pso.read_u32(player + 0x25C) == 0x10
 end
 
+local function GetPlayerFloor(player)
+    return pso.read_u32(player + 0x3f0)
+end
+
 local function GetPlayerIsCast(player)
     local result = false
     local equipFlags = pso.read_u8(player + 0x964)
@@ -202,4 +206,5 @@ return
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
     GetPlayerIsCast = GetPlayerIsCast,    
     Techniques = Techniques,
+    GetPlayerFloor = GetPlayerFloor,
 }
