@@ -1004,7 +1004,11 @@ local function PresentFloor()
         TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
     end
 
-    local myFloor = lib_characters.GetPlayerFloor(lib_characters.GetSelf())
+    local myPlayer = lib_characters.GetSelf()
+    local myFloor = -1
+    if myPlayer ~= 0 then 
+        myFloor = lib_characters.GetPlayerFloor(myPlayer)
+    end
     for i=1,itemCount,1 do
         local item = cache_floor[i]
         -- If item isn't on the same floor, then it's from multifloor selection.

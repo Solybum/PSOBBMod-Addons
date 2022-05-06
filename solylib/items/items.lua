@@ -569,7 +569,11 @@ local function GetMultiFloorItemList(inverted)
         return itemTable
     end
 
-    local myFloor = lib_characters.GetPlayerFloor(lib_characters.GetSelf())
+    local myPlayer = lib_characters.GetSelf()
+    local myFloor = -1
+    if myPlayer ~= 0 then
+        myFloor = lib_characters.GetPlayerFloor(myPlayer)
+    end
     -- Loop through all floor numbers and read the stored floor items.
     -- Note that PSOBB has a limit on a vanilla client for number of items
     -- stored. But the current floor's items are generated on demand regardless
