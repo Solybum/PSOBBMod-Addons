@@ -992,14 +992,15 @@ local function PresentFloor()
     end
     local itemCount = table.getn(cache_floor)
 
-    --[[index = index or lib_items.Me
-    if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
-        cache_inventory = lib_items.GetInventory(index)
-        last_inventory_index = index
-        last_inventory_time = current_time
-    end]]
-
+    -- If user wants to display their meseta and inventory count, then go get the inventory cache. 
     if options.floor.ShowInvMesetaAndItemCount then
+        index = index or lib_items.Me
+        if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
+            cache_inventory = lib_items.GetInventory(index)
+            last_inventory_index = index
+            last_inventory_time = current_time
+        end
+
         local invItemCount = table.getn(cache_inventory.items)
         TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
     end
