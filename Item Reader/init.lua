@@ -66,6 +66,7 @@ if optionsLoaded then
     options.floor.ShowInvMesetaAndItemCount = lib_helpers.NotNilOrDefault(options.floor.ShowInvMesetaAndItemCount, false)
     options.floor.ShowMultiFloor     = lib_helpers.NotNilOrDefault(options.floor.ShowMultiFloor, false)
     options.floor.OtherFloorsBrightnessPercent = lib_helpers.NotNilOrDefault(options.floor.OtherFloorsBrightnessPercent, 100)
+    options.floor.OtherFloorsPrependString = lib_helpers.NotNilOrDefault(options.floor.OtherFloorsPrependString, "")
     options.floor.EnableFilters      = lib_helpers.NotNilOrDefault(options.floor.EnableFilters, false)
 
     if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
@@ -161,6 +162,7 @@ else
             TransparentWindow = false,
             ShowMultiFloor = false,
             OtherFloorsBrightnessPercent = 100,
+            OtherFloorsPrependString = "",
             EnableFilters = false,
             filter = {
                 HideLowHitWeapons = false,
@@ -262,7 +264,8 @@ local function SaveOptions(options)
         io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
         io.write(string.format("        ShowInvMesetaAndItemCount = %s,\n", options.floor.ShowInvMesetaAndItemCount))
         io.write(string.format("        ShowMultiFloor = %s,\n", options.floor.ShowMultiFloor))
-        io.write(string.format("        OtherFloorsBrightnessPercent = %i,\n", options.floor.OtherFloorsBrightnessPercent))        
+        io.write(string.format("        OtherFloorsBrightnessPercent = %i,\n", options.floor.OtherFloorsBrightnessPercent))
+        io.write(string.format("        OtherFloorsPrependString = \"%s\",\n", options.floor.OtherFloorsPrependString))
         io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
         io.write(string.format("        filter = {\n"))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
@@ -313,8 +316,9 @@ local function SaveOptions(options)
 end
 
 local overrideAlphaPercent = 1
+local TextCCallback = nil
 
--- Wrapper function to simplify color changes
+-- Wrapper function to simplify color changes.
 local function TextCWrapper(newLine, col, fmt, ...)
     -- Update the color if one was specified here.
     col = col or 0xFFFFFFFF
@@ -327,12 +331,48 @@ local function TextCWrapper(newLine, col, fmt, ...)
     return lib_helpers.TextC(newLine, col, fmt, ...)
 end
 
--- Function to set or reset the overrideAlphaPercent for TextC
+-- Function to set or reset the overrideAlphaPercent for TextCWrapper.
 local function SetTextCAlphaPercent(alphaOpt)
     if not alphaOpt then
         overrideAlphaPercent = 1 -- default
     elseif alphaOpt and alphaOpt >= 0 and alphaOpt <= 1 then
         overrideAlphaPercent = alphaOpt
+    end
+end
+
+-- Provide a callback to call on the item before displaying anything on that line.
+local function SetTextCPrependCallback(func)
+    TextCCallback = func or nil
+end
+
+-- Clears the additional wrapper functionality.
+local function ClearTextCOptions()
+    SetTextCAlphaPercent()
+    SetTextCPrependCallback()
+end
+
+-- Called to start the next line for an item. If a callback is provided, also calls it.
+local function BeginImguiLineForItem(item)
+    TextCWrapper(true, 0, "")
+    if TextCCallback then
+        TextCCallback(item)
+    end
+end
+
+-- Callback for BeginImguiLineForItem() to add an indicator string at the beginning of a line.
+local function PrependMultifloorStringToItem(item)
+    local myFloor = lib_characters.GetCurrentFloorSelf()
+    if (TextCWrapper and item and item.floorNumber and item.floorNumber ~= myFloor and
+        options.floor.OtherFloorsPrependString and string.len(options.floor.OtherFloorsPrependString) > 0) then
+        -- Unfortunately replacing '%' with '%%' still isn't sufficient when using TextC because no variadic arg support.
+        -- The configuration window should have prevented this, but just in case someone modified options.lua and made
+        -- this mistake...
+        local str = options.floor.OtherFloorsPrependString
+        -- Try to find '%' character
+        if string.match(str, "%%") == nil then
+            -- Not found, safe to use
+            TextCWrapper(false, lib_items_cfg.white, "%s ", str)
+        end        
     end
 end
 
@@ -411,7 +451,7 @@ local function ProcessWeapon(item, floor)
     end
 
     if show_item then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -541,7 +581,8 @@ local function ProcessFrame(item, floor)
     end
 
     if show_item then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
+        
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -592,7 +633,7 @@ local function ProcessBarrier(item, floor)
     end
 
     if show_item then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -640,7 +681,7 @@ local function ProcessUnit(item, floor)
     end
 
     if show_item then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -693,7 +734,7 @@ local function ProcessUnit(item, floor)
 end
 local function ProcessMag(item)
     local result = ""
-    imgui.Text("")
+    BeginImguiLineForItem(item)
 
     if options.showItemIDs then
         TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -838,7 +879,7 @@ local function ProcessTool(item, floor)
     end
 
     if show_item then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -873,7 +914,7 @@ end
 local function ProcessMeseta(item)
     local result = ""
     if options.showItemIDs == false and options.ignoreMeseta == false then
-        imgui.Text("")
+        BeginImguiLineForItem(item)
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -950,7 +991,7 @@ local last_mags_time = 0
 local cache_mags = nil
 
 local function PresentInventory(save, index)
-    SetTextCAlphaPercent()
+    ClearTextCOptions()
     index = index or lib_items.Me
 
     if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
@@ -967,7 +1008,7 @@ local function PresentInventory(save, index)
     end
 end
 local function PresentBank(save)
-    SetTextCAlphaPercent()
+    ClearTextCOptions()
     if last_bank_time + update_delay < current_time or cache_bank == nil then
         cache_bank = lib_items.GetBank()
         last_bank_time = current_time
@@ -980,8 +1021,16 @@ local function PresentBank(save)
         ProcessItem(cache_bank.items[i], false, save)
     end
 end
+
+
+
 local function PresentFloor()
-    SetTextCAlphaPercent()
+    ClearTextCOptions()
+
+    if options.floor.ShowMultiFloor then
+        SetTextCPrependCallback(PrependMultifloorStringToItem)
+    end
+
     if last_floor_time + update_delay < current_time or cache_floor == nil then
         if options.floor.ShowMultiFloor then
             cache_floor = lib_items.GetMultiFloorItemList(options.invertItemList)

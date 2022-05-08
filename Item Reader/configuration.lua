@@ -67,7 +67,9 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            imgui.PushItemWidth(100)
             success, _configuration.itemNameLength = imgui.InputInt("Max Item Name Length", _configuration.itemNameLength)
+            imgui.PopItemWidth()
             if success then
                 this.changed = true
             end
@@ -252,18 +254,42 @@ local function ConfigurationWindow(configuration)
                 _configuration.floor.changed = true
                 this.changed = true
             end
+
             if _configuration.floor.ShowMultiFloor then
-                imgui.PushItemWidth(100)
-                local enteredValue
-                success, enteredValue = imgui.InputInt("Brightness percent for other floors", _configuration.floor.OtherFloorsBrightnessPercent)
-                if success then
-                    if enteredValue >= 0 and enteredValue <= 100 then
-                        _configuration.floor.OtherFloorsBrightnessPercent = enteredValue
+                if imgui.TreeNodeEx("Multi-floor options") then
+                    imgui.PushItemWidth(100)
+                    local enteredValue
+                    success, enteredValue = imgui.InputInt("Brightness percent for other floors", _configuration.floor.OtherFloorsBrightnessPercent)
+                    if success then
+                        if enteredValue >= 0 and enteredValue <= 100 then
+                            _configuration.floor.OtherFloorsBrightnessPercent = enteredValue
+                        end
+                        _configuration.floor.changed = true
+                        this.changed = true
                     end
-                    _configuration.floor.changed = true
-                    this.changed = true
+                    imgui.PopItemWidth()
+                    
+                    imgui.PushItemWidth(100)
+                    local otherFloorIndicator
+                    success, otherFloorIndicator = imgui.InputText("Prepend indicator string for other floors", _configuration.floor.OtherFloorsPrependString, 32)
+                    if success then
+                        if string.find(otherFloorIndicator, "%%") == nil then
+                            _configuration.floor.OtherFloorsPrependString = otherFloorIndicator
+                            _configuration.floor.changed = true
+                            this.changed = true
+                        end
+                    end
+                    imgui.PopItemWidth()
+
+                    imgui.SameLine(0, 9)
+                    success = imgui.Button("Clear")
+                    if success then
+                        _configuration.floor.OtherFloorsPrependString = ""
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    imgui.TreePop()
                 end
-                imgui.PopItemWidth()
             end
 
             if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
