@@ -364,15 +364,15 @@ local function PrependMultifloorStringToItem(item)
     local myFloor = lib_characters.GetCurrentFloorSelf()
     if (TextCWrapper and item and item.floorNumber and item.floorNumber ~= myFloor and
         options.floor.OtherFloorsPrependString and string.len(options.floor.OtherFloorsPrependString) > 0) then
-        -- Unfortunately replacing '%' with '%%' still isn't sufficient when using TextC because no variadic arg support.
-        -- The configuration window should have prevented this, but just in case someone modified options.lua and made
-        -- this mistake...
+
+        -- Handle '%' again if someone hasn't updated their plugin or if they manually edited options.lua.
+        -- Check if we can use
+        local canUseString = (pso.require_version ~= nil and pso.require_version(3,5,0))
         local str = options.floor.OtherFloorsPrependString
-        -- Try to find '%' character
-        if string.match(str, "%%") == nil then
-            -- Not found, safe to use
+        if canUseString or string.match(str, "%%") == nil then
+            -- Either plugin supports the string as-is or the string is sanitized already
             TextCWrapper(false, lib_items_cfg.white, "%s ", str)
-        end        
+        end
     end
 end
 
