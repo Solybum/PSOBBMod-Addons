@@ -250,7 +250,7 @@ local function PresentPlayers()
 
         local name = lib_characters.GetPlayerName(address)
         -- Escape '%' in the name but only if the plugin isn't updated
-        if pso.require_version == nil or not pso.require_version(3, 5, 0) then
+        if pso.require_version == nil or not pso.require_version(3, 6, 0) then
             name = string.gsub(name, "%%", "%%%%")
         end
         local hp = lib_characters.GetPlayerHP(address)
@@ -292,7 +292,7 @@ local function PresentPlayer(address, sd, inv, showName, HPbar, showBarMaxValue,
 
     local name = lib_characters.GetPlayerName(address)
     -- Escape '%' in the name but only if the plugin isn't updated
-    if pso.require_version == nil or not pso.require_version(3, 5, 0) then
+    if pso.require_version == nil or not pso.require_version(3, 6, 0) then
         name = string.gsub(name, "%%", "%%%%")
     end
     local level = lib_characters.GetPlayerLevel(address)

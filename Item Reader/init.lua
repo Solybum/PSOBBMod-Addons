@@ -367,7 +367,7 @@ local function PrependMultifloorStringToItem(item)
 
         -- Handle '%' again if someone hasn't updated their plugin or if they manually edited options.lua.
         -- Check if we can use
-        local canUseString = (pso.require_version ~= nil and pso.require_version(3,5,0))
+        local canUseString = (pso.require_version ~= nil and pso.require_version(3, 6, 0))
         local str = options.floor.OtherFloorsPrependString
         if canUseString or string.match(str, "%%") == nil then
             -- Either plugin supports the string as-is or the string is sanitized already

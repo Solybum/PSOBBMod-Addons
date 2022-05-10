@@ -274,7 +274,7 @@ local function ConfigurationWindow(configuration)
                     success, otherFloorIndicator = imgui.InputText("Prepend indicator string for other floors", _configuration.floor.OtherFloorsPrependString, 32)
                     if success then
                         -- Check if the string is safe to use (plugin updated). If not, then sanitize it.
-                        local canUseString = (pso.require_version ~= nil and pso.require_version(3,5,0))
+                        local canUseString = (pso.require_version ~= nil and pso.require_version(3, 6, 0))
                         if canUseString or string.find(otherFloorIndicator, "%%") == nil then
                             _configuration.floor.OtherFloorsPrependString = otherFloorIndicator
                             _configuration.floor.changed = true
