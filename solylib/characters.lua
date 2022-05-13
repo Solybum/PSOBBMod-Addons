@@ -170,6 +170,18 @@ local function GetPlayerParalyzedStatus(player)
     return pso.read_u32(player + 0x25C) == 0x10
 end
 
+-- Returns the floor the player is on. This works well enough for other players, but
+-- use GetCurrentFloorSelf() for the local client if you need the floor to be consistent
+-- with other entities or data.
+local function GetPlayerFloor(player)
+    return pso.read_u32(player + 0x3F0)
+end
+
+-- Gets the actual floor we are on. This is consistent with the active entities.
+local function GetCurrentFloorSelf()
+    return pso.read_u32(0xAAFCA0)
+end
+
 local function GetPlayerIsCast(player)
     local result = false
     local equipFlags = pso.read_u8(player + 0x964)
@@ -202,4 +214,6 @@ return
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
     GetPlayerIsCast = GetPlayerIsCast,    
     Techniques = Techniques,
+    GetPlayerFloor = GetPlayerFloor,
+    GetCurrentFloorSelf = GetCurrentFloorSelf,
 }

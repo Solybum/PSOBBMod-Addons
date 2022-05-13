@@ -248,7 +248,11 @@ local function PresentPlayers()
         local index = playerList[i].index
         local address = playerList[i].address
 
-        local name = string.gsub(lib_characters.GetPlayerName(address), "%%", "%%%%")
+        local name = lib_characters.GetPlayerName(address)
+        -- Escape '%' in the name but only if the plugin isn't updated
+        if pso.require_version == nil or not pso.require_version(3, 6, 0) then
+            name = string.gsub(name, "%%", "%%%%")
+        end
         local hp = lib_characters.GetPlayerHP(address)
         local mhp = lib_characters.GetPlayerMaxHP(address)
         local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
@@ -258,7 +262,7 @@ local function PresentPlayers()
 
         lib_helpers.Text(true, "%2i", index)
         imgui.NextColumn()
-        lib_helpers.Text(true, name)
+        lib_helpers.Text(true, "%s", name)
         imgui.NextColumn()
         lib_helpers.imguiProgressBar(true, hp/mhp, -1.0, imgui.GetFontSize(), hpColor, nil, hp)
         imgui.NextColumn()
@@ -286,7 +290,11 @@ local function PresentPlayer(address, sd, inv, showName, HPbar, showBarMaxValue,
         return
     end
 
-    local name = string.gsub(lib_characters.GetPlayerName(address), "%%", "%%%%")
+    local name = lib_characters.GetPlayerName(address)
+    -- Escape '%' in the name but only if the plugin isn't updated
+    if pso.require_version == nil or not pso.require_version(3, 6, 0) then
+        name = string.gsub(name, "%%", "%%%%")
+    end
     local level = lib_characters.GetPlayerLevel(address)
     local hp = lib_characters.GetPlayerHP(address)
     local mhp = lib_characters.GetPlayerMaxHP(address)

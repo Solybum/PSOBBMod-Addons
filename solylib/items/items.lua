@@ -1,5 +1,6 @@
 local pmt = require("solylib.pmt")
 local unitxt = require("solylib.unitxt")
+local lib_characters = require("solylib.characters")
 
 local _ItemArray = 0x00A8D81C
 local _ItemArrayCount = 0x00A8D820
@@ -463,6 +464,159 @@ local function GetItemList(playerIndex, inverted)
     return itemTable
 end
 
+-- Reads the item data for an item in the floor storage. The floor storage
+-- contains only the 16 bytes of item data, item ID, and positional data.
+local function ReadMultiFloorItemData(itemAddr, floorNumber)
+    local _MultiFloorItemDataOffset = 0x10
+    local _MultiFloorItemData2Offset = 0x20
+    local _MultiFloorItemIDOffset = 0x1C
+    local _MultiFloorItemKills = 0x1A
+
+    local item = {}
+    item.address = itemAddr
+    item.floorNumber = floorNumber
+
+    item.data = {0,0,0,0,0,0,0,0,0,0,0,0}
+
+    item.id = pso.read_u32(itemAddr + _MultiFloorItemIDOffset)
+
+    item.data[1] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 0)
+    item.data[2] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 1)
+    item.data[3] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 2)
+    item.data[4] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 3)
+    item.data[5] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 4)
+    item.data[6] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset+ 5)
+    item.data[7] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 6)
+    item.data[8] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 7)
+    item.data[9] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 8)
+    item.data[10] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 9)
+    item.data[11] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 10)
+    item.data[12] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 11)
+    item.data[13] = pso.read_u8(itemAddr + _MultiFloorItemData2Offset + 0)
+    item.data[14] = pso.read_u8(itemAddr + _MultiFloorItemData2Offset + 1)
+    item.data[15] = pso.read_u8(itemAddr + _MultiFloorItemData2Offset + 2)
+    item.data[16] = pso.read_u8(itemAddr + _MultiFloorItemData2Offset + 3)
+
+    item.hex = bit.lshift(item.data[1], 16) + bit.lshift(item.data[2],  8) + item.data[3]
+    item.kills = 0
+    item.equipped = false
+
+    item.name = unitxt.GetItemName(pmt.GetItemUnitxtID(item.data))
+
+    -- WEAPON
+    if item.data[1] == 0 then
+        item.weapon = {}
+
+        if item.data[2] == 0x33 or item.data[2] == 0xAB then
+            item.kills = pso.read_u16(itemAddr + _MultiFloorItemKills)
+        end
+
+        item = _ParseItemWeapon(item)
+    -- ARMOR
+    elseif item.data[1] == 1 then
+        -- FRAME
+        if item.data[2] == 1 then
+            item.armor = {}
+
+            item = _ParseItemFrame(item)
+        -- BARRIER
+        elseif item.data[2] == 2 then
+            item.armor = {}
+
+            item = _ParseItemBarrier(item)
+        -- UNIT
+        elseif item.data[2] == 3 then
+            item.unit = {}
+
+            if item.data[3] == 0x4D or item.data[3] == 0x4F then
+                item.kills = pso.read_u16(itemAddr + _MultiFloorItemKills)
+            end
+
+            item = _ParseItemUnit(item)
+        end
+    -- MAG
+    elseif item.data[1] == 2 then
+        item.mag = {}
+
+        -- No mag timer available for mags on other floors. Could maybe lookup the 
+        -- mag in the local floor items array if the item is on current floor.
+        item.mag.timer = 210 -- 3 minutes and 30 seconds
+        --item.mag.timer = pso.read_f32(itemAddr + _ItemMagTimer) / 30
+
+        item = _ParseItemMag(item)
+    -- TOOL
+    elseif item.data[1] == 3 then
+        item.tool = {}
+        if item.data[2] == 2 then
+            item = _ParseItemTechnique(item)
+        else
+            item = _ParseItemTool(item)
+        end
+    -- MESETA
+    elseif item.data[1] == 4 then
+        item = _ParseItemMeseta(item)
+    end
+
+    return item
+end
+
+local function GetMultiFloorItemList(inverted)
+    local ptrsToFloorsArray = pso.read_u32(0xA8D8A0)
+    local itemsPerFloorArray = pso.read_u32(0xA8D89C)
+    local itemTable = {}
+    local itemIndex = 0
+    if (0 == ptrsToFloorsArray or 0 == itemsPerFloorArray) then
+        return itemTable
+    end
+
+    local myFloor = lib_characters.GetCurrentFloorSelf()
+    
+    -- Loop through all floor numbers and read the stored floor items.
+    -- Note that PSOBB has a limit on a vanilla client for number of items
+    -- stored. But the current floor's items are generated on demand regardless
+    -- of that storage limit. So for the current floor, read the item list using
+    -- the regular code.
+    for i=0,17 do 
+        if myFloor == i then
+            local currentFloorItems = GetItemList(NoOwner, inverted)
+            -- Append to the table 
+            for _,v in pairs(currentFloorItems) do
+                table.insert(itemTable, v)
+            end
+        else
+            local thisFloorsItems = pso.read_u32(ptrsToFloorsArray + 4 * i)
+            local thisFloorsNumItems = pso.read_u32(itemsPerFloorArray + i * 4) 
+            local startIndex = 0
+            local endIndex = thisFloorsNumItems - 1 -- lua is 1-based...
+            for j=startIndex,endIndex,1 do 
+                local itemAddr = thisFloorsItems + j * 0x24
+                local item = ReadMultiFloorItemData(itemAddr, i)
+                table.insert(itemTable, item)
+            end
+        end
+    end
+
+    -- sort table by IDs. Since it's only floor items, no need to care about owner.
+    local sortFunction = 
+        function (left, right)
+            if inverted then 
+                return left.id > right.id
+            else
+                return left.id < right.id
+            end
+        end
+
+    -- Sort the items in order by item ID. IDs are unique in the room so with 'inverted' set,
+    -- the newest drops in the party would be at the top.
+    table.sort(itemTable, sortFunction)
+    -- Item index isn't very useful but for the Floor Reader on a single floor, it's just
+    -- 1..max. Maintain that here because otherwise the indices are out of order.
+    for itemIndex=1,#itemTable do
+        itemTable[itemIndex].index = itemIndex
+    end
+    return itemTable
+end
+
 -- Reads a player's inventory (meseta and items)
 -- If owner(index) is -2, the function will automatically obtain the client's playerIndex
 local function GetInventory(playerIndex)
@@ -538,4 +692,5 @@ return
     GetItemList = GetItemList,
     GetInventory = GetInventory,
     GetBank = GetBank,
+    GetMultiFloorItemList = GetMultiFloorItemList,
 }
