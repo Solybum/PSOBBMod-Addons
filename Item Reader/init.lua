@@ -592,7 +592,7 @@ local function ProcessFrame(item, floor)
 
     if show_item then
         BeginImguiLineForItem(item)
-        
+
 
         if options.showItemIDs then
             TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
@@ -1051,7 +1051,7 @@ local function PresentFloor()
     end
     local itemCount = table.getn(cache_floor)
 
-    -- If user wants to display their meseta and inventory count, then go get the inventory cache. 
+    -- If user wants to display their meseta and inventory count, then go get the inventory cache.
     if options.floor.ShowInvMesetaAndItemCount then
         index = index or lib_items.Me
         if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
@@ -1144,9 +1144,9 @@ local function PresentAIO()
     elseif aioSelectedInventory == 2 then
         PresentBank(save)
     elseif aioSelectedInventory == 3 then
-        PresentFloor(save)
+        PresentFloor()
     elseif aioSelectedInventory == 4 then
-        PresentMags(save)
+        PresentMags()
     else
         PresentInventory(save, aioSelectedInventory - 5)
     end
