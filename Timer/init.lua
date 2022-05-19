@@ -300,7 +300,7 @@ local function PresentCountdown()
         countdown.lastTime = currentTime
     end
 
-    ellapsed = countdown.startTime - countdown.stopTime
+    local ellapsed = countdown.startTime - countdown.stopTime
     if ellapsed < 0 then
         ellapsed = 0
     end
