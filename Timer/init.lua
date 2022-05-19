@@ -221,7 +221,7 @@ local function PresentStopwatch()
         stopwatch.lastTime = currentTime
     end
 
-    ellapsed = stopwatch.stopTime - stopwatch.startTime
+    local ellapsed = stopwatch.stopTime - stopwatch.startTime
 
     -- Splits first
     for k, v in pairs(splits) do

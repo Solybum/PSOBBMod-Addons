@@ -66,7 +66,7 @@ end
 local function _ParseItemWeapon(item)
     item.weapon = {}
 
-    pmtW = pmt.GetItemData(item.data)
+    local pmtW = pmt.GetItemData(item.data)
 
     item.weapon.wrapped = false
     item.weapon.untekked = false
@@ -124,7 +124,7 @@ local function _ParseItemFrame(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
 
-    pmtF = pmt.GetItemData(item.data)
+    local pmtF = pmt.GetItemData(item.data)
     item.armor.dfpMax = pmtF.armor.dfpR
     item.armor.evpMax = pmtF.armor.evpR
     return item
@@ -133,7 +133,7 @@ local function _ParseItemBarrier(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
 
-    pmtF = pmt.GetItemData(item.data)
+    local pmtF = pmt.GetItemData(item.data)
     item.armor.dfpMax = pmtF.armor.dfpR
     item.armor.evpMax = pmtF.armor.evpR
     return item
@@ -197,7 +197,7 @@ local function _ParseItemTechnique(item)
 end
 local function _ParseItemMeseta(item)
     item.name = "Meseta"
-    item.meseta = 
+    item.meseta =
         bit.lshift(item.data[13],  0) +
         bit.lshift(item.data[14],  8) +
         bit.lshift(item.data[15], 16) +
@@ -226,7 +226,7 @@ local function ReadItemData(itemAddr)
     item.data[11] = 0
     item.data[12] = 0
     item.data[13] = 0
-    item.data[14] = 0 
+    item.data[14] = 0
     item.data[15] = 0
     item.data[16] = 0
 
@@ -538,7 +538,7 @@ local function ReadMultiFloorItemData(itemAddr, floorNumber)
     elseif item.data[1] == 2 then
         item.mag = {}
 
-        -- No mag timer available for mags on other floors. Could maybe lookup the 
+        -- No mag timer available for mags on other floors. Could maybe lookup the
         -- mag in the local floor items array if the item is on current floor.
         item.mag.timer = 210 -- 3 minutes and 30 seconds
         --item.mag.timer = pso.read_f32(itemAddr + _ItemMagTimer) / 30
@@ -570,25 +570,25 @@ local function GetMultiFloorItemList(inverted)
     end
 
     local myFloor = lib_characters.GetCurrentFloorSelf()
-    
+
     -- Loop through all floor numbers and read the stored floor items.
     -- Note that PSOBB has a limit on a vanilla client for number of items
     -- stored. But the current floor's items are generated on demand regardless
     -- of that storage limit. So for the current floor, read the item list using
     -- the regular code.
-    for i=0,17 do 
+    for i=0,17 do
         if myFloor == i then
             local currentFloorItems = GetItemList(NoOwner, inverted)
-            -- Append to the table 
+            -- Append to the table
             for _,v in pairs(currentFloorItems) do
                 table.insert(itemTable, v)
             end
         else
             local thisFloorsItems = pso.read_u32(ptrsToFloorsArray + 4 * i)
-            local thisFloorsNumItems = pso.read_u32(itemsPerFloorArray + i * 4) 
+            local thisFloorsNumItems = pso.read_u32(itemsPerFloorArray + i * 4)
             local startIndex = 0
             local endIndex = thisFloorsNumItems - 1 -- lua is 1-based...
-            for j=startIndex,endIndex,1 do 
+            for j=startIndex,endIndex,1 do
                 local itemAddr = thisFloorsItems + j * 0x24
                 local item = ReadMultiFloorItemData(itemAddr, i)
                 table.insert(itemTable, item)
@@ -597,9 +597,9 @@ local function GetMultiFloorItemList(inverted)
     end
 
     -- sort table by IDs. Since it's only floor items, no need to care about owner.
-    local sortFunction = 
+    local sortFunction =
         function (left, right)
-            if inverted then 
+            if inverted then
                 return left.id > right.id
             else
                 return left.id < right.id
@@ -628,7 +628,7 @@ local function GetInventory(playerIndex)
 
     local playerAddr = pso.read_u32(_PlayerArray + 4 * playerIndex)
     if playerAddr ~= 0 then
-        local listPtr = pso.read_u32(playerAddr + 0xDF4) 
+        local listPtr = pso.read_u32(playerAddr + 0xDF4)
         if listPtr ~= 0 then
             local listAddr = pso.read_u32(listPtr + 0x1C4)
             if listAddr ~= 0 then

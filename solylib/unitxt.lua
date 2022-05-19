@@ -20,7 +20,7 @@ local magColor =
 
 -- Internal function to read text from the unitxt
 local function _Read(group, index)
-    address = pso.read_u32(unitxtPointer)
+    local address = pso.read_u32(unitxtPointer)
     if address == 0 then
         return nil
     end
@@ -60,7 +60,7 @@ local function GetSpecialName(id)
         return "None"
     end
 
-    baseID = pso.read_u32(specialBaseID)
+    local baseID = pso.read_u32(specialBaseID)
     return GetItemName(baseID + id)
 end
 
@@ -110,7 +110,7 @@ end
 
 -- Reads the encoded srank name from the item data
 local function GetSRankName(itemData)
-    if itemData == null then
+    if itemData == nil then
         return "Null"
     end
     if table.getn(itemData) < 12 then

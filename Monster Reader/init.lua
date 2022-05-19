@@ -53,7 +53,7 @@ if optionsLoaded then
     options.targetShowAccuracyAssist    = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
     options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
     options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
-    
+
     if options.targetEnableActivationRateItems == nil or type(options.targetEnableActivationRateItems) ~= "table" then
         options.targetEnableActivationRateItems = {}
     end
@@ -274,7 +274,7 @@ local function GetMonsterDataDeRolLe(monster)
     local newName = monster.name
     local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
     local ephineaHPScale = 1.0
-    
+
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
@@ -335,13 +335,13 @@ end
 
 local function GetMonsterData(monster)
     local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
-    
+
     monster.id = pso.read_u16(monster.address + _ID)
     monster.unitxtID = pso.read_u32(monster.address + _MonsterUnitxtID)
 
     monster.HP = 0
     monster.HPMax = 0
-    
+
     if ephineaMonsters ~= 0 then
     monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
     monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
@@ -349,7 +349,7 @@ local function GetMonsterData(monster)
     monster.HP = pso.read_u16(monster.address + _MonsterHP)
     monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
     end
-    
+
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
     if bpPointer ~= 0 then
         monster.Atp = pso.read_u16(bpPointer + _MonsterBpAtp)
@@ -703,7 +703,7 @@ local function PresentTargetMonster(monster)
         local v50xHellBoost = 1.0
         local v50xStatusBoost = 1.0
         for i=1,itemCount,1 do
-            item = inventory.items[i]
+            local item = inventory.items[i]
             if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then
                 -- V501
                 if item.data[3] == 0x4A then
@@ -784,7 +784,7 @@ local function PresentTargetMonster(monster)
 
             -- Calculate Rates of success of differing attack types
             local rate_list = {}
-            
+
             -- Add Hell rate if enabled
             if options.targetEnableActivationRateItems.hell == true then
                 local str = string.format("Hell: %i", (93 - monster.Edk)*(v50xHellBoost))
@@ -820,7 +820,7 @@ local function PresentTargetMonster(monster)
                 local str = string.format("Havoc: %i", (60 + androidBoost - monster.Esp)*(v50xStatusBoost))
                 table.insert(rate_list, str)
             end
-            
+
             -- Display all of the specials selected, only allow 3 per row
             if table.getn(rate_list) > 0 then
                 lib_helpers.Text(true, "Activation Rates:")
@@ -857,7 +857,7 @@ local function PresentTargetMonsterWindow()
         targetCache = monster
     end
 
-    if options.targetEnableWindow and monster.unitxtID ~= 0 then
+    if options.targetEnableWindow and monster ~= nil and monster.unitxtID ~= 0 then
         if firstPresent or options.targetChanged then
           options.targetChanged = false
           local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)

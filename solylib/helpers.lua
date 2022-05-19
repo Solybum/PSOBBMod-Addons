@@ -162,7 +162,7 @@ local function imguiProgressBar(newLine, progress, x, y, barColor, textColor, fm
     y = y or 0.0
     fmt = fmt or ""
 
-    overlay = string.format(fmt, ...)
+    local overlay = string.format(fmt, ...)
 
     if newLine == false then
         imgui.SameLine(0, 0)
@@ -176,9 +176,9 @@ local function imguiProgressBar(newLine, progress, x, y, barColor, textColor, fm
         local c = GetColorAsFloats(textColor)
         imgui.PushStyleColor("Text", c.r, c.g, c.b, c.a)
     end
-    
+
     imgui.ProgressBar(progress, x, y, overlay)
-    
+
     if textColor ~= nil then
         imgui.PopStyleColor()
     end
