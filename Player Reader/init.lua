@@ -69,25 +69,28 @@ if optionsLoaded then
         options.myself = {}
     end
 
-    options.myself.EnableWindow          = lib_helpers.NotNilOrDefault(options.myself.EnableWindow, false)
-    options.myself.ShowName              = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
-    options.myself.ShowBarText           = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
-    options.myself.ShowBarMaxValue       = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)    
-    options.myself.Changed               = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
-    options.myself.Anchor                = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
-    options.myself.X                     = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
-    options.myself.Y                     = lib_helpers.NotNilOrDefault(options.myself.Y, -5)
-    options.myself.W                     = lib_helpers.NotNilOrDefault(options.myself.W, 150)
-    options.myself.H                     = lib_helpers.NotNilOrDefault(options.myself.H, 45)
-    options.myself.NoTitleBar            = lib_helpers.NotNilOrDefault(options.myself.NoTitleBar, "NoTitleBar")
-    options.myself.NoResize              = lib_helpers.NotNilOrDefault(options.myself.NoResize, "NoResize")
-    options.myself.NoMove                = lib_helpers.NotNilOrDefault(options.myself.NoMove, "NoMove")
-    options.myself.NoScrollbar           = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
-    options.myself.AlwaysAutoResize      = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize, "AlwaysAutoResize")
-    options.myself.TransparentWindow     = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
-    options.myself.SD                    = lib_helpers.NotNilOrDefault(options.myself.SD, true)
-    options.myself.Invulnerability       = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
-    options.myself.ShowHPBar             = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
+    options.myself.EnableWindow              = lib_helpers.NotNilOrDefault(options.myself.EnableWindow, false)
+    options.myself.HideWhenMenu              = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenu, true)
+    options.myself.HideWhenSymbolChat        = lib_helpers.NotNilOrDefault(options.myself.HideWhenSymbolChat, true)
+    options.myself.HideWhenMenuUnavailable   = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenuUnavailable, true)
+    options.myself.ShowName                  = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
+    options.myself.ShowBarText               = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
+    options.myself.ShowBarMaxValue           = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)    
+    options.myself.Changed                   = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
+    options.myself.Anchor                    = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
+    options.myself.X                         = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
+    options.myself.Y                         = lib_helpers.NotNilOrDefault(options.myself.Y, -5)
+    options.myself.W                         = lib_helpers.NotNilOrDefault(options.myself.W, 150)
+    options.myself.H                         = lib_helpers.NotNilOrDefault(options.myself.H, 45)
+    options.myself.NoTitleBar                = lib_helpers.NotNilOrDefault(options.myself.NoTitleBar, "NoTitleBar")
+    options.myself.NoResize                  = lib_helpers.NotNilOrDefault(options.myself.NoResize, "NoResize")
+    options.myself.NoMove                    = lib_helpers.NotNilOrDefault(options.myself.NoMove, "NoMove")
+    options.myself.NoScrollbar               = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
+    options.myself.AlwaysAutoResize          = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize, "AlwaysAutoResize")
+    options.myself.TransparentWindow         = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
+    options.myself.SD                        = lib_helpers.NotNilOrDefault(options.myself.SD, true)
+    options.myself.Invulnerability           = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
+    options.myself.ShowHPBar                 = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
 
 else
     options =
@@ -138,6 +141,9 @@ else
 
     options.myself = {}
     options.myself.EnableWindow          = false
+    options.myself.HideWhenMenu = false,
+    options.myself.HideWhenSymbolChat = false,
+    options.myself.HideWhenMenuUnavailable = false,
     options.myself.ShowName              = false
     options.myself.ShowBarText           = false
     options.myself.ShowBarMaxValue       = false
@@ -212,6 +218,9 @@ local function SaveOptions(options)
 
         io.write(string.format("   myself = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.myself.EnableWindow)))
+        io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.myself.HideWhenMenu)))
+        io.write(string.format("        HideWhenSymbolChat = %s,\n", tostring(options.myself.HideWhenSymbolChat)))
+        io.write(string.format("        HideWhenMenuUnavailable = %s,\n", tostring(options.myself.HideWhenMenuUnavailable)))
         io.write(string.format("        ShowName = %s,\n", tostring(options.myself.ShowName)))
         io.write(string.format("        ShowBarText = %s,\n", tostring(options.myself.ShowBarText)))
         io.write(string.format("        ShowBarMaxValue = %s,\n", tostring(options.myself.ShowBarMaxValue)))
@@ -473,8 +482,11 @@ local function present()
         end
     end
 
-    if options.myself.EnableWindow then
-        local myselfWindowTitle = "Player Reader - Myself"
+    if (options.myself.PlayersEnableWindow == true)
+        and (options.myself.HideWhenMenu == false or lib_menu.IsMenuOpen() == false)
+        and (options.myself.HideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
+        and (options.myself.HideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
+    then
         if firstPresent or options.myself.Changed then
             options.myself.Changed = false
             local ps = lib_helpers.GetPosBySizeAndAnchor(
