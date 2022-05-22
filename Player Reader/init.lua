@@ -141,9 +141,9 @@ else
 
     options.myself = {}
     options.myself.EnableWindow            = false
-    options.myself.HideWhenMenu            = false,
-    options.myself.HideWhenSymbolChat      = false,
-    options.myself.HideWhenMenuUnavailable = false,
+    options.myself.HideWhenMenu            = false
+    options.myself.HideWhenSymbolChat      = false
+    options.myself.HideWhenMenuUnavailable = false
     options.myself.ShowName                = false
     options.myself.ShowBarText             = false
     options.myself.ShowBarMaxValue         = false
@@ -488,7 +488,6 @@ local function present()
         and (options.myself.HideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
     then
         local myselfWindowTitle = "Player Reader - Myself"
-    then
         if firstPresent or options.myself.Changed then
             options.myself.Changed = false
             local ps = lib_helpers.GetPosBySizeAndAnchor(
