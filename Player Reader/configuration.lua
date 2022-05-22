@@ -255,7 +255,20 @@ local function ConfigurationWindow(configuration)
                 _configuration.myself.EnableWindow = not _configuration.myself.EnableWindow
                 this.changed = true
             end
-
+ 
+            if imgui.Checkbox("Hide when menus are open", _configuration.myself.HideWhenMenu) then
+                _configuration.myself.HideWhenMenu = not _configuration.myself.HideWhenMenu
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.myself.HideWhenSymbolChat) then
+                _configuration.myself.HideWhenSymbolChat = not _configuration.myself.HideWhenSymbolChat
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.myself.HideWhenMenuUnavailable) then
+                _configuration.myself.HideWhenMenuUnavailable = not _configuration.myself.HideWhenMenuUnavailable
+                this.changed = true
+            end
+            
             if imgui.Checkbox("Show Name", _configuration.myself.ShowName) then
                 _configuration.myself.ShowName = not _configuration.myself.ShowName
                 this.changed = true
