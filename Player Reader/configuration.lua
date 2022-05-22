@@ -126,6 +126,19 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Hide when menus are open", _configuration.singleplayersHideWhenMenu) then
+                _configuration.ingleplayersHideWhenMenu = not _configuration.ingleplayersHideWhenMenu
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.singleplayersHideWhenSymbolChat) then
+                _configuration.singleplayersHideWhenSymbolChat = not _configuration.singleplayersHideWhenSymbolChat
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.singleplayersHideWhenMenuUnavailable) then
+                _configuration.singleplayersHideWhenMenuUnavailable = not _configuration.singleplayersHideWhenMenuUnavailable
+                this.changed = true
+            end
+            
             if imgui.Checkbox("Show HP/TP text", _configuration.singlePlayersShowBarText) then
                 _configuration.singlePlayersShowBarText = not _configuration.singlePlayersShowBarText
                 this.changed = true
@@ -256,16 +269,16 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Hide when menus are open", _configuration.allHideWhenMenu) then
-                _configuration.allHideWhenMenu = not _configuration.allHideWhenMenu
+            if imgui.Checkbox("Hide when menus are open", _configuration.myself.HideWhenMenu) then
+                _configuration.myself.HideWhenMenu = not _configuration.myself.HideWhenMenu
                 this.changed = true
             end
-            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.allHideWhenSymbolChat) then
-                _configuration.allHideWhenSymbolChat = not _configuration.allHideWhenSymbolChat
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.myself.HideWhenSymbolChat) then
+                _configuration.myself.HideWhenSymbolChat = not _configuration.myself.HideWhenSymbolChat
                 this.changed = true
             end
-            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.allHideWhenMenuUnavailable) then
-                _configuration.allHideWhenMenuUnavailable = not _configuration.allHideWhenMenuUnavailable
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.myself.HideWhenMenuUnavailable) then
+                _configuration.myself.HideWhenMenuUnavailable = not _configuration.myself.HideWhenMenuUnavailable
                 this.changed = true
             end
             
