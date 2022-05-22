@@ -487,9 +487,8 @@ local function present()
         and (options.myself.HideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
         and (options.myself.HideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
     then
-        if options.myself.EnableWindow then
         local myselfWindowTitle = "Player Reader - Myself"
-            
+    then
         if firstPresent or options.myself.Changed then
             options.myself.Changed = false
             local ps = lib_helpers.GetPosBySizeAndAnchor(
