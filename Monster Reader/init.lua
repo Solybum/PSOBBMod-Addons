@@ -765,11 +765,11 @@ local function PresentTargetMonster(monster)
             -- Display best third attack
             lib_helpers.Text(false, "> ")
             if specAtk3_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%%", specAtk3_Acc)
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec3: %i%%%%", specAtk3_Acc)
             elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%%", hardAtk3_Acc)
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard3: %i%%%%", hardAtk3_Acc)
             else
-                lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%%", normAtk3_Acc)
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm3: %i%%%%", normAtk3_Acc)
             end
             lib_helpers.Text(false, "]")
         end
