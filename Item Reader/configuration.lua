@@ -213,6 +213,19 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+	    if imgui.Checkbox("Hide when menus are open", _configuration.floor.HideWhenMenu) then
+                _configuration.floor.HideWhenMenu = not _configuration.floor.HideWhenMenu
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.floor.HideWhenSymbolChat) then
+                _configuration.floor.HideWhenSymbolChat = not _configuration.floor.HideWhenSymbolChat
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.floor.HideWhenMenuUnavailable) then
+                _configuration.floor.HideWhenMenuUnavailable = not _configuration.floor.HideWhenMenuUnavailable
+                this.changed = true
+            end	
+			
             if imgui.Checkbox("No title bar", _configuration.floor.NoTitleBar == "NoTitleBar") then
                 if _configuration.floor.NoTitleBar == "NoTitleBar" then
                     _configuration.floor.NoTitleBar = ""
@@ -532,6 +545,19 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+	    if imgui.Checkbox("Hide when menus are open", _configuration.mags.HideWhenMenu) then
+                _configuration.mags.HideWhenMenu = not _configuration.mags.HideWhenMenu
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.mags.HideWhenSymbolChat) then
+                _configuration.mags.HideWhenSymbolChat = not _configuration.mags.HideWhenSymbolChat
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide when the menu is unavailable", _configuration.mags.HideWhenMenuUnavailable) then
+                _configuration.mags.HideWhenMenuUnavailable = not _configuration.mags.HideWhenMenuUnavailable
+                this.changed = true
+            end	
+			
             if imgui.Checkbox("No title bar", _configuration.mags.NoTitleBar == "NoTitleBar") then
                 if _configuration.mags.NoTitleBar == "NoTitleBar" then
                     _configuration.mags.NoTitleBar = ""
