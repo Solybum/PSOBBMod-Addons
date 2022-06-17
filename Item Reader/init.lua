@@ -27,6 +27,7 @@ if optionsLoaded then
     options.invertItemList            = lib_helpers.NotNilOrDefault(options.invertItemList, false)
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
+    options.hideMagColor              = lib_helpers.NotNilOrDefault(options.hideMagColor, false)
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
     options.updateThrottle            = lib_helpers.NotNilOrDefault(options.updateThrottle, 0)
     options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
@@ -138,6 +139,7 @@ else
         invertItemList = false,
         hideMagStats = false,
         hideMagPBs = false,
+        hideMagColor = false,
         itemNameLength = 0,
         updateThrottle = 0,
         server = 1,
@@ -251,6 +253,7 @@ local function SaveOptions(options)
         io.write(string.format("    invertItemList = %s,\n", tostring(options.invertItemList)))
         io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
+        io.write(string.format("    hideMagColor = %s,\n", tostring(options.hideMagColor)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write(string.format("    server = %s,\n", tostring(options.server)))
         io.write(string.format("    updateThrottle = %i,\n", tostring(options.updateThrottle)))
@@ -829,9 +832,11 @@ local function ProcessMag(item)
         result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
-    result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
-    result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
-    result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
+    if options.hideMagColor == false then
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
+        result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+        result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
+    end
 
     return result
 end

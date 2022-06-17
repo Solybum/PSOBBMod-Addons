@@ -66,6 +66,10 @@ local function ConfigurationWindow(configuration)
                 _configuration.hideMagPBs = not _configuration.hideMagPBs
                 this.changed = true
             end
+            if imgui.Checkbox("Hide mag color", _configuration.hideMagColor) then
+                _configuration.hideMagColor = not _configuration.hideMagColor
+                this.changed = true
+            end
 
             imgui.PushItemWidth(100)
             success, _configuration.itemNameLength = imgui.InputInt("Max Item Name Length", _configuration.itemNameLength)
@@ -73,7 +77,7 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
-            
+
             imgui.PushItemWidth(100)
             success, _configuration.updateThrottle = imgui.InputInt("Delay Update (seconds)", _configuration.updateThrottle)
             imgui.PopItemWidth()
@@ -87,7 +91,7 @@ local function ConfigurationWindow(configuration)
             if success then
                 this.changed = true
             end
-            
+
             imgui.TreePop()
         end
 
@@ -268,7 +272,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.floor.changed = true
                 this.changed = true
             end
-            
+
             if imgui.Checkbox("Show inventory meseta and item count", _configuration.floor.ShowInvMesetaAndItemCount) then
                 _configuration.floor.ShowInvMesetaAndItemCount = not _configuration.floor.ShowInvMesetaAndItemCount
                 _configuration.floor.changed = true
@@ -294,7 +298,7 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
                     imgui.PopItemWidth()
-                    
+
                     imgui.PushItemWidth(100)
                     local otherFloorIndicator
                     success, otherFloorIndicator = imgui.InputText("Prepend indicator string for other floors", _configuration.floor.OtherFloorsPrependString, 32)
@@ -323,9 +327,9 @@ local function ConfigurationWindow(configuration)
             if imgui.Checkbox("Enable Filters", _configuration.floor.EnableFilters) then
                 _configuration.floor.EnableFilters = not _configuration.floor.EnableFilters
                 this.changed = true
-            end            
+            end
             if _configuration.floor.EnableFilters then
-                if imgui.TreeNodeEx("Filter Drops") then 
+                if imgui.TreeNodeEx("Filter Drops") then
                     imgui.Text("Non-Rares")
                     if imgui.Checkbox("Hide <40h Weapons", _configuration.floor.filter.HideLowHitWeapons) then
                         _configuration.floor.filter.HideLowHitWeapons = not _configuration.floor.filter.HideLowHitWeapons
@@ -350,7 +354,7 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
-                    
+
                     imgui.Text("Consumables")
                     if imgui.Checkbox("Hide Monomates", _configuration.floor.filter.HideMonomates) then
                         _configuration.floor.filter.HideMonomates = not _configuration.floor.filter.HideMonomates
@@ -431,7 +435,7 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
-					
+
                     imgui.Text("Grinders/Materials")
                     if imgui.Checkbox("Hide Monogrinders", _configuration.floor.filter.HideMonogrinders) then
                         _configuration.floor.filter.HideMonogrinders = not _configuration.floor.filter.HideMonogrinders
@@ -491,8 +495,8 @@ local function ConfigurationWindow(configuration)
                     end
                     imgui.TreePop()
                 end
-            end 
-            
+            end
+
             imgui.Text("Position and Size")
             imgui.PushItemWidth(200)
             success, _configuration.floor.Anchor = imgui.Combo("Anchor", _configuration.floor.Anchor, anchorList, table.getn(anchorList))
