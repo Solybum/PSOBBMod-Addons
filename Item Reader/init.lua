@@ -124,6 +124,13 @@ if optionsLoaded then
     options.mags.NoResize                 = lib_helpers.NotNilOrDefault(options.mags.NoResize, "")
     options.mags.NoMove                   = lib_helpers.NotNilOrDefault(options.mags.NoMove, "")
     options.mags.TransparentWindow        = lib_helpers.NotNilOrDefault(options.mags.TransparentWindow, false)
+    options.mags.printItemIndex           = lib_helpers.NotNilOrDefault(options.mags.printItemIndex, true)
+    options.mags.showItemIDs              = lib_helpers.NotNilOrDefault(options.mags.showItemIDs, false)
+    options.mags.showItemData             = lib_helpers.NotNilOrDefault(options.mags.showItemData, false)
+    options.mags.showEquippedItems        = lib_helpers.NotNilOrDefault(options.mags.showEquippedItems, true)
+    options.mags.hideMagStats             = lib_helpers.NotNilOrDefault(options.mags.hideMagStats, false)
+    options.mags.hideMagPBs               = lib_helpers.NotNilOrDefault(options.mags.hideMagPBs, false)
+    options.mags.hideMagColor             = lib_helpers.NotNilOrDefault(options.mags.hideMagColor, false)
 else
     options =
     {
@@ -226,7 +233,14 @@ else
             NoResize = "",
             NoMove = "",
             AlwaysAutoResize = "",
-            TransparentWindow = false;
+            TransparentWindow = false,
+            printItemIndex = true,
+            showItemIDs = false,
+            showItemData = false,
+            showEquippedItems = false,
+            hideMagStats = false,
+            hideMagPBs = false,
+            hideMagColor = false,
         }
     }
 end
@@ -339,6 +353,13 @@ local function SaveOptions(options)
         io.write(string.format("        NoMove = \"%s\",\n", options.mags.NoMove))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.mags.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.mags.TransparentWindow))
+        io.write(string.format("        printItemIndex = %s,\n", options.mags.printItemIndex))
+        io.write(string.format("        showItemIDs = %s,\n", options.mags.showItemIDs))
+        io.write(string.format("        showItemData = %s,\n", options.mags.showItemData))
+        io.write(string.format("        showEquippedItems = %s,\n", options.mags.showEquippedItems))
+        io.write(string.format("        hideMagStats = %s,\n", options.mags.hideMagStats))
+        io.write(string.format("        hideMagPBs = %s,\n", options.mags.hideMagPBs))
+        io.write(string.format("        hideMagColor = %s,\n", options.mags.hideMagColor))
         io.write(string.format("    },\n"))
         io.write("}\n")
 
@@ -763,15 +784,21 @@ local function ProcessUnit(item, floor)
 
     return result
 end
-local function ProcessMag(item)
+local function ProcessMag(item, fromMagWindow)
     local result = ""
     BeginImguiLineForItem(item)
 
-    if options.showItemIDs then
+    if
+        (not fromMagWindow and options.showItemIDs)
+        or (fromMagWindow and options.mags.showItemIDs)
+    then
         TextCWrapper(false, 0xFFFFFFFF, "%08X ", item.id)
     end
 
-    if options.showItemData then
+    if
+        (not fromMagWindow and options.showItemData)
+        or (fromMagWindow and options.mags.showItemData)
+    then
         TextCWrapper(false, 0xFFFFFFFF,
             "[%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X,%02X%02X%02X%02X] ",
             item.data[1], item.data[2], item.data[3], item.data[4],
@@ -780,11 +807,17 @@ local function ProcessMag(item)
             item.data[13], item.data[14], item.data[15], item.data[16])
     end
 
-    if options.printItemIndex then
+    if
+        (not fromMagWindow and options.printItemIndex)
+        or (fromMagWindow and options.mags.printItemIndex)
+    then
         TextCWrapper(false, lib_items_cfg.itemIndex, "% 3i ", item.index)
     end
 
-    if options.showEquippedItems then
+    if
+        (not fromMagWindow and options.showEquippedItems)
+        or (fromMagWindow and options.mags.showEquippedItems)
+    then
         if item.equipped then
             TextCWrapper(false, lib_items_cfg.white, "[")
             TextCWrapper(false, lib_items_cfg.itemEquipped, "E")
@@ -810,7 +843,10 @@ local function ProcessMag(item)
     TextCWrapper(false, timerColor, os.date("!%M:%S", item.mag.timer))
     TextCWrapper(false, lib_items_cfg.white, "] ")
 
-    if options.hideMagStats == false then
+    if
+        (not fromMagWindow and not options.hideMagStats)
+        or (fromMagWindow and not options.mags.hideMagStats)
+    then
         result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
         result = result .. TextCWrapper(false, lib_items_cfg.magStats, "%.2f", item.mag.def)
         result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
@@ -822,7 +858,10 @@ local function ProcessMag(item)
         result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
-    if options.hideMagPBs == false then
+    if
+        (not fromMagWindow and not options.hideMagPBs)
+        or (fromMagWindow and not options.mags.hideMagPBs)
+    then
         result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
         result = result .. TextCWrapper(false, lib_items_cfg.magPB, lib_unitxt.GetPhotonBlastName(item.mag.pbL, options.shortPBNames))
         result = result .. TextCWrapper(false, lib_items_cfg.white, "|")
@@ -832,7 +871,10 @@ local function ProcessMag(item)
         result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
-    if options.hideMagColor == false then
+    if
+        (not fromMagWindow and not options.hideMagColor)
+        or (fromMagWindow and not options.mags.hideMagColor)
+    then
         result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
         result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
         result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
@@ -971,9 +1013,10 @@ local function ProcessMeseta(item)
     end
     return result
 end
-local function ProcessItem(item, floor, save)
+local function ProcessItem(item, floor, save, fromMagWindow)
     floor = floor or false
     save = save or false
+    fromMagWindow = fromMagWindow or false
 
     -- Do not process disabled items when it's floor list
     -- but only when item IDs are off
@@ -996,7 +1039,7 @@ local function ProcessItem(item, floor, save)
             itemStr = ProcessUnit(item, floor)
         end
     elseif item.data[1] == 2 then
-        itemStr = ProcessMag(item)
+        itemStr = ProcessMag(item, fromMagWindow)
     elseif item.data[1] == 3 then
         itemStr = ProcessTool(item, floor)
     elseif item.data[1] == 4 then
@@ -1110,7 +1153,7 @@ local function PresentMags()
 
     for i=1,itemCount,1 do
         if cache_mags[i].mag ~= nil then
-            ProcessItem(cache_mags[i], false, false)
+            ProcessItem(cache_mags[i], false, false, true)
         end
     end
 end

@@ -217,7 +217,7 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-	    if imgui.Checkbox("Hide when menus are open", _configuration.floor.HideWhenMenu) then
+        if imgui.Checkbox("Hide when menus are open", _configuration.floor.HideWhenMenu) then
                 _configuration.floor.HideWhenMenu = not _configuration.floor.HideWhenMenu
                 this.changed = true
             end
@@ -228,8 +228,8 @@ local function ConfigurationWindow(configuration)
             if imgui.Checkbox("Hide when the menu is unavailable", _configuration.floor.HideWhenMenuUnavailable) then
                 _configuration.floor.HideWhenMenuUnavailable = not _configuration.floor.HideWhenMenuUnavailable
                 this.changed = true
-            end	
-			
+            end
+
             if imgui.Checkbox("No title bar", _configuration.floor.NoTitleBar == "NoTitleBar") then
                 if _configuration.floor.NoTitleBar == "NoTitleBar" then
                     _configuration.floor.NoTitleBar = ""
@@ -549,7 +549,36 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-	    if imgui.Checkbox("Hide when menus are open", _configuration.mags.HideWhenMenu) then
+            if imgui.Checkbox("Print item index", _configuration.mags.printItemIndex) then
+                _configuration.mags.printItemIndex = not _configuration.mags.printItemIndex
+                this.changed = true
+            end
+            if imgui.Checkbox("Show item IDs", _configuration.mags.showItemIDs) then
+                _configuration.mags.showItemIDs = not _configuration.mags.showItemIDs
+                this.changed = true
+            end
+            if imgui.Checkbox("Show item data", _configuration.mags.showItemData) then
+                _configuration.mags.showItemData = not _configuration.mags.showItemData
+                this.changed = true
+            end
+            if imgui.Checkbox("Show equipped items", _configuration.mags.showEquippedItems) then
+                _configuration.mags.showEquippedItems = not _configuration.mags.showEquippedItems
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide mag stats", _configuration.mags.hideMagStats) then
+                _configuration.mags.hideMagStats = not _configuration.mags.hideMagStats
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide mag PBs", _configuration.mags.hideMagPBs) then
+                _configuration.mags.hideMagPBs = not _configuration.mags.hideMagPBs
+                this.changed = true
+            end
+            if imgui.Checkbox("Hide mag color", _configuration.mags.hideMagColor) then
+                _configuration.mags.hideMagColor = not _configuration.mags.hideMagColor
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Hide when menus are open", _configuration.mags.HideWhenMenu) then
                 _configuration.mags.HideWhenMenu = not _configuration.mags.HideWhenMenu
                 this.changed = true
             end
@@ -560,8 +589,8 @@ local function ConfigurationWindow(configuration)
             if imgui.Checkbox("Hide when the menu is unavailable", _configuration.mags.HideWhenMenuUnavailable) then
                 _configuration.mags.HideWhenMenuUnavailable = not _configuration.mags.HideWhenMenuUnavailable
                 this.changed = true
-            end	
-			
+            end
+
             if imgui.Checkbox("No title bar", _configuration.mags.NoTitleBar == "NoTitleBar") then
                 if _configuration.mags.NoTitleBar == "NoTitleBar" then
                     _configuration.mags.NoTitleBar = ""
