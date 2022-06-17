@@ -164,7 +164,7 @@ else
         },
         floor = {
             EnableWindow = true,
-	    HideWhenMenu = false,
+            HideWhenMenu = false,
             HideWhenSymbolChat = false,
             HideWhenMenuUnavailable = false,
             changed = true,
@@ -200,20 +200,20 @@ else
                 HideAntiparalysis = false,
                 HideTelepipes = false,
                 HideTrapVisions = false,
-				HideMonogrinders = false,
-				HideDigrinders = false,
-				HideTrigrinders = false,
-				HideHPMats = false,
-				HidePowerMats = false,
-				HideLuckMats = false,
-				HideMindMats = false,
-				HideDefenseMats = false,
-				HideEvadeMats = false,
+                HideMonogrinders = false,
+                HideDigrinders = false,
+                HideTrigrinders = false,
+                HideHPMats = false,
+                HidePowerMats = false,
+                HideLuckMats = false,
+                HideMindMats = false,
+                HideDefenseMats = false,
+                HideEvadeMats = false,
             },
         },
         mags = {
             EnableWindow = true,
-	    HideWhenMenu = false,
+            HideWhenMenu = false,
             HideWhenSymbolChat = false,
             HideWhenMenuUnavailable = false,
             changed = true,
@@ -277,7 +277,7 @@ local function SaveOptions(options)
         io.write(string.format("    },\n"))
         io.write(string.format("    floor = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.floor.EnableWindow)))
-	io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.floor.HideWhenMenu)))
+        io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.floor.HideWhenMenu)))
         io.write(string.format("        HideWhenSymbolChat = %s,\n", tostring(options.floor.HideWhenSymbolChat)))
         io.write(string.format("        HideWhenMenuUnavailable = %s,\n", tostring(options.floor.HideWhenMenuUnavailable)))
         io.write(string.format("        Anchor = %i,\n", options.floor.Anchor))
@@ -326,7 +326,7 @@ local function SaveOptions(options)
         io.write(string.format("    },\n"))
         io.write(string.format("    mags = {\n"))
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.mags.EnableWindow)))
-	io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.mags.HideWhenMenu)))
+        io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.mags.HideWhenMenu)))
         io.write(string.format("        HideWhenSymbolChat = %s,\n", tostring(options.mags.HideWhenSymbolChat)))
         io.write(string.format("        HideWhenMenuUnavailable = %s,\n", tostring(options.mags.HideWhenMenuUnavailable)))
         io.write(string.format("        Anchor = %i,\n", options.mags.Anchor))
@@ -1291,7 +1291,7 @@ local function present()
         and (options.mags.HideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
     then
         local windowName = "Item Reader - Mags"
-		
+
         if options.mags.TransparentWindow == true then
             imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.0)
         end
