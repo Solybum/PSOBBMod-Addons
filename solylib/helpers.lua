@@ -1,12 +1,20 @@
-local ResolutionWidth = 0x00A46C48
-local ResolutionHeight = 0x00A46C4A
+-- Helper functions to get PSO's resolution Width and Height. 
+-- Read the instructions containing address of a global passed to the device creation, and then
+-- use that. Generally the same as the old globals read unless the client has SSAA enabled.
+local function GetResolutionWidth()
+    return pso.read_u32(pso.read_u32(0x82D140))
+end
+
+local function GetResolutionHeight()
+    return pso.read_u32(pso.read_u32(0x82D18A))
+end
 
 local function GetPosBySizeAndAnchor(_x, _y, _w, _h, _anchor)
     local x
     local y
 
-    local resW = pso.read_u16(ResolutionWidth)
-    local resH = pso.read_u16(ResolutionHeight)
+    local resW = GetResolutionWidth()
+    local resH = GetResolutionHeight()
 
     -- Top left
     if _anchor == 1 then
@@ -189,6 +197,8 @@ end
 
 return
 {
+    GetResolutionWidth = GetResolutionWidth,
+    GetResolutionHeight = GetResolutionHeight,
     GetPosBySizeAndAnchor = GetPosBySizeAndAnchor,
     WindowPositionAndSize = WindowPositionAndSize,
     Round = Round,
