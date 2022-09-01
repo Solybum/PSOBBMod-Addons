@@ -80,6 +80,7 @@ if optionsLoaded then
     if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
         options.floor.filter = {}
     end
+    options.floor.filter.HitMin			    = lib_helpers.NotNilOrDefault(options.floor.filter.HitMin, 40)
     options.floor.filter.HideLowHitWeapons  = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowHitWeapons, false)
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
@@ -190,6 +191,7 @@ else
             OtherFloorsPrependString = "",
             EnableFilters = false,
             filter = {
+                HitMin = 40,
                 HideLowHitWeapons = false,
                 HideLowSocketArmor = false,
                 HideUselessUnits = false,
@@ -310,6 +312,7 @@ local function SaveOptions(options)
         io.write(string.format("        OtherFloorsPrependString = \"%s\",\n", options.floor.OtherFloorsPrependString))
         io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
         io.write(string.format("        filter = {\n"))
+        io.write(string.format("            HitMin = %s,\n", options.floor.filter.HitMin))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
@@ -496,7 +499,7 @@ local function ProcessWeapon(item, floor)
         elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowHitWeapons then
             show_item = false
             -- Hide weapon drops with less then 40h untekked
-            if item.weapon.stats[6] >= 40 then
+            if item.weapon.stats[6] >= options.floor.filter.HitMin then
                 show_item = true
             end
         end
