@@ -829,7 +829,9 @@ local function ProcessMag(item, fromMagWindow)
     end
 
     local nameColor = lib_items_cfg.magName
-    local item_cfg = lib_items_list.t[item.hex]
+    -- For mags, DEF is embedded into the hex. Strip it for the lookup.
+    local lookupHex = bit.band(item.hex, 0xFFFF00)
+    local item_cfg = lib_items_list.t[lookupHex]
     if item_cfg ~= nil and item_cfg[1] ~= 0 then
         nameColor = item_cfg[1]
     end
