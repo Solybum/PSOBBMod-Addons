@@ -80,7 +80,7 @@ if optionsLoaded then
     if options.floor.filter == nil or type(options.floor.filter) ~= "table" then
         options.floor.filter = {}
     end
-    options.floor.filter.HitMin			    = lib_helpers.NotNilOrDefault(options.floor.filter.HitMin, 40)
+    options.floor.filter.HitMin             = lib_helpers.NotNilOrDefault(options.floor.filter.HitMin, 40)
     options.floor.filter.HideLowHitWeapons  = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowHitWeapons, false)
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
