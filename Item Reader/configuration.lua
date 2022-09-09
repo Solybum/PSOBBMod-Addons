@@ -332,12 +332,12 @@ local function ConfigurationWindow(configuration)
                 if imgui.TreeNodeEx("Filter Drops") then
                     imgui.Text("Non-Rares")
                     
-                   	imgui.PushItemWidth(110)
-					success, _configuration.floor.filter.HitMin = imgui.InputInt("Minimum Hit", _configuration.floor.filter.HitMin)
-					imgui.PopItemWidth()
-					if success then
-						this.changed = true
-					end
+                    imgui.PushItemWidth(110)
+                    success, _configuration.floor.filter.HitMin = imgui.InputInt("Minimum Hit", _configuration.floor.filter.HitMin)
+                    imgui.PopItemWidth()
+                    if success then
+                        this.changed = true
+                    end
                     
                     if imgui.Checkbox("Hide Low Hit Weapons", _configuration.floor.filter.HideLowHitWeapons) then
                         _configuration.floor.filter.HideLowHitWeapons = not _configuration.floor.filter.HideLowHitWeapons

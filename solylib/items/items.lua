@@ -213,10 +213,11 @@ local function ReadItemData(itemAddr)
 
     item.id = pso.read_u32(itemAddr + _ItemID)
 
+    -- Initialize the item data
     item.data[1] = pso.read_u8(itemAddr + _ItemCode + 0)
     item.data[2] = pso.read_u8(itemAddr + _ItemCode + 1)
     item.data[3] = pso.read_u8(itemAddr + _ItemCode + 2)
-    item.data[4] = pso.read_u8(itemAddr + _ItemMagPB)
+    item.data[4] = 0
     item.data[5] = 0
     item.data[6] = 0
     item.data[7] = 0
@@ -290,6 +291,9 @@ local function ReadItemData(itemAddr)
     -- MAG
     elseif item.data[1] == 2 then
         item.mag = {}
+
+        -- Strip the level from the mag's hex.
+        item.hex = bit.band(item.hex, 0xFFFF00)
 
         item.data[4] = pso.read_u8(itemAddr + _ItemMagPB)
         item.data[5] = pso.read_u8(itemAddr + _ItemMagStats + 0)
