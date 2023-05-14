@@ -49,6 +49,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Show Monster Item Drop", _configuration.mhpShowItemDrop) then
+                _configuration.mhpShowItemDrop = not _configuration.mhpShowItemDrop
+                this.changed = true
+            end
+
             if imgui.Checkbox("Hide when menus are open", _configuration.mhpHideWhenMenu) then
                 _configuration.mhpHideWhenMenu = not _configuration.mhpHideWhenMenu
                 this.changed = true
@@ -141,6 +146,11 @@ local function ConfigurationWindow(configuration)
         if imgui.TreeNodeEx("Target") then
             if imgui.Checkbox("Enable", _configuration.targetEnableWindow) then
                 _configuration.targetEnableWindow = not _configuration.targetEnableWindow
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show Monster Item Drop", _configuration.targetShowItemDrop) then
+                _configuration.targetShowItemDrop = not _configuration.targetShowItemDrop
                 this.changed = true
             end
 
