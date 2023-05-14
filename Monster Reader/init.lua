@@ -281,10 +281,10 @@ end
 
 -- Seth Clydesdale's Drop Chart side message parser
 local function parseSideMessage(text)
-    local dropIndex = string.find(text, "Drop")
-    local idIndex = string.find(text, "ID")
-    local idStr = string.sub(text, idIndex + 2, dropIndex - 1)
-    local id = string.match(idStr,"%a+")
+    local dropIndex = text:find("Drop")
+	local idIndex = text:find("ID")
+	local idStr = text:sub(idIndex + 2, dropIndex - 1)
+    local id = idStr:match("%a+")
 
     local _episode = pso.read_u32(_Episode)
     episode = episodes[_episode]
@@ -503,7 +503,7 @@ local function GetMonsterList()
 
     -- get party owner section id to parse item drops for mobs
     side = getSideMessage()
-    if string.find(side, "ID") and string.find(side, "Drop") and string.find(side, "Rare") then
+    if side:find("ID") and side:find("Drop") and side:find("Rare") then
         _partyId = parseSideMessage(side)
     end
 
