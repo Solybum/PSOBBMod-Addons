@@ -282,8 +282,8 @@ end
 -- Seth Clydesdale's Drop Chart side message parser
 local function parseSideMessage(text)
     local dropIndex = text:find("Drop")
-	local idIndex = text:find("ID")
-	local idStr = text:sub(idIndex + 2, dropIndex - 1)
+    local idIndex = text:find("ID")
+    local idStr = text:sub(idIndex + 2, dropIndex - 1)
     local id = idStr:match("%a+")
 
     local _episode = pso.read_u32(_Episode)
