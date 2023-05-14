@@ -501,7 +501,7 @@ local function GetMonsterList()
     local pIndex = pso.read_u32(_PlayerIndex)
     local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
-    -- get owner section id to parse item drops for mobs
+    -- get party owner section id to parse item drops for mobs
     side = getSideMessage()
     if string.find(side, "ID") and string.find(side, "Drop") and string.find(side, "Rare") then
         _partyId = parseSideMessage(side)
