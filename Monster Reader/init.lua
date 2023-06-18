@@ -196,7 +196,7 @@ local _targetPointerOffset = 0x18
 local _targetOffset = 0x108C
 
 local _EntityCount = 0x00AAE164
-local _EntityArray = 0x00AAD720
+local _EntityArray = 0
 
 local _MonsterUnitxtID = 0x378
 local _MonsterHP = 0x334
@@ -881,6 +881,13 @@ local function PresentTargetMonsterWindow()
 end
 
 local function present()
+
+    if _EntityArray == 0 then
+        -- Get the address of the entity array from one of the instructions that references it.
+        -- Works on base client and on a client patched with a different array.
+        _EntityArray = pso.read_u32(0x7B4BA0 + 2)
+    end
+
     -- If the addon has never been used, open the config window
     -- and disable the config window setting
     if options.configurationEnableWindow then
