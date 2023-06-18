@@ -196,7 +196,7 @@ local _targetPointerOffset = 0x18
 local _targetOffset = 0x108C
 
 local _EntityCount = 0x00AAE164
-local _EntityArray = 0x00AAD720
+local _EntityArray = pso.read_u32(0x7B4BA0 + 2) -- Reads the address out of initialization instruction
 
 local _MonsterUnitxtID = 0x378
 local _MonsterHP = 0x334
