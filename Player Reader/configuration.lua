@@ -142,6 +142,7 @@ local function ConfigurationWindow(configuration)
                         _configuration.players[i].EnableWindow = not _configuration.players[i].EnableWindow
                         this.changed = true
                     end
+
                      if imgui.Checkbox("Hide when menus are open", _configuration.players[i].HideWhenMenu) then
                         _configuration.players[i].HideWhenMenu = not _configuration.players[i].HideWhenMenu
                         this.changed = true
