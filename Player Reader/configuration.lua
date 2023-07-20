@@ -142,7 +142,18 @@ local function ConfigurationWindow(configuration)
                         _configuration.players[i].EnableWindow = not _configuration.players[i].EnableWindow
                         this.changed = true
                     end
-
+                     if imgui.Checkbox("Hide when menus are open", _configuration.players[i].HideWhenMenu) then
+                        _configuration.players[i].HideWhenMenu = not _configuration.players[i].HideWhenMenu
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Hide when symbol chat/word select is open", _configuration.players[i].HideWhenSymbolChat) then
+                        _configuration.players[i].HideWhenSymbolChat = not _configuration.players[i].HideWhenSymbolChat
+                        this.changed = true
+                    end
+                     if imgui.Checkbox("Hide when menu is unavailable", _configuration.players[i].HideWhenMenuUnavailable) then
+                        _configuration.players[i].HideWhenMenuUnavailable = not _configuration.players[i].HideWhenMenuUnavailable
+                        this.changed = true
+                    end
                     if imgui.Checkbox("No title bar", _configuration.players[i].NoTitleBar == "NoTitleBar") then
                         if _configuration.players[i].NoTitleBar == "NoTitleBar" then
                             _configuration.players[i].NoTitleBar = ""
