@@ -57,14 +57,16 @@ if optionsLoaded then
         options.players[i].Y                         = lib_helpers.NotNilOrDefault(options.players[i].Y, -5)
         options.players[i].W                         = lib_helpers.NotNilOrDefault(options.players[i].W, 150)
         options.players[i].H                         = lib_helpers.NotNilOrDefault(options.players[i].H, 45)
+        options.players[i].ShowName                  = lib_helpers.NotNilOrDefault(options.players[i].ShowName, false)
+        options.players[i].ShowHPBar                 = lib_helpers.NotNilOrDefault(options.players[i].ShowHPBar, false)
+        options.players[i].SD                        = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
+        options.players[i].Invulnerability           = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
         options.players[i].NoTitleBar                = lib_helpers.NotNilOrDefault(options.players[i].NoTitleBar, "NoTitleBar")
         options.players[i].NoResize                  = lib_helpers.NotNilOrDefault(options.players[i].NoResize, "NoResize")
         options.players[i].NoMove                    = lib_helpers.NotNilOrDefault(options.players[i].NoMove, "NoMove")
         options.players[i].NoScrollbar               = lib_helpers.NotNilOrDefault(options.players[i].NoScrollbar, "NoScrollbar")
         options.players[i].AlwaysAutoResize          = lib_helpers.NotNilOrDefault(options.players[i].AlwaysAutoResize, "AlwaysAutoResize")
         options.players[i].TransparentWindow         = lib_helpers.NotNilOrDefault(options.players[i].TransparentWindow, false)
-        options.players[i].SD                        = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
-        options.players[i].Invulnerability           = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
 
     end
 
@@ -78,7 +80,10 @@ if optionsLoaded then
     options.myself.HideWhenMenuUnavailable   = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenuUnavailable, true)
     options.myself.ShowName                  = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
     options.myself.ShowBarText               = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
-    options.myself.ShowBarMaxValue           = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)    
+    options.myself.ShowBarMaxValue           = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)
+    options.myself.ShowHPBar                 = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
+    options.myself.SD                        = lib_helpers.NotNilOrDefault(options.myself.SD, true)
+    options.myself.Invulnerability           = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
     options.myself.Changed                   = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
     options.myself.Anchor                    = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
     options.myself.X                         = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
@@ -91,9 +96,6 @@ if optionsLoaded then
     options.myself.NoScrollbar               = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
     options.myself.AlwaysAutoResize          = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize, "AlwaysAutoResize")
     options.myself.TransparentWindow         = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
-    options.myself.SD                        = lib_helpers.NotNilOrDefault(options.myself.SD, true)
-    options.myself.Invulnerability           = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
-    options.myself.ShowHPBar                 = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
 
 else
     options =
@@ -125,24 +127,27 @@ else
 
     for i=1,4,1 do
         options.players[i] = {}
-        options.players[i].EnableWindow = true
-        options.players[i].HideWhenMenu = false
-        options.players[i].HideWhenSymbolChat = false
+        options.players[i].EnableWindow            = true
+        options.players[i].HideWhenMenu            = false
+        options.players[i].HideWhenSymbolChat      = false
         options.players[i].HideWhenMenuUnavailable = false
-        options.players[i].Changed = false
-        options.players[i].Anchor = 3
-        options.players[i].X = (5 * 1) + (150 * (i - 1))
-        options.players[i].Y = -5
-        options.players[i].W = 150
-        options.players[i].H = 45
-        options.players[i].NoTitleBar = "NoTitleBar"
-        options.players[i].NoResize = "NoResize"
-        options.players[i].NoMove = "NoMove"
-        options.players[i].NoScrollbar = "NoScrollbar"
-        options.players[i].AlwaysAutoResize = "AlwaysAutoResize"
-        options.players[i].TransparentWindow = false
-        options.players[i].SD = true
-        options.players[i].Invulnerability = true
+        options.players[i].ShowName                = false
+        options.players[i].ShowHPBar               = false
+        options.players[i].SD                      = true
+        options.players[i].Invulnerability         = true
+        options.players[i].NoTitleBar              = "NoTitleBar"
+        options.players[i].NoResize                = "NoResize"
+        options.players[i].NoMove                  = "NoMove"
+        options.players[i].NoScrollbar             = "NoScrollbar"
+        options.players[i].AlwaysAutoResize        = "AlwaysAutoResize"
+        options.players[i].TransparentWindow       = false
+        options.players[i].Changed                 = false
+        options.players[i].Anchor                  = 3
+        options.players[i].X                       = (5 * 1) + (150 * (i - 1))
+        options.players[i].Y                       = -5
+        options.players[i].W                       = 150
+        options.players[i].H                       = 45
+
     end
 
     options.myself = {}
@@ -153,6 +158,9 @@ else
     options.myself.ShowName                = false
     options.myself.ShowBarText             = false
     options.myself.ShowBarMaxValue         = false
+    options.myself.ShowHPBar               = false
+    options.myself.SD                      = true
+    options.myself.Invulnerability         = true
     options.myself.Changed                 = false
     options.myself.Anchor                  = 3
     options.myself.X                       = (5 * 1)
@@ -165,9 +173,7 @@ else
     options.myself.NoScrollbar             = "NoScrollbar"
     options.myself.AlwaysAutoResize        = "AlwaysAutoResize"
     options.myself.TransparentWindow       = false
-    options.myself.SD                      = true
-    options.myself.Invulnerability         = true
-    options.myself.ShowHPBar               = false
+
 end
 
 local function SaveOptions(options)
@@ -207,6 +213,10 @@ local function SaveOptions(options)
             io.write(string.format("            HideWhenMenu = %s, \n", tostring(options.players[i].HideWhenMenu)))
             io.write(string.format("            HideWhenSymbolChat = %s, \n", tostring(options.players[i].HideWhenSymbolChat)))
             io.write(string.format("            HideWhenMenuUnavailable = %s, \n", tostring(options.players[i].HideWhenUnavailable)))
+            io.write(string.format("            ShowName = %s,\n", tostring(options.players[i].ShowName)))
+            io.write(string.format("            ShowHPBar = %s,\n", tostring(options.players[i].ShowHPBar)))
+            io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
+            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnerability)))
             io.write(string.format("            Changed = %s,\n", tostring(options.players[i].Changed)))
             io.write(string.format("            Anchor = %i,\n", options.players[i].Anchor))
             io.write(string.format("            X = %i,\n", options.players[i].X))
@@ -219,8 +229,8 @@ local function SaveOptions(options)
             io.write(string.format("            NoScrollbar = \"%s\",\n", options.players[i].NoScrollbar))
             io.write(string.format("            AlwaysAutoResize = \"%s\",\n", options.players[i].AlwaysAutoResize))
             io.write(string.format("            TransparentWindow = %s,\n", tostring(options.players[i].TransparentWindow)))
-            io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
-            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnerability)))
+
+
             io.write(string.format("        },\n"))
         end
         io.write(string.format("    },\n"))
@@ -233,6 +243,9 @@ local function SaveOptions(options)
         io.write(string.format("        ShowName = %s,\n", tostring(options.myself.ShowName)))
         io.write(string.format("        ShowBarText = %s,\n", tostring(options.myself.ShowBarText)))
         io.write(string.format("        ShowBarMaxValue = %s,\n", tostring(options.myself.ShowBarMaxValue)))
+        io.write(string.format("        ShowHPBar = %s,\n", tostring(options.myself.ShowHPBar)))
+        io.write(string.format("        SD = %s,\n", tostring(options.myself.SD)))
+        io.write(string.format("        Invulnerability = %s,\n", tostring(options.myself.Invulnerability)))
         io.write(string.format("        Changed = %s,\n", tostring(options.myself.Changed)))
         io.write(string.format("        Anchor = %i,\n", options.myself.Anchor))
         io.write(string.format("        X = %i,\n", options.myself.X))
@@ -245,9 +258,6 @@ local function SaveOptions(options)
         io.write(string.format("        NoScrollbar = \"%s\",\n", options.myself.NoScrollbar))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.myself.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", tostring(options.myself.TransparentWindow)))
-        io.write(string.format("        SD = %s,\n", tostring(options.myself.SD)))
-        io.write(string.format("        Invulnerability = %s,\n", tostring(options.myself.Invulnerability)))
-        io.write(string.format("        ShowHPBar = %s,\n", tostring(options.myself.ShowHPBar)))
         io.write(string.format("   },\n"))
 
         io.write("}\n")
@@ -466,8 +476,8 @@ local function present()
                                 address, 
                                 options.players[i].SD, 
                                 options.players[i].Invulnerability, 
-                                true, --show name
-                                true, --show HP bar
+                                options.players[i].ShowName, 
+                                options.players[i].ShowHPBar, 
                                 options.singlePlayersShowBarMaxValue, 
                                 options.singlePlayersShowBarText)
 
