@@ -126,11 +126,11 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Show HP/TP text", _configuration.singlePlayersShowBarText) then
+            if imgui.Checkbox("Show HP text", _configuration.singlePlayersShowBarText) then
                 _configuration.singlePlayersShowBarText = not _configuration.singlePlayersShowBarText
                 this.changed = true
             end
-            if imgui.Checkbox("Show max HP/TP", _configuration.singlePlayersShowBarMaxValue) then
+            if imgui.Checkbox("Show Max HP", _configuration.singlePlayersShowBarMaxValue) then
                 _configuration.singlePlayersShowBarMaxValue = not _configuration.singlePlayersShowBarMaxValue
                 this.changed = true
             end
@@ -155,6 +155,22 @@ local function ConfigurationWindow(configuration)
                         _configuration.players[i].HideWhenMenuUnavailable = not _configuration.players[i].HideWhenMenuUnavailable
                         this.changed = true
                     end
+                    if imgui.Checkbox("Show Character Name and Level", _configuration.players[i].ShowName) then
+                        _configuration.players[i].ShowName = not _configuration.players[i].ShowName
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Show HP bar", _configuration.players[i].ShowHPBar) then
+                        _configuration.players[i].ShowHPBar = not _configuration.players[i].ShowHPBar
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Show Shifta/Deband (Jellen/Zalure)", _configuration.players[i].SD) then
+                        _configuration.players[i].SD = not _configuration.players[i].SD
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Show Invincibility", _configuration.players[i].Invulnerability) then
+                        _configuration.players[i].Invulnerability = not _configuration.players[i].Invulnerability
+                        this.changed = true
+                    end
                     if imgui.Checkbox("No title bar", _configuration.players[i].NoTitleBar == "NoTitleBar") then
                         if _configuration.players[i].NoTitleBar == "NoTitleBar" then
                             _configuration.players[i].NoTitleBar = ""
@@ -163,6 +179,7 @@ local function ConfigurationWindow(configuration)
                         end
                         this.changed = true
                     end
+
                     if imgui.Checkbox("No resize", _configuration.players[i].NoResize == "NoResize") then
                         if _configuration.players[i].NoResize == "NoResize" then
                             _configuration.players[i].NoResize = ""
@@ -188,7 +205,7 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
 
-                    if imgui.Checkbox("Always Auto Resize", _configuration.players[i].AlwaysAutoResize == "AlwaysAutoResize") then
+                    if imgui.Checkbox("Always auto resize", _configuration.players[i].AlwaysAutoResize == "AlwaysAutoResize") then
                         if _configuration.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
                             _configuration.players[i].AlwaysAutoResize = ""
                         else
@@ -245,16 +262,6 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
 
-                    if imgui.Checkbox("S/D (J/Z)", _configuration.players[i].SD) then
-                        _configuration.players[i].SD = not _configuration.players[i].SD
-                        this.changed = true
-                    end
-
-                    if imgui.Checkbox("Invulnerability", _configuration.players[i].Invulnerability) then
-                        _configuration.players[i].Invulnerability = not _configuration.players[i].Invulnerability
-                        this.changed = true
-                    end
-
                     imgui.TreePop()
                 end
             end
@@ -280,22 +287,30 @@ local function ConfigurationWindow(configuration)
                 _configuration.myself.HideWhenMenuUnavailable = not _configuration.myself.HideWhenMenuUnavailable
                 this.changed = true
             end
-            
-            if imgui.Checkbox("Show Name", _configuration.myself.ShowName) then
+            if imgui.Checkbox("Show Character Name and Level", _configuration.myself.ShowName) then
                 _configuration.myself.ShowName = not _configuration.myself.ShowName
                 this.changed = true
             end
-
-            if imgui.Checkbox("Show HP/TP text", _configuration.myself.ShowBarText) then
+            if imgui.Checkbox("Show HP text", _configuration.myself.ShowBarText) then
                 _configuration.myself.ShowBarText = not _configuration.myself.ShowBarText
                 this.changed = true
             end
-
-            if imgui.Checkbox("Show max HP/TP", _configuration.myself.ShowBarMaxValue) then
+            if imgui.Checkbox("Show Max HP", _configuration.myself.ShowBarMaxValue) then
                 _configuration.myself.ShowBarMaxValue = not _configuration.myself.ShowBarMaxValue
                 this.changed = true
             end
-
+            if imgui.Checkbox("Show HP bar", _configuration.myself.ShowHPBar) then
+                _configuration.myself.ShowHPBar = not _configuration.myself.ShowHPBar
+                this.changed = true
+            end
+            if imgui.Checkbox("Show Shifta/Deband (Jellen/Zalure)", _configuration.myself.SD) then
+                _configuration.myself.SD = not _configuration.myself.SD
+                this.changed = true
+            end
+            if imgui.Checkbox("Show Invincibility", _configuration.myself.Invulnerability) then
+                _configuration.myself.Invulnerability = not _configuration.myself.Invulnerability
+                this.changed = true
+            end
             if imgui.Checkbox("No title bar", _configuration.myself.NoTitleBar == "NoTitleBar") then
                 if _configuration.myself.NoTitleBar == "NoTitleBar" then
                     _configuration.myself.NoTitleBar = ""
@@ -328,8 +343,7 @@ local function ConfigurationWindow(configuration)
                 end
                 this.changed = true
             end
-
-            if imgui.Checkbox("Always Auto Resize", _configuration.myself.AlwaysAutoResize == "AlwaysAutoResize") then
+            if imgui.Checkbox("Always auto resize", _configuration.myself.AlwaysAutoResize == "AlwaysAutoResize") then
                 if _configuration.myself.AlwaysAutoResize == "AlwaysAutoResize" then
                     _configuration.myself.AlwaysAutoResize = ""
                 else
@@ -383,21 +397,6 @@ local function ConfigurationWindow(configuration)
             imgui.PopItemWidth()
             if success then
                 _configuration.myself.Changed = true
-                this.changed = true
-            end
-
-            if imgui.Checkbox("S/D (J/Z)", _configuration.myself.SD) then
-                _configuration.myself.SD = not _configuration.myself.SD
-                this.changed = true
-            end
-
-            if imgui.Checkbox("Invulnerability", _configuration.myself.Invulnerability) then
-                _configuration.myself.Invulnerability = not _configuration.myself.Invulnerability
-                this.changed = true
-            end
-            
-            if imgui.Checkbox("HP Bar", _configuration.myself.ShowHPBar) then
-                _configuration.myself.ShowHPBar = not _configuration.myself.ShowHPBar
                 this.changed = true
             end
             
