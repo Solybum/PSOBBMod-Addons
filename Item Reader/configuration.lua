@@ -443,6 +443,11 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
+                    if imgui.Checkbox("Hide Scape Dolls", _configuration.floor.filter.HideScapeDolls) then
+                        _configuration.floor.filter.HideScapeDolls = not _configuration.floor.filter.HideScapeDolls
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
 
                     imgui.Text("Grinders/Materials")
                     if imgui.Checkbox("Hide Monogrinders", _configuration.floor.filter.HideMonogrinders) then

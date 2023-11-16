@@ -98,6 +98,7 @@ if optionsLoaded then
     options.floor.filter.HideAntiparalysis  = lib_helpers.NotNilOrDefault(options.floor.filter.HideAntiparalysis, false)
     options.floor.filter.HideTelepipes      = lib_helpers.NotNilOrDefault(options.floor.filter.HideTelepipes, false)
     options.floor.filter.HideTrapVisions    = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrapVisions, false)
+    options.floor.filter.HideScapeDolls     = lib_helpers.NotNilOrDefault(options.floor.filter.HideScapeDolls, false)
     options.floor.filter.HideMonogrinders   = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonogrinders, false)
     options.floor.filter.HideDigrinders     = lib_helpers.NotNilOrDefault(options.floor.filter.HideDigrinders, false)
     options.floor.filter.HideTrigrinders    = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrigrinders, false)
@@ -209,6 +210,7 @@ else
                 HideAntiparalysis = false,
                 HideTelepipes = false,
                 HideTrapVisions = false,
+                HideScapeDolls = false,
                 HideMonogrinders = false,
                 HideDigrinders = false,
                 HideTrigrinders = false,
@@ -330,6 +332,7 @@ local function SaveOptions(options)
         io.write(string.format("            HideAntiparalysis = %s,\n", options.floor.filter.HideAntiparalysis))
         io.write(string.format("            HideTelepipes = %s,\n", options.floor.filter.HideTelepipes))
         io.write(string.format("            HideTrapVisions = %s,\n", options.floor.filter.HideTrapVisions))
+        io.write(string.format("            HideScapeDolls = %s,\n", options.floor.filter.HideScapeDolls))
         io.write(string.format("            HideMonogrinders = %s,\n", options.floor.filter.HideMonogrinders))
         io.write(string.format("            HideDigrinders = %s,\n", options.floor.filter.HideDigrinders))
         io.write(string.format("            HideTrigrinders = %s,\n", options.floor.filter.HideTrigrinders))
@@ -943,6 +946,7 @@ local function ProcessTool(item, floor)
                  (options.floor.filter.HideAntiparalysis and item.data[2] == 0x06 and item.data[3] == 0x01) or
                  (options.floor.filter.HideTelepipes     and item.data[2] == 0x07 and item.data[3] == 0x00) or
                  (options.floor.filter.HideTrapVisions   and item.data[2] == 0x08 and item.data[3] == 0x00) or
+                 (options.floor.filter.HideScapeDolls    and item.data[2] == 0x09 and item.data[3] == 0x00) or
                  (options.floor.filter.HideMonogrinders  and item.data[2] == 0x0A and item.data[3] == 0x00) or
                  (options.floor.filter.HideDigrinders    and item.data[2] == 0x0A and item.data[3] == 0x01) or
                  (options.floor.filter.HideTrigrinders   and item.data[2] == 0x0A and item.data[3] == 0x02) or
