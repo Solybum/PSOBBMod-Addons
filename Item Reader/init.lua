@@ -6,6 +6,7 @@ local lib_items = require("solylib.items.items")
 local lib_menu = require("solylib.menu")
 local lib_items_list = require("solylib.items.items_list")
 local lib_items_cfg = require("solylib.items.items_configuration")
+local lib_claires_deal = require("solylib.items.claires_deal")
 local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
@@ -505,6 +506,10 @@ local function ProcessWeapon(item, floor)
             if item.weapon.stats[6] >= options.floor.filter.HitMin then
                 show_item = true
             end
+            -- Show Claire's Deal 5 items
+            if lib_claires_deal.IsClairesDealItem(item) then
+                show_item = true
+            end
         end
     end
 
@@ -636,6 +641,10 @@ local function ProcessFrame(item, floor)
         if item.armor.slots == 4 then
             show_item = true
         end
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -687,7 +696,10 @@ local function ProcessBarrier(item, floor)
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
         show_item = false
-        -- No exceptions at the moment
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -735,7 +747,10 @@ local function ProcessUnit(item, floor)
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideUselessUnits then
         show_item = false
-        -- No exceptions at the moment
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -957,6 +972,10 @@ local function ProcessTool(item, floor)
                  (options.floor.filter.HideDefenseMats   and item.data[2] == 0x0B and item.data[3] == 0x05) or
                  (options.floor.filter.HideLuckMats      and item.data[2] == 0x0B and item.data[3] == 0x06)) then
             show_item = false
+            -- Show Claire's Deal 5 items
+            if lib_claires_deal.IsClairesDealItem(item) then
+                show_item = true
+            end
         end
     end
 
