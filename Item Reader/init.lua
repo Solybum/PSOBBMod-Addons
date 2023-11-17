@@ -86,6 +86,7 @@ if optionsLoaded then
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
     options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
+    options.floor.filter.ShowClairesDeal    = lib_helpers.NotNilOrDefault(options.floor.filter.ShowClairesDeal, false)
     options.floor.filter.HideMonomates      = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonomates, false)
     options.floor.filter.HideDimates        = lib_helpers.NotNilOrDefault(options.floor.filter.HideDimates, false)
     options.floor.filter.HideTrimates       = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrimates, false)
@@ -198,6 +199,7 @@ else
                 HideLowSocketArmor = false,
                 HideUselessUnits = false,
                 HideUselessTechs = false,
+                ShowClairesDeal = false,
                 HideMonomates = false,
                 HideDimates = false,
                 HideTrimates = false,
@@ -320,6 +322,7 @@ local function SaveOptions(options)
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
         io.write(string.format("            HideUselessTechs = %s,\n", options.floor.filter.HideUselessTechs))
+        io.write(string.format("            ShowClairesDeal = %s,\n", options.floor.filter.ShowClairesDeal))
         io.write(string.format("            HideMonomates = %s,\n", options.floor.filter.HideMonomates))
         io.write(string.format("            HideDimates = %s,\n", options.floor.filter.HideDimates))
         io.write(string.format("            HideTrimates = %s,\n", options.floor.filter.HideTrimates))
@@ -507,7 +510,7 @@ local function ProcessWeapon(item, floor)
                 show_item = true
             end
             -- Show Claire's Deal 5 items
-            if lib_claires_deal.IsClairesDealItem(item) then
+            if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
                 show_item = true
             end
         end
@@ -642,7 +645,7 @@ local function ProcessFrame(item, floor)
             show_item = true
         end
         -- Show Claire's Deal 5 items
-        if lib_claires_deal.IsClairesDealItem(item) then
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
             show_item = true
         end
     end
@@ -697,7 +700,7 @@ local function ProcessBarrier(item, floor)
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
         show_item = false
         -- Show Claire's Deal 5 items
-        if lib_claires_deal.IsClairesDealItem(item) then
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
             show_item = true
         end
     end
@@ -748,7 +751,7 @@ local function ProcessUnit(item, floor)
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideUselessUnits then
         show_item = false
         -- Show Claire's Deal 5 items
-        if lib_claires_deal.IsClairesDealItem(item) then
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
             show_item = true
         end
     end
@@ -973,7 +976,7 @@ local function ProcessTool(item, floor)
                  (options.floor.filter.HideLuckMats      and item.data[2] == 0x0B and item.data[3] == 0x06)) then
             show_item = false
             -- Show Claire's Deal 5 items
-            if lib_claires_deal.IsClairesDealItem(item) then
+            if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
                 show_item = true
             end
         end

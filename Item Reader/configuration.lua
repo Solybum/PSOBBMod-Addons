@@ -362,6 +362,11 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
+                    if imgui.Checkbox("Show Claire's Deal 5 Items", _configuration.floor.filter.ShowClairesDeal) then
+                        _configuration.floor.filter.ShowClairesDeal = not _configuration.floor.filter.ShowClairesDeal
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
 
                     imgui.Text("Consumables")
                     if imgui.Checkbox("Hide Monomates", _configuration.floor.filter.HideMonomates) then
