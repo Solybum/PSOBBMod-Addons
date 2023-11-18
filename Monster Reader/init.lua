@@ -745,31 +745,31 @@ local function PresentTargetMonster(monster)
             lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
             lib_helpers.Text(true, "[")
             if specAtk1_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%%%% ", specAtk1_Acc)
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec1: %i%% ", specAtk1_Acc)
             elseif hardAtk1_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%%%% ", hardAtk1_Acc)
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard1: %i%% ", hardAtk1_Acc)
             else
-                lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%%%% ", normAtk1_Acc)
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm1: %i%% ", normAtk1_Acc)
             end
 
             -- Display best second attack
             lib_helpers.Text(false, "> ")
             if specAtk2_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%%%% ", specAtk2_Acc)
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec2: %i%% ", specAtk2_Acc)
             elseif hardAtk2_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFFAA00, "Hard2: %i%%%% ", hardAtk2_Acc)
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard2: %i%% ", hardAtk2_Acc)
             else
-                lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%%%% ", normAtk2_Acc)
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm2: %i%% ", normAtk2_Acc)
             end
 
             -- Display best third attack
             lib_helpers.Text(false, "> ")
             if specAtk3_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFF0000, "Spec3: %i%%%%", specAtk3_Acc)
+                lib_helpers.TextC(false, 0xFFFF0000, "Spec3: %i%%", specAtk3_Acc)
             elseif hardAtk3_Acc >= options.targetAccuracyThreshold then
-                lib_helpers.TextC(false, 0xFFFFAA00, "Hard3: %i%%%%", hardAtk3_Acc)
+                lib_helpers.TextC(false, 0xFFFFAA00, "Hard3: %i%%", hardAtk3_Acc)
             else
-                lib_helpers.TextC(false, 0xFF00FF00, "Norm3: %i%%%%", normAtk3_Acc)
+                lib_helpers.TextC(false, 0xFF00FF00, "Norm3: %i%%", normAtk3_Acc)
             end
             lib_helpers.Text(false, "]")
         end
