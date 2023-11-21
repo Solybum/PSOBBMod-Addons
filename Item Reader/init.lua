@@ -6,6 +6,7 @@ local lib_items = require("solylib.items.items")
 local lib_menu = require("solylib.menu")
 local lib_items_list = require("solylib.items.items_list")
 local lib_items_cfg = require("solylib.items.items_configuration")
+local lib_claires_deal = require("solylib.items.claires_deal")
 local cfg = require("Item Reader.configuration")
 local optionsLoaded, options = pcall(require, "Item Reader.options")
 
@@ -85,6 +86,7 @@ if optionsLoaded then
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
     options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
+    options.floor.filter.ShowClairesDeal    = lib_helpers.NotNilOrDefault(options.floor.filter.ShowClairesDeal, false)
     options.floor.filter.HideMonomates      = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonomates, false)
     options.floor.filter.HideDimates        = lib_helpers.NotNilOrDefault(options.floor.filter.HideDimates, false)
     options.floor.filter.HideTrimates       = lib_helpers.NotNilOrDefault(options.floor.filter.HideTrimates, false)
@@ -197,6 +199,7 @@ else
                 HideLowSocketArmor = false,
                 HideUselessUnits = false,
                 HideUselessTechs = false,
+                ShowClairesDeal = false,
                 HideMonomates = false,
                 HideDimates = false,
                 HideTrimates = false,
@@ -319,6 +322,7 @@ local function SaveOptions(options)
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
         io.write(string.format("            HideUselessTechs = %s,\n", options.floor.filter.HideUselessTechs))
+        io.write(string.format("            ShowClairesDeal = %s,\n", options.floor.filter.ShowClairesDeal))
         io.write(string.format("            HideMonomates = %s,\n", options.floor.filter.HideMonomates))
         io.write(string.format("            HideDimates = %s,\n", options.floor.filter.HideDimates))
         io.write(string.format("            HideTrimates = %s,\n", options.floor.filter.HideTrimates))
@@ -505,6 +509,10 @@ local function ProcessWeapon(item, floor)
             if item.weapon.stats[6] >= options.floor.filter.HitMin then
                 show_item = true
             end
+            -- Show Claire's Deal 5 items
+            if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
+                show_item = true
+            end
         end
     end
 
@@ -636,6 +644,10 @@ local function ProcessFrame(item, floor)
         if item.armor.slots == 4 then
             show_item = true
         end
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -687,7 +699,10 @@ local function ProcessBarrier(item, floor)
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
         show_item = false
-        -- No exceptions at the moment
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -735,7 +750,10 @@ local function ProcessUnit(item, floor)
         nameColor = item_cfg[1]
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideUselessUnits then
         show_item = false
-        -- No exceptions at the moment
+        -- Show Claire's Deal 5 items
+        if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
+            show_item = true
+        end
     end
 
     if show_item then
@@ -957,6 +975,10 @@ local function ProcessTool(item, floor)
                  (options.floor.filter.HideDefenseMats   and item.data[2] == 0x0B and item.data[3] == 0x05) or
                  (options.floor.filter.HideLuckMats      and item.data[2] == 0x0B and item.data[3] == 0x06)) then
             show_item = false
+            -- Show Claire's Deal 5 items
+            if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
+                show_item = true
+            end
         end
     end
 

@@ -363,6 +363,7 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
 
+
                     imgui.Text("Consumables")
                     if imgui.Checkbox("Hide Monomates", _configuration.floor.filter.HideMonomates) then
                         _configuration.floor.filter.HideMonomates = not _configuration.floor.filter.HideMonomates
@@ -503,6 +504,11 @@ local function ConfigurationWindow(configuration)
                     --imgui.SameLine(0, 40)
                     if imgui.Checkbox("Hide Evade Mats", _configuration.floor.filter.HideEvadeMats) then
                         _configuration.floor.filter.HideEvadeMats = not _configuration.floor.filter.HideEvadeMats
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+                    if imgui.Checkbox("Show Claire's Deal 5 Items", _configuration.floor.filter.ShowClairesDeal) then
+                        _configuration.floor.filter.ShowClairesDeal = not _configuration.floor.filter.ShowClairesDeal
                         _configuration.floor.changed = true
                         this.changed = true
                     end
