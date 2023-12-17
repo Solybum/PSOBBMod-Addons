@@ -383,8 +383,6 @@ local function ReadItemData(itemAddr)
 end
 
 local function ReadBankItemData(itemAddr)
-    local _BankItemKillCount1 = 0x0A
-    local _BankItemKillCount2 = 0x0B
     local item = {}
     item.address = itemAddr
 
