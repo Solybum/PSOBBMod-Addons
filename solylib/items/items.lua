@@ -40,6 +40,45 @@ local _PlayerIndex =  0x00A9C4F4
 local NoOwner = -1
 local Me = -2
 
+-- Hardcoded to check for specific items.
+local function IsKillCountItem(item)
+    if item.data[1] == 0x00 then
+        -- Weapon
+        -- Includes Tsumikiri J-Sword and Excalibur because the kill count
+        -- stays in the item data for most servers.
+        return item.data[2] == 0x33 or item.data[2] == 0xAB or 
+               item.data[2] == 0x32 or item.data[2] == 0xAC
+
+    elseif item.data[1] == 0x01 and item.data[2] == 0x03 then
+        -- Unit
+        -- Includes Adept and Proof of Sword-Saint because kill count
+        -- stays in the item data on most servers due to a bug.
+        return item.data[3] == 0x4D or item.data[3] == 0x4F or
+               item.data[3] == 0x50 or item.data[3] == 0x4E
+    end
+    return false
+end
+
+-- Looks at item.data and returns the kill count if one exists.
+local function GetKillCountFromItemData(item)
+    -- Offset because lua is 1-based...
+    local offset = 1
+    
+    -- kill count is in big endian. Read both bytes and convert
+    -- TODO: Could kill count be stored somewhere else in the item data? In another attr slot?
+    local b1 = item.data[offset + 0x0A]
+    local b2 = item.data[offset + 0x0B]
+    local dataKills = bit.bor(bit.lshift(b1, 8), b2)
+
+    if bit.band(dataKills, 0x8000) == 0 then
+        -- Not marked as having a kill count. Could be that the server
+        -- removed it or the item was created without one.
+        return 0
+    end
+    -- And strip the kill counter flag
+    return bit.band(dataKills, 0x7FFF)
+end
+
 local function _GetLeftPBValue(pb)
     local pbs = { 0,0,0,0,0,0,0,0, }
 
@@ -119,6 +158,7 @@ local function _ParseItemWeapon(item)
     end
     return item
 end
+
 local function _ParseItemFrame(item)
     item.armor.slots = item.data[6]
     item.armor.dfp = item.data[7]
@@ -129,6 +169,7 @@ local function _ParseItemFrame(item)
     item.armor.evpMax = pmtF.armor.evpR
     return item
 end
+
 local function _ParseItemBarrier(item)
     item.armor.dfp = item.data[7]
     item.armor.evp = item.data[9]
@@ -138,6 +179,7 @@ local function _ParseItemBarrier(item)
     item.armor.evpMax = pmtF.armor.evpR
     return item
 end
+
 local function _ParseItemUnit(item)
     local mod = item.data[7]
     if mod > 127 then
@@ -159,6 +201,7 @@ local function _ParseItemUnit(item)
 
     return item
 end
+
 local function _ParseItemMag(item)
     item.mag.color = item.data[16]
 
@@ -185,16 +228,19 @@ local function _ParseItemMag(item)
 
     return item
 end
+
 local function _ParseItemTool(item)
     item.tool.count = item.data[6]
     return item
 end
+
 local function _ParseItemTechnique(item)
     item.hex = bit.lshift(5, 16) + bit.lshift(item.data[5],  8) + item.data[3]
     item.name = unitxt.GetTechniqueName(item.data[5])
     item.tool.level = item.data[3] + 1
     return item
 end
+
 local function _ParseItemMeseta(item)
     item.name = "Meseta"
     item.meseta =
@@ -251,7 +297,7 @@ local function ReadItemData(itemAddr)
         item.data[11] = pso.read_u8(itemAddr + _ItemWepStats + 4)
         item.data[12] = pso.read_u8(itemAddr + _ItemWepStats + 5)
 
-        if item.data[2] == 0x33 or item.data[2] == 0xAB then
+        if IsKillCountItem(item) then
             item.kills = pso.read_u16(itemAddr + _ItemKills)
         end
 
@@ -282,7 +328,7 @@ local function ReadItemData(itemAddr)
             item.data[7] = pso.read_u8(itemAddr + _ItemUnitMod + 0)
             item.data[8] = pso.read_u8(itemAddr + _ItemUnitMod + 1)
 
-            if item.data[3] == 0x4D or item.data[3] == 0x4F then
+            if IsKillCountItem(item) then
                 item.kills = pso.read_u16(itemAddr + _ItemKills)
             end
 
@@ -309,7 +355,7 @@ local function ReadItemData(itemAddr)
         item.data[15] = pso.read_u8(itemAddr + _ItemMagPBHas)
         item.data[16] = pso.read_u8(itemAddr + _ItemMagColor)
 
-        item.mag.timer = pso.read_f32(itemAddr + _ItemMagTimer) / 30
+        item.mag.timer = (29 + pso.read_f32(itemAddr + _ItemMagTimer)) / 30
         item = _ParseItemMag(item)
     -- TOOL
     elseif item.data[1] == 3 then
@@ -335,7 +381,10 @@ local function ReadItemData(itemAddr)
 
     return item
 end
+
 local function ReadBankItemData(itemAddr)
+    local _BankItemKillCount1 = 0x0A
+    local _BankItemKillCount2 = 0x0B
     local item = {}
     item.address = itemAddr
 
@@ -375,8 +424,8 @@ local function ReadBankItemData(itemAddr)
     if item.data[1] == 0 then
         item.weapon = {}
 
-        if item.data[2] == 0x33 or item.data[2] == 0xAB then
-            item.kills = pso.read_u16(itemAddr + _ItemKills)
+        if IsKillCountItem(item) then
+            item.kills = GetKillCountFromItemData(item)
         end
 
         item = _ParseItemWeapon(item)
@@ -396,8 +445,8 @@ local function ReadBankItemData(itemAddr)
         elseif item.data[2] == 3 then
             item.unit = {}
 
-            if item.data[3] == 0x4D or item.data[3] == 0x4F then
-                item.kills = pso.read_u16(itemAddr + _ItemKills)
+            if IsKillCountItem(item) then
+                item.kills = GetKillCountFromItemData(item)
             end
 
             item = _ParseItemUnit(item)
@@ -474,7 +523,6 @@ local function ReadMultiFloorItemData(itemAddr, floorNumber)
     local _MultiFloorItemDataOffset = 0x10
     local _MultiFloorItemData2Offset = 0x20
     local _MultiFloorItemIDOffset = 0x1C
-    local _MultiFloorItemKills = 0x1A
 
     local item = {}
     item.address = itemAddr
@@ -489,7 +537,7 @@ local function ReadMultiFloorItemData(itemAddr, floorNumber)
     item.data[3] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 2)
     item.data[4] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 3)
     item.data[5] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 4)
-    item.data[6] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset+ 5)
+    item.data[6] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 5)
     item.data[7] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 6)
     item.data[8] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 7)
     item.data[9] = pso.read_u8(itemAddr + _MultiFloorItemDataOffset + 8)
@@ -511,8 +559,8 @@ local function ReadMultiFloorItemData(itemAddr, floorNumber)
     if item.data[1] == 0 then
         item.weapon = {}
 
-        if item.data[2] == 0x33 or item.data[2] == 0xAB then
-            item.kills = pso.read_u16(itemAddr + _MultiFloorItemKills)
+        if IsKillCountItem(item) then
+            item.kills = GetKillCountFromItemData(item)
         end
 
         item = _ParseItemWeapon(item)
@@ -532,8 +580,8 @@ local function ReadMultiFloorItemData(itemAddr, floorNumber)
         elseif item.data[2] == 3 then
             item.unit = {}
 
-            if item.data[3] == 0x4D or item.data[3] == 0x4F then
-                item.kills = pso.read_u16(itemAddr + _MultiFloorItemKills)
+            if IsKillCountItem(item) then
+                item.kills = GetKillCountFromItemData(item)
             end
 
             item = _ParseItemUnit(item)
