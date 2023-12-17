@@ -63,11 +63,11 @@ end
 local function GetKillCountFromItemData(item)
     -- Offset because lua is 1-based...
     local offset = 1
-    
+
     -- kill count is in big endian. Read both bytes and convert
     -- TODO: Could kill count be stored somewhere else in the item data? In another attr slot?
-    local b1 = item.data[offset + 0x0A]
-    local b2 = item.data[offset + 0x0B]
+    local b1 = item.data[offset + 0x0A] or 0
+    local b2 = item.data[offset + 0x0B] or 0 
     local dataKills = bit.bor(bit.lshift(b1, 8), b2)
 
     if bit.band(dataKills, 0x8000) == 0 then
