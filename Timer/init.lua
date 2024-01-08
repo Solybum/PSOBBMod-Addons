@@ -106,11 +106,11 @@ else
         countdownNoScrollbar = "",
         countdownAlwaysAutoResize = "",
         countdownTransparentWindow = false,
-        countdownhHotkeysStart = 0,
-        countdownhHotkeysStop = 0,
-        countdownhHotkeysResume = 0,
-        countdownhHotkeysReset = 0,
-        countdownhHotkeysAdd30 = 0,
+        countdownHotkeysStart = 0,
+        countdownHotkeysStop = 0,
+        countdownHotkeysResume = 0,
+        countdownHotkeysReset = 0,
+        countdownHotkeysAdd30 = 0,
     }
 end
 
