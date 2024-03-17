@@ -16,82 +16,99 @@ if optionsLoaded then
     end
 
 
-    options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
-    options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
+    options.configurationEnableWindow    = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
+    options.enable                       = lib_helpers.NotNilOrDefault(options.enable, true)
 
-    options.allPlayersEnableWindow          = lib_helpers.NotNilOrDefault(options.allPlayersEnableWindow, true)
-    options.allHideWhenMenu                 = lib_helpers.NotNilOrDefault(options.allHideWhenMenu, true)
-    options.allHideWhenSymbolChat           = lib_helpers.NotNilOrDefault(options.allHideWhenSymbolChat, true)
-    options.allHideWhenMenuUnavailable      = lib_helpers.NotNilOrDefault(options.allHideWhenMenuUnavailable, true)
-    options.allPlayersChanged               = lib_helpers.NotNilOrDefault(options.allPlayersChanged, false)
-    options.allPlayersAnchor                = lib_helpers.NotNilOrDefault(options.allPlayersAnchor, 1)
-    options.allPlayersX                     = lib_helpers.NotNilOrDefault(options.allPlayersX, 50)
-    options.allPlayersY                     = lib_helpers.NotNilOrDefault(options.allPlayersY, 50)
-    options.allPlayersW                     = lib_helpers.NotNilOrDefault(options.allPlayersW, 450)
-    options.allPlayersH                     = lib_helpers.NotNilOrDefault(options.allPlayersH, 350)
-    options.allPlayersNoTitleBar            = lib_helpers.NotNilOrDefault(options.allPlayersNoTitleBar, "")
-    options.allPlayersNoResize              = lib_helpers.NotNilOrDefault(options.allPlayersNoResize, "")
-    options.allPlayersNoMove                = lib_helpers.NotNilOrDefault(options.allPlayersNoMove, "")
-    options.allPlayersTransparentWindow     = lib_helpers.NotNilOrDefault(options.allPlayersTransparentWindow, false)
+    options.allPlayersEnableWindow       = lib_helpers.NotNilOrDefault(options.allPlayersEnableWindow, true)
+    options.allHideWhenMenu              = lib_helpers.NotNilOrDefault(options.allHideWhenMenu, true)
+    options.allHideWhenSymbolChat        = lib_helpers.NotNilOrDefault(options.allHideWhenSymbolChat, true)
+    options.allHideWhenMenuUnavailable   = lib_helpers.NotNilOrDefault(options.allHideWhenMenuUnavailable, true)
+    options.allPlayersChanged            = lib_helpers.NotNilOrDefault(options.allPlayersChanged, false)
+    options.allPlayersAnchor             = lib_helpers.NotNilOrDefault(options.allPlayersAnchor, 1)
+    options.allPlayersX                  = lib_helpers.NotNilOrDefault(options.allPlayersX, 50)
+    options.allPlayersY                  = lib_helpers.NotNilOrDefault(options.allPlayersY, 50)
+    options.allPlayersW                  = lib_helpers.NotNilOrDefault(options.allPlayersW, 450)
+    options.allPlayersH                  = lib_helpers.NotNilOrDefault(options.allPlayersH, 350)
+    options.allPlayersNoTitleBar         = lib_helpers.NotNilOrDefault(options.allPlayersNoTitleBar, "")
+    options.allPlayersNoResize           = lib_helpers.NotNilOrDefault(options.allPlayersNoResize, "")
+    options.allPlayersNoMove             = lib_helpers.NotNilOrDefault(options.allPlayersNoMove, "")
+    options.allPlayersTransparentWindow  = lib_helpers.NotNilOrDefault(options.allPlayersTransparentWindow, false)
+    options.allPlayersListHorizontal     = lib_helpers.NotNilOrDefault(options.allPlayersListHorizontal, false)
+    options.allPlayersListMaxLength      = lib_helpers.NotNilOrDefault(options.allPlayersListMaxLength, 4)
+    options.allPlayersShowIndex          = lib_helpers.NotNilOrDefault(options.allPlayersShowIndex, false)
+    options.allPlayersShowName           = lib_helpers.NotNilOrDefault(options.allPlayersShowName, false)
+    options.allPlayersShowHpBar          = lib_helpers.NotNilOrDefault(options.allPlayersShowHpBar, false)
+    options.allPlayersShowBuff           = lib_helpers.NotNilOrDefault(options.allPlayersShowBuff, false)
 
-    options.singlePlayersEnableWindow     = lib_helpers.NotNilOrDefault(options.singlePlayersEnableWindow, true)
-    options.singlePlayersShowBarText      = lib_helpers.NotNilOrDefault(options.singlePlayersShowBarText, true)
-    options.singlePlayersShowBarMaxValue  = lib_helpers.NotNilOrDefault(options.singlePlayersShowBarMaxValue, true)
+    options.singlePlayersEnableWindow    = lib_helpers.NotNilOrDefault(options.singlePlayersEnableWindow, true)
+    options.singlePlayersShowBarText     = lib_helpers.NotNilOrDefault(options.singlePlayersShowBarText, true)
+    options.singlePlayersShowBarMaxValue = lib_helpers.NotNilOrDefault(options.singlePlayersShowBarMaxValue, true)
 
     if options.players == nil or type(options.players) ~= "table" then
         options.players = {}
     end
 
-    for i=1,4,1 do
+    for i = 1, 4, 1 do
         if options.players[i] == nil or type(options.players[i]) ~= "table" then
             options.players[i] = {}
         end
 
-        options.players[i].EnableWindow          = lib_helpers.NotNilOrDefault(options.players[i].EnableWindow, true)
-        options.players[i].Changed               = lib_helpers.NotNilOrDefault(options.players[i].Changed, false)
-        options.players[i].Anchor                = lib_helpers.NotNilOrDefault(options.players[i].Anchor, 3)
-        options.players[i].X                     = lib_helpers.NotNilOrDefault(options.players[i].X, (5 * 1) + (150 * (i - 1)))
-        options.players[i].Y                     = lib_helpers.NotNilOrDefault(options.players[i].Y, -5)
-        options.players[i].W                     = lib_helpers.NotNilOrDefault(options.players[i].W, 150)
-        options.players[i].H                     = lib_helpers.NotNilOrDefault(options.players[i].H, 45)
-        options.players[i].NoTitleBar            = lib_helpers.NotNilOrDefault(options.players[i].NoTitleBar, "NoTitleBar")
-        options.players[i].NoResize              = lib_helpers.NotNilOrDefault(options.players[i].NoResize, "NoResize")
-        options.players[i].NoMove                = lib_helpers.NotNilOrDefault(options.players[i].NoMove, "NoMove")
-        options.players[i].NoScrollbar           = lib_helpers.NotNilOrDefault(options.players[i].NoScrollbar, "NoScrollbar")
-        options.players[i].AlwaysAutoResize      = lib_helpers.NotNilOrDefault(options.players[i].AlwaysAutoResize, "AlwaysAutoResize")
-        options.players[i].TransparentWindow     = lib_helpers.NotNilOrDefault(options.players[i].TransparentWindow, false)
-        options.players[i].SD                    = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
-        options.players[i].Invulnerability       = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
-
+        options.players[i].EnableWindow            = lib_helpers.NotNilOrDefault(options.players[i].EnableWindow, true)
+        options.players[i].HideWhenMenu            = lib_helpers.NotNilOrDefault(options.players[i].HideWhenMenu, true)
+        options.players[i].HideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.players[i].HideWhenSymbolChat,
+            true)
+        options.players[i].HideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(
+            options.players[i].HideWhenMenuUnavailable, true)
+        options.players[i].Changed                 = lib_helpers.NotNilOrDefault(options.players[i].Changed, false)
+        options.players[i].Anchor                  = lib_helpers.NotNilOrDefault(options.players[i].Anchor, 3)
+        options.players[i].X                       = lib_helpers.NotNilOrDefault(options.players[i].X,
+            (5 * 1) + (150 * (i - 1)))
+        options.players[i].Y                       = lib_helpers.NotNilOrDefault(options.players[i].Y, -5)
+        options.players[i].W                       = lib_helpers.NotNilOrDefault(options.players[i].W, 150)
+        options.players[i].H                       = lib_helpers.NotNilOrDefault(options.players[i].H, 45)
+        options.players[i].ShowName                = lib_helpers.NotNilOrDefault(options.players[i].ShowName, false)
+        options.players[i].ShowHPBar               = lib_helpers.NotNilOrDefault(options.players[i].ShowHPBar, false)
+        options.players[i].SD                      = lib_helpers.NotNilOrDefault(options.players[i].SD, true)
+        options.players[i].Invulnerability         = lib_helpers.NotNilOrDefault(options.players[i].Invulnerability, true)
+        options.players[i].NoTitleBar              = lib_helpers.NotNilOrDefault(options.players[i].NoTitleBar,
+            "NoTitleBar")
+        options.players[i].NoResize                = lib_helpers.NotNilOrDefault(options.players[i].NoResize, "NoResize")
+        options.players[i].NoMove                  = lib_helpers.NotNilOrDefault(options.players[i].NoMove, "NoMove")
+        options.players[i].NoScrollbar             = lib_helpers.NotNilOrDefault(options.players[i].NoScrollbar,
+            "NoScrollbar")
+        options.players[i].AlwaysAutoResize        = lib_helpers.NotNilOrDefault(options.players[i].AlwaysAutoResize,
+            "AlwaysAutoResize")
+        options.players[i].TransparentWindow       = lib_helpers.NotNilOrDefault(options.players[i].TransparentWindow,
+            false)
     end
 
     if options.myself == nil or type(options.myself) ~= "table" then
         options.myself = {}
     end
 
-    options.myself.EnableWindow              = lib_helpers.NotNilOrDefault(options.myself.EnableWindow, false)
-    options.myself.HideWhenMenu              = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenu, true)
-    options.myself.HideWhenSymbolChat        = lib_helpers.NotNilOrDefault(options.myself.HideWhenSymbolChat, true)
-    options.myself.HideWhenMenuUnavailable   = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenuUnavailable, true)
-    options.myself.ShowName                  = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
-    options.myself.ShowBarText               = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
-    options.myself.ShowBarMaxValue           = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)    
-    options.myself.Changed                   = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
-    options.myself.Anchor                    = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
-    options.myself.X                         = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
-    options.myself.Y                         = lib_helpers.NotNilOrDefault(options.myself.Y, -5)
-    options.myself.W                         = lib_helpers.NotNilOrDefault(options.myself.W, 150)
-    options.myself.H                         = lib_helpers.NotNilOrDefault(options.myself.H, 45)
-    options.myself.NoTitleBar                = lib_helpers.NotNilOrDefault(options.myself.NoTitleBar, "NoTitleBar")
-    options.myself.NoResize                  = lib_helpers.NotNilOrDefault(options.myself.NoResize, "NoResize")
-    options.myself.NoMove                    = lib_helpers.NotNilOrDefault(options.myself.NoMove, "NoMove")
-    options.myself.NoScrollbar               = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
-    options.myself.AlwaysAutoResize          = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize, "AlwaysAutoResize")
-    options.myself.TransparentWindow         = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
-    options.myself.SD                        = lib_helpers.NotNilOrDefault(options.myself.SD, true)
-    options.myself.Invulnerability           = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
-    options.myself.ShowHPBar                 = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
-
+    options.myself.EnableWindow            = lib_helpers.NotNilOrDefault(options.myself.EnableWindow, false)
+    options.myself.HideWhenMenu            = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenu, true)
+    options.myself.HideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.myself.HideWhenSymbolChat, true)
+    options.myself.HideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(options.myself.HideWhenMenuUnavailable, true)
+    options.myself.ShowName                = lib_helpers.NotNilOrDefault(options.myself.ShowName, false)
+    options.myself.ShowBarText             = lib_helpers.NotNilOrDefault(options.myself.ShowBarText, false)
+    options.myself.ShowBarMaxValue         = lib_helpers.NotNilOrDefault(options.myself.ShowBarMaxValue, false)
+    options.myself.ShowHPBar               = lib_helpers.NotNilOrDefault(options.myself.ShowHPBar, false)
+    options.myself.SD                      = lib_helpers.NotNilOrDefault(options.myself.SD, true)
+    options.myself.Invulnerability         = lib_helpers.NotNilOrDefault(options.myself.Invulnerability, true)
+    options.myself.Changed                 = lib_helpers.NotNilOrDefault(options.myself.Changed, false)
+    options.myself.Anchor                  = lib_helpers.NotNilOrDefault(options.myself.Anchor, 3)
+    options.myself.X                       = lib_helpers.NotNilOrDefault(options.myself.X, (5 * 1))
+    options.myself.Y                       = lib_helpers.NotNilOrDefault(options.myself.Y, -5)
+    options.myself.W                       = lib_helpers.NotNilOrDefault(options.myself.W, 150)
+    options.myself.H                       = lib_helpers.NotNilOrDefault(options.myself.H, 45)
+    options.myself.NoTitleBar              = lib_helpers.NotNilOrDefault(options.myself.NoTitleBar, "NoTitleBar")
+    options.myself.NoResize                = lib_helpers.NotNilOrDefault(options.myself.NoResize, "NoResize")
+    options.myself.NoMove                  = lib_helpers.NotNilOrDefault(options.myself.NoMove, "NoMove")
+    options.myself.NoScrollbar             = lib_helpers.NotNilOrDefault(options.myself.NoScrollbar, "NoScrollbar")
+    options.myself.AlwaysAutoResize        = lib_helpers.NotNilOrDefault(options.myself.AlwaysAutoResize,
+        "AlwaysAutoResize")
+    options.myself.TransparentWindow       = lib_helpers.NotNilOrDefault(options.myself.TransparentWindow, false)
 else
     options =
     {
@@ -112,34 +129,45 @@ else
         allPlayersNoResize = "",
         allPlayersNoMove = "",
         allPlayersTransparentWindow = false,
+        allPlayersListHorizontal = true,
+        allPlayersListMaxLength = 4,
+        allPlayersShowName = true,
+        allPlayersShowIndex = true,
+        allPlayersShowHpBar = true,
+        allPlayersShowBuff = true,
 
         singlePlayersEnableWindow = true,
         singlePlayersShowBarText = false,
-        singlePlayersShowBarMaxValue = true, 
+        singlePlayersShowBarMaxValue = true,
     }
 
     options.players = {}
 
-    for i=1,4,1 do
-        options.players[i] = {}
-        options.players[i].EnableWindow = true
-        options.players[i].Changed = false
-        options.players[i].Anchor = 3
-        options.players[i].X = (5 * 1) + (150 * (i - 1))
-        options.players[i].Y = -5
-        options.players[i].W = 150
-        options.players[i].H = 45
-        options.players[i].NoTitleBar = "NoTitleBar"
-        options.players[i].NoResize = "NoResize"
-        options.players[i].NoMove = "NoMove"
-        options.players[i].NoScrollbar = "NoScrollbar"
-        options.players[i].AlwaysAutoResize = "AlwaysAutoResize"
-        options.players[i].TransparentWindow = false
-        options.players[i].SD = true
-        options.players[i].Invulnerability = true
+    for i = 1, 4, 1 do
+        options.players[i]                         = {}
+        options.players[i].EnableWindow            = true
+        options.players[i].HideWhenMenu            = false
+        options.players[i].HideWhenSymbolChat      = false
+        options.players[i].HideWhenMenuUnavailable = false
+        options.players[i].ShowName                = false
+        options.players[i].ShowHPBar               = false
+        options.players[i].SD                      = true
+        options.players[i].Invulnerability         = true
+        options.players[i].NoTitleBar              = "NoTitleBar"
+        options.players[i].NoResize                = "NoResize"
+        options.players[i].NoMove                  = "NoMove"
+        options.players[i].NoScrollbar             = "NoScrollbar"
+        options.players[i].AlwaysAutoResize        = "AlwaysAutoResize"
+        options.players[i].TransparentWindow       = false
+        options.players[i].Changed                 = false
+        options.players[i].Anchor                  = 3
+        options.players[i].X                       = (5 * 1) + (150 * (i - 1))
+        options.players[i].Y                       = -5
+        options.players[i].W                       = 150
+        options.players[i].H                       = 45
     end
 
-    options.myself = {}
+    options.myself                         = {}
     options.myself.EnableWindow            = false
     options.myself.HideWhenMenu            = false
     options.myself.HideWhenSymbolChat      = false
@@ -147,6 +175,9 @@ else
     options.myself.ShowName                = false
     options.myself.ShowBarText             = false
     options.myself.ShowBarMaxValue         = false
+    options.myself.ShowHPBar               = false
+    options.myself.SD                      = true
+    options.myself.Invulnerability         = true
     options.myself.Changed                 = false
     options.myself.Anchor                  = 3
     options.myself.X                       = (5 * 1)
@@ -159,9 +190,6 @@ else
     options.myself.NoScrollbar             = "NoScrollbar"
     options.myself.AlwaysAutoResize        = "AlwaysAutoResize"
     options.myself.TransparentWindow       = false
-    options.myself.SD                      = true
-    options.myself.Invulnerability         = true
-    options.myself.ShowHPBar               = false
 end
 
 local function SaveOptions(options)
@@ -188,6 +216,12 @@ local function SaveOptions(options)
         io.write(string.format("    allPlayersNoResize = \"%s\",\n", options.allPlayersNoResize))
         io.write(string.format("    allPlayersNoMove = \"%s\",\n", options.allPlayersNoMove))
         io.write(string.format("    allPlayersTransparentWindow = %s,\n", tostring(options.allPlayersTransparentWindow)))
+        io.write(string.format("    allPlayersListHorizontal = %s,\n", tostring(options.allPlayersListHorizontal)))
+        io.write(string.format("    allPlayersListMaxLength = %s,\n", tostring(options.allPlayersListMaxLength)))
+        io.write(string.format("    allPlayersShowIndex = %s,\n", tostring(options.allPlayersShowIndex)))
+        io.write(string.format("    allPlayersShowName = %s,\n", tostring(options.allPlayersShowName)))
+        io.write(string.format("    allPlayersShowHpBar = %s,\n", tostring(options.allPlayersShowHpBar)))
+        io.write(string.format("    allPlayersShowBuff = %s,\n", tostring(options.allPlayersShowBuff)))
         io.write("\n")
         io.write(string.format("    singlePlayersEnableWindow = %s,\n", tostring(options.singlePlayersEnableWindow)))
         io.write(string.format("    singlePlayersShowBarText = %s,\n", tostring(options.singlePlayersShowBarText)))
@@ -195,9 +229,18 @@ local function SaveOptions(options)
         io.write("\n")
 
         io.write(string.format("    players = {\n"))
-        for i=1,4,1 do
+        for i = 1, 4, 1 do
             io.write(string.format("        {\n"))
             io.write(string.format("            EnableWindow = %s,\n", tostring(options.players[i].EnableWindow)))
+            io.write(string.format("            HideWhenMenu = %s, \n", tostring(options.players[i].HideWhenMenu)))
+            io.write(string.format("            HideWhenSymbolChat = %s, \n",
+                tostring(options.players[i].HideWhenSymbolChat)))
+            io.write(string.format("            HideWhenMenuUnavailable = %s, \n",
+                tostring(options.players[i].HideWhenUnavailable)))
+            io.write(string.format("            ShowName = %s,\n", tostring(options.players[i].ShowName)))
+            io.write(string.format("            ShowHPBar = %s,\n", tostring(options.players[i].ShowHPBar)))
+            io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
+            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnerability)))
             io.write(string.format("            Changed = %s,\n", tostring(options.players[i].Changed)))
             io.write(string.format("            Anchor = %i,\n", options.players[i].Anchor))
             io.write(string.format("            X = %i,\n", options.players[i].X))
@@ -209,9 +252,10 @@ local function SaveOptions(options)
             io.write(string.format("            NoMove = \"%s\",\n", options.players[i].NoMove))
             io.write(string.format("            NoScrollbar = \"%s\",\n", options.players[i].NoScrollbar))
             io.write(string.format("            AlwaysAutoResize = \"%s\",\n", options.players[i].AlwaysAutoResize))
-            io.write(string.format("            TransparentWindow = %s,\n", tostring(options.players[i].TransparentWindow)))
-            io.write(string.format("            SD = %s,\n", tostring(options.players[i].SD)))
-            io.write(string.format("            Invulnerability = %s,\n", tostring(options.players[i].Invulnerability)))
+            io.write(string.format("            TransparentWindow = %s,\n",
+                tostring(options.players[i].TransparentWindow)))
+
+
             io.write(string.format("        },\n"))
         end
         io.write(string.format("    },\n"))
@@ -220,10 +264,14 @@ local function SaveOptions(options)
         io.write(string.format("        EnableWindow = %s,\n", tostring(options.myself.EnableWindow)))
         io.write(string.format("        HideWhenMenu = %s,\n", tostring(options.myself.HideWhenMenu)))
         io.write(string.format("        HideWhenSymbolChat = %s,\n", tostring(options.myself.HideWhenSymbolChat)))
-        io.write(string.format("        HideWhenMenuUnavailable = %s,\n", tostring(options.myself.HideWhenMenuUnavailable)))
+        io.write(string.format("        HideWhenMenuUnavailable = %s,\n",
+            tostring(options.myself.HideWhenMenuUnavailable)))
         io.write(string.format("        ShowName = %s,\n", tostring(options.myself.ShowName)))
         io.write(string.format("        ShowBarText = %s,\n", tostring(options.myself.ShowBarText)))
         io.write(string.format("        ShowBarMaxValue = %s,\n", tostring(options.myself.ShowBarMaxValue)))
+        io.write(string.format("        ShowHPBar = %s,\n", tostring(options.myself.ShowHPBar)))
+        io.write(string.format("        SD = %s,\n", tostring(options.myself.SD)))
+        io.write(string.format("        Invulnerability = %s,\n", tostring(options.myself.Invulnerability)))
         io.write(string.format("        Changed = %s,\n", tostring(options.myself.Changed)))
         io.write(string.format("        Anchor = %i,\n", options.myself.Anchor))
         io.write(string.format("        X = %i,\n", options.myself.X))
@@ -236,9 +284,6 @@ local function SaveOptions(options)
         io.write(string.format("        NoScrollbar = \"%s\",\n", options.myself.NoScrollbar))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.myself.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", tostring(options.myself.TransparentWindow)))
-        io.write(string.format("        SD = %s,\n", tostring(options.myself.SD)))
-        io.write(string.format("        Invulnerability = %s,\n", tostring(options.myself.Invulnerability)))
-        io.write(string.format("        ShowHPBar = %s,\n", tostring(options.myself.ShowHPBar)))
         io.write(string.format("   },\n"))
 
         io.write("}\n")
@@ -251,9 +296,46 @@ local function PresentPlayers()
     local playerList = lib_characters.GetPlayerList()
     local playerListCount = table.getn(playerList)
 
-    imgui.Columns(4)
+    local totalColumns = 0
 
-    for i=1,playerListCount,1 do
+    -- Determine the necessary totalColumns
+    if options.allPlayersShowIndex then
+        totalColumns = totalColumns + 1
+    end
+
+    if options.allPlayersShowName then
+        totalColumns = totalColumns + 1
+    end
+
+    if options.allPlayersShowHpBar then
+        totalColumns = totalColumns + 1
+    end
+
+    if options.allPlayersShowBuff then
+        totalColumns = totalColumns + 1
+    end
+
+    if options.allPlayersListHorizontal then
+        if playerListCount == nil
+            or playerListCount <= 0
+            or options.allPlayersListMaxLength == nil
+            or options.allPlayersListMaxLength <= 0
+        then
+            -- Columns must be greather than 0
+            imgui.Columns(1)
+        else
+            -- Allow the user to decide the maximum players shown
+            imgui.Columns(options.allPlayersListMaxLength)
+        end
+    else
+        imgui.Columns(totalColumns)
+    end
+
+    for i = 1, playerListCount, 1 do
+        if i > options.allPlayersListMaxLength then
+            return
+        end
+
         local index = playerList[i].index
         local address = playerList[i].address
 
@@ -264,33 +346,57 @@ local function PresentPlayers()
         end
         local hp = lib_characters.GetPlayerHP(address)
         local mhp = lib_characters.GetPlayerMaxHP(address)
-        local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
+        local hpColor = lib_helpers.HPToGreenRedGradient(hp / mhp)
         local atkTech = lib_characters.GetPlayerTechniqueStatus(address, 0)
         local defTech = lib_characters.GetPlayerTechniqueStatus(address, 1)
         local invuln = lib_characters.GetPlayerInvulnerabilityStatus(address)
 
-        lib_helpers.Text(true, "%2i", index)
-        imgui.NextColumn()
-        lib_helpers.Text(true, "%s", name)
-        imgui.NextColumn()
-        lib_helpers.imguiProgressBar(true, hp/mhp, -1.0, imgui.GetFontSize(), hpColor, nil, hp)
-        imgui.NextColumn()
-        if atkTech.type == 0 then
-            lib_helpers.Text(true, "---")
-        else
-            lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+        if options.allPlayersShowIndex then
+            lib_helpers.Text(true, "%2i", index)
+
+            if not options.allPlayersListHorizontal then
+                imgui.NextColumn()
+            end
         end
-        if defTech.type == 0 then
-            lib_helpers.Text(true, "---")
-        else
-            lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+
+        if options.allPlayersShowName then
+            lib_helpers.Text(true, "%s", name)
+            if not options.allPlayersListHorizontal then
+                imgui.NextColumn()
+            end
         end
-        if invuln.time == 0 then
-            lib_helpers.Text(true, "---")
-        else
-            lib_helpers.Text(true, "%s: %s", "Inv.", os.date("!%M:%S", invuln.time))
+
+        if options.allPlayersShowHpBar then
+            lib_helpers.imguiProgressBar(true, hp / mhp, -1.0, imgui.GetFontSize(), hpColor, nil, hp)
+            if not options.allPlayersListHorizontal then
+                imgui.NextColumn()
+            end
         end
-        imgui.NextColumn()
+
+        if options.allPlayersShowBuff then
+            if atkTech.type == 0 then
+                lib_helpers.Text(true, "---")
+            else
+                lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
+            end
+            if defTech.type == 0 then
+                lib_helpers.Text(true, "---")
+            else
+                lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
+            end
+            if invuln.time == 0 then
+                lib_helpers.Text(true, "---")
+            else
+                lib_helpers.Text(true, "%s: %s", "Inv.", os.date("!%M:%S", invuln.time))
+            end
+            if not options.allPlayersListHorizontal then
+                imgui.NextColumn()
+            end
+        end
+
+        if options.allPlayersListHorizontal then
+            imgui.NextColumn()
+        end
     end
 end
 
@@ -313,17 +419,17 @@ local function PresentPlayer(address, sd, inv, showName, HPbar, showBarMaxValue,
     local defTech = lib_characters.GetPlayerTechniqueStatus(address, 1)
     local invuln = lib_characters.GetPlayerInvulnerabilityStatus(address)
 
-    local hpColor = lib_helpers.HPToGreenRedGradient(hp/mhp)
-    local tpColor = lib_helpers.HPToGreenRedGradient(tp/mtp)
+    local hpColor = lib_helpers.HPToGreenRedGradient(hp / mhp)
+    local tpColor = lib_helpers.HPToGreenRedGradient(tp / mtp)
     local barTextFormat = ""
 
     hpColor = 0xFF00F714
-    if (hp/mhp) < 0.2 then
+    if (hp / mhp) < 0.2 then
         hpColor = 0xFFEAF718
     end
 
     tpColor = 0xFF0088F4
-    if (tp/mtp) < 0.2 then
+    if (tp / mtp) < 0.2 then
         tpColor = 0xFFF7BB13
     end
 
@@ -341,7 +447,7 @@ local function PresentPlayer(address, sd, inv, showName, HPbar, showBarMaxValue,
     end
 
     if HPbar == true then
-        lib_helpers.imguiProgressBar(true, hp/mhp, 130, imgui.GetFontSize() * 0.5, hpColor, nil)
+        lib_helpers.imguiProgressBar(true, hp / mhp, 130, imgui.GetFontSize() * 0.5, hpColor, nil)
     end
 
     --if address == lib_characters.GetSelf() and mtp ~= 0 then
@@ -394,10 +500,12 @@ local function present()
         and (options.allHideWhenMenu == false or lib_menu.IsMenuOpen() == false)
         and (options.allHideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
         and (options.allHideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
+        and (options.allPlayersShowIndex or options.allPlayersShowName or options.allPlayersShowHpBar or options.allPlayersShowBuff)
     then
         if firstPresent or options.allPlayersChanged then
             options.allPlayersChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.allPlayersX, options.allPlayersY, options.allPlayersW, options.allPlayersH, options.allPlayersAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.allPlayersX, options.allPlayersY, options.allPlayersW,
+                options.allPlayersH, options.allPlayersAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.allPlayersW, options.allPlayersH, "Always");
         end
@@ -417,8 +525,12 @@ local function present()
 
     if playerIsInDedicatedLobby then
         if options.singlePlayersEnableWindow then
-            for i=1,4,1 do
-                if options.players[i].EnableWindow then
+            for i = 1, 4, 1 do
+                if (options.players[i].EnableWindow == true)
+                    and (options.players[i].HideWhenMenu == false or lib_menu.IsMenuOpen() == false)
+                    and (options.players[i].HideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
+                    and (options.players[i].HideWhenMenuUnavailable == false or lib_menu.IsMenuUnavailable() == false)
+                then
                     local address = lib_characters.GetPlayer(i - 1)
                     if address ~= 0 then
                         local playerWindowTitle = string.format("Player Reader - Player %d", i)
@@ -441,21 +553,21 @@ local function present()
                         end
 
                         if imgui.Begin(playerWindowTitle, nil,
-                            {
-                                options.players[i].NoTitleBar,
-                                options.players[i].NoResize,
-                                options.players[i].NoMove,
-                                options.players[i].NoScrollbar,
-                                options.players[i].AlwaysAutoResize,
-                            }
-                        ) then
+                                {
+                                    options.players[i].NoTitleBar,
+                                    options.players[i].NoResize,
+                                    options.players[i].NoMove,
+                                    options.players[i].NoScrollbar,
+                                    options.players[i].AlwaysAutoResize,
+                                }
+                            ) then
                             PresentPlayer(
-                                address, 
-                                options.players[i].SD, 
-                                options.players[i].Invulnerability, 
-                                true, --show name
-                                true, --show HP bar
-                                options.singlePlayersShowBarMaxValue, 
+                                address,
+                                options.players[i].SD,
+                                options.players[i].Invulnerability,
+                                options.players[i].ShowName,
+                                options.players[i].ShowHPBar,
+                                options.singlePlayersShowBarMaxValue,
                                 options.singlePlayersShowBarText)
 
                             if options.players[i].AlwaysAutoResize == "AlwaysAutoResize" then
@@ -481,7 +593,7 @@ local function present()
             end
         end
     end
-        
+
     if (options.myself.EnableWindow == true)
         and (options.myself.HideWhenMenu == false or lib_menu.IsMenuOpen() == false)
         and (options.myself.HideWhenSymbolChat == false or lib_menu.IsSymbolChatOpen() == false)
@@ -507,20 +619,19 @@ local function present()
         end
 
         if imgui.Begin(myselfWindowTitle, nil,
-            {
-                options.myself.NoTitleBar,
-                options.myself.NoResize,
-                options.myself.NoMove,
-                options.myself.NoScrollbar,
-                options.myself.AlwaysAutoResize,
-            }
-        ) then
-
+                {
+                    options.myself.NoTitleBar,
+                    options.myself.NoResize,
+                    options.myself.NoMove,
+                    options.myself.NoScrollbar,
+                    options.myself.AlwaysAutoResize,
+                }
+            ) then
             PresentPlayer(
-                lib_characters.GetSelf(), 
-                options.myself.SD, 
-                options.myself.Invulnerability, 
-                options.myself.ShowName, 
+                lib_characters.GetSelf(),
+                options.myself.SD,
+                options.myself.Invulnerability,
+                options.myself.ShowName,
                 options.myself.ShowHPBar,
                 options.myself.ShowBarMaxValue,
                 options.myself.ShowBarText)

@@ -18,7 +18,9 @@ local magColor =
     "Fuchsia", "Grey", "Cream", "Pink", "Dark Green",
 }
 
--- Internal function to read text from the unitxt
+-- Internal function to read text from the unitxt.
+-- Note that the unitxt is reloaded at the main menu, so this function
+-- will return nil in that case.
 local function _Read(group, index)
     local address = pso.read_u32(unitxtPointer)
     if address == 0 then
@@ -100,7 +102,8 @@ local function GetPhotonBlastName(id, shortName)
         return " "
     end
 
-    local result = _Read(9, id)
+    -- unitxt may be unloaded
+    local result = _Read(9, id) or " "
     if shortName == true then
         result = string.sub(result, 1, 1)
     end
