@@ -22,6 +22,7 @@ if optionsLoaded then
     options.showMonsterID             = lib_helpers.NotNilOrDefault(options.showMonsterID, false)
 
     options.mhpEnableWindow            = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
+    options.mhpShowItemDrop            = lib_helpers.NotNilOrDefault(options.mhpShowItemDrop, false)
     options.mhpHideWhenMenu            = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenu, true)
     options.mhpHideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.mhpHideWhenSymbolChat, true)
     options.mhpHideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenuUnavailable, true)
@@ -37,6 +38,7 @@ if optionsLoaded then
     options.mhpTransparentWindow       = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
     options.targetEnableWindow          = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
+    options.targetShowItemDrop          = lib_helpers.NotNilOrDefault(options.targetShowItemDrop, false)
     options.targetChanged               = lib_helpers.NotNilOrDefault(options.targetChanged, false)
     options.targetAnchor                = lib_helpers.NotNilOrDefault(options.targetAnchor, 3)
     options.targetX                     = lib_helpers.NotNilOrDefault(options.targetX, 150)
@@ -75,6 +77,7 @@ else
         showMonsterID = false,
 
         mhpEnableWindow = true,
+        mhpShowItemDrop = false,
         mhpHideWhenMenu = false,
         mhpHideWhenSymbolChat = false,
         mhpHideWhenMenuUnavailable = false,
@@ -90,6 +93,7 @@ else
         mhpTransparentWindow = false,
 
         targetEnableWindow = true,
+        targetShowItemDrop = false,
         targetChanged = false,
         targetAnchor = 3,
         targetX = 150,
@@ -133,6 +137,7 @@ local function SaveOptions(options)
         io.write(string.format("    showMonsterID = %s,\n", tostring(options.showMonsterID)))
         io.write("\n")
         io.write(string.format("    mhpEnableWindow = %s,\n", tostring(options.mhpEnableWindow)))
+        io.write(string.format("    mhpShowItemDrop = %s,\n", tostring(options.mhpShowItemDrop)))
         io.write(string.format("    mhpHideWhenMenu = %s,\n", tostring(options.mhpHideWhenMenu)))
         io.write(string.format("    mhpHideWhenSymbolChat = %s,\n", tostring(options.mhpHideWhenSymbolChat)))
         io.write(string.format("    mhpHideWhenMenuUnavailable = %s,\n", tostring(options.mhpHideWhenMenuUnavailable)))
@@ -148,6 +153,7 @@ local function SaveOptions(options)
         io.write(string.format("    mhpTransparentWindow = %s,\n", tostring(options.mhpTransparentWindow)))
         io.write("\n")
         io.write(string.format("    targetEnableWindow = %s,\n", tostring(options.targetEnableWindow)))
+        io.write(string.format("    targetShowItemDrop = %s,\n", tostring(options.targetShowItemDrop)))
         io.write(string.format("    targetChanged = %s,\n", tostring(options.targetChanged)))
         io.write(string.format("    targetAnchor = %i,\n", options.targetAnchor))
         io.write(string.format("    targetX = %i,\n", options.targetX))
@@ -178,6 +184,20 @@ local function SaveOptions(options)
         io.close(file)
     end
 end
+
+-- Seth Clydesdale's Drop Chart data
+local drop_charts = {
+  [0] = require("Monster Reader/drop_charts.normal"),
+  [1] = require("Monster Reader/drop_charts.hard"),
+  [2] = require("Monster Reader/drop_charts.very-hard"),
+  [3] = require("Monster Reader/drop_charts.ultimate")
+}
+-- episode list
+local episodes = {
+  [0] = "EPISODE 1",
+  [1] = "EPISODE 2",
+  [2] = "EPISODE 4"
+}
 
 local _PlayerArray = 0x00A94254
 local _PlayerIndex = 0x00A9C4F4
@@ -244,6 +264,35 @@ local _MonsterBarbaRayShellHPMax = 0x1C
 -- Special address for Ephinea
 local _ephineaMonsterArrayPointer = 0x00B5F800
 local _ephineaMonsterHPScale = 0x00B5F804
+
+-- Address of the party info side message
+local _SideMessage = pso.base_address + 0x006AECC8
+local _Episode = 0x00A9B1C8
+
+-- Seth Clydesdale's Drop Chart side text reader
+local function getSideMessage()
+    local ptr = pso.read_u32(_SideMessage)
+    if ptr ~= 0 then
+        local text = pso.read_wstr(ptr + 0x14, 0xFF)
+        return text
+    end
+    return ""
+end
+
+-- Seth Clydesdale's Drop Chart side message parser
+local function parseSideMessage(text)
+    local dropIndex = text:find("Drop")
+    local idIndex = text:find("ID")
+    local idStr = text:sub(idIndex + 2, dropIndex - 1)
+    local id = idStr:match("%a+")
+
+    local _episode = pso.read_u32(_Episode)
+    episode = episodes[_episode]
+    _partyId = ""
+    _item = ""
+	
+    return id
+end
 
 local function CopyMonster(monster)
     local copy = {}
@@ -452,6 +501,12 @@ local function GetMonsterList()
     local pIndex = pso.read_u32(_PlayerIndex)
     local pAddr = pso.read_u32(_PlayerArray + 4 * pIndex)
 
+    -- get party owner section id to parse item drops for mobs
+    side = getSideMessage()
+    if side:find("ID") and side:find("Drop") and side:find("Rare") then
+        _partyId = parseSideMessage(side)
+    end
+
     -- If we don't have address (maybe warping or something)
     -- return the empty list
     if pAddr == 0 then
@@ -532,6 +587,59 @@ local function GetMonsterList()
     return monsterList
 end
 
+-- Used to compare pso memory mob names w/Drop Charts
+local compareStrings = function(pso_name, dc_name)
+    pso_name = pso_name:gsub(" Shell", "")
+    pso_name = pso_name:gsub("-", " ")
+    pso_name = pso_name:upper()
+
+    dc_name = dc_name:gsub("-", " ")
+    dc_name = dc_name:upper()
+
+    if pso_name == dc_name then
+        return true
+    else
+        return false
+    end
+end
+
+-- Drop Chart names contains "/" and "\n" we need to parse out
+local function splitByDelimiter(str, delimiter)
+    local s1, s2, found = {}, {}, false
+    str = str:gsub("[\n\r]", "")
+    for i = 1, #str do
+        if str:sub(i,i) == delimiter then
+            found = true
+        end
+        if found ~= true and str:sub(i,i) ~= delimiter then
+            table.insert(s1, str:sub(i,i))
+        end
+        if found == true and str:sub(i,i) ~= delimiter then
+            table.insert(s2, str:sub(i,i))
+        end
+    end
+    return {
+        s1 = table.concat(s1),
+        s2 = table.concat(s2)
+    }
+end
+
+local function getMonsterRareDrop(monster)
+    local difficulty = pso.read_u32(_Difficulty)
+    local monsterData = drop_charts[difficulty][episode][_partyId]
+
+    for i=1, #monsterData do
+        -- Drop Charts contain both non-ult & ult names
+        local dc_name = splitByDelimiter(monsterData[i].target, "/")
+
+        if compareStrings(monster.name, dc_name.s1) or compareStrings(monster.name, dc_name.s2) then
+            imgui.SetWindowFontScale(0.95)
+            lib_helpers.TextC(true, 0xFFFF0000, "RARE DROP: " .. monsterData[i].item)
+            imgui.SetWindowFontScale(1)
+        end
+    end
+end
+
 local function PresentMonsters()
     local monsterList = GetMonsterList()
     local monsterListCount = table.getn(monsterList)
@@ -595,6 +703,11 @@ local function PresentMonsters()
             end
 
             lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+            
+            -- Monster Drop Viewer
+            if options.mhpShowItemDrop then
+                getMonsterRareDrop(monster)
+            end
             imgui.NextColumn()
 
             if options.showMonsterStatus then
@@ -630,6 +743,7 @@ local function PresentMonsters()
 
                 imgui.NextColumn()
             end
+            
         end
     end
 end
@@ -668,6 +782,11 @@ local function PresentTargetMonster(monster)
 
         -- Draw enemy HP bar
         lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        
+        -- Monster Drop Viewer
+        if options.targetShowItemDrop then
+            getMonsterRareDrop(monster)
+        end
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
         if options.showMonsterStatus then
