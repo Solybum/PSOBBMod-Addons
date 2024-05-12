@@ -49,7 +49,9 @@ if optionsLoaded then
     options.targetNoScrollbar           = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
     options.targetTransparentWindow     = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
     options.targetShowMonsterName       = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
+    options.targetShowTechAssist           = lib_helpers.NotNilOrDefault(options.targetShowTechAssist, false)
     options.targetShowMonsterStats      = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
+    options.targetShowMonsterHP      = lib_helpers.NotNilOrDefault(options.targetShowMonsterHP, false)
     options.targetShowAccuracyAssist    = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
     options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
     options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
@@ -102,7 +104,9 @@ else
         targetNoScrollbar = "NoScrollbar",
         targetTransparentWindow = false,
         targetShowMonsterName = true,
+        targetShowTechAssist = true,
         targetShowMonsterStats = true,
+        targetShowMonsterHP = true,
         targetShowAccuracyAssist = false,
         targetAccuracyThreshold = 90,
         targetEnableActivationRates = false,
@@ -160,7 +164,9 @@ local function SaveOptions(options)
         io.write(string.format("    targetNoScrollbar = \"%s\",\n", options.targetNoScrollbar))
         io.write(string.format("    targetTransparentWindow = %s,\n", tostring(options.targetTransparentWindow)))
         io.write(string.format("    targetShowMonsterName = %s,\n", tostring(options.targetShowMonsterName)))
+        io.write(string.format("    targetShowTechAssist = %s,\n", tostring(options.targetShowTechAssist)))
         io.write(string.format("    targetShowMonsterStats = %s,\n", tostring(options.targetShowMonsterStats)))
+        io.write(string.format("    targetShowMonsterHP = %s,\n", tostring(options.targetShowMonsterHP)))
         io.write(string.format("    targetShowAccuracyAssist = %s,\n", tostring(options.targetShowAccuracyAssist)))
         io.write(string.format("    targetAccuracyThreshold = %s,\n", tostring(options.targetAccuracyThreshold)))
         io.write(string.format("    targetEnableActivationRates = %s,\n", tostring(options.targetEnableActivationRates)))
@@ -634,6 +640,14 @@ local function PresentMonsters()
     end
 end
 
+function split(str, delimiter)
+    local result = {}
+    for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match)
+    end
+    return result
+end
+
 local function PresentTargetMonster(monster)
     if monster ~= nil then
         local playerAddr = lib_characters.GetSelf()
@@ -654,20 +668,69 @@ local function PresentTargetMonster(monster)
         if options.targetShowMonsterName then
             lib_helpers.Text(true, monster.name)
         end
+        
         if options.showMonsterID == true then
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
+        if options.targetShowTechAssist then
+            -- Show the target's weakest in ascending order
+            local resistances = {
+                Fire0xFFFF0000 = monster.Efr, 
+                Ice0xFF00FFFF = monster.Eic, 
+                Thunder0xFFFFFF00 = monster.Eth, 
+                Dark0xFFFF00FF = monster.Edk, 
+                Light0xFFCFB997 = monster.Elt
+            }
 
+            local _temp_sorted = {}
+            -- since Lua tables are not ordered, use string sort (jank but works)
+            for res_type, res_val in pairs(resistances) do
+                -- if monster res == 0, turn to 00
+                if res_val == 0 then
+                    res_val = "00"
+                elseif res_val >= 100 then
+                    res_val = "99"
+                end
+                res_val = tostring(res_val)
+                local _name_for_sort = res_val .. res_type
+                table.insert(_temp_sorted, _name_for_sort)
+            end
+            table.sort(_temp_sorted)
+            lib_helpers.Text(true, "[")
+            local counter = 0
+            for k,v in pairs(_temp_sorted) do
+                local color = "0x" .. split(v,"0x")[2]
+                lib_helpers.TextC(false, color, string.gsub(split(v,"0x")[1], "%d", ""))
+                counter = counter + 1 
+                if counter ~= 5 then 
+                    lib_helpers.Text(false, " < ")
+                else
+                    lib_helpers.Text(false, "]")
+                end 
+            end
+        end
         -- Show target enemies stats if feature enabled
         if options.targetShowMonsterStats then
             lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
                                    monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
-            lib_helpers.Text(true, "[EFR: %i, EIC: %i, ETH: %i, EDK: %i, ELT: %i, ESP: %i]",
-                                   monster.Efr, monster.Eic, monster.Eth, monster.Edk, monster.Elt, monster.Esp)
+            lib_helpers.Text(true, "[")
+            lib_helpers.TextC(false, 0xFFFF0000, "EFR:")
+            lib_helpers.Text(false, " %i |", monster.Efr)
+            lib_helpers.TextC(false, 0xFF00FFFF, " EIC:")
+            lib_helpers.Text(false, " %i |", monster.Eic)
+            lib_helpers.TextC(false, 0xFFFFFF00, " ETH:")
+            lib_helpers.Text(false, " %i |", monster.Eth)
+            lib_helpers.TextC(false, 0xFFFF00FF, " EDK:")
+            lib_helpers.Text(false, " %i |", monster.Edk)
+            lib_helpers.TextC(false, 0xFFCFB997, " ELT:")
+            lib_helpers.Text(false, " %i", monster.Elt)
+            lib_helpers.Text(false, "]")
         end
 
         -- Draw enemy HP bar
-        lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        if options.targetShowMonsterHP then
+            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+        end
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
         if options.showMonsterStatus then
