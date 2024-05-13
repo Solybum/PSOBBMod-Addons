@@ -149,8 +149,18 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("Show Tech Assist", _configuration.targetShowTechAssist) then
+                _configuration.targetShowTechAssist = not _configuration.targetShowTechAssist
+                this.changed = true
+            end
+
             if imgui.Checkbox("Show Monster Stats", _configuration.targetShowMonsterStats) then
                 _configuration.targetShowMonsterStats = not _configuration.targetShowMonsterStats
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show Monster HP", _configuration.targetShowMonsterHP) then
+                _configuration.targetShowMonsterHP = not _configuration.targetShowMonsterHP
                 this.changed = true
             end
 
