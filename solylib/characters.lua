@@ -100,8 +100,34 @@ local function GetPlayerMaxTP(player)
     return pso.read_u16(player + 0x2BE)
 end
 
+local function GetPlayerMaxATP(player, attribute)
+    -- TODO split reads into their own functions
+	return (pso.read_u16(player + 0x2CE) + (pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
+end
+
+local function GetPlayerMinATP(player, attribute)
+    -- TODO split reads into their own functions
+	return ((pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
+end
+
+local function GetPlayerEVP(player)
+    return pso.read_u16(player + 0x2D0)
+end
+
+local function GetPlayerDFP(player)
+    return pso.read_u16(player + 0x2D2)
+end
+
 local function GetPlayerATA(player)
     return pso.read_u16(player + 0x2D4)
+end
+
+local function GetPlayerLCK(player)
+    return pso.read_u16(player + 0x2D6)
+end
+
+local function GetPlayerMST(player)
+    return pso.read_u16(player + 0xE2E)
 end
 
 local function GetPlayerTechniqueLevel(player, tech)
@@ -169,6 +195,9 @@ end
 local function GetPlayerParalyzedStatus(player)
     return pso.read_u32(player + 0x25C) == 0x10
 end
+local function GetPlayerShockedStatus(player)
+    return pso.read_u32(player + 0x268) == 0x03
+end
 
 -- Returns the floor the player is on. This works well enough for other players, but
 -- use GetCurrentFloorSelf() for the local client if you need the floor to be consistent
@@ -205,14 +234,21 @@ return
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
     GetPlayerMaxTP = GetPlayerMaxTP,
+	GetPlayerMaxATP = GetPlayerMaxATP,
+	GetPlayerMinATP = GetPlayerMinATP,
+	GetPlayerEVP = GetPlayerEVP,
+	GetPlayerDFP = GetPlayerDFP,
     GetPlayerATA = GetPlayerATA,
+	GetPlayerLCK = GetPlayerLCK,
+	GetPlayerMST = GetPlayerMST,
     GetPlayerTechniqueLevel = GetPlayerTechniqueLevel,
     GetPlayerTechniqueStatus = GetPlayerTechniqueStatus,
     GetPlayerInvulnerabilityStatus = GetPlayerInvulnerabilityStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
-    GetPlayerIsCast = GetPlayerIsCast,    
+	GetPlayerShockedStatus = GetPlayerShockedStatus,
+    GetPlayerIsCast = GetPlayerIsCast,
     Techniques = Techniques,
     GetPlayerFloor = GetPlayerFloor,
     GetCurrentFloorSelf = GetCurrentFloorSelf,

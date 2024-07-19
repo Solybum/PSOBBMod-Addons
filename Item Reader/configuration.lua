@@ -42,7 +42,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.showItemData = not _configuration.showItemData
                 this.changed = true
             end
-            if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
+			if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
                 _configuration.showEquippedItems = not _configuration.showEquippedItems
                 this.changed = true
             end
@@ -68,6 +68,10 @@ local function ConfigurationWindow(configuration)
             end
             if imgui.Checkbox("Hide mag color", _configuration.hideMagColor) then
                 _configuration.hideMagColor = not _configuration.hideMagColor
+                this.changed = true
+            end
+			if imgui.Checkbox("Highlight max stats", _configuration.highlightMaxStats) then
+                _configuration.highlightMaxStats = not _configuration.highlightMaxStats
                 this.changed = true
             end
 
@@ -331,14 +335,14 @@ local function ConfigurationWindow(configuration)
             if _configuration.floor.EnableFilters then
                 if imgui.TreeNodeEx("Filter Drops") then
                     imgui.Text("Non-Rares")
-                    
+
                     imgui.PushItemWidth(110)
                     success, _configuration.floor.filter.HitMin = imgui.InputInt("Minimum Hit", _configuration.floor.filter.HitMin)
                     imgui.PopItemWidth()
                     if success then
                         this.changed = true
                     end
-                    
+
                     if imgui.Checkbox("Hide Low Hit Weapons", _configuration.floor.filter.HideLowHitWeapons) then
                         _configuration.floor.filter.HideLowHitWeapons = not _configuration.floor.filter.HideLowHitWeapons
                         _configuration.floor.changed = true
@@ -362,7 +366,6 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
-
 
                     imgui.Text("Consumables")
                     if imgui.Checkbox("Hide Monomates", _configuration.floor.filter.HideMonomates) then
@@ -444,11 +447,6 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
-                    if imgui.Checkbox("Hide Scape Dolls", _configuration.floor.filter.HideScapeDolls) then
-                        _configuration.floor.filter.HideScapeDolls = not _configuration.floor.filter.HideScapeDolls
-                        _configuration.floor.changed = true
-                        this.changed = true
-                    end
 
                     imgui.Text("Grinders/Materials")
                     if imgui.Checkbox("Hide Monogrinders", _configuration.floor.filter.HideMonogrinders) then
@@ -504,11 +502,6 @@ local function ConfigurationWindow(configuration)
                     --imgui.SameLine(0, 40)
                     if imgui.Checkbox("Hide Evade Mats", _configuration.floor.filter.HideEvadeMats) then
                         _configuration.floor.filter.HideEvadeMats = not _configuration.floor.filter.HideEvadeMats
-                        _configuration.floor.changed = true
-                        this.changed = true
-                    end
-                    if imgui.Checkbox("Show Claire's Deal 5 Items", _configuration.floor.filter.ShowClairesDeal) then
-                        _configuration.floor.filter.ShowClairesDeal = not _configuration.floor.filter.ShowClairesDeal
                         _configuration.floor.changed = true
                         this.changed = true
                     end

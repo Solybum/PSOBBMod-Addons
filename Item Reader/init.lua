@@ -29,6 +29,7 @@ if optionsLoaded then
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
     options.hideMagColor              = lib_helpers.NotNilOrDefault(options.hideMagColor, false)
+	options.highlightMaxStats         = lib_helpers.NotNilOrDefault(options.highlightMaxStats, false)
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
     options.updateThrottle            = lib_helpers.NotNilOrDefault(options.updateThrottle, 0)
     options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
@@ -151,6 +152,7 @@ else
         hideMagStats = false,
         hideMagPBs = false,
         hideMagColor = false,
+		highlightMaxStats = false,
         itemNameLength = 0,
         updateThrottle = 0,
         server = 1,
@@ -275,6 +277,7 @@ local function SaveOptions(options)
         io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write(string.format("    hideMagColor = %s,\n", tostring(options.hideMagColor)))
+		io.write(string.format("    highlightMaxStats = %s,\n", tostring(options.highlightMaxStats)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write(string.format("    server = %s,\n", tostring(options.server)))
         io.write(string.format("    updateThrottle = %i,\n", tostring(options.updateThrottle)))
@@ -462,14 +465,22 @@ local function writeArmorStats(item, floor)
     if item.armor.dfp == 0 then
         statColor = lib_items_cfg.grey
     else
-        statColor = lib_items_cfg.armorStats
+        if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax then
+            statColor = lib_items_cfg.gold
+        else
+            statColor = lib_items_cfg.armorStats
+        end
     end
     result = result .. TextCWrapper(false, statColor, "%i", item.armor.dfp)
     result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
     if item.armor.dfpMax == 0 then
         statColor = lib_items_cfg.grey
     else
-        statColor = lib_items_cfg.armorStats
+        if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax then
+            statColor = lib_items_cfg.gold
+        else
+            statColor = lib_items_cfg.armorStats
+        end
     end
     result = result .. TextCWrapper(false, statColor, "%i", item.armor.dfpMax)
 
@@ -478,14 +489,22 @@ local function writeArmorStats(item, floor)
     if item.armor.evp == 0 then
         statColor = lib_items_cfg.grey
     else
-        statColor = lib_items_cfg.armorStats
+        if options.highlightMaxStats and item.armor.evp == item.armor.evpMax then
+            statColor = lib_items_cfg.gold
+        else
+            statColor = lib_items_cfg.armorStats
+        end
     end
     result = result .. TextCWrapper(false, statColor, "%i", item.armor.evp)
     result = result .. TextCWrapper(false, lib_items_cfg.white, "/")
     if item.armor.evpMax == 0 then
         statColor = lib_items_cfg.grey
     else
-        statColor = lib_items_cfg.armorStats
+        if options.highlightMaxStats and item.armor.evp == item.armor.evpMax then
+            statColor = lib_items_cfg.gold
+        else
+            statColor = lib_items_cfg.armorStats
+        end
     end
     result = result .. TextCWrapper(false, statColor, "%i", item.armor.evpMax)
     result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
@@ -505,7 +524,7 @@ local function ProcessWeapon(item, floor)
             nameColor = item_cfg[1]
         elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowHitWeapons then
             show_item = false
-            -- Hide weapon drops with less then 40h untekked
+            -- Hide weapon drops based on hit
             if item.weapon.stats[6] >= options.floor.filter.HitMin then
                 show_item = true
             end
@@ -562,7 +581,11 @@ local function ProcessWeapon(item, floor)
             result = result .. TextCWrapper(false, lib_items_cfg.weaponSRankCustomName, "%s ", item.weapon.nameSrank)
 
             if item.weapon.grind > 0 then
-                 result = result .. TextCWrapper(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+                local grindColor = lib_items_cfg.weaponGrind
+                if options.highlightMaxStats and item.weapon.grind == item.weapon.maxGrind then
+                    grindColor = lib_items_cfg.gold
+                end
+                result = result .. TextCWrapper(false, grindColor, "+%i ", item.weapon.grind)
             end
 
             if item.weapon.specialSRank ~= 0 then
@@ -574,7 +597,11 @@ local function ProcessWeapon(item, floor)
             result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
 
             if item.weapon.grind > 0 then
-                result = result .. TextCWrapper(false, lib_items_cfg.weaponGrind, "+%i ", item.weapon.grind)
+                local grindColor = lib_items_cfg.weaponGrind
+                if options.highlightMaxStats and item.weapon.grind == item.weapon.maxGrind then
+                    grindColor = lib_items_cfg.gold
+                end
+                result = result .. TextCWrapper(false, grindColor, "+%i ", item.weapon.grind)
             end
 
             if item.weapon.special ~= 0 then
@@ -679,6 +706,10 @@ local function ProcessFrame(item, floor)
             end
         end
 
+		if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax and item.armor.evp == item.armor.evpMax and (item.armor.dfpMax > 0 or item.armor.evpMax > 0) then
+            nameColor = lib_items_cfg.gold
+		end
+
         result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)
         result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
@@ -732,6 +763,10 @@ local function ProcessBarrier(item, floor)
                 TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         end
+
+        if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax and item.armor.evp == item.armor.evpMax and (item.armor.dfpMax > 0 or item.armor.evpMax > 0) then
+            nameColor = lib_items_cfg.gold
+		end
 
         result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)

@@ -119,6 +119,7 @@ local function _ParseItemWeapon(item)
     end
 
     item.weapon.grind = item.data[4]
+	item.weapon.maxGrind = pmtW.weapon.grind
     item.weapon.special = item.data[5] % 64
 
     if item.weapon.special == 0 then
