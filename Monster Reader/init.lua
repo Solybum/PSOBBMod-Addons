@@ -204,6 +204,7 @@ local _targetOffset = 0x108C
 local _EntityCount = 0x00AAE164
 local _EntityArray = 0
 
+local _MonsterEntityFlags = 0x30
 local _MonsterUnitxtID = 0x378
 local _MonsterHP = 0x334
 local _MonsterHPMax = 0x2BC
@@ -317,11 +318,11 @@ local function GetMonsterDataBarbaRay(monster)
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRaySkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRayShellHPMax)
-    if ephineaMonsters ~= 0 then
-        ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-        skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-        shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-    end
+        if ephineaMonsters ~= 0 then
+            ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+            skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+            shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+        end
     end
 
     if monster.index == 0 then
@@ -348,12 +349,13 @@ local function GetMonsterData(monster)
     monster.HP = 0
     monster.HPMax = 0
 
+    monster.entityFlags = pso.read_u32(monster.address + _MonsterEntityFlags)
     if ephineaMonsters ~= 0 then
-    monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
-    monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
+        monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
+        monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
     else
-    monster.HP = pso.read_u16(monster.address + _MonsterHP)
-    monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+        monster.HP = pso.read_u16(monster.address + _MonsterHP)
+        monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
     end
 
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
@@ -505,8 +507,14 @@ local function GetMonsterList()
                 monster.display = false
             end
 
-            -- Do not show monsters that have been killed
+            -- Do not show monsters that have been killed.
+            -- Check for invalid HP.
             if monster.HP <= 0 then
+                monster.display = false
+            end
+
+            -- And check for monsters marked as dead in their object.
+            if bit.band(0x0800, monster.entityFlags) ~= 0 then
                 monster.display = false
             end
 
