@@ -886,59 +886,71 @@ local function PresentTargetMonster(monster)
             end
 
             -- Calculate Rates of success of differing attack types
-            local rate_list = {}
+            local activation_list = {}
 
             -- Add Hell rate if enabled
             if options.targetEnableActivationRateItems.hell == true then
-                local str = string.format("Hell: %i", clamp((93 - monster.Edk) * (v50xHellBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Hell",
+                    rate = clamp((93 - monster.Edk) * (v50xHellBoost), 0, 100)
+                })
             end
             -- Add Dark rate if enabled
             if options.targetEnableActivationRateItems.dark == true then
-                local str = string.format("Dark: %i", clamp((78 - monster.Edk) * (v50xHellBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Dark",
+                    rate = clamp((78 - monster.Edk) * (v50xHellBoost), 0, 100)
+                })
             end
             -- Add Arrest rate if enabled
             if options.targetEnableActivationRateItems.arrest == true then
-                local str = string.format("Arrest: %i",
-                    clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Arrest",
+                    rate = clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100)
+                })
             end
             -- Add Blizzard rate if enabled
             if options.targetEnableActivationRateItems.blizzard == true then
-                local str = string.format("Blizzard: %i",
-                    clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Blizzard",
+                    rate = clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100)
+                })
             end
             -- Add Seize rate if enabled
             if options.targetEnableActivationRateItems.seize == true then
-                local str = string.format("Seize: %i",
-                    clamp((64 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Seize",
+                    rate = clamp((64 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100)
+                })
             end
             -- Add Chaos rate if enabled
             if options.targetEnableActivationRateItems.chaos == true then
-                local str = string.format("Chaos: %i",
-                    clamp((76 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Chaos",
+                    rate = clamp((76 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100)
+                })
             end
             -- Add Havoc rate if enabled
             if options.targetEnableActivationRateItems.havoc == true then
-                local str = string.format("Havoc: %i",
-                    clamp((60 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
-                table.insert(rate_list, str)
+                table.insert(activation_list, {
+                    name = "Havoc",
+                    rate = clamp((60 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100)
+                })
             end
 
             -- Display all of the specials selected, only allow 3 per row
-            if table.getn(rate_list) > 0 then
+            if table.getn(activation_list) > 0 then
                 lib_helpers.Text(true, "Activation Rates:")
-                for i, str in ipairs(rate_list) do
+                for i, activation in ipairs(activation_list) do
+                    local newLine = false
                     if math.mod(i - 1, 3) == 0 then
-                        lib_helpers.Text(true, str)
-                    else
-                        lib_helpers.Text(false, ", ")
-                        lib_helpers.Text(false, str)
+                        newLine = true
                     end
+
+                    if not newLine then
+                        lib_helpers.Text(false, ", ")
+                    end
+                    lib_helpers.Text(newLine, "%s: %i%%%%", activation.name, activation.rate)
                 end
             end
         end
