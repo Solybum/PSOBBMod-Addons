@@ -14,27 +14,27 @@ local ConfigurationWindow
 
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
-    options.configurationEnableWindow = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
-    options.enable                    = lib_helpers.NotNilOrDefault(options.enable, true)
-    options.invertMonsterList         = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
-    options.showCurrentRoomOnly       = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
-    options.showMonsterStatus         = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
-    options.showMonsterID             = lib_helpers.NotNilOrDefault(options.showMonsterID, false)
+    options.configurationEnableWindow   = lib_helpers.NotNilOrDefault(options.configurationEnableWindow, true)
+    options.enable                      = lib_helpers.NotNilOrDefault(options.enable, true)
+    options.invertMonsterList           = lib_helpers.NotNilOrDefault(options.invertMonsterList, false)
+    options.showCurrentRoomOnly         = lib_helpers.NotNilOrDefault(options.showCurrentRoomOnly, false)
+    options.showMonsterStatus           = lib_helpers.NotNilOrDefault(options.showMonsterStatus, false)
+    options.showMonsterID               = lib_helpers.NotNilOrDefault(options.showMonsterID, false)
 
-    options.mhpEnableWindow            = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
-    options.mhpHideWhenMenu            = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenu, true)
-    options.mhpHideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.mhpHideWhenSymbolChat, true)
-    options.mhpHideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenuUnavailable, true)
-    options.mhpChanged                 = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
-    options.mhpAnchor                  = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
-    options.mhpX                       = lib_helpers.NotNilOrDefault(options.mhpX, 50)
-    options.mhpY                       = lib_helpers.NotNilOrDefault(options.mhpY, 50)
-    options.mhpW                       = lib_helpers.NotNilOrDefault(options.mhpW, 450)
-    options.mhpH                       = lib_helpers.NotNilOrDefault(options.mhpH, 350)
-    options.mhpNoTitleBar              = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
-    options.mhpNoResize                = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
-    options.mhpNoMove                  = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
-    options.mhpTransparentWindow       = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
+    options.mhpEnableWindow             = lib_helpers.NotNilOrDefault(options.mhpEnableWindow, true)
+    options.mhpHideWhenMenu             = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenu, true)
+    options.mhpHideWhenSymbolChat       = lib_helpers.NotNilOrDefault(options.mhpHideWhenSymbolChat, true)
+    options.mhpHideWhenMenuUnavailable  = lib_helpers.NotNilOrDefault(options.mhpHideWhenMenuUnavailable, true)
+    options.mhpChanged                  = lib_helpers.NotNilOrDefault(options.mhpChanged, false)
+    options.mhpAnchor                   = lib_helpers.NotNilOrDefault(options.mhpAnchor, 1)
+    options.mhpX                        = lib_helpers.NotNilOrDefault(options.mhpX, 50)
+    options.mhpY                        = lib_helpers.NotNilOrDefault(options.mhpY, 50)
+    options.mhpW                        = lib_helpers.NotNilOrDefault(options.mhpW, 450)
+    options.mhpH                        = lib_helpers.NotNilOrDefault(options.mhpH, 350)
+    options.mhpNoTitleBar               = lib_helpers.NotNilOrDefault(options.mhpNoTitleBar, "")
+    options.mhpNoResize                 = lib_helpers.NotNilOrDefault(options.mhpNoResize, "")
+    options.mhpNoMove                   = lib_helpers.NotNilOrDefault(options.mhpNoMove, "")
+    options.mhpTransparentWindow        = lib_helpers.NotNilOrDefault(options.mhpTransparentWindow, false)
 
     options.targetEnableWindow          = lib_helpers.NotNilOrDefault(options.targetEnableWindow, true)
     options.targetChanged               = lib_helpers.NotNilOrDefault(options.targetChanged, false)
@@ -49,9 +49,9 @@ if optionsLoaded then
     options.targetNoScrollbar           = lib_helpers.NotNilOrDefault(options.targetNoScrollbar, "NoScrollbar")
     options.targetTransparentWindow     = lib_helpers.NotNilOrDefault(options.targetTransparentWindow, false)
     options.targetShowMonsterName       = lib_helpers.NotNilOrDefault(options.targetShowMonsterName, false)
-    options.targetShowTechAssist           = lib_helpers.NotNilOrDefault(options.targetShowTechAssist, false)
+    options.targetShowTechAssist        = lib_helpers.NotNilOrDefault(options.targetShowTechAssist, false)
     options.targetShowMonsterStats      = lib_helpers.NotNilOrDefault(options.targetShowMonsterStats, false)
-    options.targetShowMonsterHP      = lib_helpers.NotNilOrDefault(options.targetShowMonsterHP, false)
+    options.targetShowMonsterHP         = lib_helpers.NotNilOrDefault(options.targetShowMonsterHP, false)
     options.targetShowAccuracyAssist    = lib_helpers.NotNilOrDefault(options.targetShowAccuracyAssist, false)
     options.targetAccuracyThreshold     = lib_helpers.NotNilOrDefault(options.targetAccuracyThreshold, 90)
     options.targetEnableActivationRates = lib_helpers.NotNilOrDefault(options.targetEnableActivationRates, false)
@@ -59,13 +59,20 @@ if optionsLoaded then
     if options.targetEnableActivationRateItems == nil or type(options.targetEnableActivationRateItems) ~= "table" then
         options.targetEnableActivationRateItems = {}
     end
-    options.targetEnableActivationRateItems.Hell     = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.hell, false)
-    options.targetEnableActivationRateItems.Dark     = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.dark, false)
-    options.targetEnableActivationRateItems.Blizzard = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.blizzard, false)
-    options.targetEnableActivationRateItems.Arrest   = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.arrest, false)
-    options.targetEnableActivationRateItems.Seize    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.seize, false)
-    options.targetEnableActivationRateItems.Chaos    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.chaos, false)
-    options.targetEnableActivationRateItems.Havoc    = lib_helpers.NotNilOrDefault(options.targetEnableActivationRateItems.havoc, false)
+    options.targetEnableActivationRateItems.Hell     = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.hell, false)
+    options.targetEnableActivationRateItems.Dark     = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.dark, false)
+    options.targetEnableActivationRateItems.Blizzard = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.blizzard, false)
+    options.targetEnableActivationRateItems.Arrest   = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.arrest, false)
+    options.targetEnableActivationRateItems.Seize    = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.seize, false)
+    options.targetEnableActivationRateItems.Chaos    = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.chaos, false)
+    options.targetEnableActivationRateItems.Havoc    = lib_helpers.NotNilOrDefault(
+        options.targetEnableActivationRateItems.havoc, false)
 else
     options =
     {
@@ -185,75 +192,75 @@ local function SaveOptions(options)
     end
 end
 
-local _PlayerArray = 0x00A94254
-local _PlayerIndex = 0x00A9C4F4
-local _PlayerCount = 0x00AAE168
-local _Difficulty = 0x00A9CD68
+local _PlayerArray                = 0x00A94254
+local _PlayerIndex                = 0x00A9C4F4
+local _PlayerCount                = 0x00AAE168
+local _Difficulty                 = 0x00A9CD68
 local _Ultimate
 
-local _ID = 0x1C
-local _Room = 0x28
-local _Room2 = 0x2E
-local _PosX = 0x38
-local _PosY = 0x3C
-local _PosZ = 0x40
+local _ID                         = 0x1C
+local _Room                       = 0x28
+local _Room2                      = 0x2E
+local _PosX                       = 0x38
+local _PosY                       = 0x3C
+local _PosZ                       = 0x40
 
-local _targetPointerOffset = 0x18
-local _targetOffset = 0x108C
+local _targetPointerOffset        = 0x18
+local _targetOffset               = 0x108C
 
-local _EntityCount = 0x00AAE164
-local _EntityArray = 0
+local _EntityCount                = 0x00AAE164
+local _EntityArray                = 0
 
-local _MonsterEntityFlags = 0x30
-local _MonsterUnitxtID = 0x378
-local _MonsterHP = 0x334
-local _MonsterHPMax = 0x2BC
-local _MonsterEvp = 0x2D0
-local _MonsterAtp = 0x2CC
-local _MonsterDfp = 0x2D2
-local _MonsterMst = 0x2BE
-local _MonsterAta = 0x2D4
-local _MonsterLck = 0x2D6
-local _MonsterEfr = 0x2F6
-local _MonsterEth = 0x2F8
-local _MonsterEic = 0x2FA
-local _MonsterEdk = 0x2FC
-local _MonsterElt = 0x2FE
+local _MonsterEntityFlags         = 0x30
+local _MonsterUnitxtID            = 0x378
+local _MonsterHP                  = 0x334
+local _MonsterHPMax               = 0x2BC
+local _MonsterEvp                 = 0x2D0
+local _MonsterAtp                 = 0x2CC
+local _MonsterDfp                 = 0x2D2
+local _MonsterMst                 = 0x2BE
+local _MonsterAta                 = 0x2D4
+local _MonsterLck                 = 0x2D6
+local _MonsterEfr                 = 0x2F6
+local _MonsterEth                 = 0x2F8
+local _MonsterEic                 = 0x2FA
+local _MonsterEdk                 = 0x2FC
+local _MonsterElt                 = 0x2FE
 
-local _MonsterBpPtr = 0x2B4
-local _MonsterBpAtp = 0x0
-local _MonsterBpMst = 0x2
-local _MonsterBpEvp = 0x4
-local _MonsterBpHp  = 0x6
-local _MonsterBpDfp = 0x8
-local _MonsterBpAta = 0xA
-local _MonsterBpLck = 0xC
-local _MonsterBpEsp = 0xE
+local _MonsterBpPtr               = 0x2B4
+local _MonsterBpAtp               = 0x0
+local _MonsterBpMst               = 0x2
+local _MonsterBpEvp               = 0x4
+local _MonsterBpHp                = 0x6
+local _MonsterBpDfp               = 0x8
+local _MonsterBpAta               = 0xA
+local _MonsterBpLck               = 0xC
+local _MonsterBpEsp               = 0xE
 
 -- Special addresses for De Rol Le
-local _BPDeRolLeData = 0x00A43CC8
-local _MonsterDeRolLeHP = 0x6B4
-local _MonsterDeRolLeHPMax = 0x6B0
-local _MonsterDeRolLeSkullHP = 0x6B8
-local _MonsterDeRolLeSkullHPMax = 0x20
-local _MonsterDeRolLeShellHP = 0x39C
-local _MonsterDeRolLeShellHPMax = 0x1C
+local _BPDeRolLeData              = 0x00A43CC8
+local _MonsterDeRolLeHP           = 0x6B4
+local _MonsterDeRolLeHPMax        = 0x6B0
+local _MonsterDeRolLeSkullHP      = 0x6B8
+local _MonsterDeRolLeSkullHPMax   = 0x20
+local _MonsterDeRolLeShellHP      = 0x39C
+local _MonsterDeRolLeShellHPMax   = 0x1C
 
 -- Special addresses for Barba Ray
-local _BPBarbaRayData = 0x00A43CC8
-local _MonsterBarbaRayHP = 0x704
-local _MonsterBarbaRayHPMax = 0x700
-local _MonsterBarbaRaySkullHP = 0x708
-local _MonsterBarbaRaySkullHPMax = 0x20
-local _MonsterBarbaRayShellHP = 0x7AC
-local _MonsterBarbaRayShellHPMax = 0x1C
+local _BPBarbaRayData             = 0x00A43CC8
+local _MonsterBarbaRayHP          = 0x704
+local _MonsterBarbaRayHPMax       = 0x700
+local _MonsterBarbaRaySkullHP     = 0x708
+local _MonsterBarbaRaySkullHPMax  = 0x20
+local _MonsterBarbaRayShellHP     = 0x7AC
+local _MonsterBarbaRayShellHPMax  = 0x1C
 
 -- Special address for Ephinea
 local _ephineaMonsterArrayPointer = 0x00B5F800
-local _ephineaMonsterHPScale = 0x00B5F804
+local _ephineaMonsterHPScale      = 0x00B5F804
 
 local function CopyMonster(monster)
-    local copy = {}
+    local copy    = {}
 
     copy.address  = monster.address
     copy.index    = monster.index
@@ -285,11 +292,11 @@ local function GetMonsterDataDeRolLe(monster)
     if maxDataPtr ~= 0 then
         skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
         shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
-    if ephineaMonsters ~= 0 then
-        ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
-        skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
-        shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
-    end
+        if ephineaMonsters ~= 0 then
+            ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
+            skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
+            shellMaxHP = math.floor(shellMaxHP * ephineaHPScale)
+        end
     end
 
     if monster.index == 0 then
@@ -361,13 +368,13 @@ local function GetMonsterData(monster)
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
 
     -- Don't use data from the BPs for a few reasons.
-    -- 1. BPs can be changed by a quest/server multiple times, so the data could be completely wrong 
+    -- 1. BPs can be changed by a quest/server multiple times, so the data could be completely wrong
     --    for already spawned entities.
     -- 2. The game doesn't use the BPs for damage, accuracy, and special attack calculations.
     --    The values from the BPs were already copied into the monster object.
     --    The main exceptions are ESP and EXP.
     -- 3. The ATP and ATA values in the BPs don't include what a monster has from an 'equipped attack',
-    --    which is akin to a player having a weapon equipped. Some examples are Mothverts, 
+    --    which is akin to a player having a weapon equipped. Some examples are Mothverts,
     --    Savage Wolves, Ob Lillies, among others which have verifiably more ATA than the stats
     --    table in the BPs show.
     if bpPointer ~= 0 then
@@ -609,7 +616,7 @@ local function PresentMonsters()
         step = -1
     end
 
-    for i=startIndex, endIndex, step do
+    for i = startIndex, endIndex, step do
         local monster = monsterList[i]
         if monster.display then
             local mHP = monster.HP
@@ -623,7 +630,8 @@ local function PresentMonsters()
                 imgui.NextColumn()
             end
 
-            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+            lib_helpers.imguiProgressBar(true, mHP / mHPMax, -1.0, imgui.GetFontSize(),
+                lib_helpers.HPToGreenRedGradient(mHP / mHPMax), nil, mHP)
             imgui.NextColumn()
 
             if options.showMonsterStatus then
@@ -633,13 +641,15 @@ local function PresentMonsters()
                 if atkTech.type == 0 then
                     lib_helpers.TextC(true, 0, "    ")
                 else
-                    lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+                    lib_helpers.TextC(true, 0xFFFF0000,
+                        atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
                 end
 
                 if defTech.type == 0 then
                     lib_helpers.TextC(false, 0, "    ")
                 else
-                    lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                    lib_helpers.TextC(false, 0xFF0000FF,
+                        defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
                 end
 
                 local frozen = lib_characters.GetPlayerFrozenStatus(monster.address)
@@ -665,10 +675,14 @@ end
 
 function split(str, delimiter)
     local result = {}
-    for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+    for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
         table.insert(result, match)
     end
     return result
+end
+
+local function clamp(x, lower, upper)
+    return math.min(math.max(x, lower), upper)
 end
 
 local function PresentTargetMonster(monster)
@@ -691,17 +705,17 @@ local function PresentTargetMonster(monster)
         if options.targetShowMonsterName then
             lib_helpers.Text(true, monster.name)
         end
-        
+
         if options.showMonsterID == true then
             lib_helpers.Text(false, " - ID: %04X", monster.id)
         end
         if options.targetShowTechAssist then
             -- Show the target's weakest in ascending order
             local resistances = {
-                Fire0xFFFF0000 = monster.Efr, 
-                Ice0xFF00FFFF = monster.Eic, 
-                Thunder0xFFFFFF00 = monster.Eth, 
-                Dark0xFFFF00FF = monster.Edk, 
+                Fire0xFFFF0000 = monster.Efr,
+                Ice0xFF00FFFF = monster.Eic,
+                Thunder0xFFFFFF00 = monster.Eth,
+                Dark0xFFFF00FF = monster.Edk,
                 Light0xFFCFB997 = monster.Elt
             }
 
@@ -721,21 +735,21 @@ local function PresentTargetMonster(monster)
             table.sort(_temp_sorted)
             lib_helpers.Text(true, "[")
             local counter = 0
-            for k,v in pairs(_temp_sorted) do
-                local color = "0x" .. split(v,"0x")[2]
-                lib_helpers.TextC(false, color, string.gsub(split(v,"0x")[1], "%d", ""))
-                counter = counter + 1 
-                if counter ~= 5 then 
+            for k, v in pairs(_temp_sorted) do
+                local color = "0x" .. split(v, "0x")[2]
+                lib_helpers.TextC(false, color, string.gsub(split(v, "0x")[1], "%d", ""))
+                counter = counter + 1
+                if counter ~= 5 then
                     lib_helpers.Text(false, " < ")
                 else
                     lib_helpers.Text(false, "]")
-                end 
+                end
             end
         end
         -- Show target enemies stats if feature enabled
         if options.targetShowMonsterStats then
             lib_helpers.Text(true, "[ATP: %i, DFP: %i, MST: %i, ATA: %i, EVP: %i, LCK: %i]",
-                                   monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
+                monster.Atp, monster.Dfp, monster.Mst, monster.Ata, monster.Evp, monster.Lck)
             lib_helpers.Text(true, "[")
             lib_helpers.TextC(false, 0xFFFF0000, "EFR:")
             lib_helpers.Text(false, " %i |", monster.Efr)
@@ -752,7 +766,8 @@ local function PresentTargetMonster(monster)
 
         -- Draw enemy HP bar
         if options.targetShowMonsterHP then
-            lib_helpers.imguiProgressBar(true, mHP/mHPMax, -1.0, imgui.GetFontSize(), lib_helpers.HPToGreenRedGradient(mHP/mHPMax), nil, mHP)
+            lib_helpers.imguiProgressBar(true, mHP / mHPMax, -1.0, imgui.GetFontSize(),
+                lib_helpers.HPToGreenRedGradient(mHP / mHPMax), nil, mHP)
         end
 
         -- Show J/Z status and Frozen, Confuse, or Paralyzed status
@@ -760,13 +775,15 @@ local function PresentTargetMonster(monster)
             if atkTech.type == 0 then
                 lib_helpers.TextC(true, 0, "    ")
             else
-                lib_helpers.TextC(true, 0xFFFF0000, atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
+                lib_helpers.TextC(true, 0xFFFF0000,
+                    atkTech.name .. atkTech.level .. string.rep(" ", 2 - #tostring(atkTech.level)) .. " ")
             end
 
             if defTech.type == 0 then
                 lib_helpers.TextC(false, 0, "    ")
             else
-                lib_helpers.TextC(false, 0xFF0000FF, defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
+                lib_helpers.TextC(false, 0xFF0000FF,
+                    defTech.name .. defTech.level .. string.rep(" ", 2 - #tostring(defTech.level)) .. " ")
             end
 
             if frozen then
@@ -788,14 +805,14 @@ local function PresentTargetMonster(monster)
         local itemCount = table.getn(inventory.items)
         local v50xHellBoost = 1.0
         local v50xStatusBoost = 1.0
-        for i=1,itemCount,1 do
+        for i = 1, itemCount, 1 do
             local item = inventory.items[i]
             if item.equipped and item.data[1] == 0x01 and item.data[2] == 0x03 then
                 -- V501
                 if item.data[3] == 0x4A then
                     v50xHellBoost = 1.5
                     v50xStatusBoost = 1.5
-                -- V502
+                    -- V502
                 elseif item.data[3] == 0x4B then
                     v50xHellBoost = 2.0
                     v50xStatusBoost = 1.5
@@ -817,15 +834,15 @@ local function PresentTargetMonster(monster)
 
             -- Calculate all 9 types of attack combinations
             local myAta = lib_characters.GetPlayerATA(playerAddr)
-            local normAtk1_Acc = (myAta * 1.0 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local hardAtk1_Acc = (myAta * 0.7 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local specAtk1_Acc = (myAta * 0.5 * 1.0 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local normAtk2_Acc = (myAta * 1.0 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local hardAtk2_Acc = (myAta * 0.7 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local specAtk2_Acc = (myAta * 0.5 * 1.3 ) - ((monster.Evp * badStatusReduc) * 0.2)
-            local normAtk3_Acc = (myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-            local hardAtk3_Acc = (myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
-            local specAtk3_Acc = (myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2)
+            local normAtk1_Acc = clamp((myAta * 1.0 * 1.0) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local hardAtk1_Acc = clamp((myAta * 0.7 * 1.0) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local specAtk1_Acc = clamp((myAta * 0.5 * 1.0) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local normAtk2_Acc = clamp((myAta * 1.0 * 1.3) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local hardAtk2_Acc = clamp((myAta * 0.7 * 1.3) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local specAtk2_Acc = clamp((myAta * 0.5 * 1.3) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local normAtk3_Acc = clamp((myAta * 1.0 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local hardAtk3_Acc = clamp((myAta * 0.7 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
+            local specAtk3_Acc = clamp((myAta * 0.5 * 1.69) - ((monster.Evp * badStatusReduc) * 0.2), 0, 100)
 
             -- Display best first attack
             lib_helpers.Text(true, "Ata: %i, Recommended Attack:", myAta)
@@ -873,37 +890,42 @@ local function PresentTargetMonster(monster)
 
             -- Add Hell rate if enabled
             if options.targetEnableActivationRateItems.hell == true then
-                local str = string.format("Hell: %i", (93 - monster.Edk)*(v50xHellBoost))
+                local str = string.format("Hell: %i", clamp((93 - monster.Edk) * (v50xHellBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Dark rate if enabled
             if options.targetEnableActivationRateItems.dark == true then
-                local str = string.format("Dark: %i", (78 - monster.Edk)*(v50xHellBoost))
+                local str = string.format("Dark: %i", clamp((78 - monster.Edk) * (v50xHellBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Arrest rate if enabled
             if options.targetEnableActivationRateItems.arrest == true then
-                local str = string.format("Arrest: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                local str = string.format("Arrest: %i",
+                    clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Blizzard rate if enabled
             if options.targetEnableActivationRateItems.blizzard == true then
-                local str = string.format("Blizzard: %i", (80 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                local str = string.format("Blizzard: %i",
+                    clamp((80 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Seize rate if enabled
             if options.targetEnableActivationRateItems.seize == true then
-                local str = string.format("Seize: %i", (64 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                local str = string.format("Seize: %i",
+                    clamp((64 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Chaos rate if enabled
             if options.targetEnableActivationRateItems.chaos == true then
-                local str = string.format("Chaos: %i", (76 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                local str = string.format("Chaos: %i",
+                    clamp((76 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
                 table.insert(rate_list, str)
             end
             -- Add Havoc rate if enabled
             if options.targetEnableActivationRateItems.havoc == true then
-                local str = string.format("Havoc: %i", (60 + androidBoost - monster.Esp)*(v50xStatusBoost))
+                local str = string.format("Havoc: %i",
+                    clamp((60 + androidBoost - monster.Esp) * (v50xStatusBoost), 0, 100))
                 table.insert(rate_list, str)
             end
 
@@ -911,7 +933,7 @@ local function PresentTargetMonster(monster)
             if table.getn(rate_list) > 0 then
                 lib_helpers.Text(true, "Activation Rates:")
                 for i, str in ipairs(rate_list) do
-                    if math.mod(i-1, 3) == 0 then
+                    if math.mod(i - 1, 3) == 0 then
                         lib_helpers.Text(true, str)
                     else
                         lib_helpers.Text(false, ", ")
@@ -945,10 +967,11 @@ local function PresentTargetMonsterWindow()
 
     if options.targetEnableWindow and monster ~= nil and monster.unitxtID ~= 0 then
         if firstPresent or options.targetChanged then
-          options.targetChanged = false
-          local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW, options.targetH, options.targetAnchor)
-          imgui.SetNextWindowPos(ps[1], ps[2], "Always");
-          imgui.SetNextWindowSize(options.targetW, options.targetH, "Always");
+            options.targetChanged = false
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.targetX, options.targetY, options.targetW,
+                options.targetH, options.targetAnchor)
+            imgui.SetNextWindowPos(ps[1], ps[2], "Always");
+            imgui.SetNextWindowSize(options.targetW, options.targetH, "Always");
         end
 
         if options.targetTransparentWindow == true then
@@ -961,13 +984,12 @@ local function PresentTargetMonsterWindow()
         imgui.End()
 
         if options.targetTransparentWindow == true then
-          imgui.PopStyleColor()
+            imgui.PopStyleColor()
         end
     end
 end
 
 local function present()
-
     if _EntityArray == 0 then
         -- Get the address of the entity array from one of the instructions that references it.
         -- Works on base client and on a client patched with a different array.
@@ -999,7 +1021,8 @@ local function present()
     then
         if firstPresent or options.mhpChanged then
             options.mhpChanged = false
-            local ps = lib_helpers.GetPosBySizeAndAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH, options.mhpAnchor)
+            local ps = lib_helpers.GetPosBySizeAndAnchor(options.mhpX, options.mhpY, options.mhpW, options.mhpH,
+                options.mhpAnchor)
             imgui.SetNextWindowPos(ps[1], ps[2], "Always");
             imgui.SetNextWindowSize(options.mhpW, options.mhpH, "Always");
         end
