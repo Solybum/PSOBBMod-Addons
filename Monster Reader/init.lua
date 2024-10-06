@@ -950,7 +950,7 @@ local function PresentTargetMonster(monster)
                     if not newLine then
                         lib_helpers.Text(false, ", ")
                     end
-                    lib_helpers.Text(newLine, "%s: %i%%%%", activation.name, activation.rate)
+                    lib_helpers.Text(newLine, "%s: %i%%", activation.name, activation.rate)
                 end
             end
         end

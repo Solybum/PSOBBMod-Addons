@@ -1,4 +1,4 @@
--- Helper functions to get PSO's resolution Width and Height. 
+-- Helper functions to get PSO's resolution Width and Height.
 -- Read the instructions containing address of a global passed to the device creation, and then
 -- use that. Generally the same as the old globals read unless the client has SSAA enabled.
 local function GetResolutionWidth()
