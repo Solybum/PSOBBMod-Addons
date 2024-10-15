@@ -29,7 +29,7 @@ if optionsLoaded then
     options.hideMagStats              = lib_helpers.NotNilOrDefault(options.hideMagStats, false)
     options.hideMagPBs                = lib_helpers.NotNilOrDefault(options.hideMagPBs, false)
     options.hideMagColor              = lib_helpers.NotNilOrDefault(options.hideMagColor, false)
-	options.highlightMaxStats         = lib_helpers.NotNilOrDefault(options.highlightMaxStats, false)
+    options.highlightMaxStats         = lib_helpers.NotNilOrDefault(options.highlightMaxStats, false)
     options.itemNameLength            = lib_helpers.NotNilOrDefault(options.itemNameLength, 0)
     options.updateThrottle            = lib_helpers.NotNilOrDefault(options.updateThrottle, 0)
     options.server                    = lib_helpers.NotNilOrDefault(options.server, 1)
@@ -152,7 +152,7 @@ else
         hideMagStats = false,
         hideMagPBs = false,
         hideMagColor = false,
-		highlightMaxStats = false,
+        highlightMaxStats = false,
         itemNameLength = 0,
         updateThrottle = 0,
         server = 1,
@@ -706,9 +706,9 @@ local function ProcessFrame(item, floor)
             end
         end
 
-		if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax and item.armor.evp == item.armor.evpMax and (item.armor.dfpMax > 0 or item.armor.evpMax > 0) then
+        if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax and item.armor.evp == item.armor.evpMax and (item.armor.dfpMax > 0 or item.armor.evpMax > 0) then
             nameColor = lib_items_cfg.gold
-		end
+        end
 
         result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)
@@ -766,7 +766,7 @@ local function ProcessBarrier(item, floor)
 
         if options.highlightMaxStats and item.armor.dfp == item.armor.dfpMax and item.armor.evp == item.armor.evpMax and (item.armor.dfpMax > 0 or item.armor.evpMax > 0) then
             nameColor = lib_items_cfg.gold
-		end
+        end
 
         result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
         result = result .. writeArmorStats(item)
