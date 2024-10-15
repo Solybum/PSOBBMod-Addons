@@ -42,7 +42,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.showItemData = not _configuration.showItemData
                 this.changed = true
             end
-			if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
+            if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
                 _configuration.showEquippedItems = not _configuration.showEquippedItems
                 this.changed = true
             end
@@ -70,7 +70,7 @@ local function ConfigurationWindow(configuration)
                 _configuration.hideMagColor = not _configuration.hideMagColor
                 this.changed = true
             end
-			if imgui.Checkbox("Highlight max stats", _configuration.highlightMaxStats) then
+            if imgui.Checkbox("Highlight max stats", _configuration.highlightMaxStats) then
                 _configuration.highlightMaxStats = not _configuration.highlightMaxStats
                 this.changed = true
             end
@@ -448,6 +448,12 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
 
+                    if imgui.Checkbox("Hide Scape Dolls", _configuration.floor.filter.HideScapeDolls) then
+                        _configuration.floor.filter.HideScapeDolls = not _configuration.floor.filter.HideScapeDolls
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+
                     imgui.Text("Grinders/Materials")
                     if imgui.Checkbox("Hide Monogrinders", _configuration.floor.filter.HideMonogrinders) then
                         _configuration.floor.filter.HideMonogrinders = not _configuration.floor.filter.HideMonogrinders
@@ -505,6 +511,12 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
+                    if imgui.Checkbox("Show Claire's Deal 5 Items", _configuration.floor.filter.ShowClairesDeal) then
+                        _configuration.floor.filter.ShowClairesDeal = not _configuration.floor.filter.ShowClairesDeal
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
+
                     imgui.TreePop()
                 end
             end
