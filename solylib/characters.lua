@@ -102,12 +102,12 @@ end
 
 local function GetPlayerMaxATP(player, attribute)
     -- TODO split reads into their own functions
-	return (pso.read_u16(player + 0x2CE) + (pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
+    return (pso.read_u16(player + 0x2CE) + (pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
 end
 
 local function GetPlayerMinATP(player, attribute)
     -- TODO split reads into their own functions
-	return ((pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
+    return ((pso.read_u16(player + 0xE50) * (1+attribute)) + pso.read_u16(player + 0x2CC))
 end
 
 local function GetPlayerEVP(player)
@@ -234,20 +234,20 @@ return
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
     GetPlayerMaxTP = GetPlayerMaxTP,
-	GetPlayerMaxATP = GetPlayerMaxATP,
-	GetPlayerMinATP = GetPlayerMinATP,
-	GetPlayerEVP = GetPlayerEVP,
-	GetPlayerDFP = GetPlayerDFP,
+    GetPlayerMaxATP = GetPlayerMaxATP,
+    GetPlayerMinATP = GetPlayerMinATP,
+    GetPlayerEVP = GetPlayerEVP,
+    GetPlayerDFP = GetPlayerDFP,
     GetPlayerATA = GetPlayerATA,
-	GetPlayerLCK = GetPlayerLCK,
-	GetPlayerMST = GetPlayerMST,
+    GetPlayerLCK = GetPlayerLCK,
+    GetPlayerMST = GetPlayerMST,
     GetPlayerTechniqueLevel = GetPlayerTechniqueLevel,
     GetPlayerTechniqueStatus = GetPlayerTechniqueStatus,
     GetPlayerInvulnerabilityStatus = GetPlayerInvulnerabilityStatus,
     GetPlayerFrozenStatus = GetPlayerFrozenStatus,
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
-	GetPlayerShockedStatus = GetPlayerShockedStatus,
+    GetPlayerShockedStatus = GetPlayerShockedStatus,
     GetPlayerIsCast = GetPlayerIsCast,
     Techniques = Techniques,
     GetPlayerFloor = GetPlayerFloor,
