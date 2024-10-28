@@ -285,13 +285,12 @@ local function GetMonsterDataDeRolLe(monster)
     local maxDataPtr = pso.read_u32(_BPDeRolLeData)
     local skullMaxHP = 0
     local shellMaxHP = 0
-    local newName = monster.name
     local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
     local ephineaHPScale = 1.0
 
     if maxDataPtr ~= 0 then
-        skullMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
-        shellMaxHP = pso.read_u32(maxDataPtr + _MonsterDeRolLeShellHPMax)
+        skullMaxHP = pso.read_i32(maxDataPtr + _MonsterDeRolLeSkullHPMax)
+        shellMaxHP = pso.read_i32(maxDataPtr + _MonsterDeRolLeShellHPMax)
         if ephineaMonsters ~= 0 then
             ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
             skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
@@ -300,13 +299,13 @@ local function GetMonsterDataDeRolLe(monster)
     end
 
     if monster.index == 0 then
-        monster.HP = pso.read_u32(monster.address + _MonsterDeRolLeHP)
-        monster.HPMax = pso.read_u32(monster.address + _MonsterDeRolLeHPMax)
+        monster.HP = pso.read_i32(monster.address + _MonsterDeRolLeHP)
+        monster.HPMax = pso.read_i32(monster.address + _MonsterDeRolLeHPMax)
 
-        monster.HP2 = pso.read_u32(monster.address + _MonsterDeRolLeSkullHP)
+        monster.HP2 = pso.read_i32(monster.address + _MonsterDeRolLeSkullHP)
         monster.HP2Max = skullMaxHP
     else
-        monster.HP = pso.read_u32(monster.address + _MonsterDeRolLeShellHP)
+        monster.HP = pso.read_i32(monster.address + _MonsterDeRolLeShellHP)
         monster.HPMax = shellMaxHP
         monster.name = monster.name .. " Shell"
     end
@@ -314,17 +313,36 @@ local function GetMonsterDataDeRolLe(monster)
     return monster
 end
 
+-- The body, skull, and shell segments all have Barba Ray's unitxt ID. The game doesn't load the 
+-- animations aka movement BP into a static address like it does for De Rol Le, so we
+-- have to differentiate the objects by their class type.
 local function GetMonsterDataBarbaRay(monster)
-    local maxDataPtr = pso.read_u32(_BPBarbaRayData)
+    local animationsBPPtr = 0
+    local barbaTypeId = pso.read_u32(monster.address + 0x04)
+
+    local isMainBody = false
+    local isSkull = false
+    local isShell = false
+    if 0xA47AF8 == barbaTypeId then
+        -- Main body and Skull (same class type)
+        animationsBPPtr = pso.read_u32(monster.address + 0x628)
+        isMainBody = true
+        isSkull = true
+    elseif 0xA47B0C == barbaTypeId then
+        -- Shell segment
+        local barbaRayParentObj = pso.read_u32(monster.address + 0x14)
+        animationsBPPtr = pso.read_u32(barbaRayParentObj + 0x628)
+        isShell = true
+    end
+
     local skullMaxHP = 0
     local shellMaxHP = 0
-    local newName = monster.name
     local ephineaMonsters = pso.read_u32(_ephineaMonsterArrayPointer)
     local ephineaHPScale = 1.0
 
-    if maxDataPtr ~= 0 then
-        skullMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRaySkullHPMax)
-        shellMaxHP = pso.read_u32(maxDataPtr + _MonsterBarbaRayShellHPMax)
+    if animationsBPPtr ~= 0 then
+        skullMaxHP = pso.read_i32(animationsBPPtr + _MonsterBarbaRaySkullHPMax)
+        shellMaxHP = pso.read_i32(animationsBPPtr + _MonsterBarbaRayShellHPMax)
         if ephineaMonsters ~= 0 then
             ephineaHPScale = pso.read_f64(_ephineaMonsterHPScale)
             skullMaxHP = math.floor(skullMaxHP * ephineaHPScale)
@@ -332,14 +350,15 @@ local function GetMonsterDataBarbaRay(monster)
         end
     end
 
-    if monster.index == 0 then
-        monster.HP = pso.read_u32(monster.address + _MonsterBarbaRayHP)
-        monster.HPMax = pso.read_u32(monster.address + _MonsterBarbaRayHPMax)
+    -- Check against the type ID in case a server modifies the monster set for the floor.
+    if isMainBody or isSkull then
+        monster.HP = pso.read_i32(monster.address + _MonsterBarbaRayHP)
+        monster.HPMax = pso.read_i32(monster.address + _MonsterBarbaRayHPMax)
 
-        monster.HP2 = pso.read_u32(monster.address + _MonsterBarbaRaySkullHP)
+        monster.HP2 = pso.read_i32(monster.address + _MonsterBarbaRaySkullHP)
         monster.HP2Max = skullMaxHP
-    else
-        monster.HP = pso.read_u32(monster.address + _MonsterBarbaRayShellHP)
+    elseif isShell then
+        monster.HP = pso.read_i32(monster.address + _MonsterBarbaRayShellHP)
         monster.HPMax = shellMaxHP
         monster.name = monster.name .. " Shell"
     end
@@ -358,11 +377,11 @@ local function GetMonsterData(monster)
 
     monster.entityFlags = pso.read_u32(monster.address + _MonsterEntityFlags)
     if ephineaMonsters ~= 0 then
-        monster.HP = pso.read_u32(ephineaMonsters + (monster.id * 32) + 0x04)
-        monster.HPMax = pso.read_u32(ephineaMonsters + (monster.id * 32))
+        monster.HP = pso.read_i32(ephineaMonsters + (monster.id * 32) + 0x04)
+        monster.HPMax = pso.read_i32(ephineaMonsters + (monster.id * 32))
     else
-        monster.HP = pso.read_u16(monster.address + _MonsterHP)
-        monster.HPMax = pso.read_u16(monster.address + _MonsterHPMax)
+        monster.HP = pso.read_i16(monster.address + _MonsterHP)
+        monster.HPMax = pso.read_i16(monster.address + _MonsterHPMax)
     end
 
     local bpPointer = pso.read_u32(monster.address + _MonsterBpPtr)
