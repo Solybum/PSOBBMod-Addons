@@ -119,6 +119,10 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
+            if imgui.Checkbox("New line for Meseta/Inventory", _configuration.aio.newLineForMesetaInventory) then
+                _configuration.aio.newLineForMesetaInventory = not _configuration.aio.newLineForMesetaInventory
+                this.changed = true
+            end
             if imgui.Checkbox("No title bar", _configuration.aio.NoTitleBar == "NoTitleBar") then
                 if _configuration.aio.NoTitleBar == "NoTitleBar" then
                     _configuration.aio.NoTitleBar = ""

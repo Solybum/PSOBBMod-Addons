@@ -37,23 +37,24 @@ if optionsLoaded then
     if options.aio == nil or type(options.aio) ~= "table" then
         options.aio = {}
     end
-    options.aio.EnableWindow            = lib_helpers.NotNilOrDefault(options.aio.EnableWindow, true)
-    options.aio.HideWhenMenu            = lib_helpers.NotNilOrDefault(options.aio.HideWhenMenu, true)
-    options.aio.HideWhenSymbolChat      = lib_helpers.NotNilOrDefault(options.aio.HideWhenSymbolChat, true)
-    options.aio.HideWhenMenuUnavailable = lib_helpers.NotNilOrDefault(options.aio.HideWhenMenuUnavailable, true)
-    options.aio.changed                 = lib_helpers.NotNilOrDefault(options.aio.changed, true)
-    options.aio.Anchor                  = lib_helpers.NotNilOrDefault(options.aio.Anchor, 1)
-    options.aio.X                       = lib_helpers.NotNilOrDefault(options.aio.X, 50)
-    options.aio.Y                       = lib_helpers.NotNilOrDefault(options.aio.Y, 5)
-    options.aio.W                       = lib_helpers.NotNilOrDefault(options.aio.W, 450)
-    options.aio.H                       = lib_helpers.NotNilOrDefault(options.aio.H, 350)
-    options.aio.NoTitleBar              = lib_helpers.NotNilOrDefault(options.aio.NoTitleBar, "")
-    options.aio.NoResize                = lib_helpers.NotNilOrDefault(options.aio.NoResize, "")
-    options.aio.NoMove                  = lib_helpers.NotNilOrDefault(options.aio.NoMove, "")
-    options.aio.AlwaysAutoResize        = lib_helpers.NotNilOrDefault(options.aio.AlwaysAutoResize, "")
-    options.aio.TransparentWindow       = lib_helpers.NotNilOrDefault(options.aio.TransparentWindow, false)
-    options.aio.ShowButtonSaveToFile    = lib_helpers.NotNilOrDefault(options.aio.ShowButtonSaveToFile, true)
-    options.aio.SelectedInventory       = lib_helpers.NotNilOrDefault(options.aio.SelectedInventory, 1)
+    options.aio.EnableWindow              = lib_helpers.NotNilOrDefault(options.aio.EnableWindow, true)
+    options.aio.HideWhenMenu              = lib_helpers.NotNilOrDefault(options.aio.HideWhenMenu, true)
+    options.aio.HideWhenSymbolChat        = lib_helpers.NotNilOrDefault(options.aio.HideWhenSymbolChat, true)
+    options.aio.HideWhenMenuUnavailable   = lib_helpers.NotNilOrDefault(options.aio.HideWhenMenuUnavailable, true)
+    options.aio.newLineForMesetaInventory = lib_helpers.NotNilOrDefault(options.aio.newLineForMesetaInventory, true)
+    options.aio.changed                   = lib_helpers.NotNilOrDefault(options.aio.changed, true)
+    options.aio.Anchor                    = lib_helpers.NotNilOrDefault(options.aio.Anchor, 1)
+    options.aio.X                         = lib_helpers.NotNilOrDefault(options.aio.X, 50)
+    options.aio.Y                         = lib_helpers.NotNilOrDefault(options.aio.Y, 5)
+    options.aio.W                         = lib_helpers.NotNilOrDefault(options.aio.W, 450)
+    options.aio.H                         = lib_helpers.NotNilOrDefault(options.aio.H, 350)
+    options.aio.NoTitleBar                = lib_helpers.NotNilOrDefault(options.aio.NoTitleBar, "")
+    options.aio.NoResize                  = lib_helpers.NotNilOrDefault(options.aio.NoResize, "")
+    options.aio.NoMove                    = lib_helpers.NotNilOrDefault(options.aio.NoMove, "")
+    options.aio.AlwaysAutoResize          = lib_helpers.NotNilOrDefault(options.aio.AlwaysAutoResize, "")
+    options.aio.TransparentWindow         = lib_helpers.NotNilOrDefault(options.aio.TransparentWindow, false)
+    options.aio.ShowButtonSaveToFile      = lib_helpers.NotNilOrDefault(options.aio.ShowButtonSaveToFile, true)
+    options.aio.SelectedInventory         = lib_helpers.NotNilOrDefault(options.aio.SelectedInventory, 1)
 
     if options.floor == nil or type(options.floor) ~= "table" then
         options.floor = {}
@@ -161,6 +162,7 @@ else
             HideWhenMenu = false,
             HideWhenSymbolChat = false,
             HideWhenMenuUnavailable = false,
+            newLineForMesetaInventory = false,
             changed = true,
             Anchor = 1,
             X = 50,
@@ -277,7 +279,7 @@ local function SaveOptions(options)
         io.write(string.format("    hideMagStats = %s,\n", tostring(options.hideMagStats)))
         io.write(string.format("    hideMagPBs = %s,\n", tostring(options.hideMagPBs)))
         io.write(string.format("    hideMagColor = %s,\n", tostring(options.hideMagColor)))
-		io.write(string.format("    highlightMaxStats = %s,\n", tostring(options.highlightMaxStats)))
+        io.write(string.format("    highlightMaxStats = %s,\n", tostring(options.highlightMaxStats)))
         io.write(string.format("    itemNameLength = %s,\n", tostring(options.itemNameLength)))
         io.write(string.format("    server = %s,\n", tostring(options.server)))
         io.write(string.format("    updateThrottle = %i,\n", tostring(options.updateThrottle)))
@@ -1141,7 +1143,12 @@ local function PresentInventory(save, index)
     end
 
     local itemCount = table.getn(cache_inventory.items)
-    TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
+
+    if options.aio.newLineForMesetaInventory then
+        TextCWrapper(true, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
+    else
+        TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, itemCount)
+    end
 
     for i=1,itemCount,1 do
         ProcessItem(cache_inventory.items[i], false, save)
@@ -1155,7 +1162,11 @@ local function PresentBank(save)
     end
     local itemCount = table.getn(cache_bank.items)
 
-    TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
+    if options.aio.newLineForMesetaInventory then
+        TextCWrapper(true, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
+    else
+        TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 200", cache_bank.meseta, itemCount)
+    end
 
     for i=1,itemCount,1 do
         ProcessItem(cache_bank.items[i], false, save)
@@ -1191,7 +1202,12 @@ local function PresentFloor()
         end
 
         local invItemCount = table.getn(cache_inventory.items)
-        TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+
+        if options.aio.newLineForMesetaInventory then
+            TextCWrapper(true, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+        else
+            TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+        end
     end
 
     local myFloor = lib_characters.GetCurrentFloorSelf()
