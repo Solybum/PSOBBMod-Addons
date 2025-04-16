@@ -353,6 +353,11 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
                     imgui.SameLine(0, 9)
+                    if imgui.Checkbox("Uptekk Hit%", _configuration.floor.filter.UptekkHit) then
+                        _configuration.floor.filter.UptekkHit = not _configuration.floor.filter.UptekkHit
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
                     --imgui.SameLine(0, 25)
                     if imgui.Checkbox("Hide <4s Armor & Barriers", _configuration.floor.filter.HideLowSocketArmor) then
                         _configuration.floor.filter.HideLowSocketArmor = not _configuration.floor.filter.HideLowSocketArmor

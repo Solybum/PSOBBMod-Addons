@@ -85,6 +85,7 @@ if optionsLoaded then
     end
     options.floor.filter.HitMin             = lib_helpers.NotNilOrDefault(options.floor.filter.HitMin, 40)
     options.floor.filter.HideLowHitWeapons  = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowHitWeapons, false)
+    options.floor.filter.UptekkHit          = lib_helpers.NotNilOrDefault(options.floor.filter.UptekkHit, false)
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
     options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
@@ -323,6 +324,7 @@ local function SaveOptions(options)
         io.write(string.format("        EnableFilters = %s,\n", options.floor.EnableFilters))
         io.write(string.format("        filter = {\n"))
         io.write(string.format("            HitMin = %s,\n", options.floor.filter.HitMin))
+        io.write(string.format("            UptekkHit = %s,\n", options.floor.filter.UptekkHit))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
@@ -529,6 +531,12 @@ local function ProcessWeapon(item, floor)
             -- Hide weapon drops based on hit
             if item.weapon.stats[6] >= options.floor.filter.HitMin then
                 show_item = true
+            end
+            if options.floor.filter.UptekkHit then
+                --HANDLE UPTEKK HIT%
+                if item.weapon.untekked and item.weapon.stats[6] >= options.floor.filter.HitMin - 10 then
+                    show_item = true
+                end
             end
             -- Show Claire's Deal 5 items
             if lib_claires_deal.IsClairesDealItem(item) and options.floor.filter.ShowClairesDeal then
