@@ -9,44 +9,9 @@ local optionsFileName = "addons/Player Reader/options.lua"
 local firstPresent = true
 local ConfigurationWindow
 
+-- TODO: Cover this function with solylib. (discus: https://github.com/Solybum/PSOBBMod-Addons/pull/93)
 local function getSDMaxDuration(level)
-    local table = {
-        [1] = 40,
-        [2] = 50,
-        [3] = 60,
-        [4] = 70,
-        [5] = 80,
-        [6] = 90,
-        [7] = 100,
-        [8] = 110,
-        [9] = 120,
-        [10] = 130,
-        [11] = 140,
-        [12] = 150,
-        [13] = 160,
-        [14] = 170,
-        [15] = 180,
-        [16] = 190,
-        [17] = 200,
-        [18] = 210,
-        [19] = 220,
-        [20] = 230,
-        [21] = 240,
-        [22] = 250,
-        [23] = 260,
-        [24] = 270,
-        [25] = 280,
-        [26] = 290,
-        [27] = 300,
-        [28] = 310,
-        [29] = 320,
-        [30] = 330,
-        [33] = 360,
-        [41] = 440,
-        [61] = 640,
-        [81] = 840,
-    }
-    return table[level]
+    return 30 + 10 * level
 end
 
 local function drawSDBar(tech, color)
