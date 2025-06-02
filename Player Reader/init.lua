@@ -9,6 +9,27 @@ local optionsFileName = "addons/Player Reader/options.lua"
 local firstPresent = true
 local ConfigurationWindow
 
+-- TODO: Cover this function with solylib. (discus: https://github.com/Solybum/PSOBBMod-Addons/pull/93)
+local function getSDMaxDuration(level)
+    return 30 + 10 * level
+end
+
+local function drawSDBar(tech, color)
+    local duration = getSDMaxDuration(tech.level)
+    local current = tech.time
+    lib_helpers.imguiProgressBar(
+        true,
+        current / duration,
+        -1.0,
+        imgui.GetFontSize(),
+        color,
+        nil,
+        "Lv%02i (%s): ",
+        tech.level,
+        os.date("!%M:%S", tech.time)
+    )
+end
+
 if optionsLoaded then
     -- If options loaded, make sure we have all those we need
     if options == nil or type(options) ~= "table" then
@@ -222,6 +243,7 @@ local function SaveOptions(options)
         io.write(string.format("    allPlayersShowName = %s,\n", tostring(options.allPlayersShowName)))
         io.write(string.format("    allPlayersShowHpBar = %s,\n", tostring(options.allPlayersShowHpBar)))
         io.write(string.format("    allPlayersShowBuff = %s,\n", tostring(options.allPlayersShowBuff)))
+        io.write(string.format("    allPlayersShowBuffProgressBar = %s,\n", tostring(options.allPlayersShowBuffProgressBar)))
         io.write("\n")
         io.write(string.format("    singlePlayersEnableWindow = %s,\n", tostring(options.singlePlayersEnableWindow)))
         io.write(string.format("    singlePlayersShowBarText = %s,\n", tostring(options.singlePlayersShowBarText)))
@@ -376,19 +398,26 @@ local function PresentPlayers()
         if options.allPlayersShowBuff then
             if atkTech.type == 0 then
                 lib_helpers.Text(true, "---")
+            elseif options.allPlayersShowBuffProgressBar then
+                drawSDBar(atkTech, 0xFFFF0000)
             else
                 lib_helpers.Text(true, "%s %i: %s", atkTech.name, atkTech.level, os.date("!%M:%S", atkTech.time))
             end
+
             if defTech.type == 0 then
                 lib_helpers.Text(true, "---")
+            elseif options.allPlayersShowBuffProgressBar then
+                drawSDBar(defTech, 0xFF0000FF)
             else
                 lib_helpers.Text(true, "%s %i: %s", defTech.name, defTech.level, os.date("!%M:%S", defTech.time))
             end
+
             if invuln.time == 0 then
                 lib_helpers.Text(true, "---")
             else
                 lib_helpers.Text(true, "%s: %s", "Inv.", os.date("!%M:%S", invuln.time))
             end
+
             if not options.allPlayersListHorizontal then
                 imgui.NextColumn()
             end

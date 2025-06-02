@@ -113,6 +113,12 @@ local function ConfigurationWindow(configuration)
                     _configuration.allPlayersShowBuff = not _configuration.allPlayersShowBuff
                     this.changed = true
                 end
+
+                if imgui.Checkbox("Display buffs as ProgressBar", _configuration.allPlayersShowBuffProgressBar) then
+                    _configuration.allPlayersShowBuffProgressBar = not _configuration.allPlayersShowBuffProgressBar
+                    this.changed = true
+                end
+
                 imgui.TreePop()
             end
 
