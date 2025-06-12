@@ -1,6 +1,34 @@
 local _PlayerArray = 0x00A94254
 local _MyPlayerIndex = 0x00A9C4F4
 
+local Classes = {
+    HUmar = 0,
+    HUnewearl = 1,
+    HUcast = 2,
+    RAmar = 3,
+    RAcast = 4,
+    RAcaseal = 5,
+    FOmarl = 6,
+    FOnewm = 7,
+    FOnewearl = 8,
+    HUcaseal = 9,
+    FOmar = 10,
+    RAmarl = 11,
+}
+
+local SectionIDs = {
+    Viridia = 0,
+    Greenill = 1,
+    Skyly = 2,
+    Bluefull = 3,
+    Purplenum = 4,
+    Pinkal = 5,
+    Redria = 6,
+    Oran = 7,
+    Yellowboze = 8,
+    Whitill = 9,
+}
+
 local Techniques = {
     Foie = 0,
     Gifoie = 1,
@@ -223,13 +251,17 @@ end
 
 return
 {
+    Classes = Classes,
+    SectionIDs = SectionIDs,
+    Techniques = Techniques,
     GetSelf = GetSelf,
     GetPlayer = GetPlayer,
     GetPlayerList = GetPlayerList,
+    GetPlayerCoordinates = GetPlayerCoordinates,
     GetPlayerName = GetPlayerName,
     GetPlayerLevel = GetPlayerLevel,
-    GetPlayerClass = GetPlayerClass,
     GetPlayerSectionID = GetPlayerSectionID,
+    GetPlayerClass = GetPlayerClass,
     GetPlayerHP = GetPlayerHP,
     GetPlayerMaxHP = GetPlayerMaxHP,
     GetPlayerTP = GetPlayerTP,
@@ -248,8 +280,7 @@ return
     GetPlayerConfusedStatus = GetPlayerConfusedStatus,
     GetPlayerParalyzedStatus = GetPlayerParalyzedStatus,
     GetPlayerShockedStatus = GetPlayerShockedStatus,
-    GetPlayerIsCast = GetPlayerIsCast,
-    Techniques = Techniques,
     GetPlayerFloor = GetPlayerFloor,
     GetCurrentFloorSelf = GetCurrentFloorSelf,
+    GetPlayerIsCast = GetPlayerIsCast,
 }
