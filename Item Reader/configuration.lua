@@ -281,8 +281,14 @@ local function ConfigurationWindow(configuration)
                 this.changed = true
             end
 
-            if imgui.Checkbox("Show inventory meseta and item count", _configuration.floor.ShowInvMesetaAndItemCount) then
-                _configuration.floor.ShowInvMesetaAndItemCount = not _configuration.floor.ShowInvMesetaAndItemCount
+            if imgui.Checkbox("Show inventory meseta", _configuration.floor.ShowInvMeseta) then
+                _configuration.floor.ShowInvMeseta = not _configuration.floor.ShowInvMeseta
+                _configuration.floor.changed = true
+                this.changed = true
+            end
+
+            if imgui.Checkbox("Show inventory item count", _configuration.floor.ShowInvItemCount) then
+                _configuration.floor.ShowInvItemCount = not _configuration.floor.ShowInvItemCount
                 _configuration.floor.changed = true
                 this.changed = true
             end

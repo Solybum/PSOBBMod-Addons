@@ -74,7 +74,8 @@ if optionsLoaded then
     options.floor.NoMove                       = lib_helpers.NotNilOrDefault(options.floor.NoMove, "")
     options.floor.AlwaysAutoResize             = lib_helpers.NotNilOrDefault(options.floor.AlwaysAutoResize, "")
     options.floor.TransparentWindow            = lib_helpers.NotNilOrDefault(options.floor.TransparentWindow, false)
-    options.floor.ShowInvMesetaAndItemCount    = lib_helpers.NotNilOrDefault(options.floor.ShowInvMesetaAndItemCount, false)
+    options.floor.ShowInvMeseta                = lib_helpers.NotNilOrDefault(options.floor.ShowInvMeseta, false)
+    options.floor.ShowInvItemCount             = lib_helpers.NotNilOrDefault(options.floor.ShowInvItemCount, false)
     options.floor.ShowMultiFloor               = lib_helpers.NotNilOrDefault(options.floor.ShowMultiFloor, false)
     options.floor.OtherFloorsBrightnessPercent = lib_helpers.NotNilOrDefault(options.floor.OtherFloorsBrightnessPercent, 100)
     options.floor.OtherFloorsPrependString     = lib_helpers.NotNilOrDefault(options.floor.OtherFloorsPrependString, "")
@@ -317,7 +318,8 @@ local function SaveOptions(options)
         io.write(string.format("        NoMove = \"%s\",\n", options.floor.NoMove))
         io.write(string.format("        AlwaysAutoResize = \"%s\",\n", options.floor.AlwaysAutoResize))
         io.write(string.format("        TransparentWindow = %s,\n", options.floor.TransparentWindow))
-        io.write(string.format("        ShowInvMesetaAndItemCount = %s,\n", options.floor.ShowInvMesetaAndItemCount))
+        io.write(string.format("        ShowInvMeseta = %s,\n", options.floor.ShowInvMeseta))
+        io.write(string.format("        ShowInvItemCount = %s,\n", options.floor.ShowInvItemCount))
         io.write(string.format("        ShowMultiFloor = %s,\n", options.floor.ShowMultiFloor))
         io.write(string.format("        OtherFloorsBrightnessPercent = %i,\n", options.floor.OtherFloorsBrightnessPercent))
         io.write(string.format("        OtherFloorsPrependString = \"%s\",\n", options.floor.OtherFloorsPrependString))
@@ -1201,7 +1203,7 @@ local function PresentFloor()
     local itemCount = table.getn(cache_floor)
 
     -- If user wants to display their meseta and inventory count, then go get the inventory cache.
-    if options.floor.ShowInvMesetaAndItemCount then
+    if options.floor.ShowInvMeseta or options.floor.ShowInvItemCount then
         index = index or lib_items.Me
         if last_inventory_time + update_delay < current_time or last_inventory_index ~= index or cache_inventory == nil then
             cache_inventory = lib_items.GetInventory(index)
@@ -1210,11 +1212,26 @@ local function PresentFloor()
         end
 
         local invItemCount = table.getn(cache_inventory.items)
+        local separator = ""
+
+        if options.floor.ShowInvMeseta and options.floor.ShowInvItemCount then
+            separator = " | "
+        end
+
+        local displayString = ""
+
+        if options.floor.ShowInvMeseta then
+            displayString = string.format("Meseta: %i", cache_inventory.meseta)
+        end
+
+        if options.floor.ShowInvItemCount then
+            displayString = displayString .. separator .. string.format("Items: %i / 30", invItemCount)
+        end
 
         if options.aio.newLineForMesetaInventory then
-            TextCWrapper(true, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+            TextCWrapper(true, lib_items_cfg.itemIndex, displayString)
         else
-            TextCWrapper(false, lib_items_cfg.itemIndex, "Meseta: %i | Items: %i / 30", cache_inventory.meseta, invItemCount)
+            TextCWrapper(false, lib_items_cfg.itemIndex, displayString)
         end
     end
 
