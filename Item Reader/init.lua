@@ -88,7 +88,6 @@ if optionsLoaded then
     options.floor.filter.HideLowHitWeapons  = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowHitWeapons, false)
     options.floor.filter.UptekkHit          = lib_helpers.NotNilOrDefault(options.floor.filter.UptekkHit, false)
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
-    options.floor.filter.HideFourSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideFourSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
     options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
     options.floor.filter.ShowClairesDeal    = lib_helpers.NotNilOrDefault(options.floor.filter.ShowClairesDeal, false)
@@ -204,7 +203,6 @@ else
                 HitMin = 40,
                 HideLowHitWeapons = false,
                 HideLowSocketArmor = false,
-                HideFourSocketArmor = false,
                 HideUselessUnits = false,
                 HideUselessTechs = false,
                 ShowClairesDeal = false,
@@ -331,7 +329,6 @@ local function SaveOptions(options)
         io.write(string.format("            UptekkHit = %s,\n", options.floor.filter.UptekkHit))
         io.write(string.format("            HideLowHitWeapons = %s,\n", options.floor.filter.HideLowHitWeapons))
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
-        io.write(string.format("            HideFourSocketArmor = %s \n", options.floor.filter.HideFourSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
         io.write(string.format("            HideUselessTechs = %s,\n", options.floor.filter.HideUselessTechs))
         io.write(string.format("            ShowClairesDeal = %s,\n", options.floor.filter.ShowClairesDeal))
@@ -683,7 +680,7 @@ local function ProcessFrame(item, floor)
     elseif floor and options.floor.EnableFilters and options.floor.filter.HideLowSocketArmor then
         show_item = false
         -- Show 4 socket armors
-        if item.armor.slots == 4 and not options.floor.filter.HideFourSocketArmor then
+        if item.armor.slots == 4 then
             show_item = true
         end
         -- Show Claire's Deal 5 items
