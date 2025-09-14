@@ -370,6 +370,11 @@ local function ConfigurationWindow(configuration)
                         _configuration.floor.changed = true
                         this.changed = true
                     end
+                    if imgui.Checkbox("Hide 4 Slot Armors", _configuration.floor.filter.HideFourSocketArmor) then
+                        _configuration.floor.filter.HideFourSocketArmor = not _configuration.floor.filter.HideFourSocketArmor
+                        _configuration.floor.changed = true
+                        this.changed = true
+                    end
                     if imgui.Checkbox("Hide Useless Units", _configuration.floor.filter.HideUselessUnits) then
                         _configuration.floor.filter.HideUselessUnits = not _configuration.floor.filter.HideUselessUnits
                         _configuration.floor.changed = true
