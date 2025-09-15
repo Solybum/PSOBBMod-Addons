@@ -539,7 +539,7 @@ local function ProcessWeapon(item, floor)
             end
             if options.floor.filter.UptekkHit then
                 --HANDLE UPTEKK HIT%
-                if item.weapon.untekked and item.weapon.stats[6] >= options.floor.filter.HitMin - 10 then
+                if item.weapon.untekked and item.weapon.stats[6] >= options.floor.filter.HitMin - 10 and item.weapon.stats[6] ~= 0 then
                     show_item = true
                 end
             end
