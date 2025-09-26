@@ -950,7 +950,11 @@ local function ProcessMag(item, fromMagWindow)
         or (fromMagWindow and not options.mags.hideMagColor)
     then
         result = result .. TextCWrapper(false, lib_items_cfg.white, "[")
-        result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+        if options.server == 3 and item.mag.color > 0x11 then
+            result = result .. TextCWrapper(false, lib_items_cfg.orange, lib_unitxt.GetMagColor(item.mag.color))
+        else
+            result = result .. TextCWrapper(false, lib_items_cfg.magColor, lib_unitxt.GetMagColor(item.mag.color))
+        end
         result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
     end
 
