@@ -42,6 +42,10 @@ local function ConfigurationWindow(configuration)
                 _configuration.showItemData = not _configuration.showItemData
                 this.changed = true
             end
+            if imgui.Checkbox("Hide Special Weapon names", _configuration.hideSpecialWeaponName) then
+                _configuration.hideSpecialWeaponName = not _configuration.hideSpecialWeaponName
+                this.changed = true
+            end
             if imgui.Checkbox("Show equipped items", _configuration.showEquippedItems) then
                 _configuration.showEquippedItems = not _configuration.showEquippedItems
                 this.changed = true

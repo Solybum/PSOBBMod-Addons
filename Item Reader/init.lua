@@ -22,6 +22,7 @@ if optionsLoaded then
     options.printItemIndex            = lib_helpers.NotNilOrDefault(options.printItemIndex, true)
     options.showItemIDs               = lib_helpers.NotNilOrDefault(options.showItemIDs, false)
     options.showItemData              = lib_helpers.NotNilOrDefault(options.showItemData, false)
+    options.hideSpecialWeaponName     = lib_helpers.NotNilOrDefault(options.hideSpecialWeaponName, false)
     options.showEquippedItems         = lib_helpers.NotNilOrDefault(options.showEquippedItems, true)
     options.shortPBNames              = lib_helpers.NotNilOrDefault(options.shortPBNames, true)
     options.ignoreMeseta              = lib_helpers.NotNilOrDefault(options.ignoreMeseta, false)
@@ -143,6 +144,7 @@ if optionsLoaded then
     options.mags.printItemIndex           = lib_helpers.NotNilOrDefault(options.mags.printItemIndex, true)
     options.mags.showItemIDs              = lib_helpers.NotNilOrDefault(options.mags.showItemIDs, false)
     options.mags.showItemData             = lib_helpers.NotNilOrDefault(options.mags.showItemData, false)
+    options.mags.hideSpecialWeaponName    = lib_helpers.NotNilOrDefault(options.mags.hideSpecialWeaponName, false)
     options.mags.showEquippedItems        = lib_helpers.NotNilOrDefault(options.mags.showEquippedItems, true)
     options.mags.hideMagStats             = lib_helpers.NotNilOrDefault(options.mags.hideMagStats, false)
     options.mags.hideMagPBs               = lib_helpers.NotNilOrDefault(options.mags.hideMagPBs, false)
@@ -156,6 +158,7 @@ else
         printItemIndex = true,
         showItemIDs = false,
         showItemData = false,
+        hideSpecialWeaponName = false,
         showEquippedItems = true,
         shortPBNames = true,
         ignoreMeseta = false,
@@ -290,6 +293,7 @@ local function SaveOptions(options)
         io.write(string.format("    printItemIndex = %s,\n", tostring(options.printItemIndex)))
         io.write(string.format("    showItemIDs = %s,\n", tostring(options.showItemIDs)))
         io.write(string.format("    showItemData = %s,\n", tostring(options.showItemData)))
+        io.write(string.format("    hideSpecialWeaponName = %s,\n", tostring(options.hideSpecialWeaponName)))
         io.write(string.format("    showEquippedItems = %s,\n", tostring(options.showEquippedItems)))
         io.write(string.format("    shortPBNames = %s,\n", tostring(options.shortPBNames)))
         io.write(string.format("    ignoreMeseta = %s,\n", tostring(options.ignoreMeseta)))
@@ -630,7 +634,11 @@ local function ProcessWeapon(item, floor)
                 result = result .. TextCWrapper(false, lib_items_cfg.white, "] ")
             end
         else
-            result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            if options.hideSpecialWeaponName == true then
+                result = result .. TextCWrapper(false, nameColor, "%s ", TrimString("SPECIAL WEAPON", options.itemNameLength))
+            elseif options.hideSpecialWeaponName == false then 
+                result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
+            end
 
             if item.weapon.grind > 0 then
                 local grindColor = lib_items_cfg.weaponGrind
