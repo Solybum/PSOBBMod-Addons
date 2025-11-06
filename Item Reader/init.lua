@@ -636,7 +636,7 @@ local function ProcessWeapon(item, floor)
         else
             if options.hideSpecialWeaponName == true then
                 result = result .. TextCWrapper(false, nameColor, "%s ", TrimString("SPECIAL WEAPON", options.itemNameLength))
-            elseif options.hideSpecialWeaponName == false then 
+            else 
                 result = result .. TextCWrapper(false, nameColor, "%s ", TrimString(item.name, options.itemNameLength))
             end
 
