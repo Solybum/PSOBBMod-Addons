@@ -90,7 +90,14 @@ if optionsLoaded then
     options.floor.filter.HideLowSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideLowSocketArmor, false)
     options.floor.filter.HideFourSocketArmor = lib_helpers.NotNilOrDefault(options.floor.filter.HideFourSocketArmor, false)
     options.floor.filter.HideUselessUnits   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessUnits, false)
-    options.floor.filter.HideUselessTechs   = lib_helpers.NotNilOrDefault(options.floor.filter.HideUselessTechs, false)
+    options.floor.filter.FilterTechs        = lib_helpers.NotNilOrDefault(options.floor.filter.FilterTechs, false)
+    options.floor.filter.HideMaxHumanTechs =  lib_helpers.NotNilOrDefault(options.floor.filter.HideMaxHumanTechs, false)
+    options.floor.filter.HideMaxNewmanTechs =  lib_helpers.NotNilOrDefault(options.floor.filter.HideMaxNewmanTechs, false)
+    options.floor.filter.AttackTechMinLevel = lib_helpers.NotNilOrDefault(options.floor.filter.AttackTechMinLevel, 29)
+    options.floor.filter.SupportTechMinLevel = lib_helpers.NotNilOrDefault(options.floor.filter.SupportTechMinLevel, 29)
+    options.floor.filter.MegidGrantsMinLevel = lib_helpers.NotNilOrDefault(options.floor.filter.MegidGrantsMinLevel, 29)
+    options.floor.filter.HideReverserAndRyuker = lib_helpers.NotNilOrDefault(options.floor.filter.HideReverserAndRyuker, false)
+    options.floor.filter.AntiMinLevel       = lib_helpers.NotNilOrDefault(options.floor.filter.AntiMinLevel, 7)
     options.floor.filter.ShowClairesDeal    = lib_helpers.NotNilOrDefault(options.floor.filter.ShowClairesDeal, false)
     options.floor.filter.HideMonomates      = lib_helpers.NotNilOrDefault(options.floor.filter.HideMonomates, false)
     options.floor.filter.HideDimates        = lib_helpers.NotNilOrDefault(options.floor.filter.HideDimates, false)
@@ -206,7 +213,14 @@ else
                 HideLowSocketArmor = false,
                 HideFourSocketArmor = false,
                 HideUselessUnits = false,
-                HideUselessTechs = false,
+                FilterTechs = false,
+                AttackTechMinLevel = 29,
+                SupportTechMinLevel = 29, 
+                MegidGrantsMinLevel = 26, 
+                AntiMinLevel = 7,
+                HideReverserAndRyuker = false,
+                HideMaxHumanTechs = false,
+                HideMaxNewmanTechs = false,
                 ShowClairesDeal = false,
                 HideMonomates = false,
                 HideDimates = false,
@@ -333,7 +347,14 @@ local function SaveOptions(options)
         io.write(string.format("            HideLowSocketArmor = %s,\n", options.floor.filter.HideLowSocketArmor))
         io.write(string.format("            HideFourSocketArmor = %s,\n", options.floor.filter.HideFourSocketArmor))
         io.write(string.format("            HideUselessUnits = %s,\n", options.floor.filter.HideUselessUnits))
-        io.write(string.format("            HideUselessTechs = %s,\n", options.floor.filter.HideUselessTechs))
+        io.write(string.format("            FilterTechs = %s,\n", options.floor.filter.FilterTechs))
+        io.write(string.format("            AttackTechMinLevel = %s, \n", options.floor.filter.AttackTechMinLevel))
+        io.write(string.format("            SupportTechMinLevel = %s, \n", options.floor.filter.SupportTechMinLevel))
+        io.write(string.format("            MegidGrantsMinLevel = %s, \n", options.floor.filter.MegidGrantsMinLevel))
+        io.write(string.format("            AntiMinLevel = %s, \n", options.floor.filter.AntiMinLevel))
+        io.write(string.format("            HideReverserAndRyuker = %s, \n", options.floor.filter.HideReverserAndRyuker))
+        io.write(string.format("            HideMaxHumanTechs = %s,\n", options.floor.filter.HideMaxHumanTechs))
+        io.write(string.format("            HideMaxNewmanTechs = %s,\n", options.floor.filter.HideMaxNewmanTechs))
         io.write(string.format("            ShowClairesDeal = %s,\n", options.floor.filter.ShowClairesDeal))
         io.write(string.format("            HideMonomates = %s,\n", options.floor.filter.HideMonomates))
         io.write(string.format("            HideDimates = %s,\n", options.floor.filter.HideDimates))
@@ -979,28 +1000,40 @@ local function ProcessTool(item, floor)
 
     if floor then
         -- Process Technique Disks
-        if options.floor.EnableFilters and options.floor.filter.HideUselessTechs and item.data[2] == 0x02 then
+        if options.floor.EnableFilters and options.floor.filter.FilterTechs and item.data[2] == 0x02 then
             show_item = false
             -- Is Reverser/Ryuker
-            if item.data[5] == 0x11 or item.data[5] == 0x0E then
+            if options.floor.filter.HideReverserAndRyuker == false and (item.data[5] == 0x11 or item.data[5] == 0x0E) then
                 show_item = true
             -- Is Good Anti?
             elseif item.data[5] == 0x10 then
-                if item.tool.level == 5 or item.tool.level >= 7 then
+                if options.floor.filter.HideMaxHumanTechs == false and item.tool.level == 5 then
+                    show_item = true
+                elseif options.floor.filter.HideMaxNewmanTechs == false and item.tool.level == 7 then
+                    show_item = true
+                elseif item.tool.level >= options.floor.filter.AntiMinLevel then
                     show_item = true
                 end
             -- Is Good Megid/Grants
             elseif item.data[5] == 0x12 or item.data[5] == 0x09 then
-                if item.tool.level >= 26 then
+                if item.tool.level >= options.floor.filter.MegidGrantsMinLevel then
                     show_item = true
                 end
             -- Is good support spell
             elseif item.data[5] == 0x0A or item.data[5] == 0x0B or item.data[5] == 0x0C or item.data[5] == 0x0D or item.data[5] == 0x0F then
-                if item.tool.level == 15 or item.tool.level == 20 or item.tool.level >= 30 then
+                if options.floor.filter.HideMaxHumanTechs == false and item.tool.level == 15 then
+                    show_item = true
+                elseif options.floor.filter.HideMaxNewmanTechs == false and item.tool.level == 20 then
+                    show_item = true
+                elseif item.tool.level >= options.floor.filter.SupportTechMinLevel then 
                     show_item = true
                 end
             -- Is a max tier tech?
-            elseif item.tool.level == 15 or item.tool.level == 20 or item.tool.level >= 29 then
+            elseif options.floor.filter.HideMaxHumanTechs == false and item.tool.level == 15 then
+                show_item = true
+            elseif options.floor.filter.HideMaxNewmanTechs == false and item.tool.level == 20 then
+                show_item = true
+            elseif item.tool.level >= options.floor.filter.AttackTechMinLevel then
                 show_item = true
             end
         -- Hide Monomates, Dimates, Monofluids, Difluids, Antidotes, Antiparalysis, Telepipe, and Trap Visions

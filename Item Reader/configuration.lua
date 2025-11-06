@@ -348,6 +348,12 @@ local function ConfigurationWindow(configuration)
 
                     imgui.PushItemWidth(110)
                     success, _configuration.floor.filter.HitMin = imgui.InputInt("Minimum Hit", _configuration.floor.filter.HitMin)
+                    if _configuration.floor.filter.HitMin > 100 then
+                        _configuration.floor.filter.HitMin = 100
+                    end
+                    if _configuration.floor.filter.HitMin < -5 then
+                        _configuration.floor.filter.HitMin = -5
+                    end
                     imgui.PopItemWidth()
                     if success then
                         this.changed = true
@@ -381,10 +387,89 @@ local function ConfigurationWindow(configuration)
                         this.changed = true
                     end
                     imgui.SameLine(0, 15)
-                    if imgui.Checkbox("Hide Useless Techs", _configuration.floor.filter.HideUselessTechs) then
-                        _configuration.floor.filter.HideUselessTechs = not _configuration.floor.filter.HideUselessTechs
+                    if imgui.Checkbox("Hide Useless Techs", _configuration.floor.filter.FilterTechs) then
+                        _configuration.floor.filter.FilterTechs = not _configuration.floor.filter.FilterTechs
                         _configuration.floor.changed = true
                         this.changed = true
+                    end
+
+                    if _configuration.floor.filter.FilterTechs then
+                        if imgui.TreeNodeEx("Tech Filters") then 
+                            imgui.Text("Attack Techs")
+                            imgui.PushItemWidth(110)
+                            success, _configuration.floor.filter.AttackTechMinLevel = imgui.InputInt("Minimum Attack Tech Level", _configuration.floor.filter.AttackTechMinLevel)
+                            if _configuration.floor.filter.AttackTechMinLevel > 30 then
+                                _configuration.floor.filter.AttackTechMinLevel = 30
+                            end
+                            if _configuration.floor.filter.AttackTechMinLevel < 1 then
+                                _configuration.floor.filter.AttackTechMinLevel = 1
+                            end
+                            imgui.PopItemWidth()
+                            if success then
+                                this.changed = true
+                            end
+
+                            imgui.Text("Support Techs")
+                            imgui.PushItemWidth(110)
+                            success, _configuration.floor.filter.SupportTechMinLevel = imgui.InputInt("Minimum Support Tech Level", _configuration.floor.filter.SupportTechMinLevel)
+                            if _configuration.floor.filter.SupportTechMinLevel > 30 then
+                                _configuration.floor.filter.SupportTechMinLevel = 30
+                            end
+                            if _configuration.floor.filter.SupportTechMinLevel < 1 then
+                                _configuration.floor.filter.SupportTechMinLevel = 1
+                            end
+                            imgui.PopItemWidth()
+                            if success then
+                                this.changed = true
+                            end
+                            
+                            imgui.Text("Megid/Grants")
+                            imgui.PushItemWidth(110)
+                            success, _configuration.floor.filter.MegidGrantsMinLevel = imgui.InputInt("Minimum Megid/Grants Level", _configuration.floor.filter.MegidGrantsMinLevel)
+                            if _configuration.floor.filter.MegidGrantsMinLevel > 30 then
+                                _configuration.floor.filter.MegidGrantsMinLevel = 30
+                            end
+                            if _configuration.floor.filter.MegidGrantsMinLevel < 1 then
+                                _configuration.floor.filter.MegidGrantsMinLevel = 1
+                            end
+                            imgui.PopItemWidth()
+                            if success then
+                                this.changed = true
+                            end
+
+                            imgui.Text("Anti")
+                            imgui.PushItemWidth(110)
+                            success, _configuration.floor.filter.AntiMinLevel = imgui.InputInt("Minimum Anti Level", _configuration.floor.filter.AntiMinLevel)
+                            if _configuration.floor.filter.AntiMinLevel > 7 then
+                                _configuration.floor.filter.AntiMinLevel = 7
+                            end
+                            if _configuration.floor.filter.AntiMinLevel < 1 then
+                                _configuration.floor.filter.AntiMinLevel = 1
+                            end
+                            imgui.PopItemWidth()
+                            if success then
+                                this.changed = true
+                            end
+
+                            if imgui.Checkbox("Hide Reverser/Ryuker", _configuration.floor.filter.HideReverserAndRyuker) then
+                                _configuration.floor.filter.HideReverserAndRyuker = not _configuration.floor.filter.HideReverserAndRyuker
+                                _configuration.floor.changed = true
+                                this.changed = true
+                            end
+                            
+                            if imgui.Checkbox("Hide Max Level Human Techs", _configuration.floor.filter.HideMaxHumanTechs) then
+                                _configuration.floor.filter.HideMaxHumanTechs = not _configuration.floor.filter.HideMaxHumanTechs
+                                _configuration.floor.changed = true
+                                this.changed = true
+                            end
+
+                            if imgui.Checkbox("Hide Max Level Newman Techs (excluding FO)", _configuration.floor.filter.HideMaxNewmanTechs) then
+                                _configuration.floor.filter.HideMaxNewmanTechs = not _configuration.floor.filter.HideMaxNewmanTechs
+                                _configuration.floor.changed = true
+                                this.changed = true
+                            end
+                            imgui.TreePop()
+                        end
                     end
 
                     imgui.Text("Consumables")
